@@ -41,6 +41,7 @@ The following providers are currently supported:
 - [Cohere](prices/providers/cohere.yml) - 6 models
 - [Deepgram](prices/providers/deepgram.yml) - 2 models
 - [Deepseek](prices/providers/deepseek.yml) - 4 models
+- [ElevenLabs](prices/providers/elevenlabs.yml) - 3 models
 - [Fireworks](prices/providers/fireworks.yml) - 13 models
 - [Google](prices/providers/google.yml) - 34 models
 - [Groq](prices/providers/groq.yml) - 29 models
