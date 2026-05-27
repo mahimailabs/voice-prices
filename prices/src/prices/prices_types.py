@@ -320,16 +320,13 @@ class ModelPrice(_Model):
     @model_validator(mode='after')
     def validate_voice_multipliers_have_scalable_field(self) -> ModelPrice:
         if self.voice_multipliers is not None:
-            scalable = (
-                self.input_kchars is not None
-                or self.output_audio_kseconds is not None
-                or self.input_audio_mtok is not None
-                or self.output_audio_mtok is not None
-            )
+            scalable = self.input_kchars is not None or self.output_audio_kseconds is not None
             if not scalable:
                 raise ValueError(
                     'voice_multipliers requires at least one scalable priced field '
-                    '(input_kchars, output_audio_kseconds, input_audio_mtok, or output_audio_mtok)'
+                    '(input_kchars or output_audio_kseconds). The engine only scales '
+                    'character and audio-second priced fields; token-based fields '
+                    '(input_audio_mtok, output_audio_mtok) are multiplier-exempt.'
                 )
         return self
 
