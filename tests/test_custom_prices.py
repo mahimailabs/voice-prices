@@ -90,6 +90,12 @@ class CustomUsage:
     cache_audio_read_tokens: int | None = None
     output_audio_tokens: int | None = None
 
+    # TTS fields added in v0.1 of the voice-prices fork; included here so CustomUsage
+    # continues to satisfy the AbstractUsage protocol.
+    characters: int | None = None
+    audio_output_seconds: int | None = None
+    voice_class: str | None = None
+
 
 def test_alt_source():
     with AltUpdatePrices() as update_prices:
