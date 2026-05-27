@@ -1346,7 +1346,7 @@ wheels = [
 
 [[package]]
 name = "voice-prices"
-version = "0.0.4"
+version = "0.0.5"
 source = { editable = "packages/python" }
 dependencies = [
     { name = "httpx2" },
