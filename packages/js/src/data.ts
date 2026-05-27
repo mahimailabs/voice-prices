@@ -73,6 +73,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'claude-2',
@@ -601,6 +602,7 @@ export const data: Provider[] = [
     name: 'Avian',
     pricing_urls: ['https://avian.io/pricing/'],
     api_pattern: 'https://api\\.avian\\.io',
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'Meta-Llama-3.1-405B-Instruct',
@@ -715,6 +717,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'amazon.nova-lite-v1:0',
@@ -1841,6 +1844,7 @@ export const data: Provider[] = [
       },
     ],
     fallback_model_providers: ['openai', 'anthropic'],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'ada',
@@ -2188,6 +2192,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'gpt-oss-120b',
@@ -2342,6 +2347,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'command',
@@ -2483,6 +2489,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'deepseek-chat',
@@ -2642,6 +2649,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'deepseek-r1-0528',
@@ -3002,6 +3010,7 @@ export const data: Provider[] = [
       },
     ],
     fallback_model_providers: ['anthropic'],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'claude-3-5-haiku',
@@ -3881,6 +3890,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'deepseek-r1-distill-llama-70b',
@@ -4266,6 +4276,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'meta-llama/Llama-3.1-8B-Instruct',
@@ -4336,6 +4347,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'meta-llama/Llama-3.3-70B-Instruct',
@@ -4445,6 +4457,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'Qwen/Qwen3-32B',
@@ -4592,6 +4605,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'Qwen/Qwen2.5-VL-72B-Instruct',
@@ -4872,6 +4886,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'NousResearch/Hermes-4-405B',
@@ -5418,6 +5433,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'MiniMaxAI/MiniMax-M1-80k',
@@ -6653,6 +6669,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'Qwen/QwQ-32B',
@@ -7091,6 +7108,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'Qwen/Qwen2.5-VL-72B-Instruct',
@@ -7276,6 +7294,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'aisingapore/Gemma-SEA-LION-v4-27B-IT',
@@ -7472,6 +7491,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'Qwen/Qwen3-32B',
@@ -7676,6 +7696,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'EssentialAI/rnj-1-instruct',
@@ -8186,6 +8207,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'codestral',
@@ -8565,6 +8587,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'kimi-k2-0711-preview',
@@ -8719,6 +8742,7 @@ export const data: Provider[] = [
     name: 'Novita',
     pricing_urls: ['https://novita.ai/pricing'],
     api_pattern: 'https://api\\.novita\\.ai',
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'Sao10K/L3-8B-Stheno-v3.2',
@@ -9160,6 +9184,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'ada',
@@ -10642,6 +10667,30 @@ export const data: Provider[] = [
           input_mtok: 0.1,
         },
       },
+      {
+        id: 'tts-1',
+        name: 'TTS-1',
+        description: 'Standard-quality text-to-speech model. Billed per character of input text.',
+        match: {
+          equals: 'tts-1',
+        },
+        pricing_source_url: 'https://openai.com/api/pricing/',
+        prices: {
+          input_kchars: 0.015,
+        },
+      },
+      {
+        id: 'tts-1-hd',
+        name: 'TTS-1 HD',
+        description: 'High-definition text-to-speech model with higher audio quality than tts-1. Billed per character of input text.',
+        match: {
+          equals: 'tts-1-hd',
+        },
+        pricing_source_url: 'https://openai.com/api/pricing/',
+        prices: {
+          input_kchars: 0.03,
+        },
+      },
     ],
   },
   {
@@ -10688,6 +10737,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: '01-ai/yi-large',
@@ -17242,6 +17292,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'DeepSeek-R1-Distill-Llama-70B',
@@ -17499,6 +17550,7 @@ export const data: Provider[] = [
     api_pattern: 'https://api\\.perplexity\\.ai',
     price_comments:
       'Prices per request vary based on usage, this is not represented here, instead we just take the highest price shown for `requests_kcount`.',
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'llama-3.1-sonar-large-128k-online',
@@ -17622,6 +17674,7 @@ export const data: Provider[] = [
         },
       ],
     },
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'Austism/chronos-hermes-13b',
@@ -18466,6 +18519,7 @@ export const data: Provider[] = [
         ],
       },
     ],
+    staleness_threshold_days: 60,
     models: [
       {
         id: 'grok-2-1212',
