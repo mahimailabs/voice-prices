@@ -29,10 +29,15 @@ export interface ModelPrice {
   cache_read_mtok?: number | TieredPrices
   cache_write_mtok?: number | TieredPrices
   input_audio_mtok?: number | TieredPrices
+  // TTS fields (v0.1 schema; JS engine support arrives in v0.2). Declared here so
+  // the regenerated data.ts typechecks against the data shape on disk.
+  input_kchars?: number
   input_mtok?: number | TieredPrices
+  output_audio_kseconds?: number
   output_audio_mtok?: number | TieredPrices
   output_mtok?: number | TieredPrices
   requests_kcount?: number
+  voice_multipliers?: Record<string, number>
 }
 
 export interface ConditionalPrice {
@@ -96,6 +101,7 @@ export interface ModelInfo {
   name?: string
   price_comments?: string
   prices: ConditionalPrice[] | ModelPrice
+  pricing_source_url?: string
 }
 
 export interface Provider {
@@ -110,6 +116,9 @@ export interface Provider {
   price_comments?: string
   pricing_urls?: string[]
   provider_match?: MatchLogic
+  // Always serialized in data.ts (default 60); marked optional so consumer-side
+  // Provider literals (tests, custom providers) don't have to set it.
+  staleness_threshold_days?: number
 }
 
 export interface ModelPriceCalculationResult {
