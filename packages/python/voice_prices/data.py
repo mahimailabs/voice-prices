@@ -1375,6 +1375,33 @@ providers: list[Provider] = [
         ],
     ),
     Provider(
+        id='deepgram',
+        name='Deepgram',
+        api_pattern='https://api\\.deepgram\\.com',
+        pricing_urls=['https://deepgram.com/pricing'],
+        model_match=ClauseStartsWith(starts_with='aura-'),
+        provider_match=ClauseContains(contains='deepgram'),
+        staleness_threshold_days=60,
+        models=[
+            ModelInfo(
+                id='aura-1',
+                match=ClauseRegex(regex='^aura-(?!2)'),
+                name='Aura',
+                description="Deepgram's original Aura TTS family. Per-character pricing is uniform across all voices in the family. Voice IDs are formatted aura-<voice>-<lang> (no version number in the slug), e.g. aura-asteria-en, aura-luna-en.",
+                pricing_source_url='https://deepgram.com/pricing',
+                prices=ModelPrice(input_kchars=Decimal('0.015')),
+            ),
+            ModelInfo(
+                id='aura-2',
+                match=ClauseStartsWith(starts_with='aura-2'),
+                name='Aura-2',
+                description="Deepgram's second-generation Aura TTS family. Per-character pricing is uniform across all voices in the family. Voice IDs include the version, e.g. aura-2-helios-en, aura-2-thalia-en.",
+                pricing_source_url='https://deepgram.com/pricing',
+                prices=ModelPrice(input_kchars=Decimal('0.03')),
+            ),
+        ],
+    ),
+    Provider(
         id='deepseek',
         name='Deepseek',
         api_pattern='https://api\\.deepseek\\.com',

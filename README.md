@@ -38,6 +38,7 @@ The following providers are currently supported:
 - [Microsoft Azure](prices/providers/azure.yml) - 21 models
 - [Cerebras](prices/providers/cerebras.yml) - 5 models
 - [Cohere](prices/providers/cohere.yml) - 6 models
+- [Deepgram](prices/providers/deepgram.yml) - 2 models
 - [Deepseek](prices/providers/deepseek.yml) - 4 models
 - [Fireworks](prices/providers/fireworks.yml) - 13 models
 - [Google](prices/providers/google.yml) - 34 models

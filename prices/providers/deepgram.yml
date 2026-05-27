@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=.schema.json
+name: Deepgram
+id: deepgram
+pricing_urls:
+  - https://deepgram.com/pricing
+
+api_pattern: 'https://api\.deepgram\.com'
+
+model_match:
+  starts_with: aura-
+
+provider_match:
+  contains: deepgram
+
+models:
+  - id: aura-1
+    name: Aura
+    description: >-
+      Deepgram's original Aura TTS family. Per-character pricing is uniform across
+      all voices in the family. Voice IDs are formatted aura-<voice>-<lang> (no
+      version number in the slug), e.g. aura-asteria-en, aura-luna-en.
+    # Match aura-* but NOT aura-2-*: the Aura-1 family voice IDs don't carry a
+    # version number, while Aura-2 does.
+    match:
+      regex: '^aura-(?!2)'
+    prices_checked: 2026-05-27
+    pricing_source_url: https://deepgram.com/pricing
+    prices:
+      input_kchars: 0.015
+
+  - id: aura-2
+    name: Aura-2
+    description: >-
+      Deepgram's second-generation Aura TTS family. Per-character pricing is uniform
+      across all voices in the family. Voice IDs include the version, e.g.
+      aura-2-helios-en, aura-2-thalia-en.
+    match:
+      starts_with: aura-2
+    prices_checked: 2026-05-27
+    pricing_source_url: https://deepgram.com/pricing
+    prices:
+      input_kchars: 0.030
