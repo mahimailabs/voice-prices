@@ -69,22 +69,33 @@ def test_no_tiers_on_char_or_sec_fields():
 def test_voice_multipliers_require_scalable_field():
     """`voice_multipliers` is rejected if the model has no field for it to scale.
 
-    Section 2: validator at the model level. Multipliers with nothing to scale are a bug.
+    Section 2 + Section 3 Step 3: the engine only scales input_kchars and
+    output_audio_kseconds; token-based fields (including input_audio_mtok,
+    output_audio_mtok) are multiplier-exempt. So a YAML setting only token fields
+    with voice_multipliers describes an ineffective config and must be rejected.
     """
-    # No input_kchars / output_audio_kseconds / input_audio_mtok / output_audio_mtok.
+    # Pure-token model rejected.
     with pytest.raises(ValidationError) as exc:
         ModelPrice(
-            input_mtok=Decimal('1.0'),  # token field; not a scalable field for multipliers
+            input_mtok=Decimal('1.0'),
             voice_multipliers={'default': Decimal('1.0')},
         )
     assert 'voice_multipliers requires at least one scalable priced field' in str(exc.value)
 
+    # Audio-mtok-only model rejected (multiplier-exempt by engine).
+    for token_field, value in (('input_audio_mtok', Decimal('40')), ('output_audio_mtok', Decimal('80'))):
+        with pytest.raises(ValidationError) as exc:
+            ModelPrice(
+                **{token_field: value},
+                voice_multipliers={'default': Decimal('1.0')},
+            )
+        assert 'voice_multipliers requires at least one scalable priced field' in str(exc.value)
 
-def test_voice_multipliers_accept_audio_token_scalable_field():
-    """Sanity-check: input_audio_mtok / output_audio_mtok count as scalable fields."""
-    # Should validate cleanly with just audio-token field set
-    ModelPrice(input_audio_mtok=Decimal('40'), voice_multipliers={'default': Decimal('1.0')})
-    ModelPrice(output_audio_mtok=Decimal('80'), voice_multipliers={'default': Decimal('1.0')})
+
+def test_voice_multipliers_accept_kchars_or_kseconds():
+    """Sanity-check: input_kchars or output_audio_kseconds satisfies the scalable rule."""
+    ModelPrice(input_kchars=Decimal('0.18'), voice_multipliers={'default': Decimal('1.0')})
+    ModelPrice(output_audio_kseconds=Decimal('0.50'), voice_multipliers={'default': Decimal('1.0')})
 
 
 def test_staleness_threshold_defaults():
