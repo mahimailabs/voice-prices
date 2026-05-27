@@ -173,3 +173,18 @@ def test_tts_entries_have_provenance():
                 missing.append(f'{provider.id}/{model.id}: missing prices_checked')
 
     assert not missing, '\n'.join(missing)
+
+
+def test_provider_template_validates():
+    """The contributor template at docs/templates/provider-tts.yml must parse
+    against the same Pydantic schema as real providers, so contributors who
+    copy-paste-and-edit start from a working baseline.
+    """
+    import pydantic_core
+
+    template_path = Path(__file__).parent.parent / 'docs' / 'templates' / 'provider-tts.yml'
+    assert template_path.exists(), f'template missing at {template_path}'
+    with template_path.open('rb') as f:
+        data = _yaml.load(f)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+    # Will raise pydantic.ValidationError if the template is broken.
+    _PydanticProvider.model_validate_json(pydantic_core.to_json(data), strict=True)
