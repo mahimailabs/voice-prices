@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "voice-prices"
-version = "0.0.2"
+version = "0.0.3"
 description = "Calculate prices for calling LLM, STT and TTS inference APIs. Fork of pydantic/genai-prices with voice-modality support."
 readme = "README.md"
 authors = [{ name = "Mahimai Raja J", email = "mahimairaja3@gmail.com" }]
