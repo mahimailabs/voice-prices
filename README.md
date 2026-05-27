@@ -36,6 +36,7 @@ The following providers are currently supported:
 - [Avian](prices/providers/avian.yml) - 4 models
 - [AWS Bedrock](prices/providers/aws.yml) - 57 models
 - [Microsoft Azure](prices/providers/azure.yml) - 21 models
+- [Cartesia](prices/providers/cartesia.yml) - 1 models
 - [Cerebras](prices/providers/cerebras.yml) - 5 models
 - [Cohere](prices/providers/cohere.yml) - 6 models
 - [Deepgram](prices/providers/deepgram.yml) - 2 models

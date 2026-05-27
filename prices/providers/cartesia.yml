@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=.schema.json
+name: Cartesia
+id: cartesia
+pricing_urls:
+  - https://cartesia.ai/pricing
+
+api_pattern: 'https://api\.cartesia\.ai'
+
+model_match:
+  starts_with: sonic
+
+provider_match:
+  contains: cartesia
+
+price_comments: >-
+  Cartesia bills in credits, not directly in dollars per character. The rates in
+  this catalog convert credits to dollars using Cartesia's Pro tier ($4/month for
+  100,000 credits = $0.00004 per credit), which is the cheapest paid tier and the
+  closest approximation to pay-as-you-go for API users. Consumers on Startup
+  ($39/month for 1.25M credits, ~$0.0000312/credit), Scale ($239/month for 8M
+  credits, ~$0.0000299/credit), or Enterprise tiers should derive their own
+  effective per-character rate by adjusting the credit cost accordingly.
+
+models:
+  - id: sonic-3
+    name: Sonic-3
+    description: >-
+      Cartesia's current production TTS model. Pricing is per character, with a
+      higher rate for Pro Voice Cloning (PVC) voices compared to standard Instant
+      Voice Cloning (IVC) voices.
+    match:
+      starts_with: sonic
+    prices_checked: 2026-05-27
+    pricing_source_url: https://cartesia.ai/pricing#sonic
+    price_comments: >-
+      voice_class='pvc' applies to voices created via Cartesia's Professional Voice
+      Cloning workflow; voice_class='ivc' applies to Instant Voice Cloning and the
+      standard library voices. Consumers must resolve voice_id -> voice_class via
+      Cartesia's voice metadata API; the voice ID list changes as Cartesia adds
+      voices and is not enumerable in this YAML.
+    prices:
+      # 1 credit per character at Pro tier ($0.00004/credit) = $0.04 / 1k chars
+      input_kchars: 0.04
+      voice_multipliers:
+        ivc: 1.0           # standard (Instant Voice Cloning): 1 credit/char
+        pvc: 1.5           # Pro Voice Cloning: 1.5 credits/char (1.5x rate)
+        default: 1.0       # default to IVC rate when voice_class is unspecified

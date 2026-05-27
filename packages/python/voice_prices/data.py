@@ -1210,6 +1210,30 @@ providers: list[Provider] = [
         ],
     ),
     Provider(
+        id='cartesia',
+        name='Cartesia',
+        api_pattern='https://api\\.cartesia\\.ai',
+        pricing_urls=['https://cartesia.ai/pricing'],
+        price_comments="Cartesia bills in credits, not directly in dollars per character. The rates in this catalog convert credits to dollars using Cartesia's Pro tier ($4/month for 100,000 credits = $0.00004 per credit), which is the cheapest paid tier and the closest approximation to pay-as-you-go for API users. Consumers on Startup ($39/month for 1.25M credits, ~$0.0000312/credit), Scale ($239/month for 8M credits, ~$0.0000299/credit), or Enterprise tiers should derive their own effective per-character rate by adjusting the credit cost accordingly.",
+        model_match=ClauseStartsWith(starts_with='sonic'),
+        provider_match=ClauseContains(contains='cartesia'),
+        staleness_threshold_days=60,
+        models=[
+            ModelInfo(
+                id='sonic-3',
+                match=ClauseStartsWith(starts_with='sonic'),
+                name='Sonic-3',
+                description="Cartesia's current production TTS model. Pricing is per character, with a higher rate for Pro Voice Cloning (PVC) voices compared to standard Instant Voice Cloning (IVC) voices.",
+                price_comments="voice_class='pvc' applies to voices created via Cartesia's Professional Voice Cloning workflow; voice_class='ivc' applies to Instant Voice Cloning and the standard library voices. Consumers must resolve voice_id -> voice_class via Cartesia's voice metadata API; the voice ID list changes as Cartesia adds voices and is not enumerable in this YAML.",
+                pricing_source_url='https://cartesia.ai/pricing#sonic',
+                prices=ModelPrice(
+                    input_kchars=Decimal('0.04'),
+                    voice_multipliers={'ivc': Decimal('1'), 'pvc': Decimal('1.5'), 'default': Decimal('1')},
+                ),
+            )
+        ],
+    ),
+    Provider(
         id='cerebras',
         name='Cerebras',
         api_pattern='https://api\\.cerebras\\.ai',
