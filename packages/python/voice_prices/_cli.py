@@ -38,13 +38,13 @@ except ModuleNotFoundError as exc:
     if package in {'pydantic_settings', 'rich', 'rich_argparse'}:
         print(
             f'Optional CLI dependency {package!r} is not installed. '
-            'Install CLI extras with: pip install "genai-prices[cli]"',
+            'Install CLI extras with: pip install "voice-prices[cli]"',
             file=sys.stderr,
         )
         raise SystemExit(1) from None
     raise
 
-PROGRAM_NAME = 'genai-prices'
+PROGRAM_NAME = 'voice-prices'
 
 _PROVIDER_COLORS = (
     'steel_blue1',

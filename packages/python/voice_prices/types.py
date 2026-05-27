@@ -101,7 +101,7 @@ class PriceBreakdown:
     Maintenance contract:
         Every Decimal-typed priced field on ModelPrice MUST have a matching
         Decimal field on PriceBreakdown. When ModelPrice gains a new priced
-        field (e.g. upstream genai-prices adds `input_image_mtok`), add the
+        field (e.g. upstream voice-prices adds `input_image_mtok`), add the
         corresponding `input_image_tokens: Decimal = Decimal(0)` here in the
         same PR. The test `test_breakdown_covers_priced_fields` walks
         ModelPrice fields at runtime and fails if any priced field is missing

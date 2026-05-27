@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from genai_prices.data import providers
+from voice_prices.data import providers
 
 
 def test_deprecated_models_present_with_flag():

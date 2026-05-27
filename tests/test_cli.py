@@ -13,17 +13,17 @@ from dirty_equals import IsStr
 from inline_snapshot import snapshot
 from rich.console import Console
 
-import genai_prices._cli as cli_module
-from genai_prices import update_prices
-from genai_prices._cli import (
+import voice_prices._cli as cli_module
+from voice_prices import update_prices
+from voice_prices._cli import (
     _parse_cli,
     _render_calc_error,
     _should_split_model_price_columns,
     _suggest_models,
     cli_logic,
 )
-from genai_prices.data import providers
-from genai_prices.types import ClauseEquals, ModelInfo, ModelPrice, Provider, TieredPrices
+from voice_prices.data import providers
+from voice_prices.types import ClauseEquals, ModelInfo, ModelPrice, Provider, TieredPrices
 
 
 def _find_model_ref(predicate: Callable[[ModelPrice], bool], *, exclude: set[str] | None = None) -> str:
@@ -47,14 +47,14 @@ def _has_tiered_prices(model_price: ModelPrice) -> bool:
 def test_version(capsys: pytest.CaptureFixture[str]):
     assert cli_logic(['--version']) == 0
     out, err = capsys.readouterr()
-    assert out == IsStr(regex=r'genai-prices .*\n')
+    assert out == IsStr(regex=r'voice-prices .*\n')
     assert err == ''
 
 
 def test_version_plain(capsys: pytest.CaptureFixture[str]):
     assert cli_logic(['--plain', '--version']) == 0
     out, err = capsys.readouterr()
-    assert out == IsStr(regex=r'genai-prices .*\n')
+    assert out == IsStr(regex=r'voice-prices .*\n')
     assert err == ''
 
 
@@ -90,7 +90,7 @@ def test_cli_import_exits_for_missing_optional_dependency():
     assert result.returncode == 1
     assert result.stdout == ''
     assert result.stderr == (
-        'Optional CLI dependency \'rich\' is not installed. Install CLI extras with: pip install "genai-prices[cli]"\n'
+        'Optional CLI dependency \'rich\' is not installed. Install CLI extras with: pip install "voice-prices[cli]"\n'
     )
 
 

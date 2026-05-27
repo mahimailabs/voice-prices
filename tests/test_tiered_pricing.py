@@ -5,9 +5,9 @@ from decimal import Decimal
 import pytest
 from inline_snapshot import snapshot
 
-from genai_prices import Usage, calc_price, types
-from genai_prices.data_snapshot import DataSnapshot
-from genai_prices.update_prices import UpdatePrices
+from voice_prices import Usage, calc_price, types
+from voice_prices.data_snapshot import DataSnapshot
+from voice_prices.update_prices import UpdatePrices
 
 pytestmark = pytest.mark.anyio
 

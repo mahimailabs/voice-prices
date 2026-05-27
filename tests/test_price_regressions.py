@@ -1,7 +1,7 @@
 from decimal import Decimal
 
-from genai_prices import Usage
-from genai_prices.types import CalcPrice, ModelPrice, Tier, TieredPrices
+from voice_prices import Usage
+from voice_prices.types import CalcPrice, ModelPrice, Tier, TieredPrices
 
 MILLION = Decimal(1_000_000)
 THOUSAND = Decimal(1_000)

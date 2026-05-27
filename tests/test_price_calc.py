@@ -4,8 +4,8 @@ from decimal import Decimal
 import pytest
 from inline_snapshot import snapshot
 
-from genai_prices import Usage, calc_price
-from genai_prices.types import ModelPrice, TieredPrices
+from voice_prices import Usage, calc_price
+from voice_prices.types import ModelPrice, TieredPrices
 
 pytestmark = pytest.mark.anyio
 
@@ -397,7 +397,7 @@ def test_voice_class_edge_case_7_conditional_price_picks_correct_multipliers():
     """
     from datetime import date
 
-    from genai_prices.types import (
+    from voice_prices.types import (
         ClauseEquals as _ClauseEquals,
         ConditionalPrice,
         ModelInfo,

@@ -2,8 +2,8 @@ from decimal import Decimal
 
 from inline_snapshot import snapshot
 
-from genai_prices import extract_usage
-from genai_prices.types import Usage
+from voice_prices import extract_usage
+from voice_prices.types import Usage
 
 
 def test_anthropic_without_caching():

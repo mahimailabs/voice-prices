@@ -8,9 +8,9 @@ from typing import Any
 
 from utils import raw_bodies_path, this_dir
 
-from genai_prices import Usage, calc_price, extract_usage
-from genai_prices.data_snapshot import get_snapshot
-from genai_prices.types import Provider, UsageExtractor
+from voice_prices import Usage, calc_price, extract_usage
+from voice_prices.data_snapshot import get_snapshot
+from voice_prices.types import Provider, UsageExtractor
 
 
 @dataclasses.dataclass
@@ -92,7 +92,7 @@ def get_usages(bodies: list[dict[str, Any]]) -> list[dict[str, Any]]:
                     # TODO fix/investigate
                     model
                     in [
-                        # https://github.com/pydantic/genai-prices/issues/232
+                        # https://github.com/mahimailabs/voice-prices/issues/232
                         'groq/compound',
                     ]
                     # google-gla sometimes adding 'models/' prefix

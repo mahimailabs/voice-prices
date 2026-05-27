@@ -2,11 +2,11 @@
   <h1>GenAI Prices</h1>
 </div>
 <div align="center">
-  <a href="https://github.com/pydantic/genai-prices/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://github.com/pydantic/genai-prices/actions/workflows/ci.yml/badge.svg?event=push" alt="CI"></a>
-  <a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/pydantic/genai-prices"><img src="https://coverage-badge.samuelcolvin.workers.dev/pydantic/genai-prices.svg" alt="Coverage"></a>
-  <a href="https://pypi.python.org/pypi/genai-prices"><img src="https://img.shields.io/pypi/v/genai-prices.svg" alt="PyPI"></a>
-  <a href="https://github.com/pydantic/genai-prices"><img src="https://img.shields.io/pypi/pyversions/genai-prices.svg" alt="versions"></a>
-  <a href="https://github.com/pydantic/genai-prices/blob/main/LICENSE"><img src="https://img.shields.io/github/license/pydantic/genai-prices.svg" alt="license"></a>
+  <a href="https://github.com/mahimailabs/voice-prices/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://github.com/mahimailabs/voice-prices/actions/workflows/ci.yml/badge.svg?event=push" alt="CI"></a>
+  <a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/mahimailabs/voice-prices"><img src="https://coverage-badge.samuelcolvin.workers.dev/mahimailabs/voice-prices.svg" alt="Coverage"></a>
+  <a href="https://pypi.python.org/pypi/voice-prices"><img src="https://img.shields.io/pypi/v/voice-prices.svg" alt="PyPI"></a>
+  <a href="https://github.com/mahimailabs/voice-prices"><img src="https://img.shields.io/pypi/pyversions/voice-prices.svg" alt="versions"></a>
+  <a href="https://github.com/mahimailabs/voice-prices/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mahimailabs/voice-prices.svg" alt="license"></a>
   <a href="https://logfire.pydantic.dev/docs/join-slack/"><img src="https://img.shields.io/badge/Slack-Join%20Slack-4A154B?logo=slack" alt="Join Slack" /></a>
 </div>
 <br/>
@@ -22,8 +22,8 @@
 - Support for variable daily prices, e.g. we support calculating deepseek prices even with off-peak pricing
 - tiered pricing support for Gemini models where you pay a separate price for very large contexts
 - support for [identifying price discrepancies](prices/README.md) from other sources
+- support for voice modalities (TTS character billing, STT planned for v0.2)
 - Python package, CLI
-- JavaScript/TypeScript package, CLI
 - TODO: API and web UI
 
 ### Providers
@@ -71,10 +71,6 @@ The following providers are currently supported:
 
 See the [Python README](packages/python/README.md) for instructions on how to install and use the Python package and CLI.
 
-### JavaScript/TypeScript Package
-
-See the [JS/TS README](packages/js/README.md) for instructions on how to install and use the JavaScript/TypeScript package and CLI.
-
 ### Download data
 
 Price data is available in the following files:
@@ -101,7 +97,7 @@ in a format which can be reliably processed.
 
 If you get a bill you weren't expecting, don't blame us!
 
-If you're a lawyer, please read the [LICENSE](https://github.com/pydantic/genai-prices/blob/main/LICENSE) under which this project is developed, hosted and distributed.
+If you're a lawyer, please read the [LICENSE](https://github.com/mahimailabs/voice-prices/blob/main/LICENSE) under which this project is developed, hosted and distributed.
 
 If you're a developer, please [contribute](#contributing) to fix any missing or incorrect prices you find.
 

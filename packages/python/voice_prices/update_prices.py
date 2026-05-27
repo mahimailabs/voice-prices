@@ -17,8 +17,8 @@ __all__ = (
     'wait_prices_updated_async',
 )
 
-logger = logging.getLogger('genai-prices')
-DEFAULT_UPDATE_URL = 'https://raw.githubusercontent.com/pydantic/genai-prices/refs/heads/main/prices/data.json'
+logger = logging.getLogger('voice-prices')
+DEFAULT_UPDATE_URL = 'https://raw.githubusercontent.com/mahimailabs/voice-prices/refs/heads/main/prices/data.json'
 _global_update_prices: UpdatePrices | None = None
 
 
@@ -87,7 +87,7 @@ class UpdatePrices:
         self._prices_updated.clear()
         self._stop_event.clear()
         self._background_exc = None
-        self._thread = threading.Thread(target=self._background_task, daemon=True, name='genai_prices:update')
+        self._thread = threading.Thread(target=self._background_task, daemon=True, name='voice_prices:update')
         self._thread.start()
         if wait:
             self.wait(timeout=30 if wait is True else wait)
@@ -129,7 +129,7 @@ class UpdatePrices:
         self.stop()
 
     def _background_task(self) -> None:
-        logger.info('Starting genai-prices background task')
+        logger.info('Starting voice-prices background task')
         try:
             while True:
                 try:
@@ -139,12 +139,12 @@ class UpdatePrices:
                 except Exception as e:
                     self._background_exc = e
                     self._prices_updated.set()
-                    logger.error('Error updating genai-prices in the background (%s): %s', type(e).__name__, e)
+                    logger.error('Error updating voice-prices in the background (%s): %s', type(e).__name__, e)
                 if self._stop_event.wait(self.update_interval):
                     break
 
         finally:
-            logger.info('genai-prices background task stopped')
+            logger.info('voice-prices background task stopped')
 
     def _update_prices(self):
         start = time()

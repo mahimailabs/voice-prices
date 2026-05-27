@@ -7,9 +7,9 @@ from decimal import Decimal
 import pytest
 from inline_snapshot import snapshot
 
-from genai_prices import Usage, calc_price, data, types
-from genai_prices.data_snapshot import DataSnapshot, set_custom_snapshot
-from genai_prices.update_prices import UpdatePrices
+from voice_prices import Usage, calc_price, data, types
+from voice_prices.data_snapshot import DataSnapshot, set_custom_snapshot
+from voice_prices.update_prices import UpdatePrices
 
 
 @dataclass

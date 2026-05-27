@@ -1,4 +1,4 @@
-# Pricing data for `genai-prices`
+# Pricing data for `voice-prices`
 
 ## DO NOT MOVE `data.json` OR `data_slim.json`!
 

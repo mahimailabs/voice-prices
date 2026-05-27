@@ -7,10 +7,10 @@ import ruamel.yaml
 from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
 from pydantic_core import core_schema, from_json
 
-from genai_prices.data import providers_schema
-from genai_prices.types import Usage as _RuntimeUsage
 from prices.prices_types import Provider as _PydanticProvider
 from prices.utils import package_dir as prices_package_dir, simplify_json_schema
+from voice_prices.data import providers_schema
+from voice_prices.types import Usage as _RuntimeUsage
 
 _PROVIDERS_DIR = prices_package_dir / 'providers'
 
