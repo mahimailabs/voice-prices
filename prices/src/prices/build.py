@@ -76,6 +76,7 @@ def write_prices(providers: list[Provider], prices_file: str, *, slim: bool = Fa
         data_json_schema['$defs']['ModelInfo']['properties'].pop('name')
         data_json_schema['$defs']['ModelInfo']['properties'].pop('description')
         data_json_schema['$defs']['ModelInfo']['properties'].pop('price_comments')
+        data_json_schema['$defs']['ModelInfo']['properties'].pop('pricing_source_url')
 
     prices_json_schema_path = prices_json_path.with_suffix('.schema.json')
     prices_json_schema_path.write_bytes(pydantic_core.to_json(data_json_schema, indent=2) + b'\n')
@@ -88,7 +89,7 @@ def write_prices(providers: list[Provider], prices_file: str, *, slim: bool = Fa
                 'pricing_url': True,
                 'description': True,
                 'price_comments': True,
-                'models': {'__all__': {'name', 'description', 'price_comments'}},
+                'models': {'__all__': {'name', 'description', 'price_comments', 'pricing_source_url'}},
             }
         }
 
