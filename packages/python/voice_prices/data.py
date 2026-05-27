@@ -5137,7 +5137,14 @@ providers: list[Provider] = [
             'https://platform.openai.com/docs/models',
             'https://help.openai.com/en/articles/7127956-how-much-does-gpt-4-cost',
         ],
-        model_match=ClauseOr(or_=[ClauseStartsWith(starts_with='gpt-'), ClauseRegex(regex='^o[134]')]),
+        model_match=ClauseOr(
+            or_=[
+                ClauseStartsWith(starts_with='gpt-'),
+                ClauseRegex(regex='^o[134]'),
+                ClauseStartsWith(starts_with='tts-'),
+                ClauseStartsWith(starts_with='whisper-'),
+            ]
+        ),
         provider_match=ClauseContains(contains='openai'),
         extractors=[
             UsageExtractor(
