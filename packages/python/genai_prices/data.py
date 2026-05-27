@@ -42,6 +42,7 @@ providers: list[Provider] = [
                 model_path='model',
             ),
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='claude-2',
@@ -375,6 +376,7 @@ providers: list[Provider] = [
         name='Avian',
         api_pattern='https://api\\.avian\\.io',
         pricing_urls=['https://avian.io/pricing/'],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='Meta-Llama-3.1-405B-Instruct',
@@ -430,6 +432,7 @@ providers: list[Provider] = [
                 model_path='model',
             ),
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='amazon.nova-lite-v1:0',
@@ -1044,6 +1047,7 @@ providers: list[Provider] = [
             ),
         ],
         fallback_model_providers=['openai', 'anthropic'],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='ada',
@@ -1226,6 +1230,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='gpt-oss-120b',
@@ -1320,6 +1325,7 @@ providers: list[Provider] = [
                 model_path='model',
             ),
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='command',
@@ -1392,6 +1398,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='deepseek-chat',
@@ -1493,6 +1500,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='deepseek-r1-0528',
@@ -1700,6 +1708,7 @@ providers: list[Provider] = [
             ),
         ],
         fallback_model_providers=['anthropic'],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='claude-3-5-haiku',
@@ -2172,6 +2181,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='deepseek-r1-distill-llama-70b',
@@ -2377,6 +2387,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='meta-llama/Llama-3.1-8B-Instruct',
@@ -2419,6 +2430,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='meta-llama/Llama-3.3-70B-Instruct',
@@ -2478,6 +2490,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='Qwen/Qwen3-32B',
@@ -2556,6 +2569,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='Qwen/Qwen2.5-VL-72B-Instruct',
@@ -2723,6 +2737,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='NousResearch/Hermes-4-405B',
@@ -3044,6 +3059,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='MiniMaxAI/MiniMax-M1-80k',
@@ -3767,6 +3783,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='Qwen/QwQ-32B',
@@ -4012,6 +4029,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='Qwen/Qwen2.5-VL-72B-Instruct',
@@ -4114,6 +4132,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='aisingapore/Gemma-SEA-LION-v4-27B-IT',
@@ -4231,6 +4250,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='Qwen/Qwen3-32B',
@@ -4348,6 +4368,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='EssentialAI/rnj-1-instruct',
@@ -4642,6 +4663,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='codestral',
@@ -4829,6 +4851,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='kimi-k2-0711-preview',
@@ -4925,6 +4948,7 @@ providers: list[Provider] = [
         name='Novita',
         api_pattern='https://api\\.novita\\.ai',
         pricing_urls=['https://novita.ai/pricing'],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='Sao10K/L3-8B-Stheno-v3.2',
@@ -5153,6 +5177,7 @@ providers: list[Provider] = [
                 model_path='model',
             ),
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='ada',
@@ -5944,6 +5969,22 @@ providers: list[Provider] = [
                 context_window=8192,
                 prices=ModelPrice(input_mtok=Decimal('0.1')),
             ),
+            ModelInfo(
+                id='tts-1',
+                match=ClauseEquals(equals='tts-1'),
+                name='TTS-1',
+                description='Standard-quality text-to-speech model. Billed per character of input text.',
+                pricing_source_url='https://openai.com/api/pricing/',
+                prices=ModelPrice(input_kchars=Decimal('0.015')),
+            ),
+            ModelInfo(
+                id='tts-1-hd',
+                match=ClauseEquals(equals='tts-1-hd'),
+                name='TTS-1 HD',
+                description='High-definition text-to-speech model with higher audio quality than tts-1. Billed per character of input text.',
+                pricing_source_url='https://openai.com/api/pricing/',
+                prices=ModelPrice(input_kchars=Decimal('0.03')),
+            ),
         ],
     ),
     Provider(
@@ -5974,6 +6015,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='01-ai/yi-large',
@@ -9644,6 +9686,7 @@ providers: list[Provider] = [
                 model_path='model',
             )
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='DeepSeek-R1-Distill-Llama-70B',
@@ -9797,6 +9840,7 @@ providers: list[Provider] = [
         api_pattern='https://api\\.perplexity\\.ai',
         pricing_urls=['https://docs.perplexity.ai/guides/pricing'],
         price_comments='Prices per request vary based on usage, this is not represented here, instead we just take the highest price shown for `requests_kcount`.',
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='llama-3.1-sonar-large-128k-online',
@@ -9862,6 +9906,7 @@ providers: list[Provider] = [
         api_pattern='https://api\\.together\\.xyz',
         pricing_urls=['https://www.together.ai/pricing'],
         provider_match=ClauseOr(or_=[ClauseEquals(equals='together-ai'), ClauseEquals(equals='together_ai')]),
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='Austism/chronos-hermes-13b',
@@ -10275,6 +10320,7 @@ providers: list[Provider] = [
                 model_path='model',
             ),
         ],
+        staleness_threshold_days=60,
         models=[
             ModelInfo(
                 id='grok-2-1212',

@@ -387,6 +387,24 @@
           "type": "number",
           "description": "price in USD per thousand requests",
           "title": "Requests Kcount"
+        },
+        "input_kchars": {
+          "type": "number",
+          "description": "price in USD per 1,000 input characters (TTS text input)",
+          "title": "Input Kchars"
+        },
+        "output_audio_kseconds": {
+          "type": "number",
+          "description": "price in USD per 1,000 seconds of generated audio output.\n\nReserved for v0.2 (PlayHT, Murf, similar). No v0.1 catalog entry sets this.",
+          "title": "Output Audio Kseconds"
+        },
+        "voice_multipliers": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "type": "object",
+          "description": "Multiplicative adjustments to the priced fields above, keyed by voice class.\n\nThe multiplier scales the summed cost of `input_kchars` and `output_audio_kseconds`\nonly (not token-based fields, request counts, or cached buckets). Must include a\n`default` key; other keys are free-form (e.g. `library`, `premium`).",
+          "title": "Voice Multipliers"
         }
       },
       "title": "ModelPrice",
@@ -483,6 +501,12 @@
           "type": "array",
           "description": "List of provider identifiers to fallback to to get prices if this provider doesn't have a price.\n\nThis is used when one provider offers another provider's models, e.g. Google and AWS offer Anthropic models,\nAzure offers OpenAI models, etc.",
           "title": "Fallback Model Providers"
+        },
+        "staleness_threshold_days": {
+          "default": 60,
+          "description": "Recommended maximum age (in days) for `prices_checked` on this provider's models before consumers should\nre-verify against `pricing_source_url`.\n\nvoice-prices itself does not warn or fail on stale entries; this is metadata for consumers like VoiceGateway\nto drive their own freshness UX. Default 60.",
+          "title": "Staleness Threshold Days",
+          "type": "integer"
         },
         "models": {
           "description": "List of models supported by this provider",
@@ -696,7 +720,9 @@
             "output_tokens",
             "input_audio_tokens",
             "cache_audio_read_tokens",
-            "output_audio_tokens"
+            "output_audio_tokens",
+            "characters",
+            "audio_output_seconds"
           ],
           "title": "Dest",
           "type": "string"

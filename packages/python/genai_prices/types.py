@@ -2,6 +2,7 @@ from __future__ import annotations as _annotations
 
 import dataclasses
 import re
+import warnings
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date, datetime, time, timezone
@@ -13,6 +14,7 @@ from typing_extensions import TypedDict
 
 __all__ = (
     'ProviderID',
+    'PriceBreakdown',
     'PriceCalculation',
     'AbstractUsage',
     'Usage',
@@ -92,11 +94,78 @@ class ArrayMatch:
 ExtractPath = str | Sequence[str | ArrayMatch]
 
 
+@dataclass
+class PriceBreakdown:
+    """Per-component USD contributions that sum to total_price.
+
+    Maintenance contract:
+        Every Decimal-typed priced field on ModelPrice MUST have a matching
+        Decimal field on PriceBreakdown. When ModelPrice gains a new priced
+        field (e.g. upstream genai-prices adds `input_image_mtok`), add the
+        corresponding `input_image_tokens: Decimal = Decimal(0)` here in the
+        same PR. The test `test_breakdown_covers_priced_fields` walks
+        ModelPrice fields at runtime and fails if any priced field is missing
+        its PriceBreakdown counterpart, so drift cannot survive CI.
+    """
+
+    input_tokens: Decimal = Decimal(0)
+    output_tokens: Decimal = Decimal(0)
+    cache_read_tokens: Decimal = Decimal(0)
+    cache_write_tokens: Decimal = Decimal(0)
+    input_audio_tokens: Decimal = Decimal(0)
+    output_audio_tokens: Decimal = Decimal(0)
+    cache_audio_read_tokens: Decimal = Decimal(0)
+
+    input_kchars: Decimal = Decimal(0)
+    output_audio_kseconds: Decimal = Decimal(0)
+
+    voice_class_input_adjustment: Decimal = Decimal(0)
+    """USD adjustment caused by voice_multiplier on input_kchars.
+
+    Equals 0 when no multiplier fired or multiplier == 1.0; positive when
+    multiplier > 1.0; negative when multiplier < 1.0. Sums with input_kchars
+    to give the post-multiplier input character cost.
+    """
+
+    voice_class_output_adjustment: Decimal = Decimal(0)
+    """USD adjustment caused by voice_multiplier on output_audio_kseconds.
+
+    Always Decimal(0) in v0.1 (no catalog entries set output_audio_kseconds);
+    activates with v0.2 catalog expansion for PlayHT/Murf-style models.
+    """
+
+    requests: Decimal = Decimal(0)
+
+    def sum(self) -> Decimal:
+        """Sum of every contributing component. Equals total_price by invariant."""
+        return (
+            self.input_tokens
+            + self.output_tokens
+            + self.cache_read_tokens
+            + self.cache_write_tokens
+            + self.input_audio_tokens
+            + self.output_audio_tokens
+            + self.cache_audio_read_tokens
+            + self.input_kchars
+            + self.output_audio_kseconds
+            + self.voice_class_input_adjustment
+            + self.voice_class_output_adjustment
+            + self.requests
+        )
+
+
 @dataclass(repr=False)
 class PriceCalculation:
     input_price: Decimal
     output_price: Decimal
     total_price: Decimal
+    breakdown: PriceBreakdown
+    applied_voice_multiplier: Decimal | None
+    """The raw multiplier value looked up for this call (e.g. Decimal('1.5')).
+
+    None when the resolved ModelPrice has no voice_multipliers OR when the
+    caller did not pass voice_class and there is no default to apply.
+    """
     model: ModelInfo = dataclasses.field(repr=False)
     provider: Provider = dataclasses.field(repr=False)
     model_price: ModelPrice
@@ -108,6 +177,8 @@ class PriceCalculation:
             f'input_price={self.input_price!r}, '
             f'output_price={self.output_price!r}, '
             f'total_price={self.total_price!r}, '
+            f'breakdown={self.breakdown!r}, '
+            f'applied_voice_multiplier={self.applied_voice_multiplier!r}, '
             f'model={self.model.summary()}, '
             f'provider={self.provider.summary()}, '
             f'model_price=ModelPrice({self.model_price}), '
@@ -187,7 +258,7 @@ class ExtractedUsage:
 
 
 class AbstractUsage(Protocol):
-    """Abstract definition of data about token usage for a single LLM call."""
+    """Abstract definition of data about token usage for a single LLM or voice call."""
 
     @property
     def input_tokens(self) -> int | None:
@@ -223,6 +294,31 @@ class AbstractUsage(Protocol):
     def output_audio_tokens(self) -> int | None:
         """Number of output audio tokens."""
 
+    @property
+    def characters(self) -> int | None:
+        """Number of input characters submitted to a TTS model."""
+
+    @property
+    def audio_output_seconds(self) -> int | None:
+        """Number of seconds of generated audio.
+
+        Schema-only in v0.1 (no catalog entry uses it). Type note: int matches
+        the existing `input_audio_tokens: int | None` precedent. v0.2 STT work
+        may revisit this since Deepgram and AssemblyAI bill per 0.01s on some
+        plans.
+        """
+
+    @property
+    def voice_class(self) -> str | None:
+        """Voice class identifier used for this call.
+
+        Matches a key in ModelPrice.voice_multipliers for the resolved
+        provider+model. Strings are scoped to the provider+model; the same
+        string may mean different things across providers. Callers construct
+        the string from the voice they used and the model they called against,
+        usually via a per-model lookup in their own config.
+        """
+
 
 @dataclass
 class Usage:
@@ -246,18 +342,44 @@ class Usage:
     output_audio_tokens: int | None = None
     """Number of output audio tokens."""
 
+    characters: int | None = None
+    """Number of input characters submitted to a TTS model."""
+
+    audio_output_seconds: int | None = None
+    """Number of seconds of generated audio. Schema-only in v0.1."""
+
+    voice_class: str | None = None
+    """Voice class identifier used for this call (matches a key in
+    `ModelPrice.voice_multipliers` for the resolved provider+model).
+    """
+
     def __add__(self, other: Usage | Any) -> Usage:
         if not isinstance(other, Usage):
             return NotImplemented
 
-        def _add_option(a: int | None, b: int | None) -> int | None:
+        def _add_int(a: int | None, b: int | None) -> int | None:
             return None if a is b is None else (a or 0) + (b or 0)
 
+        def _coalesce_str(a: str | None, b: str | None) -> str | None:
+            if a is None:
+                return b
+            if b is None:
+                return a
+            if a != b:
+                raise ValueError(f'Cannot add Usages with conflicting voice_class values: {a!r} != {b!r}')
+            return a
+
         return Usage(
-            **{
-                field.name: _add_option(getattr(self, field.name), getattr(other, field.name))
-                for field in dataclasses.fields(self)
-            }
+            input_tokens=_add_int(self.input_tokens, other.input_tokens),
+            cache_write_tokens=_add_int(self.cache_write_tokens, other.cache_write_tokens),
+            cache_read_tokens=_add_int(self.cache_read_tokens, other.cache_read_tokens),
+            output_tokens=_add_int(self.output_tokens, other.output_tokens),
+            input_audio_tokens=_add_int(self.input_audio_tokens, other.input_audio_tokens),
+            cache_audio_read_tokens=_add_int(self.cache_audio_read_tokens, other.cache_audio_read_tokens),
+            output_audio_tokens=_add_int(self.output_audio_tokens, other.output_audio_tokens),
+            characters=_add_int(self.characters, other.characters),
+            audio_output_seconds=_add_int(self.audio_output_seconds, other.audio_output_seconds),
+            voice_class=_coalesce_str(self.voice_class, other.voice_class),
         )
 
     def __radd__(self, other: Usage) -> Usage:
@@ -291,6 +413,11 @@ class Provider:
 
     This is used when one provider offers another provider's models, e.g. Google and AWS offer Anthropic models,
     Azure offers OpenAI models, etc.
+    """
+    staleness_threshold_days: int = 60
+    """Recommended maximum age (in days) for `prices_checked` on this provider's models before consumers
+    should re-verify against `pricing_source_url`. Metadata only; voice-prices itself does not warn or
+    fail on stale entries.
     """
     models: list[ModelInfo] = dataclasses.field(default_factory=list)
     """List of models supported by this provider"""
@@ -345,6 +472,8 @@ UsageField = Literal[
     'input_audio_tokens',
     'cache_audio_read_tokens',
     'output_audio_tokens',
+    'characters',
+    'audio_output_seconds',
 ]
 
 
@@ -531,6 +660,10 @@ class ModelInfo:
     """Maximum number of input tokens allowed for this model"""
     price_comments: str | None = None
     """Comments about the pricing of the model, especially challenges in representing the provider's pricing model."""
+    pricing_source_url: str | None = None
+    """Deep-link (as a string) to the row or anchor on the provider's pricing page that establishes
+    this model's price. Per-model; distinct from `Provider.pricing_urls` which is provider-wide.
+    """
     deprecated: bool | None = None
     """Flag indicating this model is deprecated by the provider but still functional."""
 
@@ -573,6 +706,8 @@ class ModelInfo:
             input_price=price['input_price'],
             output_price=price['output_price'],
             total_price=price['total_price'],
+            breakdown=price['breakdown'],
+            applied_voice_multiplier=price['applied_voice_multiplier'],
             model=self,
             provider=provider,
             model_price=model_price,
@@ -587,6 +722,8 @@ class CalcPrice(TypedDict):
     input_price: Decimal
     output_price: Decimal
     total_price: Decimal
+    breakdown: PriceBreakdown
+    applied_voice_multiplier: Decimal | None
 
 
 @dataclass
@@ -614,12 +751,26 @@ class ModelPrice:
     requests_kcount: Decimal | None = None
     """price in USD per thousand requests"""
 
+    input_kchars: Decimal | None = None
+    """price in USD per 1,000 input characters (TTS text input)"""
+
+    output_audio_kseconds: Decimal | None = None
+    """price in USD per 1,000 seconds of generated audio output.
+
+    Reserved for v0.2 (PlayHT, Murf, similar). No v0.1 catalog entry sets this.
+    """
+
+    voice_multipliers: dict[str, Decimal] | None = None
+    """Multiplicative adjustments keyed by voice class.
+
+    Scales `input_kchars` + `output_audio_kseconds` only (not token-based fields, requests, or
+    cached buckets). Must include a `default` key. See engine semantics for fallback behavior.
+    """
+
     def calc_price(self, usage: AbstractUsage) -> CalcPrice:
         """Calculate the price of usage in USD with this model price."""
-        input_price = Decimal(0)
-        output_price = Decimal(0)
+        breakdown = PriceBreakdown()
 
-        # Calculate total input tokens for tier determination
         total_input_tokens = usage.input_tokens or 0
 
         cache_read_tokens = usage.cache_read_tokens or 0
@@ -628,34 +779,8 @@ class ModelPrice:
         input_audio_tokens = usage.input_audio_tokens or 0
         output_audio_tokens = usage.output_audio_tokens or 0
 
-        # Provider usage fields can be inclusive parent/child buckets rather than disjoint buckets.
-        # For example, Google can report:
-        #
-        #   input_tokens=1_000
-        #   cache_read_tokens=400
-        #   input_audio_tokens=300
-        #   cache_audio_read_tokens=100
-        #
-        # The 100 cached audio tokens are included in all three ancestor buckets:
-        # input_tokens, cache_read_tokens, and input_audio_tokens. Pricing must charge
-        # each physical token once, using the most specific available priced bucket and
-        # falling back to a parent bucket only when the child bucket has no price.
-        #
-        # With all prices present, the disjoint priced buckets are:
-        #
-        #   input_mtok: 400 tokens
-        #   cache_read_mtok: 300 tokens
-        #   input_audio_mtok: 200 tokens
-        #   cache_audio_read_mtok: 100 tokens
-        #
-        # If cache_audio_read_mtok is missing but cache_read_mtok exists, cached audio
-        # falls back to cache_read_mtok. That keeps it out of input_audio_mtok so it is
-        # not double charged:
-        #
-        #   input_mtok: 400 tokens
-        #   cache_read_mtok: 400 tokens
-        #   input_audio_mtok: 200 tokens
-        #   cache_audio_read_mtok: 0 tokens
+        # Parent/child bucket logic for token fields. See pre-refactor comment in git
+        # history for the full worked example; the algorithm is unchanged here.
         priced_cache_audio_read_tokens = cache_audio_read_tokens if self.cache_audio_read_mtok is not None else 0
         cache_audio_read_tokens_priced_as_cache_read = (
             cache_audio_read_tokens if self.cache_audio_read_mtok is None and self.cache_read_mtok is not None else 0
@@ -692,11 +817,20 @@ class ModelPrice:
         if priced_text_input_tokens < 0:  # pragma: no cover
             raise ValueError('Uncached text input tokens cannot be negative')
 
-        input_price += calc_mtok_price(self.input_mtok, priced_text_input_tokens, total_input_tokens)
-        input_price += calc_mtok_price(self.cache_write_mtok, priced_cache_write_tokens, total_input_tokens)
-        input_price += calc_mtok_price(self.cache_read_mtok, priced_cache_read_tokens, total_input_tokens)
-        input_price += calc_mtok_price(self.input_audio_mtok, priced_audio_input_tokens, total_input_tokens)
-        input_price += calc_mtok_price(self.cache_audio_read_mtok, priced_cache_audio_read_tokens, total_input_tokens)
+        # Token contributions into the breakdown
+        breakdown.input_tokens = calc_mtok_price(self.input_mtok, priced_text_input_tokens, total_input_tokens)
+        breakdown.cache_write_tokens = calc_mtok_price(
+            self.cache_write_mtok, priced_cache_write_tokens, total_input_tokens
+        )
+        breakdown.cache_read_tokens = calc_mtok_price(
+            self.cache_read_mtok, priced_cache_read_tokens, total_input_tokens
+        )
+        breakdown.input_audio_tokens = calc_mtok_price(
+            self.input_audio_mtok, priced_audio_input_tokens, total_input_tokens
+        )
+        breakdown.cache_audio_read_tokens = calc_mtok_price(
+            self.cache_audio_read_mtok, priced_cache_audio_read_tokens, total_input_tokens
+        )
 
         priced_text_output_tokens = 0
         if self.output_mtok is not None:
@@ -707,15 +841,72 @@ class ModelPrice:
         if priced_text_output_tokens < 0:  # pragma: no cover
             raise ValueError('output_audio_tokens cannot be greater than output_tokens')
 
-        output_price += calc_mtok_price(self.output_mtok, priced_text_output_tokens, total_input_tokens)
-        output_price += calc_mtok_price(self.output_audio_mtok, usage.output_audio_tokens, total_input_tokens)
+        breakdown.output_tokens = calc_mtok_price(self.output_mtok, priced_text_output_tokens, total_input_tokens)
+        breakdown.output_audio_tokens = calc_mtok_price(
+            self.output_audio_mtok, usage.output_audio_tokens, total_input_tokens
+        )
 
-        total_price = input_price + output_price
+        # TTS contributions: per-1000 character and per-1000 audio-second pricing.
+        # Read defensively so AbstractUsage implementations predating these fields
+        # (e.g. user-defined dataclasses) continue to work without modification.
+        characters = getattr(usage, 'characters', None) or 0
+        if self.input_kchars is not None and characters > 0:
+            breakdown.input_kchars = self.input_kchars * Decimal(characters) / Decimal(1000)
 
+        audio_output_seconds = getattr(usage, 'audio_output_seconds', None) or 0
+        if self.output_audio_kseconds is not None and audio_output_seconds > 0:
+            breakdown.output_audio_kseconds = self.output_audio_kseconds * Decimal(audio_output_seconds) / Decimal(1000)
+
+        # Voice multiplier resolution and per-direction adjustment
+        applied_voice_multiplier: Decimal | None = None
+        if self.voice_multipliers is not None:
+            voice_class = getattr(usage, 'voice_class', None)
+            if voice_class is None:
+                applied_voice_multiplier = self.voice_multipliers['default']
+            elif voice_class in self.voice_multipliers:
+                applied_voice_multiplier = self.voice_multipliers[voice_class]
+            else:
+                warnings.warn(
+                    f'Unknown voice_class {voice_class!r}; falling back to default multiplier. '
+                    f'Known classes: {sorted(self.voice_multipliers)}.',
+                    stacklevel=2,
+                )
+                applied_voice_multiplier = self.voice_multipliers['default']
+
+        if applied_voice_multiplier is not None:
+            delta = applied_voice_multiplier - Decimal(1)
+            breakdown.voice_class_input_adjustment = breakdown.input_kchars * delta
+            breakdown.voice_class_output_adjustment = breakdown.output_audio_kseconds * delta
+
+        # Requests
         if self.requests_kcount is not None:
-            total_price += self.requests_kcount / 1000
+            breakdown.requests = self.requests_kcount / Decimal(1000)
 
-        return {'input_price': input_price, 'output_price': output_price, 'total_price': total_price}
+        # Assemble input/output/total from the breakdown so the invariant holds by construction
+        input_price = (
+            breakdown.input_tokens
+            + breakdown.cache_read_tokens
+            + breakdown.cache_write_tokens
+            + breakdown.input_audio_tokens
+            + breakdown.cache_audio_read_tokens
+            + breakdown.input_kchars
+            + breakdown.voice_class_input_adjustment
+        )
+        output_price = (
+            breakdown.output_tokens
+            + breakdown.output_audio_tokens
+            + breakdown.output_audio_kseconds
+            + breakdown.voice_class_output_adjustment
+        )
+        total_price = input_price + output_price + breakdown.requests
+
+        return {
+            'input_price': input_price,
+            'output_price': output_price,
+            'total_price': total_price,
+            'breakdown': breakdown,
+            'applied_voice_multiplier': applied_voice_multiplier,
+        }
 
     def __str__(self) -> str:
         parts: list[str] = []
