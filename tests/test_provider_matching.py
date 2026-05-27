@@ -116,8 +116,9 @@ def test_provider_matching(provider_ref: str, provider_id: str):
     'model_ref, expected_provider_id',
     [
         ('tts-1', 'openai'),
+        ('aura-2-helios-en', 'deepgram'),
+        ('aura-asteria-en', 'deepgram'),
         # rows appended per catalog PR:
-        # ('aura-2-helios', 'deepgram'),
         # ('sonic-3', 'cartesia'),
         # ('eleven_turbo_v2_5', 'elevenlabs'),
     ],
