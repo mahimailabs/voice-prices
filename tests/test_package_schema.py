@@ -114,8 +114,16 @@ def test_yaml_roundtrip(yaml_file: Path):
         synthetic = _RuntimeUsage()
         if first_price_block.input_mtok is not None or first_price_block.input_audio_mtok is not None:
             synthetic.input_tokens = 1000
+        if first_price_block.input_audio_mtok is not None:
+            # input_tokens carries the parent-bucket total; input_audio_tokens is the
+            # disjoint priced bucket the audio-mtok rate actually multiplies. Set it
+            # so the audio-mtok code path runs through calc_mtok_price instead of
+            # short-circuiting at zero tokens.
+            synthetic.input_audio_tokens = 1000
         if first_price_block.output_mtok is not None or first_price_block.output_audio_mtok is not None:
             synthetic.output_tokens = 100
+        if first_price_block.output_audio_mtok is not None:
+            synthetic.output_audio_tokens = 100
         if first_price_block.input_kchars is not None:
             synthetic.characters = 1000
         if first_price_block.output_audio_kseconds is not None:
