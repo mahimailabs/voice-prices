@@ -1,47 +1,47 @@
 <div align="center">
-  <h1>genai-prices</h1>
+  <h1>voice-prices</h1>
 </div>
 <div align="center">
-  <a href="https://github.com/pydantic/genai-prices/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://github.com/pydantic/genai-prices/actions/workflows/ci.yml/badge.svg?event=push" alt="CI"></a>
-  <a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/pydantic/genai-prices"><img src="https://coverage-badge.samuelcolvin.workers.dev/pydantic/genai-prices.svg" alt="Coverage"></a>
-  <a href="https://pypi.python.org/pypi/genai-prices"><img src="https://img.shields.io/pypi/v/genai-prices.svg" alt="PyPI"></a>
-  <a href="https://github.com/pydantic/genai-prices"><img src="https://img.shields.io/pypi/pyversions/genai-prices.svg" alt="versions"></a>
-  <a href="https://github.com/pydantic/genai-prices/blob/main/LICENSE"><img src="https://img.shields.io/github/license/pydantic/genai-prices.svg" alt="license"></a>
+  <a href="https://github.com/mahimailabs/voice-prices/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://github.com/mahimailabs/voice-prices/actions/workflows/ci.yml/badge.svg?event=push" alt="CI"></a>
+  <a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/mahimailabs/voice-prices"><img src="https://coverage-badge.samuelcolvin.workers.dev/mahimailabs/voice-prices.svg" alt="Coverage"></a>
+  <a href="https://pypi.python.org/pypi/voice-prices"><img src="https://img.shields.io/pypi/v/voice-prices.svg" alt="PyPI"></a>
+  <a href="https://github.com/mahimailabs/voice-prices"><img src="https://img.shields.io/pypi/pyversions/voice-prices.svg" alt="versions"></a>
+  <a href="https://github.com/mahimailabs/voice-prices/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mahimailabs/voice-prices.svg" alt="license"></a>
   <a href="https://logfire.pydantic.dev/docs/join-slack/"><img src="https://img.shields.io/badge/Slack-Join%20Slack-4A154B?logo=slack" alt="Join Slack" /></a>
 </div>
 
 <br/>
 <div align="center">
-  Python package for <a href="https://github.com/pydantic/genai-prices">github.com/pydantic/genai-prices</a>.
+  Python package for <a href="https://github.com/mahimailabs/voice-prices">github.com/mahimailabs/voice-prices</a>.
 </div>
 <br/>
 
 ## Installation
 
 ```bash
-uv add genai-prices
+uv add voice-prices
 ```
 
-(or `pip install genai-prices` if you're old school)
+(or `pip install voice-prices` if you're old school)
 
 To use the CLI with Rich output/help, install the optional CLI dependencies:
 
 ```bash
-uv add "genai-prices[cli]"
+uv add "voice-prices[cli]"
 ```
 
-(or `pip install "genai-prices[cli]"`)
+(or `pip install "voice-prices[cli]"`)
 
 ## Warning: these prices will not be 100% accurate
 
-See [the project README](https://github.com/pydantic/genai-prices?tab=readme-ov-file#warning) for more information.
+See [the project README](https://github.com/mahimailabs/voice-prices?tab=readme-ov-file#warning) for more information.
 
 ## Usage
 
 ### `calc_price`
 
 ```python
-from genai_prices import Usage, calc_price
+from voice_prices import Usage, calc_price
 
 price_data = calc_price(
     Usage(input_tokens=1000, output_tokens=100),
@@ -57,7 +57,7 @@ print(f"Total Price: ${price_data.total_price} (input: ${price_data.input_price}
 which in turn can be used to calculate prices:
 
 ```py
-from genai_prices import extract_usage
+from voice_prices import extract_usage
 
 response_data = {
     'model': 'claude-sonnet-4-20250514',
@@ -76,7 +76,7 @@ print(price.total_price)
 or with OpenAI where there are two API flavors:
 
 ```py
-from genai_prices import extract_usage
+from voice_prices import extract_usage
 
 response_data = {
     'model': 'gpt-5',
@@ -94,7 +94,7 @@ print(price.total_price)
 Please note:
 
 - this functionality is explicitly opt-in
-- we download data directly from GitHub (`https://raw.githubusercontent.com/pydantic/genai-prices/refs/heads/main/prices/data.json`) so we don't and can't monitor requests or gather telemetry
+- we download data directly from GitHub (`https://raw.githubusercontent.com/mahimailabs/voice-prices/refs/heads/main/prices/data.json`) so we don't and can't monitor requests or gather telemetry
 
 At the time of writing, the `data.json` file
 downloaded by `UpdatePrices` is around 26KB when compressed, so is generally very quick to download.
@@ -104,7 +104,7 @@ By default `UpdatePrices` downloads price data immediately after it's started in
 Usage with `UpdatePrices` as as context manager:
 
 ```py
-from genai_prices import UpdatePrices, Usage, calc_price
+from voice_prices import UpdatePrices, Usage, calc_price
 
 with UpdatePrices() as update_prices:
     update_prices.wait()  # optionally wait for prices to have updated
@@ -115,7 +115,7 @@ with UpdatePrices() as update_prices:
 Usage with `UpdatePrices` as a simple class:
 
 ```py
-from genai_prices import UpdatePrices, Usage, calc_price
+from voice_prices import UpdatePrices, Usage, calc_price
 
 update_prices = UpdatePrices()
 update_prices.start(wait=True)  # start updating prices, optionally wait for prices to have updated
@@ -129,7 +129,7 @@ Only one `UpdatePrices` instance can be running at a time.
 If you'd like to wait for prices to be updated without access to the `UpdatePrices` instance, you can use the `wait_prices_updated_sync` function:
 
 ```py
-from genai_prices import wait_prices_updated_sync
+from voice_prices import wait_prices_updated_sync
 
 wait_prices_updated_sync()
 ...
@@ -142,28 +142,28 @@ Or it's async variant, `wait_prices_updated_async`.
 Run the CLI with:
 
 ```bash
-uvx genai-prices --help
+uvx voice-prices --help
 ```
 
 Or, if installed locally, make sure CLI extras are present:
 
 ```bash
-pip install "genai-prices[cli]"
-genai-prices --help
+pip install "voice-prices[cli]"
+voice-prices --help
 ```
 
-If local CLI extras are not installed, the command will print an install hint for `genai-prices[cli]`.
+If local CLI extras are not installed, the command will print an install hint for `voice-prices[cli]`.
 
 To list providers and models, run:
 
 ```bash
-uvx genai-prices list
+uvx voice-prices list
 ```
 
 To calculate the price of models, run for example:
 
 ```bash
-uvx genai-prices calc --input-tokens 100000 --output-tokens 3000 o1 o3 claude-opus-4
+uvx voice-prices calc --input-tokens 100000 --output-tokens 3000 o1 o3 claude-opus-4
 ```
 
 CLI output notes:

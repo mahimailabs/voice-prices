@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import dataclasses
 
-from genai_prices.types import ModelPrice, PriceBreakdown
+from voice_prices.types import ModelPrice, PriceBreakdown
 
 # Mapping from a priced ModelPrice field name to:
 #   (main_breakdown_field, optional_multiplier_eligible_adjustment_field_or_None)

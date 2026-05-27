@@ -6,9 +6,9 @@ from typing import Any
 import pytest
 from inline_snapshot import snapshot
 
-from genai_prices import Usage, calc_price, extract_usage
-from genai_prices.data import providers
-from genai_prices.types import (
+from voice_prices import Usage, calc_price, extract_usage
+from voice_prices.data import providers
+from voice_prices.types import (
     ArrayMatch,
     ClauseEquals,
     ExtractedUsage,
