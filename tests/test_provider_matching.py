@@ -1,6 +1,7 @@
 import pytest
 from inline_snapshot import snapshot
 
+from voice_prices import Usage, calc_price
 from voice_prices.data import providers
 from voice_prices.data_snapshot import find_provider_by_id
 
@@ -104,3 +105,23 @@ def test_provider_matching(provider_ref: str, provider_id: str):
     result = find_provider_by_id(providers, provider_ref)
     assert result is not None
     assert result.id == provider_id
+
+
+# Auto-routing regression for TTS providers. Each catalog PR (Deepgram, Cartesia,
+# ElevenLabs) appends a parametrize row. Catches the failure mode where a TTS
+# model lands in the catalog but its prefix isn't covered by the provider's
+# `model_match` clause, which silently breaks `calc_price(model_ref=...)` without
+# `provider_id`.
+@pytest.mark.parametrize(
+    'model_ref, expected_provider_id',
+    [
+        ('tts-1', 'openai'),
+        # rows appended per catalog PR:
+        # ('aura-2-helios', 'deepgram'),
+        # ('sonic-3', 'cartesia'),
+        # ('eleven_turbo_v2_5', 'elevenlabs'),
+    ],
+)
+def test_tts_auto_routes_to_correct_provider(model_ref: str, expected_provider_id: str):
+    result = calc_price(Usage(characters=200), model_ref=model_ref)
+    assert result.provider.id == expected_provider_id
