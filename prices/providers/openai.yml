@@ -11,6 +11,8 @@ model_match:
   or:
     - starts_with: "gpt-"
     - regex: "^o[134]"
+    - starts_with: "tts-"
+    - starts_with: "whisper-"
 provider_match:
   contains: openai
 extractors:
