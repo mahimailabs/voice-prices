@@ -1,0 +1,87 @@
+# yaml-language-server: $schema=../../prices/providers/.schema.json
+#
+# Provider YAML template (STT).
+#
+# 1. Copy this file to prices/providers/<your-provider>.yml
+# 2. Replace every value below the comment markers
+# 3. Run `make build` from the repo root to validate + regenerate data.json
+# 4. Follow the walkthrough at docs/contributing-a-provider.md for the full flow
+#
+# This template is a complete, validating YAML. The accompanying
+# `test_provider_template_validates` test parses it on every CI run so a broken
+# template never lands.
+
+name: Example Provider
+id: example
+pricing_urls:
+  - https://example.com/pricing            # provider-level pricing index
+
+# api_pattern: regex matching the provider's API base URL. Used so consumers passing
+# `provider_api_url=...` to calc_price get routed correctly. If your provider has
+# multiple regional URLs, use alternation.
+api_pattern: 'https://api\.example\.com'
+
+# model_match: how calc_price auto-routes a user's `model_ref` to your provider when
+# no explicit provider_id is passed. Pick a prefix or pattern that uniquely identifies
+# your models. If your model IDs share a prefix with another provider, use `or` with
+# explicit alternatives.
+model_match:
+  starts_with: example-
+
+# provider_match: how calc_price matches when the user passes provider_id directly.
+# Usually `contains` on a slug.
+provider_match:
+  contains: example
+
+# staleness_threshold_days: recommended max age of `prices_checked` before consumers
+# should re-verify. Default 60. Remove this line to use the default.
+staleness_threshold_days: 60
+
+models:
+  # STT models are priced per second of input audio via `input_audio_kseconds`
+  # ($ per 1,000 seconds). Most providers quote $ per minute: convert with
+  # rate_per_min * 1000 / 60 and record the source rate in price_comments.
+  #
+  # Streaming vs batch: when a provider charges different rates for real-time
+  # (streaming) and prerecorded (batch) of the same model, ship them as separate
+  # entries. Name the more common mode bare (`example-stt-1`) and the other with a
+  # `-<mode>` suffix (`example-stt-1-batch`). ALWAYS use `match: equals: <id>` for both,
+  # never `starts_with`: `equals` guarantees one model_ref hits exactly one entry
+  # or fails loudly, never a silent wrong-row pick.
+  - id: example-stt-1
+    name: Example STT 1 (streaming)
+    description: >-
+      Real-time streaming STT model. Use `example-stt-1` for streaming,
+      `example-stt-1-batch` for prerecorded audio.
+    match:
+      equals: example-stt-1
+    # prices_checked: date you last verified these rates against pricing_source_url.
+    prices_checked: 2026-05-28
+    # pricing_source_url: deep-link to the row/section that establishes this price.
+    pricing_source_url: https://example.com/pricing#example-stt-1
+    price_comments: >-
+      Source rate $0.006/minute. Converted to $/k seconds:
+      0.006 * 1000 / 60 = 0.1 exactly.
+    prices:
+      # input_audio_kseconds: $ per 1,000 seconds of input audio. The STT unit.
+      input_audio_kseconds: 0.1
+
+  - id: example-stt-1-batch
+    name: Example STT 1 (batch)
+    description: >-
+      Prerecorded / batch STT model. Higher per-minute than streaming.
+    match:
+      equals: example-stt-1-batch
+    prices_checked: 2026-05-28
+    pricing_source_url: https://example.com/pricing#example-stt-1-batch
+    price_comments: >-
+      Source rate $0.0042/minute. Converted to $/k seconds:
+      0.0042 * 1000 / 60 = 0.07 exactly.
+    prices:
+      input_audio_kseconds: 0.07
+
+  # voice_multipliers are NOT supported for STT. If your provider charges different
+  # rates by language (e.g. English-only vs multilingual), ship them as separate
+  # model entries with distinct IDs, the way Deepgram does with `nova-3` and
+  # `nova-3-multilingual`. Setting voice_multipliers on an STT model fails
+  # validation by design.
