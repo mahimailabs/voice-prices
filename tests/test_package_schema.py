@@ -182,16 +182,28 @@ def test_audio_priced_entries_have_provenance():
     assert not missing, '\n'.join(missing)
 
 
-def test_provider_template_validates():
-    """The contributor template at docs/templates/provider-tts.yml must parse
-    against the same Pydantic schema as real providers, so contributors who
-    copy-paste-and-edit start from a working baseline.
+def _template_files() -> list[Path]:
+    return sorted((Path(__file__).parent.parent / 'docs' / 'templates').glob('*.yml'))
+
+
+@pytest.mark.parametrize('template_path', _template_files(), ids=lambda p: p.stem)
+def test_provider_template_validates(template_path: Path):
+    """Every contributor template in docs/templates/ must parse against the same
+    Pydantic schema as real providers, so contributors who copy-paste-and-edit
+    start from a working baseline.
     """
     import pydantic_core
 
-    template_path = Path(__file__).parent.parent / 'docs' / 'templates' / 'provider-tts.yml'
-    assert template_path.exists(), f'template missing at {template_path}'
     with template_path.open('rb') as f:
         data = _yaml.load(f)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
     # Will raise pydantic.ValidationError if the template is broken.
     _PydanticProvider.model_validate_json(pydantic_core.to_json(data), strict=True)
+
+
+def test_expected_templates_present():
+    """Guard against the empty-glob pitfall: a renamed or deleted template would
+    make the parametrized test above silently cover nothing. Pin the known set.
+    """
+    found = {p.name for p in _template_files()}
+    # Both known templates must be present (guards the empty-glob edge case above).
+    assert {'provider-tts.yml', 'provider-stt.yml'} <= found

@@ -22,7 +22,7 @@
 - Support for variable daily prices, e.g. we support calculating deepseek prices even with off-peak pricing
 - tiered pricing support for Gemini models where you pay a separate price for very large contexts
 - support for [identifying price discrepancies](prices/README.md) from other sources
-- support for voice modalities (TTS character billing, STT planned for v0.2)
+- support for voice modalities (TTS character billing, STT audio-second billing)
 - Python package, CLI
 - TODO: API and web UI
 
