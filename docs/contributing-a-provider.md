@@ -1,23 +1,24 @@
-# Contributing a new voice provider (TTS or STT)
+# Contributing a new provider (LLM, TTS, or STT)
 
-A walkthrough for adding a new voice provider to voice-prices. It covers both text-to-speech (TTS) and speech-to-text (STT). The shared steps are written once; only the model-pricing step (Step 5) forks by modality. It is worked end-to-end against two fictional providers, "Murf TTS" and "Acme Speech STT", so the steps stay evergreen as real providers come and go.
+A walkthrough for adding a new provider to voice-prices. It covers large language models (LLM), text-to-speech (TTS), and speech-to-text (STT). The shared steps are written once; only the model-pricing step (Step 5) forks by modality. It is worked end-to-end against three fictional providers, "Nimbus AI LLM", "Murf TTS", and "Acme Speech STT", so the steps stay evergreen as real providers come and go.
 
 ## When to use this guide
 
-Use it when you want to add a new TTS or STT provider (one not currently in `prices/providers/`).
+Use it when you want to add a new LLM, TTS, or STT provider (one not currently in `prices/providers/`).
 
 If you only need to add a model to a provider that already exists, edit that provider's existing YAML directly: the per-model steps below still apply but you can skip the provider-metadata steps.
 
-If you're adding an LLM or realtime-audio provider, this guide does not yet cover those modalities. Open an issue first.
+If you're adding a realtime-audio provider, open an issue first. Realtime audio is token-priced via `input_audio_mtok` / `output_audio_mtok` and those fields are documented in Advanced LLM pricing below, but implementing a realtime-audio provider (bidirectional streaming) needs engineering beyond YAML and is out of scope for this guide.
 
-The two voice modalities differ only in which priced field and which `Usage` field they use:
+The modalities differ mainly in which priced field and which `Usage` field they use:
 
 | Modality | Priced field | Usage field | Template |
 | --- | --- | --- | --- |
+| LLM | `input_mtok` / `output_mtok` ($ per 1M tokens), plus optional cache / audio / request fields | `Usage(input_tokens=..., output_tokens=...)` | `provider-llm.yml` |
 | TTS | `input_kchars` ($ per 1k characters) | `Usage(characters=...)` | `provider-tts.yml` |
 | STT | `input_audio_kseconds` ($ per 1k seconds) | `Usage(audio_input_seconds=Decimal(...))` | `provider-stt.yml` |
 
-The table shows the dominant unit per modality. Other priced fields exist (for example `output_audio_kseconds` for TTS models that bill speech output); price every unit your provider actually charges for.
+The table shows the dominant unit per modality. Other priced fields exist (for example `output_audio_kseconds` for TTS models that bill speech output, or `cache_read_mtok` / `cache_write_mtok` / audio-token / `requests_kcount` fields for LLM); price every unit your provider actually charges for. LLM advanced pricing (cache, tiers, daily rates, audio tokens) is documented in Advanced LLM pricing below.
 
 ## Prerequisites
 
@@ -34,9 +35,10 @@ Open an issue at https://github.com/mahimailabs/voice-prices/issues describing t
 You're looking for three things:
 
 1. **The per-unit rate** for each model the provider exposes.
+   - LLM billing is dominated by `$ per 1,000,000 tokens` (`input_mtok` for input/prompt tokens, `output_mtok` for output/completion tokens). Watch for separate cached-token rates (`cache_read_mtok`), tiered rates by context size, and time-of-day (off-peak) rates.
    - TTS billing is dominated by `$ per 1,000 characters of input text` (`input_kchars`).
    - STT billing is dominated by `$ per 1,000 seconds of input audio` (`input_audio_kseconds`). Most STT providers quote `$ per minute`: convert with `rate_per_min * 1000 / 60` and record the source rate in `price_comments`.
-2. **Tier or mode differences**, if any. Some TTS providers (Cartesia, ElevenLabs) charge more for premium or custom-cloned voices. Many STT providers charge different rates for streaming (real-time) versus batch (prerecorded), and for monolingual versus multilingual transcription.
+2. **Tier or mode differences**, if any. Some TTS providers (Cartesia, ElevenLabs) charge more for premium or custom-cloned voices. Many STT providers charge different rates for streaming (real-time) versus batch (prerecorded), and for monolingual versus multilingual transcription. Many LLM providers tier by context window, discount cached tokens, or vary rates by time of day.
 3. **The exact source URL with a deep anchor**, ideally pointing at the row in the pricing table for each model. You'll record this as `pricing_source_url` on every model.
 
 If the provider uses a non-standard billing unit (credits, tokens), see the FAQ at the end before proceeding.
@@ -46,6 +48,9 @@ If the provider uses a non-standard billing unit (credits, tokens), see the FAQ 
 From the repo root, copy the template for your modality:
 
 ```bash
+# LLM provider
+cp docs/templates/provider-llm.yml prices/providers/<your-provider>.yml
+
 # TTS provider
 cp docs/templates/provider-tts.yml prices/providers/<your-provider>.yml
 
@@ -151,9 +156,39 @@ STT mode-split rules:
 - **Language tiers ship as separate model entries.** If your provider charges different rates for monolingual versus multilingual transcription, add distinct IDs (Deepgram does this with `nova-3` and `nova-3-multilingual`). Do not try to use `voice_multipliers`: they are not supported for STT (see the FAQ).
 - `audio_input_seconds` is `Decimal`-typed so callers can express sub-second precision. Deepgram and AssemblyAI bill in 0.01s increments. Pass via `Decimal('12.34')` or convert from float at the call site.
 
+### Step 5c: LLM models
+
+LLM models price per million tokens. For the worked example we use Nimbus AI (`id: nimbus`), an OpenAI-compatible provider, so the standard `extractors` block in `provider-llm.yml` works unchanged.
+
+```yaml
+models:
+  - id: nimbus-large
+    name: Nimbus Large
+    description: >-
+      Nimbus flagship model. OpenAI-compatible chat API, so the template's
+      extractors block works unchanged.
+    match:
+      equals: nimbus-large
+    context_window: 128000
+    prices_checked: 2026-05-28
+    pricing_source_url: https://nimbus.example/pricing#nimbus-large
+    prices:
+      input_mtok: 2.0
+      output_mtok: 8.0
+```
+
+LLM specifics:
+
+- **`input_mtok` / `output_mtok`** are `$ per 1,000,000 tokens` (input/prompt and output/completion respectively). These are the dominant LLM fields.
+- **`context_window`** is the maximum input tokens the model accepts.
+- **`match`**: prefer `equals` for one-to-one resolution. Use `or` with explicit clauses when a model has several aliases (see how `anthropic.yml` and `deepseek.yml` match their families). If your model IDs share a prefix with another provider in the catalog, disambiguate with `equals` or a `regex` rather than a broad `starts_with`.
+- **Prompt caching**: add `cache_read_mtok` (and `cache_write_mtok` if the provider charges to write the cache) for the discounted cached-token rate. The template's second model shows `cache_read_mtok`.
+- **Usage extractors**: the template ships a standard OpenAI-compatible `extractors` block that maps `prompt_tokens` / `completion_tokens` / cached tokens onto the canonical fields. Keep it as-is for OpenAI-compatible APIs. If your provider returns a different response shape, adjust it following "Advanced LLM pricing > Usage extractors" below, so the extractor never silently fails to populate usage.
+- **Advanced pricing** (tiered, daily / off-peak, audio tokens) is covered in Advanced LLM pricing below.
+
 ## Step 6: (TTS only) Voice multipliers
 
-Skip this step entirely if you're adding an STT provider: `voice_multipliers` are not supported for STT. Skip it for TTS too if your provider charges a uniform per-character rate across all voices. Most do.
+Skip this step entirely if you're adding an STT or LLM provider: `voice_multipliers` are not supported for those modalities (they only scale TTS character and audio-second fields). Skip it for TTS too if your provider charges a uniform per-character rate across all voices. Most do.
 
 If your TTS provider has premium / custom-clone / professional voice tiers that bill at a different per-character rate, add `voice_multipliers` to the affected model:
 
@@ -180,7 +215,7 @@ make test
 
 `make build` regenerates `prices/data.json`, `prices/data_slim.json`, the JSON schema file, and the runtime data module. `make test` runs the full suite including the parametrized YAML round-trip and provenance check that auto-cover your new YAML.
 
-Then a smoke check from a Python REPL, for your modality. The examples below use the fictional Murf and Acme models; substitute your own `model_ref`. Routing by `model_ref` works once your YAML is in `prices/providers/` and `make build` has regenerated the runtime data:
+Then a smoke check from a Python REPL, for your modality. The examples below use the fictional Nimbus, Murf, and Acme models; substitute your own `model_ref`. Routing by `model_ref` works once your YAML is in `prices/providers/` and `make build` has regenerated the runtime data:
 
 ```python
 # TTS
@@ -197,6 +232,14 @@ from voice_prices import Usage, calc_price
 result = calc_price(Usage(audio_input_seconds=Decimal('60')), model_ref='acme-1')
 print(result.total_price, result.provider.id)
 # expected: 0.006 acme      (60s at $0.1 / 1000s)
+```
+
+```python
+# LLM
+from voice_prices import Usage, calc_price
+result = calc_price(Usage(input_tokens=1000, output_tokens=1000), model_ref='nimbus-large')
+print(result.total_price, result.provider.id)
+# expected: 0.010 nimbus     (1000 in at $2/Mtok + 1000 out at $8/Mtok)
 ```
 
 If you get a `LookupError`, your `model_match` clause doesn't cover the model ID you passed. Go back to Step 4.
@@ -218,6 +261,92 @@ PR body should include:
 - Any quirks: voice-tier behavior (TTS), streaming/batch or language-tier splits (STT), non-standard billing units, deprecated models you intentionally excluded.
 
 CI runs `pre-commit`, the Python matrix tests, coverage, and the consolidated `check` job. When green, merge to main. The new provider is live in the next release.
+
+## Advanced LLM pricing
+
+LLM providers often price more than flat input/output tokens. Each feature below shows the YAML shape and points at a real, tested provider for a complete example. You do not need any of these for a simple flat-rate provider.
+
+### Usage extractors
+
+`extractors` map a provider's raw API usage JSON onto the canonical token fields the engine prices. The template ships a standard OpenAI-compatible block; keep it if your provider's chat-completions response looks like OpenAI's. Each mapping is a `path` (a key, or a list of keys for a nested value) and a `dest` (a canonical field); set `required: false` for fields that may be absent.
+
+```yaml
+extractors:
+  - api_flavor: chat              # only needed if a provider exposes several flavors
+    root: usage                   # where the usage object lives in the response
+    mappings:
+      - path: prompt_tokens
+        dest: input_tokens
+      - path: [prompt_tokens_details, cached_tokens]   # nested path
+        dest: cache_read_tokens
+        required: false
+      - path: completion_tokens
+        dest: output_tokens
+```
+
+If your provider returns extra buckets or uses non-OpenAI field names, add or rename mappings. See `anthropic.yml`, which maps the native `cache_creation_input_tokens` onto `cache_write_tokens` and `cache_read_input_tokens` onto `cache_read_tokens`, and defines both a native flavor and a `chat` flavor.
+
+### Tiered pricing
+
+When a rate changes above a token threshold, a priced field becomes a `{base, tiers}` object instead of a scalar. Tiers must be listed in ascending order by `start`. This is a cliff model: crossing a tier applies that rate to all tokens of that type, not just the tokens above the threshold.
+
+```yaml
+prices:
+  input_mtok:
+    base: 1.25                    # rate up to the first tier
+    tiers:
+      - start: 200000             # at/above 200k tokens, this rate applies to all input tokens
+        price: 2.50
+```
+
+See `google.yml` (Gemini context-window tiers).
+
+### Conditional / daily (off-peak) pricing
+
+When a provider charges different rates by time of day, `prices` becomes a list of `{constraint, prices}` blocks. The first block has no `constraint` and is the always-on fallback; later blocks whose constraint matches take precedence. Times must be timezone-aware.
+
+```yaml
+prices:
+  - prices:                       # fallback, used when no constraint matches
+      input_mtok: 0.135
+      output_mtok: 0.550
+  - constraint:
+      start_time: 00:30:00Z       # daily window, UTC
+      end_time: 16:30:00Z
+    prices:
+      input_mtok: 0.27
+      output_mtok: 1.1
+```
+
+See `deepseek.yml` (off-peak pricing).
+
+### Cache-write pricing
+
+Some providers charge separately to write the prompt cache. Add `cache_write_mtok` alongside `cache_read_mtok`, and make sure your extractor populates `cache_write_tokens`.
+
+```yaml
+prices:
+  input_mtok: 3.0
+  cache_write_mtok: 3.75
+  cache_read_mtok: 0.30
+  output_mtok: 15.0
+```
+
+See `anthropic.yml`.
+
+### Audio token pricing (OpenAI realtime example)
+
+Realtime and multimodal models price audio as tokens: `input_audio_mtok`, `output_audio_mtok`, and `cache_audio_read_mtok` (all `$ per 1M tokens`).
+
+```yaml
+prices:
+  input_mtok: 5.0
+  output_mtok: 20.0
+  input_audio_mtok: 40.0
+  output_audio_mtok: 80.0
+```
+
+See `openai.yml`. This documents the token-field structure only; building a realtime-audio provider (bidirectional streaming) needs engineering beyond YAML and is deferred.
 
 ## FAQ / Troubleshooting
 
@@ -261,3 +390,23 @@ If your provider charges different rates for two modes of the same model, name t
 ### (STT only) Sub-second precision
 
 `audio_input_seconds` and `audio_output_seconds` are `Decimal`-typed so callers can express sub-second precision. Pass via `Decimal('12.34')` or convert from float at the call site.
+
+### (LLM) Costs come out zero / usage is not extracted
+
+Your `extractors` block does not match the provider's API response shape, so no tokens are populated. Check `root` (where the usage object lives), each `path`, and each `dest`. Most OpenAI-compatible providers reuse the standard `chat` extractor in the template unchanged.
+
+### (LLM) Where do cache prices go
+
+Use `cache_read_mtok` for prompt-cache hits and `cache_write_mtok` for cache writes. Both need a matching extractor mapping so the cached / written token counts are populated (see `anthropic.yml`).
+
+### (LLM) Daily / off-peak pricing
+
+Use a `prices` list instead of a single `prices` block. The first block (no `constraint`) is the always-on fallback; later time-constrained blocks take precedence when their window matches. Times must be timezone-aware (see `deepseek.yml`).
+
+### (LLM) `ValueError: Tiers must be in ascending order by start`
+
+Reorder the `tiers` list so `start` increases. See Advanced LLM pricing > Tiered pricing.
+
+### (LLM) `ValueError: Times must be timezone aware`
+
+Add a timezone to `start_time` / `end_time` in a daily-pricing `constraint`, for example `00:30:00Z`.

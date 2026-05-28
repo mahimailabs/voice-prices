@@ -205,5 +205,5 @@ def test_expected_templates_present():
     make the parametrized test above silently cover nothing. Pin the known set.
     """
     found = {p.name for p in _template_files()}
-    # Both known templates must be present (guards the empty-glob edge case above).
-    assert {'provider-tts.yml', 'provider-stt.yml'} <= found
+    # All known templates must be present (guards the empty-glob edge case above).
+    assert {'provider-tts.yml', 'provider-stt.yml', 'provider-llm.yml'} <= found
