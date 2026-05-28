@@ -135,3 +135,23 @@ def test_pricing_source_url_validates_as_url():
             prices=ModelPrice(input_kchars=Decimal('0.18')),
             pricing_source_url=cast(HttpUrl, 'not-a-url'),
         )
+
+
+def test_voice_multipliers_rejected_on_stt_input_audio_kseconds():
+    """input_audio_kseconds is intentionally multiplier-exempt. Language-tier
+    multipliers for STT were deferred from the v0.0.7 design; this test makes
+    sure they can't sneak in via a misread of the existing validator.
+
+    The substring assertions below are intentional: the error-message tokens
+    'STT input duration' and 'multiplier-exempt' are part of the API contract
+    for contributors who hit this validator. If you reword the validator,
+    update this test deliberately; don't loosen the assertions.
+    """
+    with pytest.raises(ValidationError) as exc:
+        ModelPrice(
+            input_audio_kseconds=Decimal('0.10'),
+            voice_multipliers={'default': Decimal('1.0')},
+        )
+    msg = str(exc.value)
+    assert 'STT input duration' in msg
+    assert 'multiplier-exempt' in msg

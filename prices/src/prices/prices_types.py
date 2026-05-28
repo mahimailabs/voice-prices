@@ -138,6 +138,7 @@ UsageField = Literal[
     'output_audio_tokens',
     'characters',
     'audio_output_seconds',
+    'audio_input_seconds',
 ]
 
 
@@ -302,6 +303,14 @@ class ModelPrice(_Model):
     Reserved for v0.2 (PlayHT, Murf, similar). No v0.1 catalog entry sets this.
     """
 
+    input_audio_kseconds: DollarPrice | None = None
+    """price in USD per 1,000 seconds of input audio (STT audio input).
+
+    ModelPrice puts direction before modality (input_audio_kseconds); Usage puts
+    modality before direction (audio_input_seconds). Intentional; mirrors the
+    existing output_audio_kseconds / audio_output_seconds pair.
+    """
+
     voice_multipliers: VoiceMultipliers | None = None
     """Multiplicative adjustments to the priced fields above, keyed by voice class.
 
@@ -324,9 +333,11 @@ class ModelPrice(_Model):
             if not scalable:
                 raise ValueError(
                     'voice_multipliers requires at least one scalable priced field '
-                    '(input_kchars or output_audio_kseconds). The engine only scales '
-                    'character and audio-second priced fields; token-based fields '
-                    '(input_audio_mtok, output_audio_mtok) are multiplier-exempt.'
+                    '(input_kchars or output_audio_kseconds). The engine only scales character '
+                    'and audio-second priced fields in the TTS output direction; '
+                    'input_audio_mtok / output_audio_mtok (token-based) and input_audio_kseconds '
+                    '(STT input duration) are intentionally multiplier-exempt. '
+                    'Language-tier multipliers for STT were deferred from the v0.x design.'
                 )
         return self
 

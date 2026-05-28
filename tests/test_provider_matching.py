@@ -1,3 +1,6 @@
+from decimal import Decimal
+from typing import Any
+
 import pytest
 from inline_snapshot import snapshot
 
@@ -107,22 +110,46 @@ def test_provider_matching(provider_ref: str, provider_id: str):
     assert result.id == provider_id
 
 
-# Auto-routing regression for TTS providers. Each catalog PR (Deepgram, Cartesia,
-# ElevenLabs) appends a parametrize row. Catches the failure mode where a TTS
-# model lands in the catalog but its prefix isn't covered by the provider's
-# `model_match` clause, which silently breaks `calc_price(model_ref=...)` without
-# `provider_id`.
+# Auto-routing regression for TTS + STT providers. Each catalog PR (Deepgram TTS,
+# Cartesia, ElevenLabs, Deepgram STT) appends parametrize rows. Catches the
+# failure mode where a model lands in the catalog but its prefix isn't covered by
+# the provider's `model_match` clause, which silently breaks
+# `calc_price(model_ref=...)` without `provider_id`.
+#
+# Each row carries its own Usage shape so the test stays self-documenting: a new
+# provider PR appends `(model_ref, provider_id, usage_kwargs)` without touching
+# the test body.
 @pytest.mark.parametrize(
-    'model_ref, expected_provider_id',
+    'model_ref, expected_provider_id, usage_kwargs',
     [
-        ('tts-1', 'openai'),
-        ('aura-2-helios-en', 'deepgram'),
-        ('aura-asteria-en', 'deepgram'),
-        ('sonic-3', 'cartesia'),
-        ('eleven_turbo_v2_5', 'elevenlabs'),
-        ('eleven_multilingual_v2', 'elevenlabs'),
+        # TTS
+        ('tts-1', 'openai', {'characters': 200}),
+        ('tts-1-hd', 'openai', {'characters': 200}),
+        ('aura-asteria-en', 'deepgram', {'characters': 200}),
+        ('aura-2-helios-en', 'deepgram', {'characters': 200}),
+        ('sonic-3', 'cartesia', {'characters': 200}),
+        ('eleven_turbo_v2_5', 'elevenlabs', {'characters': 200}),
+        ('eleven_flash_v2_5', 'elevenlabs', {'characters': 200}),
+        ('eleven_multilingual_v2', 'elevenlabs', {'characters': 200}),
+        # STT (new for v0.0.7)
+        ('nova-3', 'deepgram', {'audio_input_seconds': Decimal('60')}),
+        ('nova-3-batch', 'deepgram', {'audio_input_seconds': Decimal('60')}),
+        ('nova-3-multilingual', 'deepgram', {'audio_input_seconds': Decimal('60')}),
+        ('nova-3-multilingual-batch', 'deepgram', {'audio_input_seconds': Decimal('60')}),
     ],
 )
-def test_tts_auto_routes_to_correct_provider(model_ref: str, expected_provider_id: str):
-    result = calc_price(Usage(characters=200), model_ref=model_ref)
+def test_audio_model_auto_routes_to_correct_provider(
+    model_ref: str, expected_provider_id: str, usage_kwargs: dict[str, Any]
+):
+    result = calc_price(Usage(**usage_kwargs), model_ref=model_ref)
     assert result.provider.id == expected_provider_id
+
+
+def test_nova_3_bare_ref_resolves_to_streaming_not_batch():
+    """Bare `nova-3` must resolve to the monolingual streaming entry; batch and
+    multilingual require explicit IDs (`nova-3-batch`, `nova-3-multilingual`).
+    The `equals` matcher on each STT entry guarantees one-to-one resolution; the
+    test locks the convention in.
+    """
+    r = calc_price(Usage(audio_input_seconds=Decimal('60')), model_ref='nova-3')
+    assert r.model.id == 'nova-3'  # NOT nova-3-batch, NOT nova-3-multilingual

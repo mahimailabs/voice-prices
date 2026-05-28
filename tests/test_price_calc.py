@@ -507,7 +507,7 @@ def test_invariant_breakdown_sums_to_total():
         usage = Usage(
             input_tokens=input_tokens if input_tokens > 0 else None,
             characters=characters,
-            audio_output_seconds=audio_seconds,
+            audio_output_seconds=Decimal(audio_seconds),
             voice_class=voice_class,
         )
         result = mp.calc_price(usage)
@@ -520,3 +520,33 @@ def test_invariant_breakdown_sums_to_total():
             )
 
     assert not failures, '\n'.join(failures[:5])
+
+
+# ----------------------------------------------------------------------------
+# v0.0.7 STT additions: int-coercion forward-compat for audio duration fields
+# ----------------------------------------------------------------------------
+
+
+def test_int_audio_output_seconds_prices_correctly():
+    """Migration safety net: v0.x callers passing `audio_output_seconds=60` (int)
+    continue to price correctly under v0.0.7's Decimal annotation, via the
+    engine's runtime Decimal(...) coercion. Lock the contract so a future
+    cleanup of the redundant-looking Decimal() wrap doesn't silently break int
+    callers.
+    """
+    mp = ModelPrice(output_audio_kseconds=Decimal('0.50'))  # $0.50/k secs
+    r_int = mp.calc_price(Usage(audio_output_seconds=60))  # type: ignore[arg-type]
+    r_dec = mp.calc_price(Usage(audio_output_seconds=Decimal(60)))
+    assert r_int['total_price'] == r_dec['total_price'] == Decimal('0.03')
+
+
+def test_int_audio_input_seconds_prices_correctly():
+    """Forward-compat: the engine wraps audio_input_seconds with Decimal(...) before
+    computing cost, which accepts int too. Lock the contract so a future cleanup
+    of the redundant-looking Decimal() wrap doesn't silently break int callers
+    (e.g. someone passing a raw int(duration_seconds) from ffmpeg).
+    """
+    mp = ModelPrice(input_audio_kseconds=Decimal('0.10'))  # $0.10/k secs
+    r_int = mp.calc_price(Usage(audio_input_seconds=60))  # type: ignore[arg-type]
+    r_dec = mp.calc_price(Usage(audio_input_seconds=Decimal(60)))
+    assert r_int['total_price'] == r_dec['total_price'] == Decimal('0.006')
