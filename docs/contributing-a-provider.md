@@ -172,3 +172,28 @@ The validator enforces alphabetical sorting of the `models:` list by the `id:` f
 Pick a default subscription tier (usually the "pay as you go" or "Creator" tier) and convert the unit cost to `$ per 1,000 characters` using the documented credit-to-character ratio. Document the chosen tier and conversion formula in `price_comments` on each model so consumers on other tiers can derive their own rate.
 
 For example, ElevenLabs Creator tier costs `$22/month for 100,000 credits` (`$0.00022 per credit`). Turbo v2.5 burns `0.5 credits per character`, so its `input_kchars` value is `$0.00022 * 0.5 * 1000 = $0.11`. The `price_comments` block on the entry calls this out explicitly.
+
+## Adding an STT (Speech-to-Text) provider
+
+STT follows the same template + walkthrough as TTS with two field substitutions:
+
+- Use `ModelPrice.input_audio_kseconds` (not `input_kchars`) for the rate, expressed as `$ per 1,000 seconds of input audio`.
+- Pass `Usage(audio_input_seconds=Decimal('<duration>'))` (not `characters`) when calling `calc_price`.
+
+If your provider quotes rates per minute, convert to per-1k-seconds: `rate_per_min * 1000 / 60`. Document the source rate in `price_comments` for transparency.
+
+### Streaming vs batch / realtime vs async / sync vs queued
+
+If your provider charges different rates for two modes of the same model, name the more common mode bare (`<model>`) and the less common one with a `-<mode>` suffix (`<model>-<mode>`). Example: Deepgram `nova-3` (streaming default) and `nova-3-batch`. If both modes are equally common, ship both names explicitly and let a bare `<model>` resolve to nothing (`LookupError`, never a silent wrong-row pick).
+
+**Always use `match: equals: <id>`** for both entries in a mode-split, never `starts_with`. The `equals` matcher guarantees one-to-one resolution: a model_ref either hits exactly one catalog entry or fails loudly. `starts_with` makes silent wrong-row picks possible the moment a sibling entry shares a prefix.
+
+### Sub-second precision
+
+`audio_input_seconds` and `audio_output_seconds` are `Decimal`-typed so callers can express sub-second precision. Deepgram and AssemblyAI bill in 0.01s increments. Pass via `Decimal('12.34')` or convert from float at the call site.
+
+### Voice / language multipliers are NOT supported for STT in v0.x
+
+`voice_multipliers` only scales `input_kchars` and `output_audio_kseconds` (TTS character + audio-second priced fields). Setting `voice_multipliers` on a model whose only priced field is `input_audio_kseconds` will fail Pydantic validation with a specific error: language-tier multipliers for STT were deferred and are not supported.
+
+If your provider charges different rates by language (e.g. English-only vs multilingual), ship them as separate model entries with distinct IDs (Deepgram does this: `nova-3` vs `nova-3-multilingual`).

@@ -127,11 +127,13 @@ def test_yaml_roundtrip(yaml_file: Path):
         if first_price_block.input_kchars is not None:
             synthetic.characters = 1000
         if first_price_block.output_audio_kseconds is not None:
-            synthetic.audio_output_seconds = 60
+            synthetic.audio_output_seconds = Decimal(60)
+        if first_price_block.input_audio_kseconds is not None:
+            synthetic.audio_input_seconds = Decimal(60)
         # If no priced field is recognized, fall back to a token-shaped Usage so calc still runs.
         if all(
             getattr(synthetic, f) is None
-            for f in ('input_tokens', 'output_tokens', 'characters', 'audio_output_seconds')
+            for f in ('input_tokens', 'output_tokens', 'characters', 'audio_output_seconds', 'audio_input_seconds')
         ):
             synthetic.input_tokens = 1
 
@@ -139,11 +141,13 @@ def test_yaml_roundtrip(yaml_file: Path):
         assert result.total_price >= Decimal(0)
 
 
-def test_tts_entries_have_provenance():
-    """Every model that uses `input_kchars` MUST carry pricing_source_url + prices_checked.
+def test_audio_priced_entries_have_provenance():
+    """Every model using a TTS or STT priced field (input_kchars, output_audio_kseconds,
+    input_audio_kseconds) MUST carry pricing_source_url + prices_checked.
 
-    Section 4.6 contribution requirement. Enforced across the catalog so a v0.1 TTS PR
-    cannot land without provenance, regardless of which provider file it modifies.
+    Renamed from test_tts_entries_have_provenance in v0.0.7 to cover STT entries too.
+    Enforced across the catalog so any audio-pricing PR cannot land without provenance,
+    regardless of which provider file it modifies.
     """
     import pydantic_core
 
@@ -161,10 +165,13 @@ def test_tts_entries_have_provenance():
             else:
                 price_blocks = [model.prices]
 
-            uses_kchars = any(
-                block.input_kchars is not None or block.output_audio_kseconds is not None for block in price_blocks
+            uses_audio_priced_field = any(
+                block.input_kchars is not None
+                or block.output_audio_kseconds is not None
+                or block.input_audio_kseconds is not None
+                for block in price_blocks
             )
-            if not uses_kchars:
+            if not uses_audio_priced_field:
                 continue
 
             if model.pricing_source_url is None:

@@ -90,10 +90,12 @@ class CustomUsage:
     cache_audio_read_tokens: int | None = None
     output_audio_tokens: int | None = None
 
-    # TTS fields added in v0.1 of the voice-prices fork; included here so CustomUsage
-    # continues to satisfy the AbstractUsage protocol.
+    # TTS + STT fields added in v0.x / v0.0.7 of the voice-prices fork; included
+    # here so CustomUsage continues to satisfy the AbstractUsage protocol.
+    # Duration fields migrated from int to Decimal in v0.0.7.
     characters: int | None = None
-    audio_output_seconds: int | None = None
+    audio_output_seconds: Decimal | None = None
+    audio_input_seconds: Decimal | None = None
     voice_class: str | None = None
 
 

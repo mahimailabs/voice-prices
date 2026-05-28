@@ -36,6 +36,8 @@ _PRICED_FIELD_MAP: dict[str, tuple[str, str | None]] = {
     # TTS character/audio-second fields with multiplier pairs
     'input_kchars': ('input_kchars', 'voice_class_input_adjustment'),
     'output_audio_kseconds': ('output_audio_kseconds', 'voice_class_output_adjustment'),
+    # STT input duration; intentionally multiplier-exempt (no paired adjustment).
+    'input_audio_kseconds': ('input_audio_kseconds', None),
 }
 
 # Fields on ModelPrice that are NOT priced (and thus should not appear in the map).

@@ -39,7 +39,7 @@ The following providers are currently supported:
 - [Cartesia](prices/providers/cartesia.yml) - 1 models
 - [Cerebras](prices/providers/cerebras.yml) - 5 models
 - [Cohere](prices/providers/cohere.yml) - 6 models
-- [Deepgram](prices/providers/deepgram.yml) - 2 models
+- [Deepgram](prices/providers/deepgram.yml) - 6 models
 - [Deepseek](prices/providers/deepseek.yml) - 4 models
 - [ElevenLabs](prices/providers/elevenlabs.yml) - 3 models
 - [Fireworks](prices/providers/fireworks.yml) - 13 models

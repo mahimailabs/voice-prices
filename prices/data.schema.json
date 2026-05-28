@@ -424,6 +424,11 @@
           "description": "price in USD per 1,000 seconds of generated audio output.\n\nReserved for v0.2 (PlayHT, Murf, similar). No v0.1 catalog entry sets this.",
           "title": "Output Audio Kseconds"
         },
+        "input_audio_kseconds": {
+          "type": "number",
+          "description": "price in USD per 1,000 seconds of input audio (STT audio input).\n\nModelPrice puts direction before modality (input_audio_kseconds); Usage puts\nmodality before direction (audio_input_seconds). Intentional; mirrors the\nexisting output_audio_kseconds / audio_output_seconds pair.",
+          "title": "Input Audio Kseconds"
+        },
         "voice_multipliers": {
           "additionalProperties": {
             "type": "number"
@@ -771,7 +776,8 @@
             "cache_audio_read_tokens",
             "output_audio_tokens",
             "characters",
-            "audio_output_seconds"
+            "audio_output_seconds",
+            "audio_input_seconds"
           ],
           "title": "Dest",
           "type": "string"

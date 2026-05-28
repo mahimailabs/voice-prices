@@ -118,6 +118,7 @@ class PriceBreakdown:
 
     input_kchars: Decimal = Decimal(0)
     output_audio_kseconds: Decimal = Decimal(0)
+    input_audio_kseconds: Decimal = Decimal(0)
 
     voice_class_input_adjustment: Decimal = Decimal(0)
     """USD adjustment caused by voice_multiplier on input_kchars.
@@ -148,6 +149,7 @@ class PriceBreakdown:
             + self.cache_audio_read_tokens
             + self.input_kchars
             + self.output_audio_kseconds
+            + self.input_audio_kseconds
             + self.voice_class_input_adjustment
             + self.voice_class_output_adjustment
             + self.requests
@@ -299,13 +301,26 @@ class AbstractUsage(Protocol):
         """Number of input characters submitted to a TTS model."""
 
     @property
-    def audio_output_seconds(self) -> int | None:
-        """Number of seconds of generated audio.
+    def audio_output_seconds(self) -> Decimal | None:
+        """Number of seconds of generated audio (TTS audio output).
 
-        Schema-only in v0.1 (no catalog entry uses it). Type note: int matches
-        the existing `input_audio_tokens: int | None` precedent. v0.2 STT work
-        may revisit this since Deepgram and AssemblyAI bill per 0.01s on some
-        plans.
+        Migrated from int to Decimal in v0.0.7 for sub-second precision and
+        symmetry with audio_input_seconds. Backwards-compatible at runtime:
+        callers passing int continue to work via Decimal(int) coercion in the
+        engine.
+        """
+
+    @property
+    def audio_input_seconds(self) -> Decimal | None:
+        """Duration (in seconds) of audio submitted to the model (STT input).
+
+        ModelPrice puts direction before modality (input_audio_kseconds); Usage
+        puts modality before direction (audio_input_seconds). Intentional;
+        mirrors the existing output_audio_kseconds / audio_output_seconds pair.
+
+        Decimal-typed so callers can express sub-second precision; Deepgram and
+        AssemblyAI bill in 0.01s increments. Pass via Decimal('12.34') or
+        convert from float at the call site.
         """
 
     @property
@@ -345,8 +360,27 @@ class Usage:
     characters: int | None = None
     """Number of input characters submitted to a TTS model."""
 
-    audio_output_seconds: int | None = None
-    """Number of seconds of generated audio. Schema-only in v0.1."""
+    audio_output_seconds: Decimal | None = None
+    """Duration of generated audio (TTS audio output, schema-only until
+    PlayHT/Murf land in catalog). Decimal-typed for sub-second precision.
+
+    Backwards compatibility: the runtime engine wraps the value with
+    Decimal(...) before computing cost, so v0.x consumers passing an int
+    continue to work at runtime. Type checkers will flag the int under strict
+    mode; pass Decimal(60) or Decimal('60') to silence them.
+    """
+
+    audio_input_seconds: Decimal | None = None
+    """Duration (in seconds) of audio submitted to the model (STT input).
+
+    ModelPrice puts direction before modality (input_audio_kseconds); Usage
+    puts modality before direction (audio_input_seconds). Intentional;
+    mirrors the existing output_audio_kseconds / audio_output_seconds pair.
+
+    Decimal-typed so callers can express sub-second precision; Deepgram and
+    AssemblyAI bill in 0.01s increments. Pass via Decimal('12.34') or convert
+    from float at the call site.
+    """
 
     voice_class: str | None = None
     """Voice class identifier used for this call (matches a key in
@@ -359,6 +393,13 @@ class Usage:
 
         def _add_int(a: int | None, b: int | None) -> int | None:
             return None if a is b is None else (a or 0) + (b or 0)
+
+        def _add_decimal(a: Decimal | None, b: Decimal | None) -> Decimal | None:
+            if a is None and b is None:
+                return None
+            a_val = Decimal(0) if a is None else a
+            b_val = Decimal(0) if b is None else b
+            return a_val + b_val
 
         def _coalesce_str(a: str | None, b: str | None) -> str | None:
             if a is None:
@@ -378,7 +419,8 @@ class Usage:
             cache_audio_read_tokens=_add_int(self.cache_audio_read_tokens, other.cache_audio_read_tokens),
             output_audio_tokens=_add_int(self.output_audio_tokens, other.output_audio_tokens),
             characters=_add_int(self.characters, other.characters),
-            audio_output_seconds=_add_int(self.audio_output_seconds, other.audio_output_seconds),
+            audio_output_seconds=_add_decimal(self.audio_output_seconds, other.audio_output_seconds),
+            audio_input_seconds=_add_decimal(self.audio_input_seconds, other.audio_input_seconds),
             voice_class=_coalesce_str(self.voice_class, other.voice_class),
         )
 
@@ -474,6 +516,7 @@ UsageField = Literal[
     'output_audio_tokens',
     'characters',
     'audio_output_seconds',
+    'audio_input_seconds',
 ]
 
 
@@ -760,6 +803,14 @@ class ModelPrice:
     Reserved for v0.2 (PlayHT, Murf, similar). No v0.1 catalog entry sets this.
     """
 
+    input_audio_kseconds: Decimal | None = None
+    """price in USD per 1,000 seconds of input audio (STT audio input).
+
+    ModelPrice puts direction before modality (input_audio_kseconds); Usage puts
+    modality before direction (audio_input_seconds). Intentional; mirrors the
+    existing output_audio_kseconds / audio_output_seconds pair.
+    """
+
     voice_multipliers: dict[str, Decimal] | None = None
     """Multiplicative adjustments keyed by voice class.
 
@@ -846,16 +897,25 @@ class ModelPrice:
             self.output_audio_mtok, usage.output_audio_tokens, total_input_tokens
         )
 
-        # TTS contributions: per-1000 character and per-1000 audio-second pricing.
+        # TTS + STT contributions: per-1000 character and per-1000 audio-second pricing.
         # Read defensively so AbstractUsage implementations predating these fields
         # (e.g. user-defined dataclasses) continue to work without modification.
+        # All three branches use the explicit `Decimal(0) if raw is None else Decimal(raw)`
+        # form so the int-to-Decimal coercion contract is visible at the call site
+        # (see test_int_audio_*_seconds_prices_correctly).
         characters = getattr(usage, 'characters', None) or 0
         if self.input_kchars is not None and characters > 0:
             breakdown.input_kchars = self.input_kchars * Decimal(characters) / Decimal(1000)
 
-        audio_output_seconds = getattr(usage, 'audio_output_seconds', None) or 0
+        raw_output_seconds = getattr(usage, 'audio_output_seconds', None)
+        audio_output_seconds = Decimal(0) if raw_output_seconds is None else Decimal(raw_output_seconds)
         if self.output_audio_kseconds is not None and audio_output_seconds > 0:
-            breakdown.output_audio_kseconds = self.output_audio_kseconds * Decimal(audio_output_seconds) / Decimal(1000)
+            breakdown.output_audio_kseconds = self.output_audio_kseconds * audio_output_seconds / Decimal(1000)
+
+        raw_input_seconds = getattr(usage, 'audio_input_seconds', None)
+        audio_input_seconds = Decimal(0) if raw_input_seconds is None else Decimal(raw_input_seconds)
+        if self.input_audio_kseconds is not None and audio_input_seconds > 0:
+            breakdown.input_audio_kseconds = self.input_audio_kseconds * audio_input_seconds / Decimal(1000)
 
         # Voice multiplier resolution and per-direction adjustment
         applied_voice_multiplier: Decimal | None = None
@@ -891,6 +951,7 @@ class ModelPrice:
             + breakdown.cache_audio_read_tokens
             + breakdown.input_kchars
             + breakdown.voice_class_input_adjustment
+            + breakdown.input_audio_kseconds
         )
         output_price = (
             breakdown.output_tokens
