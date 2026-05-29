@@ -36,18 +36,19 @@ The following providers are currently supported:
 [comment]: <> (providers-start)
 
 - [Anthropic](prices/providers/anthropic.yml) - 19 models
+- [AssemblyAI](prices/providers/assemblyai.yml) - 1 models
 - [Avian](prices/providers/avian.yml) - 4 models
 - [AWS Bedrock](prices/providers/aws.yml) - 57 models
 - [Microsoft Azure](prices/providers/azure.yml) - 21 models
 - [Cartesia](prices/providers/cartesia.yml) - 1 models
 - [Cerebras](prices/providers/cerebras.yml) - 5 models
 - [Cohere](prices/providers/cohere.yml) - 6 models
-- [Deepgram](prices/providers/deepgram.yml) - 6 models
+- [Deepgram](prices/providers/deepgram.yml) - 10 models
 - [Deepseek](prices/providers/deepseek.yml) - 4 models
 - [ElevenLabs](prices/providers/elevenlabs.yml) - 3 models
 - [Fireworks](prices/providers/fireworks.yml) - 13 models
 - [Google](prices/providers/google.yml) - 34 models
-- [Groq](prices/providers/groq.yml) - 29 models
+- [Groq](prices/providers/groq.yml) - 30 models
 - [HuggingFace (cerebras)](prices/providers/huggingface_cerebras.yml) - 1 models
 - [HuggingFace (fireworks-ai)](prices/providers/huggingface_fireworks-ai.yml) - 3 models
 - [HuggingFace (groq)](prices/providers/huggingface_groq.yml) - 5 models
@@ -62,7 +63,7 @@ The following providers are currently supported:
 - [Mistral](prices/providers/mistral.yml) - 22 models
 - [MoonshotAi](prices/providers/moonshotai.yml) - 9 models
 - [Novita](prices/providers/novita.yml) - 34 models
-- [OpenAI](prices/providers/openai.yml) - 73 models
+- [OpenAI](prices/providers/openai.yml) - 74 models
 - [OpenRouter](prices/providers/openrouter.yml) - 585 models
 - [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) - 15 models
 - [Perplexity](prices/providers/perplexity.yml) - 8 models

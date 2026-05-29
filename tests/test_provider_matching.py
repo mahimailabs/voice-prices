@@ -136,6 +136,13 @@ def test_provider_matching(provider_ref: str, provider_id: str):
         ('nova-3-batch', 'deepgram', {'audio_input_seconds': Decimal('60')}),
         ('nova-3-multilingual', 'deepgram', {'audio_input_seconds': Decimal('60')}),
         ('nova-3-multilingual-batch', 'deepgram', {'audio_input_seconds': Decimal('60')}),
+        # STT (VoiceGateway providers: Deepgram nova-2/flux, AssemblyAI, OpenAI Whisper).
+        # groq/whisper-large-v3 is not here: groq.yml has no model_match, so it resolves
+        # by provider_id (how VoiceGateway calls it), not by a bare model_ref.
+        ('nova-2', 'deepgram', {'audio_input_seconds': Decimal('60')}),
+        ('flux-general', 'deepgram', {'audio_input_seconds': Decimal('60')}),
+        ('universal-2', 'assemblyai', {'audio_input_seconds': Decimal('60')}),
+        ('whisper-1', 'openai', {'audio_input_seconds': Decimal('60')}),
     ],
 )
 def test_audio_model_auto_routes_to_correct_provider(
