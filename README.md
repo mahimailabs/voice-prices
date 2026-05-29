@@ -26,6 +26,7 @@
 - tiered pricing support for Gemini models where you pay a separate price for very large contexts
 - support for [identifying price discrepancies](prices/README.md) from other sources
 - support for voice modalities (TTS character billing, STT audio-second billing)
+- automated [voice price freshness checks](#keeping-voice-prices-fresh): a manually-triggered GitHub Action re-verifies TTS/STT rates against each provider's pricing page and opens a PR when a rate has drifted
 - Python package, CLI
 - TODO: API and web UI
 
@@ -119,9 +120,14 @@ dramatically improve the experience for developers using your API!
 Otherwise, to contribute:
 
 - See [`prices/README.md`](prices) for instructions on how to contribute to the price data.
-- Feel free to submit pull requests or issues about the Python and JS packages.
+- To add a new provider, follow [`docs/contributing-a-provider.md`](docs/contributing-a-provider.md) and copy the template for your modality (LLM, TTS, or STT), or open an [Add a provider](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) issue.
+- Feel free to submit pull requests or issues about the Python package.
 - If you need a library for another language, please create an issue, we'd be happy to discuss building it, hosting it here,
   or helping you maintain it elsewhere.
+
+### Keeping voice prices fresh
+
+LLM rates are cross-checked against external sources (Helicone, OpenRouter, LiteLLM, Simon Willison's llm-prices). Those sources don't cover voice (TTS/STT), so a maintainer-run GitHub Action keeps voice rates honest: **Pricing freshness** (under the Actions tab) re-verifies each voice model's rate against its `pricing_source_url` using a headless browser plus an LLM extractor, and opens a single rolling PR (`bot/pricing-freshness`) when a rate has drifted. It is manual-only (no schedule, so it costs nothing until run), needs an `OPENAI_API_KEY` repository secret, and every proposed change is reviewed by a human before merging.
 
 ## Thanks
 
