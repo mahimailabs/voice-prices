@@ -1,11 +1,11 @@
 """Render a pricing page and extract the rate for each model on it.
 
 The browser (Playwright) and the LLM are injected via the `render` and `extract`
-callables, so the pipeline is fully testable with fakes and never shells out in
-tests. The default extractor drives the model through Claude Code headlessly
-(`claude -p`), which authenticates with a Claude Pro/Max subscription via the
-CLAUDE_CODE_OAUTH_TOKEN env var (set from `claude setup-token`); no Anthropic API
-key is used. The default implementations run only in the scheduled workflow.
+callables, so the pipeline is fully testable with fakes and never calls a network
+service in tests. The default extractor uses the OpenAI API (a small chat model)
+and authenticates with an OPENAI_API_KEY; the model is overridable via the
+FRESHNESS_OPENAI_MODEL env var. The default implementations run only in the
+manually-triggered workflow.
 
 Models that share a URL are extracted in a single pass so the LLM disambiguates
 rows against each other rather than hunting for one in isolation.
@@ -14,8 +14,7 @@ rows against each other rather than hunting for one in isolation.
 from __future__ import annotations
 
 import json
-import shutil
-import subprocess
+import os
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any, cast
@@ -26,7 +25,7 @@ RenderFn = Callable[[str], RenderResult]
 ExtractFn = Callable[[str, Sequence[WorkItem]], dict[str, Extraction]]
 
 _LOGIN_MARKERS = ('log in', 'sign in', 'create account', 'access denied', 'just a moment')
-_EXTRACT_MODEL = 'claude-haiku-4-5-20251001'
+_DEFAULT_OPENAI_MODEL = 'gpt-4o-mini'
 
 
 def default_render(url: str, *, screenshot_dir: Path | None = None) -> RenderResult:
@@ -105,28 +104,27 @@ def _parse_extractions(raw: str) -> dict[str, Extraction]:
     return out
 
 
-def _run_claude(prompt: str) -> str:
-    """Run `claude -p` headlessly and return the model's text answer.
+def _run_openai(prompt: str) -> str:
+    """Call the OpenAI chat API and return the model's text answer.
 
-    Authenticates via the CLAUDE_CODE_OAUTH_TOKEN env var (a `claude setup-token`
-    token tied to a Claude Pro/Max subscription), so no Anthropic API key is needed.
-    Returns the `result` field of the `--output-format json` envelope.
+    Authenticates via OPENAI_API_KEY. The model is FRESHNESS_OPENAI_MODEL or a
+    small default; JSON output is requested so the answer is a single object.
     """
-    exe = shutil.which('claude') or 'claude'
-    proc = subprocess.run(
-        [exe, '-p', prompt, '--output-format', 'json', '--model', _EXTRACT_MODEL],
-        capture_output=True,
-        text=True,
-        timeout=180,
-        check=True,
+    from openai import OpenAI
+
+    client = OpenAI()
+    completion = client.chat.completions.create(
+        model=os.environ.get('FRESHNESS_OPENAI_MODEL', _DEFAULT_OPENAI_MODEL),
+        messages=[{'role': 'user', 'content': prompt}],
+        response_format={'type': 'json_object'},
+        temperature=0,
     )
-    envelope = cast(dict[str, Any], json.loads(proc.stdout))
-    return str(envelope.get('result', ''))
+    return completion.choices[0].message.content or ''
 
 
 def default_extract(rendered_text: str, items: Sequence[WorkItem]) -> dict[str, Extraction]:
-    """Extract each model's rate via Claude Code headless (`claude -p`)."""
-    return _parse_extractions(_run_claude(_extract_prompt(rendered_text, items)))
+    """Extract each model's rate via the OpenAI API."""
+    return _parse_extractions(_run_openai(_extract_prompt(rendered_text, items)))
 
 
 def fetch_page(
