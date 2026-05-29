@@ -1,0 +1,110 @@
+name: Pricing freshness
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      all:
+        description: Check every voice model, not just stale ones
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pricing-freshness
+  cancel-in-progress: false
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - run: uv sync --frozen --all-packages
+
+      - run: uv run playwright install --with-deps chromium
+
+      # Do not clobber a reviewer's in-progress edits on the rolling branch.
+      - name: Detect human edits on the rolling branch
+        id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: bot/pricing-freshness
+        run: |
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            login=$(gh api "repos/$REPO/commits/$BRANCH" --jq '.author.login // ""' || echo "")
+            if [ -n "$login" ] && [ "$login" != "github-actions[bot]" ]; then
+              echo "human_edits=true" >> "$GITHUB_OUTPUT"
+              echo "Human edits on $BRANCH (last commit by $login); skipping bot update."
+            fi
+          fi
+
+      - name: Run freshness check
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FRESHNESS_ALL: ${{ inputs.all && '1' || '0' }}
+          FRESHNESS_OUTPUT_DIR: freshness-output
+        run: uv run -m prices freshness_check
+
+      - name: Read summary
+        id: summary
+        run: |
+          actionable=$(jq -r '.actionable' freshness-output/summary.json)
+          drift=$(jq -r '.counts.drift // 0' freshness-output/summary.json)
+          echo "actionable=$actionable" >> "$GITHUB_OUTPUT"
+          echo "has_drift=$([ "$drift" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild data files
+        if: steps.summary.outputs.has_drift == 'true'
+        run: make build
+
+      - name: Upload screenshots
+        if: steps.summary.outputs.actionable == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: freshness-screenshots
+          path: freshness-output/screenshots
+          if-no-files-found: ignore
+
+      # Drift: open/update the single rolling PR with the regenerated YAML + data.
+      - name: Open or update the rolling PR
+        if: steps.summary.outputs.has_drift == 'true' && steps.guard.outputs.human_edits != 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ github.token }}
+          branch: bot/pricing-freshness
+          base: main
+          title: "Pricing freshness: voice rate drift detected"
+          body-path: freshness-output/pr-body.md
+          labels: |
+            pricing-drift
+            needs-human-confirm
+          commit-message: "chore: update drifted voice prices (freshness check)"
+
+      # Unverified-only (no YAML change): upsert one tracking issue instead of a PR.
+      - name: Upsert unverified-sources issue
+        if: steps.summary.outputs.actionable == 'true' && steps.summary.outputs.has_drift != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          LABEL: pricing-source-stale
+        run: |
+          existing=$(gh issue list --repo "$REPO" --label "$LABEL" --state open --json number --jq '.[0].number // ""')
+          if [ -z "$existing" ]; then
+            gh issue create --repo "$REPO" --label "$LABEL" \
+              --title "Voice pricing sources need a manual check" \
+              --body-file freshness-output/pr-body.md
+          else
+            gh issue comment "$existing" --repo "$REPO" --body-file freshness-output/pr-body.md
+          fi

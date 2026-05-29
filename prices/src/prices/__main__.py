@@ -5,6 +5,7 @@ from .build import build
 from .build_site import build_site
 from .collapse import collapse
 from .detect_deprecated import detect_deprecated
+from .freshness.run import freshness_check
 from .inject_providers import inject_providers
 from .package_data import package_data
 from .price_discrepancies import check_for_price_discrepancies, update_price_discrepancies
@@ -31,6 +32,7 @@ def main():
         package_data,
         inject_providers,
         build_site,
+        freshness_check,
     )
     if len(sys.argv) == 2:
         command = sys.argv[1]
