@@ -26,6 +26,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      # Install the `prices` workspace member so `uv run -m prices ...` resolves to
+      # the package and not the repo-root `prices/` directory (a namespace package
+      # with no __main__). Matches the sync step in ci.yml.
+      - run: uv sync --frozen --all-packages
       - run: make build-site
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
