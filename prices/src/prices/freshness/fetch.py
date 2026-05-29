@@ -1,9 +1,11 @@
 """Render a pricing page and extract the rate for each model on it.
 
-The browser (Playwright) and the LLM (Anthropic) are injected via the `render`
-and `extract` callables, so the pipeline is fully testable with fakes and never
-imports the heavy SDKs in tests. The default implementations are used only by the
-scheduled workflow.
+The browser (Playwright) and the LLM are injected via the `render` and `extract`
+callables, so the pipeline is fully testable with fakes and never shells out in
+tests. The default extractor drives the model through Claude Code headlessly
+(`claude -p`), which authenticates with a Claude Pro/Max subscription via the
+CLAUDE_CODE_OAUTH_TOKEN env var (set from `claude setup-token`); no Anthropic API
+key is used. The default implementations run only in the scheduled workflow.
 
 Models that share a URL are extracted in a single pass so the LLM disambiguates
 rows against each other rather than hunting for one in isolation.
@@ -12,6 +14,8 @@ rows against each other rather than hunting for one in isolation.
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any, cast
@@ -79,18 +83,8 @@ def _extract_prompt(rendered_text: str, items: Sequence[WorkItem]) -> str:
     )
 
 
-def default_extract(rendered_text: str, items: Sequence[WorkItem]) -> dict[str, Extraction]:
-    """Ask the LLM to read each model's rate from the rendered page text."""
-    import anthropic
-
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model=_EXTRACT_MODEL,
-        max_tokens=1500,
-        messages=[{'role': 'user', 'content': _extract_prompt(rendered_text, items)}],
-    )
-    block = message.content[0]
-    raw = cast(str, getattr(block, 'text', '{}'))
+def _parse_extractions(raw: str) -> dict[str, Extraction]:
+    """Parse the model's JSON answer (the first {...} block) into Extractions."""
     start, end = raw.find('{'), raw.rfind('}')
     payload: dict[str, Any] = json.loads(raw[start : end + 1]) if start != -1 and end != -1 else {}
 
@@ -109,6 +103,30 @@ def default_extract(rendered_text: str, items: Sequence[WorkItem]) -> dict[str, 
             matched_row_name=str(d.get('matched_row_name', '')),
         )
     return out
+
+
+def _run_claude(prompt: str) -> str:
+    """Run `claude -p` headlessly and return the model's text answer.
+
+    Authenticates via the CLAUDE_CODE_OAUTH_TOKEN env var (a `claude setup-token`
+    token tied to a Claude Pro/Max subscription), so no Anthropic API key is needed.
+    Returns the `result` field of the `--output-format json` envelope.
+    """
+    exe = shutil.which('claude') or 'claude'
+    proc = subprocess.run(
+        [exe, '-p', prompt, '--output-format', 'json', '--model', _EXTRACT_MODEL],
+        capture_output=True,
+        text=True,
+        timeout=180,
+        check=True,
+    )
+    envelope = cast(dict[str, Any], json.loads(proc.stdout))
+    return str(envelope.get('result', ''))
+
+
+def default_extract(rendered_text: str, items: Sequence[WorkItem]) -> dict[str, Extraction]:
+    """Extract each model's rate via Claude Code headless (`claude -p`)."""
+    return _parse_extractions(_run_claude(_extract_prompt(rendered_text, items)))
 
 
 def fetch_page(
