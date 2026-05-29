@@ -5,7 +5,7 @@ import httpx2
 import pytest
 from inline_snapshot import snapshot
 
-from genai_prices import (
+from voice_prices import (
     UpdatePrices,
     Usage,
     calc_price,
@@ -34,7 +34,7 @@ def _mock_update_prices_get(monkeypatch: pytest.MonkeyPatch, content: bytes = PR
     def fake_get(url: str, timeout: httpx2.Timeout) -> Response:
         assert url in {
             'https://example.test/prices.json',
-            'https://raw.githubusercontent.com/pydantic/genai-prices/refs/heads/main/prices/data.json',
+            'https://raw.githubusercontent.com/mahimailabs/voice-prices/refs/heads/main/prices/data.json',
         }
         assert timeout is not None
         return Response(content)

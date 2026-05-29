@@ -26,10 +26,6 @@ jobs:
         with:
           enable-cache: true # zizmor: ignore[cache-poisoning] -- Job does not produce release artifacts and does not have sensitive permissions
       - run: uv sync  --all-packages
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          cache: npm # zizmor: ignore[cache-poisoning] -- Job does not produce release artifacts and does not have sensitive permissions
-      - run: npm install
       - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5 # zizmor: ignore[cache-poisoning] -- Job does not produce release artifacts and does not have sensitive permissions
         with:
           path: ~/.cache/pre-commit
@@ -88,7 +84,7 @@ jobs:
           enable-cache: true # zizmor: ignore[cache-poisoning] -- Job does not produce release artifacts and does not have sensitive permissions
       - run: uv sync --only-dev
       - run: uv run coverage combine coverage
-      - run: uv run coverage html --show-contexts --title "genai-prices coverage for ${{ github.sha }}"
+      - run: uv run coverage html --show-contexts --title "voice-prices coverage for ${{ github.sha }}"
       - name: Store coverage html
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -97,26 +93,10 @@ jobs:
           include-hidden-files: true
       - run: uv run coverage report --fail-under 95
 
-  test-js:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: 24.x
-          cache: "npm" # zizmor: ignore[cache-poisoning] -- Job does not produce release artifacts and does not have sensitive permissions
-
-      - run: npm install
-
-      - run: npm run ci
-
   # https://github.com/marketplace/actions/alls-green#why used for branch protection checks
   check:
     if: always()
-    needs: [pre-commit, test-python, coverage, test-js]
+    needs: [pre-commit, test-python, coverage]
     runs-on: ubuntu-latest
     steps:
       - name: Decide whether the needed jobs succeeded or failed
@@ -130,11 +110,11 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: release-pypi
-      url: https://pypi.org/project/genai-prices/${{ steps.check-package-version.outputs.VERSION }}
+      url: https://pypi.org/project/voice-prices/${{ steps.check-package-version.outputs.VERSION }}
     permissions:
       id-token: write
     outputs:
-      package-version: ${{ steps.check-python-version.outputs.VERSION }}
+      package-version: ${{ steps.check-package-version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -149,36 +129,6 @@ jobs:
         with:
           version_file_path: packages/python/pyproject.toml
 
-      - run: uv build --package genai-prices
+      - run: uv build --package voice-prices
 
       - run: uv publish --trusted-publishing always
-
-  release-npm:
-    needs: [check]
-    if: success() && startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    environment:
-      name: release-npm
-      url: https://www.npmjs.com/package/@pydantic/genai-prices/v/${{ steps.check-package-version.outputs.VERSION }}
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: 24.x
-          registry-url: https://registry.npmjs.org
-          package-manager-cache: false
-
-      - id: check-package-version
-        uses: samuelcolvin/check-python-version@ee87cddb8049d2694cc03badc8569765a05cef00 # v5
-        with:
-          version_file_path: packages/js/package.json
-          version_pattern: '"version": *"(?P<version>.+?)"'
-
-      - run: npm ci
-      - run: npm run build --workspace=packages/js
-      - run: npm publish --workspace=packages/js

@@ -18,6 +18,7 @@ from pydantic import (
     ValidationInfo,
     WithJsonSchema,
     field_validator,
+    model_validator,
 )
 
 from .utils import check_unique
@@ -58,6 +59,13 @@ class Provider(_Model):
 
     This is used when one provider offers another provider's models, e.g. Google and AWS offer Anthropic models,
     Azure offers OpenAI models, etc.
+    """
+    staleness_threshold_days: int = 60
+    """Recommended maximum age (in days) for `prices_checked` on this provider's models before consumers should
+    re-verify against `pricing_source_url`.
+
+    voice-prices itself does not warn or fail on stale entries; this is metadata for consumers like VoiceGateway
+    to drive their own freshness UX. Default 60.
     """
     models: list[ModelInfo]
     """List of models supported by this provider"""
@@ -128,6 +136,9 @@ UsageField = Literal[
     'input_audio_tokens',
     'cache_audio_read_tokens',
     'output_audio_tokens',
+    'characters',
+    'audio_output_seconds',
+    'audio_input_seconds',
 ]
 
 
@@ -176,6 +187,12 @@ class ModelInfo(_Model):
     """Maximum number of input tokens allowed for this model"""
     price_comments: DescriptionField | None = None
     """Comments about the pricing of the model, especially challenges in representing the provider's pricing model."""
+    pricing_source_url: HttpUrl | None = None
+    """Deep-link to the row or anchor on the provider's pricing page that establishes this model's price.
+
+    Per-model, distinct from `Provider.pricing_urls` (which is too coarse for TTS pages that list
+    dozens of models in one table).
+    """
     prices: ModelPrice | list[ConditionalPrice]
     """Set of prices for using this model.
 
@@ -233,6 +250,25 @@ DollarPrice = Annotated[
     PlainSerializer(serialize_decimal, return_type=float | int, when_used='json'),
 ]
 
+VoiceMultiplier = Annotated[
+    Decimal,
+    Gt(0),
+    WithJsonSchema({'type': 'number'}),
+    PlainSerializer(serialize_decimal, return_type=float | int, when_used='json'),
+]
+
+
+def _require_default_key(value: dict[str, Decimal]) -> dict[str, Decimal]:
+    if 'default' not in value:
+        raise ValueError("voice_multipliers must include a 'default' key")
+    return value
+
+
+VoiceMultipliers = Annotated[
+    dict[str, VoiceMultiplier],
+    AfterValidator(_require_default_key),
+]
+
 
 class ModelPrice(_Model):
     """Set of prices for using a model"""
@@ -258,12 +294,52 @@ class ModelPrice(_Model):
     requests_kcount: DollarPrice | None = None
     """price in USD per thousand requests"""
 
+    input_kchars: DollarPrice | None = None
+    """price in USD per 1,000 input characters (TTS text input)"""
+
+    output_audio_kseconds: DollarPrice | None = None
+    """price in USD per 1,000 seconds of generated audio output.
+
+    Reserved for v0.2 (PlayHT, Murf, similar). No v0.1 catalog entry sets this.
+    """
+
+    input_audio_kseconds: DollarPrice | None = None
+    """price in USD per 1,000 seconds of input audio (STT audio input).
+
+    ModelPrice puts direction before modality (input_audio_kseconds); Usage puts
+    modality before direction (audio_input_seconds). Intentional; mirrors the
+    existing output_audio_kseconds / audio_output_seconds pair.
+    """
+
+    voice_multipliers: VoiceMultipliers | None = None
+    """Multiplicative adjustments to the priced fields above, keyed by voice class.
+
+    The multiplier scales the summed cost of `input_kchars` and `output_audio_kseconds`
+    only (not token-based fields, request counts, or cached buckets). Must include a
+    `default` key; other keys are free-form (e.g. `library`, `premium`).
+    """
+
     def is_free(self) -> bool:
         """Whether all values are zero or unset"""
         for field_name in self.__pydantic_fields__:
             if getattr(self, field_name):
                 return False
         return True
+
+    @model_validator(mode='after')
+    def validate_voice_multipliers_have_scalable_field(self) -> ModelPrice:
+        if self.voice_multipliers is not None:
+            scalable = self.input_kchars is not None or self.output_audio_kseconds is not None
+            if not scalable:
+                raise ValueError(
+                    'voice_multipliers requires at least one scalable priced field '
+                    '(input_kchars or output_audio_kseconds). The engine only scales character '
+                    'and audio-second priced fields in the TTS output direction; '
+                    'input_audio_mtok / output_audio_mtok (token-based) and input_audio_kseconds '
+                    '(STT input duration) are intentionally multiplier-exempt. '
+                    'Language-tier multipliers for STT were deferred from the v0.x design.'
+                )
+        return self
 
 
 class TieredPrices(_Model):

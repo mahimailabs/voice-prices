@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=../../prices/providers/.schema.json
+#
+# Provider YAML template (TTS).
+#
+# 1. Copy this file to prices/providers/<your-provider>.yml
+# 2. Replace every value below the comment markers
+# 3. Run `make build` from the repo root to validate + regenerate data.json
+# 4. Follow the walkthrough at docs/contributing-a-provider.md for the full flow
+#
+# This template is a complete, validating YAML. The accompanying
+# `test_provider_template_validates` test parses it on every CI run so a broken
+# template never lands.
+
+name: Example Provider
+id: example
+pricing_urls:
+  - https://example.com/pricing            # provider-level pricing index
+
+# api_pattern: regex matching the provider's API base URL. Used so consumers passing
+# `provider_api_url=...` to calc_price get routed correctly. If your provider has
+# multiple regional URLs, use alternation.
+api_pattern: 'https://api\.example\.com'
+
+# model_match: how calc_price auto-routes a user's `model_ref` to your provider when
+# no explicit provider_id is passed. Pick a prefix or pattern that uniquely identifies
+# your models. If your model IDs share a prefix with another provider, use `or` with
+# explicit alternatives.
+model_match:
+  starts_with: example-
+
+# provider_match: how calc_price matches when the user passes provider_id directly.
+# Usually `contains` on a slug.
+provider_match:
+  contains: example
+
+# staleness_threshold_days: recommended max age of `prices_checked` before consumers
+# should re-verify. Default 60. Lower if you know your provider changes rates often.
+# Remove this line to use the default.
+staleness_threshold_days: 60
+
+models:
+  - id: example-tts-1
+    name: Example TTS 1
+    description: >-
+      One-paragraph summary of what the model does. Keep it short; the end user
+      just needs to know enough to pick.
+    match:
+      equals: example-tts-1
+    # prices_checked: date you last verified these rates against pricing_source_url.
+    prices_checked: 2026-05-27
+    # pricing_source_url: deep-link to the row/section that establishes this model's
+    # price. Used by consumers (and future scrape automation) to verify freshness.
+    pricing_source_url: https://example.com/pricing#example-tts-1
+    prices:
+      # input_kchars: $ per 1,000 characters of input text. The dominant TTS unit.
+      input_kchars: 0.015
+
+  # Example with voice_multipliers (premium voice tiers cost more than standard).
+  # Delete this whole block if your provider charges a uniform per-character rate
+  # across all voices.
+  - id: example-tts-pro
+    name: Example TTS Pro
+    match:
+      equals: example-tts-pro
+    prices_checked: 2026-05-27
+    pricing_source_url: https://example.com/pricing#example-tts-pro
+    prices:
+      input_kchars: 0.030
+      voice_multipliers:
+        standard: 1.0     # the rate as-quoted on the pricing page
+        premium: 1.5      # premium voices charged 1.5x standard
+        default: 1.0      # REQUIRED. Used when caller passes no voice_class
+                          # or passes a voice_class that isn't listed above.

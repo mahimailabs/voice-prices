@@ -3,11 +3,11 @@ requires = ["uv_build>=0.8.10"]
 build-backend = "uv_build"
 
 [project]
-name = "genai-prices"
-version = "0.0.62"
-description = "Calculate prices for calling LLM inference APIs."
+name = "voice-prices"
+version = "0.0.7"
+description = "Calculate prices for calling LLM, STT and TTS inference APIs. Fork of pydantic/genai-prices with voice-modality support."
 readme = "README.md"
-authors = [{ name = "Samuel Colvin", email = "samuel@pydantic.dev" }]
+authors = [{ name = "Mahimai Raja J", email = "mahimairaja3@gmail.com" }]
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -44,13 +44,13 @@ cli = [
 ]
 
 [project.scripts]
-genai-prices = "genai_prices._cli:cli"
+voice-prices = "voice_prices._cli:cli"
 
 [project.urls]
-Homepage = "https://github.com/pydantic/genai-prices"
-Source = "https://github.com/pydantic/genai-prices"
-Changelog = "https://github.com/pydantic/genai-prices/releases"
+Homepage = "https://github.com/mahimailabs/voice-prices"
+Source = "https://github.com/mahimailabs/voice-prices"
+Changelog = "https://github.com/mahimailabs/voice-prices/releases"
 
 [tool.uv.build-backend]
-module-name = "genai_prices"
+module-name = "voice_prices"
 module-root = ""

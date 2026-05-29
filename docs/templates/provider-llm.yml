@@ -1,0 +1,90 @@
+# yaml-language-server: $schema=../../prices/providers/.schema.json
+#
+# Provider YAML template (LLM).
+#
+# 1. Copy this file to prices/providers/<your-provider>.yml
+# 2. Replace every value below the comment markers
+# 3. Run `make build` from the repo root to validate + regenerate data.json
+# 4. Follow the walkthrough at docs/contributing-a-provider.md for the full flow
+#
+# This template is a complete, validating YAML. The accompanying
+# `test_provider_template_validates` test parses it on every CI run so a broken
+# template never lands.
+
+name: Example Provider
+id: example
+pricing_urls:
+  - https://example.com/pricing            # provider-level pricing index
+
+# api_pattern: regex matching the provider's API base URL. Used so consumers passing
+# `provider_api_url=...` to calc_price get routed correctly.
+api_pattern: 'https://api\.example\.com'
+
+# model_match: how calc_price auto-routes a user's `model_ref` to your provider when
+# no explicit provider_id is passed. Pick a prefix or pattern unique to your models.
+model_match:
+  starts_with: example-
+
+# provider_match: how calc_price matches when the user passes provider_id directly.
+provider_match:
+  contains: example
+
+# staleness_threshold_days: recommended max age of `prices_checked`. Default 60.
+staleness_threshold_days: 60
+
+# extractors: map the provider's raw API usage JSON onto the canonical token fields
+# the engine prices. Most LLM providers expose an OpenAI-compatible chat-completions
+# API, so the block below works verbatim; keep it as-is. If your provider returns
+# extra buckets (for example cache writes) or uses a non-OpenAI shape, add or adjust
+# mappings: see anthropic.yml, which maps the native cache_creation_input_tokens onto
+# cache_write_tokens. See "Advanced LLM pricing > Usage extractors" in the walkthrough
+# (docs/contributing-a-provider.md) for a worked custom-mapping example.
+extractors:
+  - api_flavor: chat
+    root: usage
+    mappings:
+      - path: prompt_tokens
+        dest: input_tokens
+      - path: [prompt_tokens_details, cached_tokens]
+        dest: cache_read_tokens
+        required: false
+      - path: completion_tokens
+        dest: output_tokens
+
+models:
+  - id: example-llm-1
+    name: Example LLM 1
+    description: >-
+      Flagship general-purpose model. Priced per million tokens.
+    match:
+      equals: example-llm-1
+    # context_window: maximum input tokens the model accepts.
+    context_window: 128000
+    prices_checked: 2026-05-28
+    pricing_source_url: https://example.com/pricing#example-llm-1
+    prices:
+      # input_mtok / output_mtok: $ per 1,000,000 tokens. The dominant LLM unit.
+      input_mtok: 2.0
+      output_mtok: 8.0
+
+  - id: example-llm-mini
+    name: Example LLM Mini
+    description: >-
+      Smaller, cheaper model that supports prompt caching. cache_read_mtok is the
+      discounted rate for tokens served from the prompt cache.
+    match:
+      equals: example-llm-mini
+    context_window: 128000
+    prices_checked: 2026-05-28
+    pricing_source_url: https://example.com/pricing#example-llm-mini
+    prices:
+      input_mtok: 0.15
+      cache_read_mtok: 0.0375
+      output_mtok: 0.60
+
+  # Advanced pricing shapes are documented in docs/contributing-a-provider.md
+  # (Advanced LLM pricing). Pointers to real, tested providers:
+  #   - Tiered pricing (rate changes above a token threshold): google.yml
+  #   - Daily / off-peak pricing (time-of-day constraints): deepseek.yml
+  #   - Cache-write pricing + custom usage extractors: anthropic.yml
+  #   - Audio token pricing (realtime): openai.yml

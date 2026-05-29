@@ -1,4 +1,4 @@
-# Pricing data for `genai-prices`
+# Pricing data for `voice-prices`
 
 ## DO NOT MOVE `data.json` OR `data_slim.json`!
 
@@ -13,6 +13,8 @@ We welcome contributions from the community and especially model/inference provi
 ### Manual price updates
 
 The simplest way to contribute is to edit the [`./providers`](./providers) YAML files to correct/update/extend models.
+
+**Adding a new provider?** See [`../docs/contributing-a-provider.md`](../docs/contributing-a-provider.md) for the full walkthrough, and copy the template for your modality: [`provider-llm.yml`](../docs/templates/provider-llm.yml) (LLM), [`provider-tts.yml`](../docs/templates/provider-tts.yml) (TTS), or [`provider-stt.yml`](../docs/templates/provider-stt.yml) (STT).
 
 **Tip:** if you're using a modern IDE to edit the files, you should get warnings and auto-completion for the fields within the YAML files.
 

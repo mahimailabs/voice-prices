@@ -11,6 +11,8 @@ model_match:
   or:
     - starts_with: "gpt-"
     - regex: "^o[134]"
+    - starts_with: "tts-"
+    - starts_with: "whisper-"
 provider_match:
   contains: openai
 extractors:
@@ -1022,3 +1024,26 @@ models:
     prices_checked: 2025-07-04
     prices:
       input_mtok: 0.1
+
+  - id: tts-1
+    name: TTS-1
+    description: >-
+      Standard-quality text-to-speech model. Billed per character of input text.
+    match:
+      equals: tts-1
+    prices_checked: 2026-05-27
+    pricing_source_url: https://openai.com/api/pricing/
+    prices:
+      input_kchars: 0.015
+
+  - id: tts-1-hd
+    name: TTS-1 HD
+    description: >-
+      High-definition text-to-speech model with higher audio quality than tts-1.
+      Billed per character of input text.
+    match:
+      equals: tts-1-hd
+    prices_checked: 2026-05-27
+    pricing_source_url: https://openai.com/api/pricing/
+    prices:
+      input_kchars: 0.030

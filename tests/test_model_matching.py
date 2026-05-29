@@ -3,8 +3,8 @@ from decimal import Decimal
 import pytest
 from inline_snapshot import snapshot
 
-from genai_prices.data import providers
-from genai_prices.data_snapshot import find_provider_by_id
+from voice_prices.data import providers
+from voice_prices.data_snapshot import find_provider_by_id
 
 mark_xfail_todo = pytest.mark.xfail(reason='todo')
 
@@ -448,7 +448,7 @@ def test_find_model_directly_in_provider():
 
 def test_fallback_when_model_not_found_directly():
     """Test that fallback works when model is not found in the main provider."""
-    from genai_prices.types import ClauseEquals, ModelInfo, ModelPrice, Provider
+    from voice_prices.types import ClauseEquals, ModelInfo, ModelPrice, Provider
 
     # Create mock providers to test fallback
     fallback_provider = Provider(
@@ -497,7 +497,7 @@ def test_fallback_when_model_not_found_directly():
 
 def test_missing_fallback_provider_returns_none():
     """Test that a missing fallback provider is ignored."""
-    from genai_prices.types import Provider
+    from voice_prices.types import Provider
 
     main_provider = Provider(
         id='main-provider',
@@ -512,7 +512,7 @@ def test_missing_fallback_provider_returns_none():
 
 def test_prioritize_direct_match_over_fallback():
     """Test that direct matches are prioritized over fallback matches."""
-    from genai_prices.types import ClauseEquals, ModelInfo, ModelPrice, Provider
+    from voice_prices.types import ClauseEquals, ModelInfo, ModelPrice, Provider
 
     # Both providers have a model with the same match pattern
     fallback_provider = Provider(
@@ -552,7 +552,7 @@ def test_prioritize_direct_match_over_fallback():
 
 def test_chained_fallbacks_one_step():
     """Test that chained fallbacks work (one step only)."""
-    from genai_prices.types import ClauseEquals, ModelInfo, ModelPrice, Provider
+    from voice_prices.types import ClauseEquals, ModelInfo, ModelPrice, Provider
 
     second_provider = Provider(
         id='second-provider',
@@ -616,7 +616,7 @@ def test_azure_fallback_to_openai_real_data():
 
 def test_litellm_provider_id():
     """Test that litellm provider_id works by extracting actual provider from model name prefix."""
-    from genai_prices.data_snapshot import DataSnapshot
+    from voice_prices.data_snapshot import DataSnapshot
 
     snapshot = DataSnapshot(providers=providers, from_auto_update=False)
 

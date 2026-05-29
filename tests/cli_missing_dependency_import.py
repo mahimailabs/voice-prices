@@ -20,7 +20,7 @@ class BlockRich(importlib.abc.MetaPathFinder):
 def main() -> None:
     sys.path.insert(0, sys.argv[1])
     sys.meta_path.insert(0, BlockRich())
-    importlib.import_module('genai_prices._cli')
+    importlib.import_module('voice_prices._cli')
 
 
 if __name__ == '__main__':

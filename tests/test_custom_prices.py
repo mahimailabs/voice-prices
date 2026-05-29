@@ -7,9 +7,9 @@ from decimal import Decimal
 import pytest
 from inline_snapshot import snapshot
 
-from genai_prices import Usage, calc_price, data, types
-from genai_prices.data_snapshot import DataSnapshot, set_custom_snapshot
-from genai_prices.update_prices import UpdatePrices
+from voice_prices import Usage, calc_price, data, types
+from voice_prices.data_snapshot import DataSnapshot, set_custom_snapshot
+from voice_prices.update_prices import UpdatePrices
 
 
 @dataclass
@@ -89,6 +89,14 @@ class CustomUsage:
     input_audio_tokens: int | None = None
     cache_audio_read_tokens: int | None = None
     output_audio_tokens: int | None = None
+
+    # TTS + STT fields added in v0.x / v0.0.7 of the voice-prices fork; included
+    # here so CustomUsage continues to satisfy the AbstractUsage protocol.
+    # Duration fields migrated from int to Decimal in v0.0.7.
+    characters: int | None = None
+    audio_output_seconds: Decimal | None = None
+    audio_input_seconds: Decimal | None = None
+    voice_class: str | None = None
 
 
 def test_alt_source():
