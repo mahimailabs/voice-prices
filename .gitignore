@@ -21,3 +21,4 @@ packages/js/.genai-prices-cache.json
 .idea/
 
 docs/superpowers
+.superpowers
