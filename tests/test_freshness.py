@@ -100,6 +100,26 @@ def test_to_our_unit_conversions():
     assert to_our_unit(5.0, 'per 1M tokens', 'input_audio_kseconds') is None
 
 
+def test_parse_extractions_from_claude_output():
+    from prices.freshness.fetch import _parse_extractions
+
+    raw = (
+        'Here is the JSON you asked for:\n'
+        '{"nova-2": {"found": true, "rate_value": 0.0059, "rate_unit": "per minute", '
+        '"currency": "USD", "confidence": "high", "evidence_quote": "Nova-2 $0.0059 per minute", '
+        '"matched_row_name": "Nova-2"}, '
+        '"ghost": {"found": false, "rate_value": null, "rate_unit": null, "currency": null, '
+        '"confidence": "low", "evidence_quote": "", "matched_row_name": ""}}\n'
+        'Hope that helps.'
+    )
+    out = _parse_extractions(raw)
+    assert out['nova-2'].found is True
+    assert out['nova-2'].rate_value == 0.0059
+    assert out['nova-2'].currency == 'USD'
+    assert out['ghost'].found is False
+    assert out['ghost'].rate_value is None
+
+
 # ---- diff.classify ----------------------------------------------------------
 
 

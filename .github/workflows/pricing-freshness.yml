@@ -34,6 +34,10 @@ jobs:
 
       - run: uv run playwright install --with-deps chromium
 
+      # Claude Code drives the extraction; it authenticates with CLAUDE_CODE_OAUTH_TOKEN
+      # (a `claude setup-token` token tied to a Claude Pro/Max subscription), not an API key.
+      - run: npm install -g @anthropic-ai/claude-code
+
       # Do not clobber a reviewer's in-progress edits on the rolling branch.
       - name: Detect human edits on the rolling branch
         id: guard
@@ -52,7 +56,7 @@ jobs:
 
       - name: Run freshness check
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           FRESHNESS_ALL: ${{ inputs.all && '1' || '0' }}
           FRESHNESS_OUTPUT_DIR: freshness-output
         run: uv run -m prices freshness_check
