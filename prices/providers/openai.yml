@@ -1047,3 +1047,19 @@ models:
     pricing_source_url: https://openai.com/api/pricing/
     prices:
       input_kchars: 0.030
+
+  - id: whisper-1
+    name: Whisper
+    description: >-
+      OpenAI Whisper speech-to-text. Transcribes prerecorded audio files, billed per
+      minute of audio (single flat rate, no streaming/batch distinction). The newer
+      gpt-4o-transcribe models are token-priced and use input_audio_mtok instead.
+    match:
+      equals: whisper-1
+    prices_checked: 2026-05-29
+    pricing_source_url: https://platform.openai.com/docs/pricing
+    price_comments: >-
+      Source rate $0.006/minute ($0.36/hour), unchanged from its historical rate.
+      Converted to $/k seconds: 0.006 * 1000 / 60 = 0.1 exactly.
+    prices:
+      input_audio_kseconds: 0.1

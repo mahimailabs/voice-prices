@@ -10,6 +10,7 @@ model_match:
   or:
     - starts_with: aura-
     - starts_with: nova-
+    - starts_with: flux-
 
 provider_match:
   contains: deepgram
@@ -42,6 +43,71 @@ models:
     pricing_source_url: https://deepgram.com/pricing
     prices:
       input_kchars: 0.030
+
+  - id: flux-general
+    name: Flux (streaming)
+    description: >-
+      Deepgram Flux conversational speech recognition for real-time voice agents,
+      with built-in turn detection and interruption handling. English. Use
+      `flux-general` for streaming, `flux-general-batch` for prerecorded.
+    match:
+      equals: flux-general
+    prices_checked: 2026-05-29
+    pricing_source_url: https://deepgram.com/pricing
+    price_comments: >-
+      Source rate $0.0065/minute (Pay As You Go streaming). Converted to $/k seconds:
+      0.0065 * 1000 / 60 ~= 0.108333.
+    prices:
+      input_audio_kseconds: 0.108333
+
+  - id: flux-general-batch
+    name: Flux (batch)
+    description: >-
+      Deepgram Flux prerecorded / batch transcription, English. Flux is primarily a
+      real-time model; this is the prerecorded rate.
+    match:
+      equals: flux-general-batch
+    prices_checked: 2026-05-29
+    pricing_source_url: https://deepgram.com/pricing
+    price_comments: >-
+      Source rate $0.0077/minute (Pay As You Go prerecorded). Converted to $/k seconds:
+      0.0077 * 1000 / 60 ~= 0.128333.
+    prices:
+      input_audio_kseconds: 0.128333
+
+  - id: nova-2
+    name: Nova-2 (streaming)
+    description: >-
+      Deepgram Nova-2 streaming STT, English / monolingual. Previous-generation
+      model. Use `nova-2` for streaming, `nova-2-batch` for prerecorded.
+    match:
+      equals: nova-2
+    prices_checked: 2026-05-29
+    pricing_source_url: https://deepgram.com/pricing
+    price_comments: >-
+      Source rate $0.0059/minute (streaming). Converted to $/k seconds:
+      0.0059 * 1000 / 60 ~= 0.098333. Nova-2 is a legacy model: Deepgram no longer
+      lists its per-minute rate in the public pricing table (the FAQ states older
+      models remain available), so this rate is from independent sources tracking
+      Deepgram's published Nova-2 pricing. Verify before relying on it.
+    prices:
+      input_audio_kseconds: 0.098333
+
+  - id: nova-2-batch
+    name: Nova-2 (batch)
+    description: >-
+      Deepgram Nova-2 prerecorded / batch STT, English / monolingual. Legacy model.
+    match:
+      equals: nova-2-batch
+    prices_checked: 2026-05-29
+    pricing_source_url: https://deepgram.com/pricing
+    price_comments: >-
+      Source rate $0.0043/minute (prerecorded). Converted to $/k seconds:
+      0.0043 * 1000 / 60 ~= 0.071667. Nova-2 is a legacy model no longer listed in
+      Deepgram's public pricing table; rate from independent sources. Verify before
+      relying on it.
+    prices:
+      input_audio_kseconds: 0.071667
 
   - id: nova-3
     name: Nova-3 (monolingual streaming)

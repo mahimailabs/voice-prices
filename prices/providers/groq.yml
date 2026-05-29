@@ -260,3 +260,18 @@ models:
     prices:
       input_mtok: 0.29
       output_mtok: 0.59
+
+  - id: whisper-large-v3
+    name: Whisper Large v3
+    description: >-
+      Groq-hosted OpenAI Whisper Large v3 speech-to-text. Billed per second of audio
+      (single rate, no streaming/batch distinction); 10-second per-request minimum.
+    match:
+      equals: whisper-large-v3
+    prices_checked: 2026-05-29
+    pricing_source_url: https://groq.com/pricing/
+    price_comments: >-
+      Source rate $0.111/hour = $0.00185/minute. Converted to $/k seconds:
+      0.00185 * 1000 / 60 ~= 0.030833.
+    prices:
+      input_audio_kseconds: 0.030833
