@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>GenAI Prices</h1>
+  <h1>Voice Prices</h1>
 </div>
 <div align="center">
   <a href="https://github.com/mahimailabs/voice-prices/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://github.com/mahimailabs/voice-prices/actions/workflows/ci.yml/badge.svg?event=push" alt="CI"></a>
@@ -7,11 +7,10 @@
   <a href="https://pypi.python.org/pypi/voice-prices"><img src="https://img.shields.io/pypi/v/voice-prices.svg" alt="PyPI"></a>
   <a href="https://github.com/mahimailabs/voice-prices"><img src="https://img.shields.io/pypi/pyversions/voice-prices.svg" alt="versions"></a>
   <a href="https://github.com/mahimailabs/voice-prices/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mahimailabs/voice-prices.svg" alt="license"></a>
-  <a href="https://logfire.pydantic.dev/docs/join-slack/"><img src="https://img.shields.io/badge/Slack-Join%20Slack-4A154B?logo=slack" alt="Join Slack" /></a>
 </div>
 <br/>
 <div align="center">
-  Calculate prices for calling LLM inference APIs.
+  Pricing data and cost calculation for voice-agent APIs: LLM, text-to-speech (TTS), and speech-to-text (STT).
 </div>
 <div align="center">
   <a href="https://mahimailabs.github.io/voice-prices/">Browse providers and prices</a>
@@ -97,8 +96,8 @@ Coming soon...
 
 <h2 id="warning">⚠️ Warning: these prices will not be 100% accurate</h2>
 
-This project is a best effort from Pydantic and the community to provide an indicative
-estimate of the price you might pay for calling an LLM.
+This project is a best effort by the maintainers and community to provide an indicative
+estimate of the price you might pay for calling an LLM, TTS, or STT API.
 
 The price data cannot be exactly correct because model providers do not provide exact price information for their APIs
 in a format which can be reliably processed.
@@ -113,9 +112,8 @@ If you're a developer, please [contribute](#contributing) to fix any missing or 
 
 We welcome contributions from the community and especially model/inference providers!
 
-**If you're a model provider:** it would be amazing if you would serve a JSON file or API endpoint with
-pricing information which we could pull from. You would be the first AFAIK, and I think it would
-dramatically improve the experience for developers using your API!
+**If you're a model provider:** it would be amazing if you served a machine-readable pricing file or
+endpoint we could pull from. It would dramatically improve pricing accuracy for developers using your API.
 
 Otherwise, to contribute:
 
@@ -131,13 +129,13 @@ LLM rates are cross-checked against external sources (Helicone, OpenRouter, Lite
 
 ## Thanks
 
-This project would not be possible without the following existing data sources:
+voice-prices is a fork of [pydantic/genai-prices](https://github.com/pydantic/genai-prices), extended with first-class support for voice (TTS/STT) pricing and an automated freshness check for those rates. Huge thanks to that project and its maintainers for the engine, schema, and the initial LLM price database this builds on.
+
+It also would not be possible without the following data sources, which the LLM price discrepancy pipeline pulls from:
 
 - [Helicone](https://github.com/Helicone/helicone/tree/main/packages/cost)
 - [Open Router](https://openrouter.ai/docs/api/api-reference/models/get-models)
 - [LiteLLM](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
 - Simon Willison's [llm-prices](https://github.com/simonw/llm-prices/pull/7)
-
-While none of these sources had exactly what we needed (hence creating this project), they (especially helicone) were used to populate some of the initial price database, and we continue to pull price updates from them.
 
 Thanks to all those projects!
