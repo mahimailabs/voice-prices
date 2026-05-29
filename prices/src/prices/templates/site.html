@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>voice-prices : open pricing for LLM, TTS and STT APIs</title>
+<meta name="description" content="Community-maintained pricing for LLM, text-to-speech, and speech-to-text APIs. Browse current rates by modality." />
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #6b7280;
+    --line: #ececec;
+    --line-soft: #f3f4f6;
+    --accent: #2563eb;
+    --accent-soft: #f5f8ff;
+    --accent-line: #d7e3fb;
+    --add: #16a34a;
+    --chip: #f3f4f6;
+    --max: 980px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  header {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar {
+    max-width: var(--max); margin: 0 auto;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 12px 18px;
+  }
+  .wordmark { font-weight: 700; font-size: 17px; }
+  .tagline { color: var(--muted); font-size: 12px; }
+  nav.tabs { display: flex; gap: 4px; margin-left: 4px; }
+  .tab {
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font: inherit; font-weight: 600; font-size: 14px; color: #555;
+    padding: 7px 16px; border-radius: 7px;
+  }
+  .tab:hover { background: var(--line-soft); }
+  .tab[aria-selected="true"] { background: var(--accent); color: #fff; }
+  .search {
+    border: 1px solid #ddd; border-radius: 7px; padding: 7px 11px;
+    font: inherit; font-size: 13px; width: 180px;
+  }
+  .add {
+    margin-left: auto; text-decoration: none;
+    background: var(--add); color: #fff; font-weight: 600; font-size: 13px;
+    padding: 9px 15px; border-radius: 7px; white-space: nowrap;
+  }
+  main { max-width: var(--max); margin: 0 auto; padding: 14px 18px 60px; }
+  .count { color: var(--muted); font-size: 12px; margin: 6px 2px 12px; }
+  .provider {
+    border: 1px solid var(--line); border-radius: 9px; margin-bottom: 8px; overflow: hidden;
+  }
+  .provider.open { border-color: var(--accent-line); }
+  .phead {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font: inherit; text-align: left; padding: 12px 14px;
+  }
+  .provider.open .phead { background: var(--accent-soft); }
+  .caret { color: var(--muted); font-size: 12px; width: 12px; transition: transform .12s; }
+  .provider.open .caret { transform: rotate(90deg); color: var(--accent); }
+  .pname { font-weight: 600; font-size: 14px; }
+  .pmodels { color: var(--muted); font-size: 12px; }
+  .prange { margin-left: auto; color: var(--muted); font-size: 12px; }
+  .ptable-wrap { display: none; }
+  .provider.open .ptable-wrap { display: block; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; color: var(--muted); font-weight: 600; font-size: 12px;
+    background: #fcfcfd; border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line); padding: 8px 14px;
+  }
+  th.num, td.num { text-align: right; }
+  tbody td { padding: 8px 14px; border-bottom: 1px solid var(--line-soft); }
+  tbody tr:last-child td { border-bottom: 0; }
+  .mid { font-variant-numeric: tabular-nums; }
+  .marker {
+    display: inline-block; font-size: 10px; font-weight: 600; border-radius: 4px;
+    padding: 1px 5px; margin-left: 6px; vertical-align: middle;
+  }
+  .marker.tiered { background: #fef3c7; color: #92400e; }
+  .marker.daily { background: #ede9fe; color: #6d28d9; }
+  .empty { color: var(--muted); padding: 30px 6px; text-align: center; }
+  .empty .add-inline { display: inline-block; margin-top: 10px; }
+  footer {
+    max-width: var(--max); margin: 0 auto; padding: 20px 18px 40px;
+    color: var(--muted); font-size: 12px; border-top: 1px solid var(--line);
+  }
+  footer a { margin-right: 14px; }
+  .disclaimer { margin-top: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div>
+      <div class="wordmark">voice-prices</div>
+      <div class="tagline">open pricing for LLM, TTS and STT APIs</div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Modality">
+      <button class="tab" role="tab" data-modality="llm" aria-selected="true">LLM</button>
+      <button class="tab" role="tab" data-modality="tts" aria-selected="false">TTS</button>
+      <button class="tab" role="tab" data-modality="stt" aria-selected="false">STT</button>
+    </nav>
+    <input id="search" class="search" type="search" placeholder="search providers and models..." aria-label="Search" />
+    <a class="add" href="__ADD_PROVIDER_URL__">+ Add a provider</a>
+  </div>
+</header>
+
+<main>
+  <div id="count" class="count"></div>
+  <div id="list"></div>
+</main>
+
+<footer>
+  <a href="https://github.com/mahimailabs/voice-prices">GitHub</a>
+  <a href="https://pypi.org/project/voice-prices/">PyPI</a>
+  <a href="https://github.com/mahimailabs/voice-prices/blob/main/prices/data.json">data.json</a>
+  <div class="disclaimer">Prices are a best-effort, community-maintained estimate and may be out of date or incorrect. Always verify against the provider before relying on them.</div>
+</footer>
+
+<script id="catalog" type="application/json">__CATALOG_JSON__</script>
+<script>
+(function () {
+  "use strict";
+  var CATALOG = JSON.parse(document.getElementById("catalog").textContent);
+  var listEl = document.getElementById("list");
+  var countEl = document.getElementById("count");
+  var searchEl = document.getElementById("search");
+  var active = "llm";
+  var query = "";
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function fmtNum(n) {
+    if (n === null || n === undefined) return "&ndash;";
+    var s = parseFloat((+n).toPrecision(6)).toString();
+    return "$" + s;
+  }
+  function fmtCtx(n) {
+    if (n === null || n === undefined) return "N/A";
+    if (n >= 1000000) return (n / 1000000) + "M";
+    if (n >= 1000) return (n / 1000) + "k";
+    return String(n);
+  }
+  function primaryRate(modality, m) {
+    if (modality === "llm") return m.input_mtok;
+    if (modality === "tts") return m.input_kchars;
+    return m.input_audio_kseconds;
+  }
+  function unitLabel(modality) {
+    if (modality === "llm") return "/ Mtok";
+    if (modality === "tts") return "/ 1k chars";
+    return "/ 1k sec";
+  }
+  function providerRange(modality, models) {
+    var vals = [];
+    for (var i = 0; i < models.length; i++) {
+      var r = primaryRate(modality, models[i]);
+      if (typeof r === "number") vals.push(r);
+    }
+    if (!vals.length) return "";
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    var lows = parseFloat(lo.toPrecision(4)), his = parseFloat(hi.toPrecision(4));
+    var range = lo === hi ? ("$" + lows) : ("$" + lows + " &ndash; $" + his);
+    return range + " " + unitLabel(modality);
+  }
+
+  function headerCells(modality) {
+    if (modality === "llm")
+      return "<th>Model</th><th class='num'>Input $/Mtok</th><th class='num'>Output $/Mtok</th><th class='num'>Cache read</th><th class='num'>Context</th>";
+    if (modality === "tts")
+      return "<th>Model</th><th class='num'>$/1k chars</th>";
+    return "<th>Model</th><th class='num'>$/1k sec</th><th class='num'>$/min</th>";
+  }
+  function rowCells(modality, m) {
+    var markers = "";
+    if (m.tiered) markers += " <span class='marker tiered'>tiered</span>";
+    if (m.daily) markers += " <span class='marker daily'>daily</span>";
+    var model = "<td>" + m.id + markers + "</td>";
+    if (modality === "llm")
+      return model
+        + "<td class='num mid'>" + fmtNum(m.input_mtok) + "</td>"
+        + "<td class='num mid'>" + fmtNum(m.output_mtok) + "</td>"
+        + "<td class='num mid'>" + fmtNum(m.cache_read_mtok) + "</td>"
+        + "<td class='num mid'>" + fmtCtx(m.context_window) + "</td>";
+    if (modality === "tts")
+      return model + "<td class='num mid'>" + fmtNum(m.input_kchars) + "</td>";
+    return model
+      + "<td class='num mid'>" + fmtNum(m.input_audio_kseconds) + "</td>"
+      + "<td class='num mid'>" + fmtNum(m.per_min) + "</td>";
+  }
+
+  function matches(provider, q) {
+    if (!q) return provider;
+    if (provider.name.toLowerCase().indexOf(q) !== -1 || provider.id.toLowerCase().indexOf(q) !== -1)
+      return provider;
+    var models = provider.models.filter(function (m) {
+      return m.id.toLowerCase().indexOf(q) !== -1 || m.name.toLowerCase().indexOf(q) !== -1;
+    });
+    if (!models.length) return null;
+    return { id: provider.id, name: provider.name, models: models };
+  }
+
+  function render() {
+    var providers = CATALOG[active] || [];
+    var q = query.trim().toLowerCase();
+    var shown = [];
+    for (var i = 0; i < providers.length; i++) {
+      var p = matches(providers[i], q);
+      if (p) shown.push(p);
+    }
+
+    var qd = esc(q);
+    var modelTotal = shown.reduce(function (n, p) { return n + p.models.length; }, 0);
+    countEl.innerHTML = shown.length
+      ? (shown.length + " providers, " + modelTotal + " models" + (q ? " matching &ldquo;" + qd + "&rdquo;" : "") + " : click a provider to see its models")
+      : "";
+
+    if (!shown.length) {
+      listEl.innerHTML = "<div class='empty'>No " + active.toUpperCase() + " providers"
+        + (q ? " match &ldquo;" + qd + "&rdquo;." : " yet.")
+        + "<br><a class='add add-inline' href='__ADD_PROVIDER_URL__'>+ Add a provider</a></div>";
+      return;
+    }
+
+    var open = !!q; // auto-expand when searching
+    var htmlParts = shown.map(function (p) {
+      var rows = p.models.map(function (m) { return "<tr>" + rowCells(active, m) + "</tr>"; }).join("");
+      return "<div class='provider" + (open ? " open" : "") + "'>"
+        + "<button class='phead' aria-expanded='" + open + "'>"
+        + "<span class='caret'>▶</span>"
+        + "<span class='pname'>" + p.name + "</span>"
+        + "<span class='pmodels'>" + p.models.length + " models</span>"
+        + "<span class='prange'>" + providerRange(active, p.models) + "</span>"
+        + "</button>"
+        + "<div class='ptable-wrap'><table><thead><tr>" + headerCells(active) + "</tr></thead>"
+        + "<tbody>" + rows + "</tbody></table></div>"
+        + "</div>";
+    });
+    listEl.innerHTML = htmlParts.join("");
+
+    var heads = listEl.querySelectorAll(".phead");
+    for (var j = 0; j < heads.length; j++) {
+      heads[j].addEventListener("click", function () {
+        var card = this.parentNode;
+        var isOpen = card.classList.toggle("open");
+        this.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+  }
+
+  var tabs = document.querySelectorAll(".tab");
+  for (var t = 0; t < tabs.length; t++) {
+    tabs[t].addEventListener("click", function () {
+      active = this.getAttribute("data-modality");
+      for (var k = 0; k < tabs.length; k++)
+        tabs[k].setAttribute("aria-selected", String(tabs[k] === this));
+      render();
+    });
+  }
+  searchEl.addEventListener("input", function () { query = this.value; render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>

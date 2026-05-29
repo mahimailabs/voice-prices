@@ -28,7 +28,7 @@ The table shows the dominant unit per modality. Other priced fields exist (for e
 
 ## Step 1: Discuss first
 
-Open an issue at https://github.com/mahimailabs/voice-prices/issues describing the provider you want to add: name, link to their pricing page, which models, and which modality (TTS or STT). This is the project convention from `prices/README.md` and lets us catch duplicates, naming conflicts, or scope concerns before you spend time on the YAML.
+Open an issue using the [Add a provider form](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml), describing the provider you want to add: name, link to their pricing page, which models, and which modality (LLM, TTS, or STT). This is the same form the documentation site's "Add a provider" button links to. It lets us catch duplicates, naming conflicts, or scope concerns before you spend time on the YAML.
 
 ## Step 2: Find the rates
 

@@ -1,0 +1,64 @@
+name: Add a provider
+description: Suggest a new LLM, TTS, or STT provider (or models) to add to voice-prices.
+title: "[provider] "
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Thanks for helping grow voice-prices. Fill in what you can; a maintainer or
+        contributor will turn it into a provider YAML. See the
+        [contributor walkthrough](https://github.com/mahimailabs/voice-prices/blob/main/docs/contributing-a-provider.md)
+        if you would like to open the pull request yourself.
+  - type: input
+    id: provider-name
+    attributes:
+      label: Provider name
+      placeholder: Acme Speech
+    validations:
+      required: true
+  - type: input
+    id: pricing-url
+    attributes:
+      label: Pricing page URL
+      description: A link to the provider's public pricing page (ideally the exact section).
+      placeholder: https://acme.example/pricing
+    validations:
+      required: true
+  - type: dropdown
+    id: modality
+    attributes:
+      label: Modality
+      description: Which kind of API is this?
+      options:
+        - LLM (text/token pricing)
+        - TTS (text-to-speech)
+        - STT (speech-to-text)
+        - Multiple / not sure
+    validations:
+      required: true
+  - type: textarea
+    id: models
+    attributes:
+      label: Models and rates
+      description: >
+        List the models and their rates. LLM: input and output $/million tokens (plus cache if any).
+        TTS: $ per 1k characters. STT: $ per minute or per second.
+      placeholder: |
+        acme-1: input $2.00 / Mtok, output $8.00 / Mtok, 128k context
+        acme-tts-1: $0.015 / 1k chars
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / quirks
+      description: Optional. Tiered pricing, off-peak rates, streaming vs batch, voice tiers, deprecations, etc.
+    validations:
+      required: false
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Before you submit
+      options:
+        - label: I checked this provider is not already listed on the site.
+          required: false

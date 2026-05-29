@@ -13,6 +13,9 @@
 <div align="center">
   Calculate prices for calling LLM inference APIs.
 </div>
+<div align="center">
+  <a href="https://mahimailabs.github.io/voice-prices/">Browse providers and prices</a>
+</div>
 <br/>
 
 ## Features
