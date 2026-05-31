@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is the GenAI Prices project - a database and tools for calculating LLM inference API pricing. The project includes:
+This is voice-prices, a fork of [pydantic/genai-prices](https://github.com/pydantic/genai-prices) extended with first-class voice pricing. It is a database and tools for calculating inference API costs across LLM, text-to-speech (TTS), and speech-to-text (STT) providers, and it backs the VoiceGateway project. The project includes:
 
-- **Price Data**: YAML files in `prices/providers/` with pricing information for 16+ LLM providers
+- **Price Data**: YAML files in `prices/providers/` with pricing for LLM, TTS, and STT providers
 - **Python Package**: Located in `packages/python/` - a Python library for calculating costs
 - **Data Pipeline**: Tools to build JSON schemas, validate data, and update from external sources
 - **Price Sources**: Integration with Helicone, OpenRouter, LiteLLM, and other pricing sources
