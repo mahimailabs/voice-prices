@@ -7,7 +7,6 @@
   <a href="https://pypi.python.org/pypi/voice-prices"><img src="https://img.shields.io/pypi/v/voice-prices.svg" alt="PyPI"></a>
   <a href="https://github.com/mahimailabs/voice-prices"><img src="https://img.shields.io/pypi/pyversions/voice-prices.svg" alt="versions"></a>
   <a href="https://github.com/mahimailabs/voice-prices/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mahimailabs/voice-prices.svg" alt="license"></a>
-  <a href="https://logfire.pydantic.dev/docs/join-slack/"><img src="https://img.shields.io/badge/Slack-Join%20Slack-4A154B?logo=slack" alt="Join Slack" /></a>
 </div>
 
 <br/>
