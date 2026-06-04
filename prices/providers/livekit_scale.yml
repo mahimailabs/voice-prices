@@ -1,0 +1,302 @@
+# yaml-language-server: $schema=.schema.json
+name: LiveKit Inference (Scale)
+id: livekit-scale
+pricing_urls:
+  - https://livekit.io/pricing
+api_pattern: 'https://[^/]*\.livekit\.cloud'
+fallback_model_providers:
+  - livekit
+price_comments: >-
+  Scale-tier prices for LiveKit Inference. Only models whose Scale rate differs from Build/Ship
+  are listed here; LLM models (identical across all tiers) and flat-priced voice models fall back
+  to the livekit provider via fallback_model_providers. Same conversions and source as the
+  livekit provider.
+models:
+  - id: cartesia/ink-2
+    name: Ink 2
+    match:
+      equals: cartesia/ink-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.113333
+  - id: cartesia/ink-2-2026-04-15
+    name: Ink 2 (2026-04-15)
+    match:
+      equals: cartesia/ink-2-2026-04-15
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.113333
+  - id: cartesia/ink-2-latest
+    name: Ink 2 Latest
+    match:
+      equals: cartesia/ink-2-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.113333
+  - id: cartesia/ink-whisper
+    name: Ink Whisper
+    match:
+      equals: cartesia/ink-whisper
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.038333
+  - id: cartesia/sonic-2
+    name: Sonic 2
+    match:
+      equals: cartesia/sonic-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-3
+    name: Sonic 3
+    match:
+      equals: cartesia/sonic-3
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-3-2025-10-27
+    name: Sonic 3 (2025-10-27)
+    match:
+      equals: cartesia/sonic-3-2025-10-27
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-3-2026-01-12
+    name: Sonic 3 (2026-01-12)
+    match:
+      equals: cartesia/sonic-3-2026-01-12
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-3-latest
+    name: Sonic 3 Latest
+    match:
+      equals: cartesia/sonic-3-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-3.5
+    name: Sonic 3.5
+    match:
+      equals: cartesia/sonic-3.5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-3.5-2026-05-04
+    name: Sonic 3.5 (2026-05-04)
+    match:
+      equals: cartesia/sonic-3.5-2026-05-04
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-latest
+    name: Sonic Latest
+    match:
+      equals: cartesia/sonic-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-turbo
+    name: Sonic Turbo
+    match:
+      equals: cartesia/sonic-turbo
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.0375
+  - id: deepgram/aura-2
+    name: Aura-2
+    match:
+      equals: deepgram/aura-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.027
+  - id: deepgram/flux-general-en
+    name: Flux
+    match:
+      equals: deepgram/flux-general-en
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.095
+  - id: deepgram/flux-general-multi
+    name: Flux (Multilingual)
+    match:
+      equals: deepgram/flux-general-multi
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.113333
+  - id: deepgram/nova-2
+    name: Nova-2
+    match:
+      equals: deepgram/nova-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.078333
+  - id: deepgram/nova-2-conversationalai
+    name: Nova-2 Conversational AI
+    match:
+      equals: deepgram/nova-2-conversationalai
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.078333
+  - id: deepgram/nova-2-medical
+    name: Nova-2 Medical
+    match:
+      equals: deepgram/nova-2-medical
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.078333
+  - id: deepgram/nova-2-phonecall
+    name: Nova-2 Phone Call
+    match:
+      equals: deepgram/nova-2-phonecall
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.078333
+  - id: deepgram/nova-3
+    name: Nova-3 (Monolingual)
+    match:
+      equals: deepgram/nova-3
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.07
+  - id: deepgram/nova-3-medical
+    name: Nova-3 Medical
+    match:
+      equals: deepgram/nova-3-medical
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.108333
+  - id: deepgram/nova-3-multi
+    name: Nova-3 (Multilingual)
+    match:
+      equals: deepgram/nova-3-multi
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.083333
+  - id: elevenlabs/eleven_flash_v2
+    name: Eleven Flash v2
+    match:
+      equals: elevenlabs/eleven_flash_v2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.06
+  - id: elevenlabs/eleven_flash_v2_5
+    name: Eleven Flash v2.5
+    match:
+      equals: elevenlabs/eleven_flash_v2_5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.06
+  - id: elevenlabs/eleven_multilingual_v2
+    name: Eleven Multilingual v2
+    match:
+      equals: elevenlabs/eleven_multilingual_v2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.12
+  - id: elevenlabs/eleven_turbo_v2
+    name: Eleven Turbo v2
+    match:
+      equals: elevenlabs/eleven_turbo_v2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.06
+  - id: elevenlabs/eleven_turbo_v2_5
+    name: Eleven Turbo v2.5
+    match:
+      equals: elevenlabs/eleven_turbo_v2_5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.06
+  - id: elevenlabs/eleven_v3
+    name: Eleven v3
+    match:
+      equals: elevenlabs/eleven_v3
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.12
+  - id: inworld/inworld-tts-1.5-max
+    name: Realtime TTS 1.5 Max
+    match:
+      equals: inworld/inworld-tts-1.5-max
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.03
+  - id: inworld/inworld-tts-1.5-mini
+    name: Realtime TTS 1.5 Mini
+    match:
+      equals: inworld/inworld-tts-1.5-mini
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.02
+  - id: inworld/inworld-tts-2
+    name: Realtime TTS 2.0
+    match:
+      equals: inworld/inworld-tts-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.03
+  - id: rime/arcana
+    name: Arcana
+    match:
+      equals: rime/arcana
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.03
+  - id: rime/mist
+    name: Mist
+    match:
+      equals: rime/mist
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.02
+  - id: rime/mistv2
+    name: Mist v2
+    match:
+      equals: rime/mistv2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.02
+  - id: rime/mistv3
+    name: Mist v3
+    match:
+      equals: rime/mistv3
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.02

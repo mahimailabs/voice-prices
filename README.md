@@ -60,6 +60,8 @@ The following providers are currently supported:
 - [HuggingFace (publicai)](prices/providers/huggingface_publicai.yml) - 8 models
 - [HuggingFace (sambanova)](prices/providers/huggingface_sambanova.yml) - 8 models
 - [HuggingFace (together)](prices/providers/huggingface_together.yml) - 24 models
+- [LiveKit Inference](prices/providers/livekit.yml) - 78 models
+- [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) - 36 models
 - [Mistral](prices/providers/mistral.yml) - 22 models
 - [MoonshotAi](prices/providers/moonshotai.yml) - 9 models
 - [Novita](prices/providers/novita.yml) - 34 models

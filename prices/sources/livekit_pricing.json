@@ -1,0 +1,1726 @@
+{
+  "inference": {
+    "stt": [
+      {
+        "model_id": "assemblyai/u3-rt-pro",
+        "model_label": "Universal-3 Pro Streaming",
+        "creator": "AssemblyAI",
+        "provider": "AssemblyAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0075",
+            "ship": "0.0075",
+            "scale": "0.0075"
+          }
+        ]
+      },
+      {
+        "model_id": "assemblyai/universal-streaming",
+        "model_label": "Universal-Streaming",
+        "creator": "AssemblyAI",
+        "provider": "AssemblyAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0025",
+            "ship": "0.0025",
+            "scale": "0.0025"
+          }
+        ]
+      },
+      {
+        "model_id": "assemblyai/universal-streaming-multilingual",
+        "model_label": "Universal-Streaming-Multilingual",
+        "creator": "AssemblyAI",
+        "provider": "AssemblyAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0025",
+            "ship": "0.0025",
+            "scale": "0.0025"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/ink-whisper",
+        "model_label": "Ink Whisper",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.003",
+            "ship": "0.003",
+            "scale": "0.0023"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/ink-2",
+        "model_label": "Ink 2",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.009",
+            "ship": "0.009",
+            "scale": "0.0068"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/ink-2-latest",
+        "model_label": "Ink 2 Latest",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.009",
+            "ship": "0.009",
+            "scale": "0.0068"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/ink-2-2026-04-15",
+        "model_label": "Ink 2 (2026-04-15)",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.009",
+            "ship": "0.009",
+            "scale": "0.0068"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/flux-general-en",
+        "model_label": "Flux",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0065",
+            "ship": "0.0065",
+            "scale": "0.0057"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/flux-general-multi",
+        "model_label": "Flux (Multilingual)",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0078",
+            "ship": "0.0078",
+            "scale": "0.0068"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/nova-2",
+        "model_label": "Nova-2",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.0047"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/nova-2-conversationalai",
+        "model_label": "Nova-2 Conversational AI",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.0047"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/nova-2-medical",
+        "model_label": "Nova-2 Medical",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.0047"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/nova-2-phonecall",
+        "model_label": "Nova-2 Phone Call",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.0047"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/nova-3",
+        "model_label": "Nova-3 (Monolingual)",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0048",
+            "ship": "0.0048",
+            "scale": "0.0042"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/nova-3-medical",
+        "model_label": "Nova-3 Medical",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0077",
+            "ship": "0.0077",
+            "scale": "0.0065"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/nova-3-multi",
+        "model_label": "Nova-3 (Multilingual)",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.005"
+          }
+        ]
+      },
+      {
+        "model_id": "elevenlabs/scribe_v2_realtime",
+        "model_label": "Scribe v2 Realtime",
+        "creator": "ElevenLabs",
+        "provider": "ElevenLabs",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0105",
+            "ship": "0.0105",
+            "scale": "0.0105"
+          }
+        ]
+      },
+      {
+        "model_id": "speechmatics/enhanced",
+        "model_label": "Speechmatics Enhanced",
+        "creator": "Speechmatics",
+        "provider": "Speechmatics",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.0117",
+            "ship": "0.0117",
+            "scale": "0.0117"
+          }
+        ]
+      },
+      {
+        "model_id": "speechmatics/standard",
+        "model_label": "Speechmatics Standard",
+        "creator": "Speechmatics",
+        "provider": "Speechmatics",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.005",
+            "ship": "0.005",
+            "scale": "0.005"
+          }
+        ]
+      },
+      {
+        "model_id": "xai/stt-1",
+        "model_label": "Speech to Text",
+        "creator": "xAI",
+        "provider": "xAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": "usd per minute",
+            "build": "0.003333",
+            "ship": "0.003333",
+            "scale": "0.003333"
+          }
+        ]
+      }
+    ],
+    "tts": [
+      {
+        "model_id": "cartesia/sonic",
+        "model_label": "Sonic",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": true,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-2",
+        "model_label": "Sonic 2",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-3",
+        "model_label": "Sonic 3",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-3-latest",
+        "model_label": "Sonic 3 Latest",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-latest",
+        "model_label": "Sonic Latest",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-3.5",
+        "model_label": "Sonic 3.5",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-3.5-2026-05-04",
+        "model_label": "Sonic 3.5 (2026-05-04)",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-3-2025-10-27",
+        "model_label": "Sonic 3 (2025-10-27)",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-3-2026-01-12",
+        "model_label": "Sonic 3 (2026-01-12)",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "cartesia/sonic-turbo",
+        "model_label": "Sonic Turbo",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ]
+      },
+      {
+        "model_id": "deepgram/aura-2",
+        "model_label": "Aura-2",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "30",
+            "ship": "30",
+            "scale": "27"
+          }
+        ]
+      },
+      {
+        "model_id": "elevenlabs/eleven_flash_v2",
+        "model_label": "Eleven Flash v2",
+        "creator": "ElevenLabs",
+        "provider": "ElevenLabs",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "150",
+            "ship": "150",
+            "scale": "60"
+          }
+        ]
+      },
+      {
+        "model_id": "elevenlabs/eleven_flash_v2_5",
+        "model_label": "Eleven Flash v2.5",
+        "creator": "ElevenLabs",
+        "provider": "ElevenLabs",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "150",
+            "ship": "150",
+            "scale": "60"
+          }
+        ]
+      },
+      {
+        "model_id": "elevenlabs/eleven_multilingual_v2",
+        "model_label": "Eleven Multilingual v2",
+        "creator": "ElevenLabs",
+        "provider": "ElevenLabs",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "300",
+            "ship": "300",
+            "scale": "120"
+          }
+        ]
+      },
+      {
+        "model_id": "elevenlabs/eleven_turbo_v2",
+        "model_label": "Eleven Turbo v2",
+        "creator": "ElevenLabs",
+        "provider": "ElevenLabs",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "150",
+            "ship": "150",
+            "scale": "60"
+          }
+        ]
+      },
+      {
+        "model_id": "elevenlabs/eleven_turbo_v2_5",
+        "model_label": "Eleven Turbo v2.5",
+        "creator": "ElevenLabs",
+        "provider": "ElevenLabs",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "150",
+            "ship": "150",
+            "scale": "60"
+          }
+        ]
+      },
+      {
+        "model_id": "elevenlabs/eleven_v3",
+        "model_label": "Eleven v3",
+        "creator": "ElevenLabs",
+        "provider": "ElevenLabs",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "300",
+            "ship": "300",
+            "scale": "120"
+          }
+        ]
+      },
+      {
+        "model_id": "inworld/inworld-tts-2",
+        "model_label": "Realtime TTS 2.0",
+        "creator": "Inworld",
+        "provider": "Inworld",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "35",
+            "ship": "35",
+            "scale": "30"
+          }
+        ]
+      },
+      {
+        "model_id": "inworld/inworld-tts-1",
+        "model_label": "Realtime TTS",
+        "creator": "Inworld",
+        "provider": "Inworld",
+        "is_deprecated": true,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "25",
+            "ship": "25",
+            "scale": "20"
+          }
+        ]
+      },
+      {
+        "model_id": "inworld/inworld-tts-1-max",
+        "model_label": "Realtime TTS Max",
+        "creator": "Inworld",
+        "provider": "Inworld",
+        "is_deprecated": true,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "40"
+          }
+        ]
+      },
+      {
+        "model_id": "inworld/inworld-tts-1.5-max",
+        "model_label": "Realtime TTS 1.5 Max",
+        "creator": "Inworld",
+        "provider": "Inworld",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "35",
+            "ship": "35",
+            "scale": "30"
+          }
+        ]
+      },
+      {
+        "model_id": "inworld/inworld-tts-1.5-mini",
+        "model_label": "Realtime TTS 1.5 Mini",
+        "creator": "Inworld",
+        "provider": "Inworld",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "25",
+            "ship": "25",
+            "scale": "20"
+          }
+        ]
+      },
+      {
+        "model_id": "rime/arcana",
+        "model_label": "Arcana",
+        "creator": "Rime",
+        "provider": "Rime",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "40",
+            "ship": "40",
+            "scale": "30"
+          }
+        ]
+      },
+      {
+        "model_id": "rime/coda",
+        "model_label": "Coda",
+        "creator": "Rime",
+        "provider": "Rime",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "50",
+            "ship": "50",
+            "scale": "50"
+          }
+        ]
+      },
+      {
+        "model_id": "rime/mist",
+        "model_label": "Mist",
+        "creator": "Rime",
+        "provider": "Rime",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "30",
+            "ship": "30",
+            "scale": "20"
+          }
+        ]
+      },
+      {
+        "model_id": "rime/mistv2",
+        "model_label": "Mist v2",
+        "creator": "Rime",
+        "provider": "Rime",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "30",
+            "ship": "30",
+            "scale": "20"
+          }
+        ]
+      },
+      {
+        "model_id": "rime/mistv3",
+        "model_label": "Mist v3",
+        "creator": "Rime",
+        "provider": "Rime",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "30",
+            "ship": "30",
+            "scale": "20"
+          }
+        ]
+      },
+      {
+        "model_id": "xai/tts-1",
+        "model_label": "Text to Speech",
+        "creator": "xAI",
+        "provider": "xAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": "usd per 1,000,000 characters",
+            "build": "15",
+            "ship": "15",
+            "scale": "15"
+          }
+        ]
+      }
+    ],
+    "llm": [
+      {
+        "model_id": "openai/chat-latest",
+        "model_label": "ChatGPT Latest",
+        "creator": "Azure",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "5.00",
+            "ship": "5.00",
+            "scale": "5.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "30.00",
+            "ship": "30.00",
+            "scale": "30.00"
+          }
+        ]
+      },
+      {
+        "model_id": "deepseek-ai/deepseek-v3.1",
+        "model_label": "DeepSeek-V3.1",
+        "creator": "DeepSeek",
+        "provider": "Baseten",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.25",
+            "ship": "0.25",
+            "scale": "0.25"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.50",
+            "ship": "1.50",
+            "scale": "1.50"
+          }
+        ]
+      },
+      {
+        "model_id": "google/gemini-2.5-flash",
+        "model_label": "Gemini 2.5 Flash",
+        "creator": "Google",
+        "provider": "Google",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.03",
+            "ship": "0.03",
+            "scale": "0.03"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.30",
+            "ship": "0.30",
+            "scale": "0.30"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          }
+        ]
+      },
+      {
+        "model_id": "google/gemini-2.5-flash-lite",
+        "model_label": "Gemini 2.5 Flash-Lite",
+        "creator": "Google",
+        "provider": "Google",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.01",
+            "ship": "0.01",
+            "scale": "0.01"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.10",
+            "ship": "0.10",
+            "scale": "0.10"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          }
+        ]
+      },
+      {
+        "model_id": "google/gemini-2.5-pro",
+        "model_label": "Gemini 2.5 Pro",
+        "creator": "Google",
+        "provider": "Google",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.25",
+            "ship": "0.25",
+            "scale": "0.25"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "15.00",
+            "ship": "15.00",
+            "scale": "15.00"
+          }
+        ]
+      },
+      {
+        "model_id": "google/gemini-3-flash-preview",
+        "model_label": "Gemini 3 Flash",
+        "creator": "Google",
+        "provider": "Google",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.05",
+            "ship": "0.05",
+            "scale": "0.05"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "3.00",
+            "ship": "3.00",
+            "scale": "3.00"
+          }
+        ]
+      },
+      {
+        "model_id": "google/gemini-3.1-flash-lite",
+        "model_label": "Gemini 3.1 Flash Lite",
+        "creator": "Google",
+        "provider": "Google",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.025",
+            "ship": "0.025",
+            "scale": "0.025"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.25",
+            "ship": "0.25",
+            "scale": "0.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.50",
+            "ship": "1.50",
+            "scale": "1.50"
+          }
+        ]
+      },
+      {
+        "model_id": "google/gemini-3.5-flash",
+        "model_label": "Gemini 3.5 Flash",
+        "creator": "Google",
+        "provider": "Google",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.15",
+            "ship": "0.15",
+            "scale": "0.15"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.5",
+            "ship": "1.5",
+            "scale": "1.5"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "9.00",
+            "ship": "9.00",
+            "scale": "9.00"
+          }
+        ]
+      },
+      {
+        "model_id": "google/gemini-3.1-pro-preview",
+        "model_label": "Gemini 3.1 Pro",
+        "creator": "Google",
+        "provider": "Google",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "4.00",
+            "ship": "4.00",
+            "scale": "4.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "18.00",
+            "ship": "18.00",
+            "scale": "18.00"
+          }
+        ]
+      },
+      {
+        "model_id": "moonshotai/kimi-k2.5",
+        "model_label": "Kimi K2.5",
+        "creator": "Moonshot AI",
+        "provider": "Baseten",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.12",
+            "ship": "0.12",
+            "scale": "0.12"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.60",
+            "ship": "0.60",
+            "scale": "0.60"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "3.00",
+            "ship": "3.00",
+            "scale": "3.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-4.1",
+        "model_label": "GPT-4.1",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "8.00",
+            "ship": "8.00",
+            "scale": "8.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-4.1-mini",
+        "model_label": "GPT-4.1 mini",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.10",
+            "ship": "0.10",
+            "scale": "0.10"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.60",
+            "ship": "1.60",
+            "scale": "1.60"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-4.1-nano",
+        "model_label": "GPT-4.1 nano",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.03",
+            "ship": "0.03",
+            "scale": "0.03"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.10",
+            "ship": "0.10",
+            "scale": "0.10"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-4o",
+        "model_label": "GPT-4o",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-4o-mini",
+        "model_label": "GPT-4o mini",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.075",
+            "ship": "0.075",
+            "scale": "0.075"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.15",
+            "ship": "0.15",
+            "scale": "0.15"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.60",
+            "ship": "0.60",
+            "scale": "0.60"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5",
+        "model_label": "GPT-5",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.13",
+            "ship": "0.13",
+            "scale": "0.13"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5-mini",
+        "model_label": "GPT-5 mini",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.03",
+            "ship": "0.03",
+            "scale": "0.03"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.25",
+            "ship": "0.25",
+            "scale": "0.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5-nano",
+        "model_label": "GPT-5 nano",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.01",
+            "ship": "0.01",
+            "scale": "0.01"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.05",
+            "ship": "0.05",
+            "scale": "0.05"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.1",
+        "model_label": "GPT-5.1",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.13",
+            "ship": "0.13",
+            "scale": "0.13"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.1-chat-latest",
+        "model_label": "GPT-5.1 Chat",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.13",
+            "ship": "0.13",
+            "scale": "0.13"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.2",
+        "model_label": "GPT-5.2",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.18",
+            "ship": "0.18",
+            "scale": "0.18"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.75",
+            "ship": "1.75",
+            "scale": "1.75"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "14.00",
+            "ship": "14.00",
+            "scale": "14.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.2-chat-latest",
+        "model_label": "GPT-5.2 Chat",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.18",
+            "ship": "0.18",
+            "scale": "0.18"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.75",
+            "ship": "1.75",
+            "scale": "1.75"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "14.00",
+            "ship": "14.00",
+            "scale": "14.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.3-chat-latest",
+        "model_label": "GPT-5.3 Chat",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.175",
+            "ship": "0.175",
+            "scale": "0.175"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.75",
+            "ship": "1.75",
+            "scale": "1.75"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "14.00",
+            "ship": "14.00",
+            "scale": "14.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.4",
+        "model_label": "GPT-5.4",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "5.00",
+            "ship": "5.00",
+            "scale": "5.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "22.50",
+            "ship": "22.50",
+            "scale": "22.50"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.4-mini",
+        "model_label": "GPT-5.4 mini",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.075",
+            "ship": "0.075",
+            "scale": "0.075"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.75",
+            "ship": "0.75",
+            "scale": "0.75"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "4.50",
+            "ship": "4.50",
+            "scale": "4.50"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.4-nano",
+        "model_label": "GPT-5.4 nano",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.02",
+            "ship": "0.02",
+            "scale": "0.02"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.20",
+            "ship": "0.20",
+            "scale": "0.20"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-5.5",
+        "model_label": "GPT-5.5",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "1.00",
+            "ship": "1.00",
+            "scale": "1.00"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "45.00",
+            "ship": "45.00",
+            "scale": "45.00"
+          }
+        ]
+      },
+      {
+        "model_id": "openai/gpt-oss-120b",
+        "model_label": "GPT OSS 120B",
+        "creator": "OpenAI",
+        "provider": "Baseten",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.10",
+            "ship": "0.10",
+            "scale": "0.10"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          }
+        ]
+      },
+      {
+        "model_id": "xai/grok-4-1-fast-non-reasoning",
+        "model_label": "Grok 4.1 Fast",
+        "creator": "xAI",
+        "provider": "xAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.20",
+            "ship": "0.20",
+            "scale": "0.20"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          }
+        ]
+      },
+      {
+        "model_id": "xai/grok-4-1-fast-reasoning",
+        "model_label": "Grok 4.1 Fast Reasoning",
+        "creator": "xAI",
+        "provider": "xAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.20",
+            "ship": "0.20",
+            "scale": "0.20"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          }
+        ]
+      },
+      {
+        "model_id": "xai/grok-4.20-0309-non-reasoning",
+        "model_label": "Grok 4.20",
+        "creator": "xAI",
+        "provider": "xAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "6.00",
+            "ship": "6.00",
+            "scale": "6.00"
+          }
+        ]
+      },
+      {
+        "model_id": "xai/grok-4.20-0309-reasoning",
+        "model_label": "Grok 4.20 Reasoning",
+        "creator": "xAI",
+        "provider": "xAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "6.00",
+            "ship": "6.00",
+            "scale": "6.00"
+          }
+        ]
+      },
+      {
+        "model_id": "xai/grok-4.20-multi-agent-0309",
+        "model_label": "Grok 4.20 Multi-Agent",
+        "creator": "xAI",
+        "provider": "xAI",
+        "is_deprecated": false,
+        "rates": [
+          {
+            "metric": "input_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": "usd per 1,000,000 tokens",
+            "build": "6.00",
+            "ship": "6.00",
+            "scale": "6.00"
+          }
+        ]
+      }
+    ]
+  }
+}
