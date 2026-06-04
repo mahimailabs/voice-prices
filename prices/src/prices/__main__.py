@@ -7,6 +7,7 @@ from .collapse import collapse
 from .detect_deprecated import detect_deprecated
 from .freshness.run import freshness_check
 from .inject_providers import inject_providers
+from .livekit_gen import livekit_gen
 from .package_data import package_data
 from .price_discrepancies import check_for_price_discrepancies, update_price_discrepancies
 from .source_huggingface import get_huggingface_prices
@@ -33,6 +34,7 @@ def main():
         inject_providers,
         build_site,
         freshness_check,
+        livekit_gen,
     )
     if len(sys.argv) == 2:
         command = sys.argv[1]

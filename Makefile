@@ -71,6 +71,10 @@ huggingface-get: ## get huggingface prices
 ovhcloud-get: ## get ovhcloud ai endpoints prices
 	uv run -m prices get_ovhcloud_prices
 
+.PHONY: livekit-get
+livekit-get: ## regenerate livekit + livekit-scale YAMLs from prices/sources/livekit_pricing.json
+	uv run -m prices livekit_gen
+
 .PHONY: get-all-prices
 get-all-prices: helicone-get openrouter-get litellm-get simonw-prices-get huggingface-get ovhcloud-get ## get all prices
 

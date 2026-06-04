@@ -99,6 +99,13 @@
   }
   footer a { margin-right: 14px; }
   .disclaimer { margin-top: 8px; }
+  .cmp-section { margin-bottom: 22px; }
+  .cmp-section h3 { font-size: 14px; margin: 18px 0 8px; }
+  .cmp-unit { font-weight: normal; color: #888; font-size: 12px; }
+  .delta-down { color: #0a7d33; font-weight: 600; }
+  .delta-up { color: #b3261e; font-weight: 600; }
+  .cmp-only { color: #999; font-style: italic; }
+  .cmp-na { color: #aaa; }
 </style>
 </head>
 <body>
@@ -112,6 +119,7 @@
       <button class="tab" role="tab" data-modality="llm" aria-selected="true">LLM</button>
       <button class="tab" role="tab" data-modality="tts" aria-selected="false">TTS</button>
       <button class="tab" role="tab" data-modality="stt" aria-selected="false">STT</button>
+      <button class="tab" role="tab" data-modality="compare" aria-selected="false">LiveKit vs direct</button>
     </nav>
     <input id="search" class="search" type="search" placeholder="search providers and models..." aria-label="Search" />
     <a class="add" href="__ADD_PROVIDER_URL__">+ Add a provider</a>
@@ -131,10 +139,12 @@
 </footer>
 
 <script id="catalog" type="application/json">__CATALOG_JSON__</script>
+<script id="comparison" type="application/json">__COMPARISON_JSON__</script>
 <script>
 (function () {
   "use strict";
   var CATALOG = JSON.parse(document.getElementById("catalog").textContent);
+  var COMPARISON = JSON.parse(document.getElementById("comparison").textContent);
   var listEl = document.getElementById("list");
   var countEl = document.getElementById("count");
   var searchEl = document.getElementById("search");
@@ -216,7 +226,50 @@
     return { id: provider.id, name: provider.name, models: models };
   }
 
+  var CMP_ORDER = ["stt", "tts", "llm"];
+  var CMP_TITLE = { stt: "Speech-to-Text", tts: "Text-to-Speech", llm: "LLM" };
+  var CMP_UNIT = { stt: "$/min", tts: "$/1M chars", llm: "input $/Mtok" };
+  function cmpRate(n) { return (n === null || n === undefined) ? "<span class='cmp-na'>&ndash;</span>" : fmtNum(n); }
+  function cmpDirect(n) { return (n === null || n === undefined) ? "<span class='cmp-only'>LiveKit-only</span>" : fmtNum(n); }
+  function cmpScale(n) { return (n === null || n === undefined) ? "<span class='cmp-na' title='same as Build/Ship'>=</span>" : fmtNum(n); }
+  function cmpDelta(d) {
+    if (d === null || d === undefined) return "<span class='cmp-na'>&ndash;</span>";
+    var cls = d < 0 ? "delta-down" : (d > 0 ? "delta-up" : "");
+    return "<span class='" + cls + "'>" + (d > 0 ? "+" : "") + d + "%</span>";
+  }
+  function renderCompare() {
+    var q = query.trim().toLowerCase();
+    var total = 0, parts = [];
+    for (var s = 0; s < CMP_ORDER.length; s++) {
+      var modality = CMP_ORDER[s];
+      var rows = (COMPARISON[modality] || []).filter(function (r) {
+        return !q || r.id.toLowerCase().indexOf(q) !== -1 || r.name.toLowerCase().indexOf(q) !== -1;
+      });
+      if (!rows.length) continue;
+      total += rows.length;
+      var body = rows.map(function (r) {
+        return "<tr><td>" + r.id + "</td>"
+          + "<td class='num mid'>" + cmpDirect(r.direct) + "</td>"
+          + "<td class='num mid'>" + cmpRate(r.livekit) + "</td>"
+          + "<td class='num mid'>" + cmpScale(r.scale) + "</td>"
+          + "<td class='num mid'>" + cmpDelta(r.delta) + "</td></tr>";
+      }).join("");
+      parts.push("<div class='cmp-section'><h3>" + CMP_TITLE[modality]
+        + " <span class='cmp-unit'>" + CMP_UNIT[modality] + "</span></h3>"
+        + "<table><thead><tr><th>Model</th><th class='num'>Direct</th><th class='num'>LiveKit</th>"
+        + "<th class='num'>Scale</th><th class='num'>&Delta; vs direct</th></tr></thead>"
+        + "<tbody>" + body + "</tbody></table></div>");
+    }
+    countEl.innerHTML = total
+      ? (total + " LiveKit models" + (q ? " matching &ldquo;" + esc(q) + "&rdquo;" : "")
+         + " : negative &Delta; = cheaper through LiveKit; &lsquo;=&rsquo; means Scale falls back to Build/Ship")
+      : "";
+    listEl.innerHTML = total ? parts.join("")
+      : "<div class='empty'>No LiveKit models" + (q ? " match &ldquo;" + esc(q) + "&rdquo;." : ".") + "</div>";
+  }
+
   function render() {
+    if (active === "compare") { renderCompare(); return; }
     var providers = CATALOG[active] || [];
     var q = query.trim().toLowerCase();
     var shown = [];

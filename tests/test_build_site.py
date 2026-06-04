@@ -16,6 +16,7 @@ from prices.build_site import (
     DATA_JSON,
     base_prices,
     build_catalog,
+    build_comparison,
     build_site,
     detect_modality,
 )
@@ -144,6 +145,75 @@ def test_build_catalog_from_real_data_json():
                 assert (entry['id'], model['id']) not in deprecated_pairs
 
 
+# ---- LiveKit vs direct comparison -------------------------------------------
+
+COMP_DATA: list[dict[str, Any]] = [
+    {'id': 'deepgram', 'name': 'Deepgram', 'models': [{'id': 'nova-2', 'prices': {'input_audio_kseconds': 0.098333}}]},
+    {'id': 'cartesia', 'name': 'Cartesia', 'models': [{'id': 'sonic-3', 'prices': {'input_kchars': 0.04}}]},
+    {
+        'id': 'openai',
+        'name': 'OpenAI',
+        'models': [{'id': 'gpt-4o', 'prices': {'input_mtok': 2.5, 'output_mtok': 10.0}}],
+    },
+    {
+        'id': 'livekit',
+        'name': 'LiveKit Inference',
+        'models': [
+            {'id': 'deepgram/nova-2', 'name': 'Nova-2', 'prices': {'input_audio_kseconds': 0.096667}},
+            {'id': 'cartesia/sonic-2', 'name': 'Sonic 2', 'prices': {'input_kchars': 0.05}},
+            {'id': 'openai/gpt-4o', 'name': 'GPT-4o', 'prices': {'input_mtok': 2.5, 'output_mtok': 10.0}},
+            {
+                'id': 'speechmatics/standard',
+                'name': 'Speechmatics Standard',
+                'prices': {'input_audio_kseconds': 0.0833},
+            },
+        ],
+    },
+    {
+        'id': 'livekit-scale',
+        'name': 'LiveKit Inference (Scale)',
+        'models': [
+            {'id': 'deepgram/nova-2', 'name': 'Nova-2', 'prices': {'input_audio_kseconds': 0.078333}},
+            {'id': 'cartesia/sonic-2', 'name': 'Sonic 2', 'prices': {'input_kchars': 0.0375}},
+        ],
+    },
+]
+
+
+def test_build_comparison_maps_direct_and_computes_delta():
+    comp = build_comparison(COMP_DATA)
+    nova = next(r for r in comp['stt'] if r['id'] == 'deepgram/nova-2')
+    assert nova['direct'] == round(0.098333 * 60 / 1000, 6)  # $/min, auto-matched to deepgram:nova-2
+    assert nova['livekit'] == round(0.096667 * 60 / 1000, 6)
+    assert nova['scale'] == round(0.078333 * 60 / 1000, 6)
+    assert nova['delta'] == round((0.096667 - 0.098333) / 0.098333 * 100, 1)
+
+
+def test_build_comparison_alias_resolves_cartesia_to_sonic3():
+    comp = build_comparison(COMP_DATA)
+    sonic = next(r for r in comp['tts'] if r['id'] == 'cartesia/sonic-2')
+    assert sonic['direct'] == round(0.04 * 1000, 6)  # $/1M chars from the single direct cartesia model
+    assert sonic['livekit'] == round(0.05 * 1000, 6)
+    assert sonic['scale'] == round(0.0375 * 1000, 6)
+
+
+def test_build_comparison_livekit_only_has_no_direct_baseline():
+    comp = build_comparison(COMP_DATA)
+    spx = next(r for r in comp['stt'] if r['id'] == 'speechmatics/standard')
+    assert spx['direct'] is None  # speechmatics is not a direct provider
+    assert spx['delta'] is None
+    assert spx['scale'] is None  # absent from livekit-scale -> falls back to livekit
+
+
+def test_build_comparison_llm_is_pass_through():
+    comp = build_comparison(COMP_DATA)
+    gpt = next(r for r in comp['llm'] if r['id'] == 'openai/gpt-4o')
+    assert gpt['direct'] == 2.5  # input $/Mtok
+    assert gpt['livekit'] == 2.5
+    assert gpt['delta'] == 0.0
+    assert gpt['scale'] is None  # LLM never in livekit-scale
+
+
 def test_build_site_writes_valid_html(tmp_path: Path):
     out = build_site(tmp_path)
     assert out.exists()
@@ -159,3 +229,10 @@ def test_build_site_writes_valid_html(tmp_path: Path):
     catalog = json.loads(match.group(1))
     assert set(catalog) == {'llm', 'tts', 'stt'}
     assert len(catalog['llm']) > 0
+    # LiveKit vs direct comparison: tab present and data embedded for every modality.
+    assert 'data-modality="compare"' in html
+    cmp_match = re.search(r'<script id="comparison" type="application/json">(.*?)</script>', html, re.DOTALL)
+    assert cmp_match is not None
+    comparison = json.loads(cmp_match.group(1))
+    assert set(comparison) == {'llm', 'tts', 'stt'}
+    assert sum(len(rows) for rows in comparison.values()) >= 70  # ~78 LiveKit models

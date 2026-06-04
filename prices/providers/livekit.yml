@@ -1,0 +1,703 @@
+# yaml-language-server: $schema=.schema.json
+name: LiveKit Inference
+id: livekit
+pricing_urls:
+  - https://livekit.io/pricing
+api_pattern: 'https://[^/]*\.livekit\.cloud'
+provider_match:
+  contains: livekit
+price_comments: >-
+  LiveKit Inference is a gateway that resells STT, TTS, and LLM models under a single API key, at
+  its own per-model rates (distinct from buying direct from each vendor). These are the
+  Build/Ship tier prices, which LiveKit publishes identically for both plans; Scale-tier
+  discounts live in the livekit-scale provider. Resolution is by explicit provider_id
+  (VoiceGateway passes provider_id=livekit); model_match is intentionally omitted so a bare model
+  ref still resolves to the direct vendor. Conversions: STT $/min to input_audio_kseconds
+  (x1000/60); TTS $/1M chars to input_kchars (/1000); LLM $/1M tokens map 1:1. Realtime bundled
+  models and LiveKit Cloud platform per-minute rates are out of scope. Source: LiveKit
+  get_pricing_info; regenerate with make livekit-get.
+models:
+  - id: assemblyai/u3-rt-pro
+    name: Universal-3 Pro Streaming
+    match:
+      equals: assemblyai/u3-rt-pro
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.125
+  - id: assemblyai/universal-streaming
+    name: Universal-Streaming
+    match:
+      equals: assemblyai/universal-streaming
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.041667
+  - id: assemblyai/universal-streaming-multilingual
+    name: Universal-Streaming-Multilingual
+    match:
+      equals: assemblyai/universal-streaming-multilingual
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.041667
+  - id: cartesia/ink-2
+    name: Ink 2
+    match:
+      equals: cartesia/ink-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.15
+  - id: cartesia/ink-2-2026-04-15
+    name: Ink 2 (2026-04-15)
+    match:
+      equals: cartesia/ink-2-2026-04-15
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.15
+  - id: cartesia/ink-2-latest
+    name: Ink 2 Latest
+    match:
+      equals: cartesia/ink-2-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.15
+  - id: cartesia/ink-whisper
+    name: Ink Whisper
+    match:
+      equals: cartesia/ink-whisper
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.05
+  - id: cartesia/sonic-2
+    name: Sonic 2
+    match:
+      equals: cartesia/sonic-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-3
+    name: Sonic 3
+    match:
+      equals: cartesia/sonic-3
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-3-2025-10-27
+    name: Sonic 3 (2025-10-27)
+    match:
+      equals: cartesia/sonic-3-2025-10-27
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-3-2026-01-12
+    name: Sonic 3 (2026-01-12)
+    match:
+      equals: cartesia/sonic-3-2026-01-12
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-3-latest
+    name: Sonic 3 Latest
+    match:
+      equals: cartesia/sonic-3-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-3.5
+    name: Sonic 3.5
+    match:
+      equals: cartesia/sonic-3.5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-3.5-2026-05-04
+    name: Sonic 3.5 (2026-05-04)
+    match:
+      equals: cartesia/sonic-3.5-2026-05-04
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-latest
+    name: Sonic Latest
+    match:
+      equals: cartesia/sonic-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-turbo
+    name: Sonic Turbo
+    match:
+      equals: cartesia/sonic-turbo
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: deepgram/aura-2
+    name: Aura-2
+    match:
+      equals: deepgram/aura-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.03
+  - id: deepgram/flux-general-en
+    name: Flux
+    match:
+      equals: deepgram/flux-general-en
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.108333
+  - id: deepgram/flux-general-multi
+    name: Flux (Multilingual)
+    match:
+      equals: deepgram/flux-general-multi
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.13
+  - id: deepgram/nova-2
+    name: Nova-2
+    match:
+      equals: deepgram/nova-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.096667
+  - id: deepgram/nova-2-conversationalai
+    name: Nova-2 Conversational AI
+    match:
+      equals: deepgram/nova-2-conversationalai
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.096667
+  - id: deepgram/nova-2-medical
+    name: Nova-2 Medical
+    match:
+      equals: deepgram/nova-2-medical
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.096667
+  - id: deepgram/nova-2-phonecall
+    name: Nova-2 Phone Call
+    match:
+      equals: deepgram/nova-2-phonecall
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.096667
+  - id: deepgram/nova-3
+    name: Nova-3 (Monolingual)
+    match:
+      equals: deepgram/nova-3
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.08
+  - id: deepgram/nova-3-medical
+    name: Nova-3 Medical
+    match:
+      equals: deepgram/nova-3-medical
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.128333
+  - id: deepgram/nova-3-multi
+    name: Nova-3 (Multilingual)
+    match:
+      equals: deepgram/nova-3-multi
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.096667
+  - id: deepseek-ai/deepseek-v3.1
+    name: DeepSeek-V3.1
+    match:
+      equals: deepseek-ai/deepseek-v3.1
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.5
+      output_mtok: 1.5
+      cache_read_mtok: 0.25
+  - id: elevenlabs/eleven_flash_v2
+    name: Eleven Flash v2
+    match:
+      equals: elevenlabs/eleven_flash_v2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.15
+  - id: elevenlabs/eleven_flash_v2_5
+    name: Eleven Flash v2.5
+    match:
+      equals: elevenlabs/eleven_flash_v2_5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.15
+  - id: elevenlabs/eleven_multilingual_v2
+    name: Eleven Multilingual v2
+    match:
+      equals: elevenlabs/eleven_multilingual_v2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.3
+  - id: elevenlabs/eleven_turbo_v2
+    name: Eleven Turbo v2
+    match:
+      equals: elevenlabs/eleven_turbo_v2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.15
+  - id: elevenlabs/eleven_turbo_v2_5
+    name: Eleven Turbo v2.5
+    match:
+      equals: elevenlabs/eleven_turbo_v2_5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.15
+  - id: elevenlabs/eleven_v3
+    name: Eleven v3
+    match:
+      equals: elevenlabs/eleven_v3
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.3
+  - id: elevenlabs/scribe_v2_realtime
+    name: Scribe v2 Realtime
+    match:
+      equals: elevenlabs/scribe_v2_realtime
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.175
+  - id: google/gemini-2.5-flash
+    name: Gemini 2.5 Flash
+    match:
+      equals: google/gemini-2.5-flash
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.3
+      output_mtok: 2.5
+      cache_read_mtok: 0.03
+  - id: google/gemini-2.5-flash-lite
+    name: Gemini 2.5 Flash-Lite
+    match:
+      equals: google/gemini-2.5-flash-lite
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.1
+      output_mtok: 0.4
+      cache_read_mtok: 0.01
+  - id: google/gemini-2.5-pro
+    name: Gemini 2.5 Pro
+    match:
+      equals: google/gemini-2.5-pro
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 2.5
+      output_mtok: 15
+      cache_read_mtok: 0.25
+  - id: google/gemini-3-flash-preview
+    name: Gemini 3 Flash
+    match:
+      equals: google/gemini-3-flash-preview
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.5
+      output_mtok: 3
+      cache_read_mtok: 0.05
+  - id: google/gemini-3.1-flash-lite
+    name: Gemini 3.1 Flash Lite
+    match:
+      equals: google/gemini-3.1-flash-lite
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.25
+      output_mtok: 1.5
+      cache_read_mtok: 0.025
+  - id: google/gemini-3.1-pro-preview
+    name: Gemini 3.1 Pro
+    match:
+      equals: google/gemini-3.1-pro-preview
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 4
+      output_mtok: 18
+      cache_read_mtok: 0.4
+  - id: google/gemini-3.5-flash
+    name: Gemini 3.5 Flash
+    match:
+      equals: google/gemini-3.5-flash
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 1.5
+      output_mtok: 9
+      cache_read_mtok: 0.15
+  - id: inworld/inworld-tts-1.5-max
+    name: Realtime TTS 1.5 Max
+    match:
+      equals: inworld/inworld-tts-1.5-max
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.035
+  - id: inworld/inworld-tts-1.5-mini
+    name: Realtime TTS 1.5 Mini
+    match:
+      equals: inworld/inworld-tts-1.5-mini
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.025
+  - id: inworld/inworld-tts-2
+    name: Realtime TTS 2.0
+    match:
+      equals: inworld/inworld-tts-2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.035
+  - id: moonshotai/kimi-k2.5
+    name: Kimi K2.5
+    match:
+      equals: moonshotai/kimi-k2.5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.6
+      output_mtok: 3
+      cache_read_mtok: 0.12
+  - id: openai/chat-latest
+    name: ChatGPT Latest
+    match:
+      equals: openai/chat-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 5
+      output_mtok: 30
+      cache_read_mtok: 0.5
+  - id: openai/gpt-4.1
+    name: GPT-4.1
+    match:
+      equals: openai/gpt-4.1
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 2
+      output_mtok: 8
+      cache_read_mtok: 0.5
+  - id: openai/gpt-4.1-mini
+    name: GPT-4.1 mini
+    match:
+      equals: openai/gpt-4.1-mini
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.4
+      output_mtok: 1.6
+      cache_read_mtok: 0.1
+  - id: openai/gpt-4.1-nano
+    name: GPT-4.1 nano
+    match:
+      equals: openai/gpt-4.1-nano
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.1
+      output_mtok: 0.4
+      cache_read_mtok: 0.03
+  - id: openai/gpt-4o
+    name: GPT-4o
+    match:
+      equals: openai/gpt-4o
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 2.5
+      output_mtok: 10
+      cache_read_mtok: 1.25
+  - id: openai/gpt-4o-mini
+    name: GPT-4o mini
+    match:
+      equals: openai/gpt-4o-mini
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.15
+      output_mtok: 0.6
+      cache_read_mtok: 0.075
+  - id: openai/gpt-5
+    name: GPT-5
+    match:
+      equals: openai/gpt-5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 1.25
+      output_mtok: 10
+      cache_read_mtok: 0.13
+  - id: openai/gpt-5-mini
+    name: GPT-5 mini
+    match:
+      equals: openai/gpt-5-mini
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.25
+      output_mtok: 2
+      cache_read_mtok: 0.03
+  - id: openai/gpt-5-nano
+    name: GPT-5 nano
+    match:
+      equals: openai/gpt-5-nano
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.05
+      output_mtok: 0.4
+      cache_read_mtok: 0.01
+  - id: openai/gpt-5.1
+    name: GPT-5.1
+    match:
+      equals: openai/gpt-5.1
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 1.25
+      output_mtok: 10
+      cache_read_mtok: 0.13
+  - id: openai/gpt-5.1-chat-latest
+    name: GPT-5.1 Chat
+    match:
+      equals: openai/gpt-5.1-chat-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 1.25
+      output_mtok: 10
+      cache_read_mtok: 0.13
+  - id: openai/gpt-5.2
+    name: GPT-5.2
+    match:
+      equals: openai/gpt-5.2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 1.75
+      output_mtok: 14
+      cache_read_mtok: 0.18
+  - id: openai/gpt-5.2-chat-latest
+    name: GPT-5.2 Chat
+    match:
+      equals: openai/gpt-5.2-chat-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 1.75
+      output_mtok: 14
+      cache_read_mtok: 0.18
+  - id: openai/gpt-5.3-chat-latest
+    name: GPT-5.3 Chat
+    match:
+      equals: openai/gpt-5.3-chat-latest
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 1.75
+      output_mtok: 14
+      cache_read_mtok: 0.175
+  - id: openai/gpt-5.4
+    name: GPT-5.4
+    match:
+      equals: openai/gpt-5.4
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 5
+      output_mtok: 22.5
+      cache_read_mtok: 0.5
+  - id: openai/gpt-5.4-mini
+    name: GPT-5.4 mini
+    match:
+      equals: openai/gpt-5.4-mini
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.75
+      output_mtok: 4.5
+      cache_read_mtok: 0.075
+  - id: openai/gpt-5.4-nano
+    name: GPT-5.4 nano
+    match:
+      equals: openai/gpt-5.4-nano
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.2
+      output_mtok: 1.25
+      cache_read_mtok: 0.02
+  - id: openai/gpt-5.5
+    name: GPT-5.5
+    match:
+      equals: openai/gpt-5.5
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 10
+      output_mtok: 45
+      cache_read_mtok: 1
+  - id: openai/gpt-oss-120b
+    name: GPT OSS 120B
+    match:
+      equals: openai/gpt-oss-120b
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.1
+      output_mtok: 0.5
+  - id: rime/arcana
+    name: Arcana
+    match:
+      equals: rime/arcana
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.04
+  - id: rime/coda
+    name: Coda
+    match:
+      equals: rime/coda
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.05
+  - id: rime/mist
+    name: Mist
+    match:
+      equals: rime/mist
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.03
+  - id: rime/mistv2
+    name: Mist v2
+    match:
+      equals: rime/mistv2
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.03
+  - id: rime/mistv3
+    name: Mist v3
+    match:
+      equals: rime/mistv3
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.03
+  - id: speechmatics/enhanced
+    name: Speechmatics Enhanced
+    match:
+      equals: speechmatics/enhanced
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.195
+  - id: speechmatics/standard
+    name: Speechmatics Standard
+    match:
+      equals: speechmatics/standard
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.083333
+  - id: xai/grok-4-1-fast-non-reasoning
+    name: Grok 4.1 Fast
+    match:
+      equals: xai/grok-4-1-fast-non-reasoning
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.2
+      output_mtok: 0.5
+  - id: xai/grok-4-1-fast-reasoning
+    name: Grok 4.1 Fast Reasoning
+    match:
+      equals: xai/grok-4-1-fast-reasoning
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 0.2
+      output_mtok: 0.5
+  - id: xai/grok-4.20-0309-non-reasoning
+    name: Grok 4.20
+    match:
+      equals: xai/grok-4.20-0309-non-reasoning
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 2
+      output_mtok: 6
+  - id: xai/grok-4.20-0309-reasoning
+    name: Grok 4.20 Reasoning
+    match:
+      equals: xai/grok-4.20-0309-reasoning
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 2
+      output_mtok: 6
+  - id: xai/grok-4.20-multi-agent-0309
+    name: Grok 4.20 Multi-Agent
+    match:
+      equals: xai/grok-4.20-multi-agent-0309
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_mtok: 2
+      output_mtok: 6
+  - id: xai/stt-1
+    name: Speech to Text
+    match:
+      equals: xai/stt-1
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_audio_kseconds: 0.05555
+  - id: xai/tts-1
+    name: Text to Speech
+    match:
+      equals: xai/tts-1
+    prices_checked: 2026-06-04
+    pricing_source_url: https://livekit.io/pricing
+    prices:
+      input_kchars: 0.015

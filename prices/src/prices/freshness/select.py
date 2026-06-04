@@ -15,6 +15,13 @@ from prices.update import get_providers_yaml
 
 from .models import VOICE_FIELD_UNITS, WorkItem
 
+# LiveKit Inference providers are refreshed from LiveKit's structured pricing JSON via
+# `make livekit-get`, not this browser-scrape check: their pricing page is multi-tier
+# (Build/Ship/Scale) so the single-rate extractor would misread it (every Scale model would
+# false-DRIFT), and a clean structured source already exists. Their models still carry a
+# pricing_source_url (correct metadata for humans), so they are excluded explicitly here.
+_SCRAPE_EXCLUDED_PROVIDERS = {'livekit', 'livekit-scale'}
+
 
 def _model_price(model: ModelInfo) -> ModelPrice | None:
     """The flat ModelPrice for a model (the base block if conditional)."""
@@ -50,6 +57,8 @@ def select_stale(today: date, *, all: bool = False) -> list[WorkItem]:
     items: list[WorkItem] = []
     for provider_yml in get_providers_yaml().values():
         provider = provider_yml.provider
+        if provider.id in _SCRAPE_EXCLUDED_PROVIDERS:
+            continue
         for model in provider.models:
             if model.pricing_source_url is None:
                 continue
