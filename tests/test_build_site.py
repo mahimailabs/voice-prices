@@ -24,6 +24,7 @@ from prices.build_site import (
     hero_stats,
     missing_alias_targets,
     render_html,
+    unknown_prefix_providers,
 )
 
 
@@ -231,6 +232,25 @@ def test_missing_alias_targets_detects_renamed_target():
     broken = [p for p in data if p.get('id') != 'cartesia']  # drop the provider holding sonic-3
     missing = missing_alias_targets(broken)
     assert 'cartesia/sonic-2' in missing  # its alias target cartesia:sonic-3 is now gone
+
+
+def test_livekit_prefix_providers_all_exist_in_catalog():
+    # Guards the x_ai/x-ai class of typo: a prefix mapped to a missing provider would silently make
+    # every model with that prefix show as LiveKit-only even when a direct baseline exists.
+    data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
+    assert unknown_prefix_providers(data) == []
+
+
+def test_livekit_xai_grok_resolves_to_a_direct_baseline():
+    # Regression: xai/grok-4-1-fast was wrongly LiveKit-only because the prefix mapped to 'x_ai'
+    # rather than the real provider id 'x-ai'. It has an exact direct match (pass-through).
+    data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
+    comp = build_comparison(data)
+    grok = next(r for r in comp['llm'] if r['id'] == 'xai/grok-4-1-fast-non-reasoning')
+    assert grok['direct'] is not None
+    assert grok['delta'] == 0.0  # LiveKit LLM is pass-through
+    latest = next(r for r in comp['llm'] if r['id'] == 'openai/gpt-5.3-chat-latest')
+    assert latest['direct'] is not None
 
 
 def test_hero_stats_picks_a_balanced_set():

@@ -66,7 +66,7 @@ Catalog = dict[Modality, list[ProviderEntry]]
 # --- LiveKit Inference vs direct-vendor comparison ---------------------------
 
 # LiveKit slug prefixes whose direct-catalog provider id differs from the prefix.
-_LIVEKIT_PREFIX_TO_PROVIDER = {'xai': 'x_ai', 'deepseek-ai': 'deepseek'}
+_LIVEKIT_PREFIX_TO_PROVIDER = {'xai': 'x-ai', 'deepseek-ai': 'deepseek'}
 
 # Curated overrides where a LiveKit model maps to a direct-catalog model whose id is not just the
 # slug's suffix. Reviewed by hand; everything not covered here resolves by prefix + exact suffix,
@@ -100,6 +100,7 @@ LIVEKIT_DIRECT_ALIASES: dict[str, tuple[str, str]] = {
     # OpenAI chat-latest aliases map to their numbered direct model.
     'openai/gpt-5.1-chat-latest': ('openai', 'gpt-5.1'),
     'openai/gpt-5.2-chat-latest': ('openai', 'gpt-5.2'),
+    'openai/gpt-5.3-chat-latest': ('openai', 'gpt-5.3'),
 }
 
 
@@ -336,6 +337,19 @@ def missing_alias_targets(data: list[dict[str, Any]]) -> list[str]:
     return sorted(slug for slug, target in LIVEKIT_DIRECT_ALIASES.items() if target not in present)
 
 
+def unknown_prefix_providers(data: list[dict[str, Any]]) -> list[str]:
+    """Prefix-map entries whose target provider id is not in the catalog.
+
+    A non-empty result means a LiveKit slug prefix is mapped to a provider that does not exist (a
+    typo like ``x_ai`` for ``x-ai``), so every model with that prefix silently falls back to
+    "LiveKit-only" even when a direct baseline exists. ``build_site`` warns so it cannot recur quietly.
+    """
+    provider_ids = {str(provider.get('id', '')) for provider in data}
+    return sorted(
+        f'{prefix} -> {prov}' for prefix, prov in _LIVEKIT_PREFIX_TO_PROVIDER.items() if prov not in provider_ids
+    )
+
+
 def _fmt_hero_delta(delta: float) -> tuple[str, str]:
     """Render a delta percent as ``(detail, sign)``: sign-correct and never showing a misleading +0%."""
     rounded = round(delta)
@@ -427,6 +441,9 @@ def build_site(out_dir: Path | None = None) -> Path:
         print(
             f'WARNING: {len(missing)} LiveKit alias(es) point at a missing direct model (comparison baseline lost): {missing}'
         )
+    bad_prefixes = unknown_prefix_providers(data)
+    if bad_prefixes:
+        print(f'WARNING: {len(bad_prefixes)} LiveKit prefix(es) map to a provider not in the catalog: {bad_prefixes}')
     out_path = out_dir / 'index.html'
     out_path.write_text(render_html(catalog, comparison, hero_stats(comparison), date.today()))
     counts = {modality: len(entries) for modality, entries in catalog.items()}
