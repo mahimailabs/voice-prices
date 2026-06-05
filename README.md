@@ -38,7 +38,7 @@ The following providers are currently supported:
 - [Anthropic](prices/providers/anthropic.yml) - 20 models
 - [AssemblyAI](prices/providers/assemblyai.yml) - 1 models
 - [Avian](prices/providers/avian.yml) - 4 models
-- [AWS Bedrock](prices/providers/aws.yml) - 59 models
+- [AWS Bedrock](prices/providers/aws.yml) - 70 models
 - [Microsoft Azure](prices/providers/azure.yml) - 21 models
 - [Cartesia](prices/providers/cartesia.yml) - 1 models
 - [Cerebras](prices/providers/cerebras.yml) - 5 models
