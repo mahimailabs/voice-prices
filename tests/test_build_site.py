@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,7 @@ from prices.build_site import (
     build_site,
     detect_modality,
     missing_alias_targets,
+    render_html,
 )
 
 
@@ -227,6 +229,12 @@ def test_missing_alias_targets_detects_renamed_target():
     broken = [p for p in data if p.get('id') != 'cartesia']  # drop the provider holding sonic-3
     missing = missing_alias_targets(broken)
     assert 'cartesia/sonic-2' in missing  # its alias target cartesia:sonic-3 is now gone
+
+
+def test_render_html_stamps_last_updated_date():
+    out = render_html(build_catalog([]), build_comparison([]), today=date(2026, 6, 5))
+    assert 'last updated' in out
+    assert 'June 5, 2026' in out
 
 
 def test_build_site_writes_valid_html(tmp_path: Path):
