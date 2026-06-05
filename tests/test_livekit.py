@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import pydantic_core
+import pytest
 from ruamel.yaml import YAML
 
 from prices.livekit_gen import (
@@ -150,6 +151,46 @@ def test_scale_provider_only_discounted_models_with_fallback():
     assert _prices(nova).input_audio_kseconds == Decimal('0.078333')
     sonic2 = next(m for m in provider.models if m.id == 'cartesia/sonic-2')
     assert _prices(sonic2).input_kchars == Decimal('0.0375')
+
+
+# ---- input validation (loud failure instead of silent drift) ----------------
+
+
+def test_generator_rejects_ship_diverging_from_build():
+    # The generator only emits the Build/Ship tier and assumes they are equal; if LiveKit ever
+    # prices Ship differently it must fail loudly, not silently use Build.
+    bad = {
+        'stt': [
+            {
+                'model_id': 'vendor/model',
+                'model_label': 'Model',
+                'is_deprecated': False,
+                'rates': [{'metric': 'minute_usage', 'build': '0.005', 'ship': '0.006', 'scale': '0.005'}],
+            }
+        ],
+        'tts': [],
+        'llm': [],
+    }
+    with pytest.raises(ValueError, match='Ship'):
+        build_provider(bad, scale=False, checked_date=CHECKED)
+
+
+def test_generator_rejects_unknown_llm_metric():
+    # A new LLM rate metric must raise a clear error naming it, not a bare KeyError.
+    bad = {
+        'stt': [],
+        'tts': [],
+        'llm': [
+            {
+                'model_id': 'openai/x',
+                'model_label': 'X',
+                'is_deprecated': False,
+                'rates': [{'metric': 'mystery_tokens', 'build': '1', 'ship': '1', 'scale': '1'}],
+            }
+        ],
+    }
+    with pytest.raises(ValueError, match='mystery_tokens'):
+        build_provider(bad, scale=False, checked_date=CHECKED)
 
 
 # ---- end-to-end generation --------------------------------------------------

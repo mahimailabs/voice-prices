@@ -19,6 +19,7 @@ from prices.build_site import (
     build_comparison,
     build_site,
     detect_modality,
+    missing_alias_targets,
 )
 
 
@@ -212,6 +213,20 @@ def test_build_comparison_llm_is_pass_through():
     assert gpt['livekit'] == 2.5
     assert gpt['delta'] == 0.0
     assert gpt['scale'] is None  # LLM never in livekit-scale
+
+
+def test_alias_targets_all_present_in_real_catalog():
+    # Every curated LiveKit->direct alias must point at a model that exists in the catalog, so a
+    # future direct-model rename surfaces here instead of silently dropping a comparison baseline.
+    data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
+    assert missing_alias_targets(data) == []
+
+
+def test_missing_alias_targets_detects_renamed_target():
+    data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
+    broken = [p for p in data if p.get('id') != 'cartesia']  # drop the provider holding sonic-3
+    missing = missing_alias_targets(broken)
+    assert 'cartesia/sonic-2' in missing  # its alias target cartesia:sonic-3 is now gone
 
 
 def test_build_site_writes_valid_html(tmp_path: Path):

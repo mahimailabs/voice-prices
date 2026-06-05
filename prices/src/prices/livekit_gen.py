@@ -84,13 +84,30 @@ def scale_differs(entry: dict[str, Any]) -> bool:
 
 def _model_prices(entry: dict[str, Any], modality: str, tier: str) -> dict[str, Decimal]:
     rates = cast('list[dict[str, Any]]', entry['rates'])
+    model_id = entry.get('model_id')
+    # We emit a single Build/Ship tier; fail loudly if LiveKit ever prices them apart so the
+    # divergence is handled rather than silently dropped.
+    for rate in rates:
+        if Decimal(str(rate['build'])) != Decimal(str(rate['ship'])):
+            raise ValueError(
+                f'LiveKit model {model_id!r} prices Ship differently from Build '
+                f'(metric {rate.get("metric")!r}); the generator emits one Build/Ship tier and '
+                f'assumes they are equal. Resolve the divergence before regenerating.'
+            )
     if modality == 'stt':
         return {'input_audio_kseconds': stt_rate(str(rates[0][tier]))}
     if modality == 'tts':
         return {'input_kchars': tts_rate(str(rates[0][tier]))}
     prices: dict[str, Decimal] = {}
     for rate in rates:
-        prices[LLM_METRIC_FIELD[str(rate['metric'])]] = Decimal(str(rate[tier]))
+        metric = str(rate['metric'])
+        field = LLM_METRIC_FIELD.get(metric)
+        if field is None:
+            raise ValueError(
+                f'Unknown LiveKit LLM rate metric {metric!r} for model {model_id!r}; '
+                f'add it to LLM_METRIC_FIELD in livekit_gen.py.'
+            )
+        prices[field] = Decimal(str(rate[tier]))
     return prices
 
 
