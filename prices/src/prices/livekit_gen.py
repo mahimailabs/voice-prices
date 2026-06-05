@@ -126,6 +126,12 @@ def _build_models(
                     'id': entry['model_id'],
                     'name': entry['model_label'],
                     'match': {'equals': entry['model_id']},
+                    # Opt out of the collapse-models pipeline step: LiveKit has many same-price
+                    # variants (nova-2 family, sonic-3 family, gpt-5.x) whose ids start with a
+                    # shorter model's id, which collapse would merge into one or-matched row. Keeping
+                    # them distinct preserves per-model comparison rows and makes generation
+                    # idempotent (generator output == committed form, no separate collapse step).
+                    'collapse': False,
                     'prices_checked': checked_date,
                     'pricing_source_url': PRICING_URL,
                     'prices': _model_prices(entry, modality, tier),
@@ -188,6 +194,7 @@ def render_yaml(provider: dict[str, Any]) -> str:
         lines.append(f'    name: {model["name"]}')
         lines.append('    match:')
         lines.append(f'      equals: {model_id}')
+        lines.append('    collapse: false')
         lines.append(f'    prices_checked: {cast("date", model["prices_checked"]).isoformat()}')
         lines.append(f'    pricing_source_url: {model["pricing_source_url"]}')
         lines.append('    prices:')
