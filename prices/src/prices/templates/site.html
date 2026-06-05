@@ -400,14 +400,22 @@ print(price.total_price)</code><button class="copy" type="button">copy</button><
   }
   searchEl.addEventListener("input", function () { query = this.value; render(); });
 
-  // ---- hero: rotating stat (labels are HTML-escaped at build time; details are static) ----
+  // ---- hero: rotating stat (built with textContent + createElement, never innerHTML) ----
   var heroStatEl = document.getElementById("hero-stat");
   if (heroStatEl && HERO_STATS.length) {
     var heroIdx = 0, hsPaused = false;
     var showHeroStat = function () {
       var s = HERO_STATS[heroIdx];
       var cls = s.sign === "up" ? "delta-up" : (s.sign === "down" ? "delta-down" : "");
-      heroStatEl.innerHTML = "<b>" + s.label + "</b> <span class='" + cls + "'>" + s.detail + "</span>";
+      var b = document.createElement("b");
+      b.textContent = s.label;
+      var span = document.createElement("span");
+      if (cls) span.className = cls;
+      span.textContent = s.detail;
+      heroStatEl.textContent = "";
+      heroStatEl.appendChild(b);
+      heroStatEl.appendChild(document.createTextNode(" "));
+      heroStatEl.appendChild(span);
     };
     showHeroStat();
     heroStatEl.addEventListener("mouseenter", function () { hsPaused = true; });
