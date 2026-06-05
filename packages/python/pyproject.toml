@@ -1,10 +1,10 @@
 [build-system]
-requires = ["uv_build>=0.8.10"]
-build-backend = "uv_build"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
 name = "voice-prices"
-version = "0.0.8"
+dynamic = ["version"]
 description = "Calculate prices for calling LLM, STT and TTS inference APIs. Fork of pydantic/genai-prices with voice-modality support."
 readme = "README.md"
 authors = [{ name = "Mahimai Raja J", email = "mahimairaja3@gmail.com" }]
@@ -51,6 +51,9 @@ Homepage = "https://github.com/mahimailabs/voice-prices"
 Source = "https://github.com/mahimailabs/voice-prices"
 Changelog = "https://github.com/mahimailabs/voice-prices/releases"
 
-[tool.uv.build-backend]
-module-name = "voice_prices"
-module-root = ""
+[tool.hatch.version]
+source = "vcs"
+raw-options = { root = "../..", fallback_version = "0.0.0" }
+
+[tool.hatch.build.targets.wheel]
+packages = ["voice_prices"]
