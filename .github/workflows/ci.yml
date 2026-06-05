@@ -110,24 +110,27 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: release-pypi
-      url: https://pypi.org/project/voice-prices/${{ steps.check-package-version.outputs.VERSION }}
+      url: https://pypi.org/project/voice-prices/${{ steps.version.outputs.VERSION }}
     permissions:
       id-token: write
     outputs:
-      package-version: ${{ steps.check-package-version.outputs.VERSION }}
+      package-version: ${{ steps.version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
+          fetch-depth: 0 # full history + tags so hatch-vcs derives the version from the tag
 
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: false
 
-      - id: check-package-version
-        uses: samuelcolvin/check-python-version@ee87cddb8049d2694cc03badc8569765a05cef00 # v5
-        with:
-          version_file_path: packages/python/pyproject.toml
+      # The published version is derived from the git tag by hatch-vcs at build time; this step
+      # only re-exposes it (vX.Y.Z -> X.Y.Z) for the environment URL and job output.
+      - id: version
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: echo "VERSION=${REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - run: uv build --package voice-prices
 
