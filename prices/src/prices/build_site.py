@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import html
 import json
+from datetime import date
 from pathlib import Path
 from typing import Any, Literal, TypedDict, cast
 
@@ -329,15 +330,17 @@ def missing_alias_targets(data: list[dict[str, Any]]) -> list[str]:
     return sorted(slug for slug, target in LIVEKIT_DIRECT_ALIASES.items() if target not in present)
 
 
-def render_html(catalog: Catalog, comparison: Comparison) -> str:
-    """Inject the catalog + comparison JSON and add-provider URL into the template."""
+def render_html(catalog: Catalog, comparison: Comparison, today: date) -> str:
+    """Inject the catalog + comparison JSON, the add-provider URL, and the build date."""
     template = TEMPLATE_PATH.read_text()
     # Guard against an accidental </script> inside the embedded JSON.
     catalog_json = json.dumps(catalog, separators=(',', ':')).replace('</', '<\\/')
     comparison_json = json.dumps(comparison, separators=(',', ':')).replace('</', '<\\/')
+    last_updated = f'{today:%B} {today.day}, {today.year}'
     return (
         template.replace('__CATALOG_JSON__', catalog_json)
         .replace('__COMPARISON_JSON__', comparison_json)
+        .replace('__LAST_UPDATED__', last_updated)
         .replace('__ADD_PROVIDER_URL__', ADD_PROVIDER_URL)
     )
 
@@ -355,7 +358,7 @@ def build_site(out_dir: Path | None = None) -> Path:
             f'WARNING: {len(missing)} LiveKit alias(es) point at a missing direct model (comparison baseline lost): {missing}'
         )
     out_path = out_dir / 'index.html'
-    out_path.write_text(render_html(catalog, comparison))
+    out_path.write_text(render_html(catalog, comparison, date.today()))
     counts = {modality: len(entries) for modality, entries in catalog.items()}
     compared = sum(len(rows) for rows in comparison.values())
     print(f'site written to {out_path} (providers per modality: {counts}; livekit models compared: {compared})')
