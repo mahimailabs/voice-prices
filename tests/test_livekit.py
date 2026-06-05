@@ -138,6 +138,13 @@ def test_base_provider_has_all_active_models_at_build_price():
     assert _prices(gpt).cache_read_mtok == Decimal('1.25')
 
 
+def test_generated_models_opt_out_of_collapse():
+    # collapse: false keeps every LiveKit model a distinct row (the collapse-models pipeline step
+    # would otherwise merge same-price id-prefixed variants), and keeps generation idempotent.
+    provider = Provider.model_validate(build_provider(INFERENCE, scale=False, checked_date=CHECKED))
+    assert all(m.collapse is False for m in provider.models)
+
+
 def test_scale_provider_only_discounted_models_with_fallback():
     provider = Provider.model_validate(build_provider(INFERENCE, scale=True, checked_date=CHECKED))
     assert provider.id == 'livekit-scale'

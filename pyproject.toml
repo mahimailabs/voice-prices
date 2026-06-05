@@ -34,6 +34,8 @@ dev = [
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
 skip = "prices/data.json,package-lock.json"
+# "rime" is the TTS vendor Rime (not a misspelling of "rhyme").
+ignore-words-list = "rime"
 
 # https://coverage.readthedocs.io/en/latest/config.html#run
 [tool.coverage.run]

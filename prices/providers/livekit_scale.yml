@@ -16,6 +16,7 @@ models:
     name: Ink 2
     match:
       equals: cartesia/ink-2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -24,6 +25,7 @@ models:
     name: Ink 2 (2026-04-15)
     match:
       equals: cartesia/ink-2-2026-04-15
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -32,6 +34,7 @@ models:
     name: Ink 2 Latest
     match:
       equals: cartesia/ink-2-latest
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -40,6 +43,7 @@ models:
     name: Ink Whisper
     match:
       equals: cartesia/ink-whisper
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -48,6 +52,7 @@ models:
     name: Sonic 2
     match:
       equals: cartesia/sonic-2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -56,6 +61,7 @@ models:
     name: Sonic 3
     match:
       equals: cartesia/sonic-3
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -64,6 +70,7 @@ models:
     name: Sonic 3 (2025-10-27)
     match:
       equals: cartesia/sonic-3-2025-10-27
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -72,6 +79,7 @@ models:
     name: Sonic 3 (2026-01-12)
     match:
       equals: cartesia/sonic-3-2026-01-12
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -80,6 +88,7 @@ models:
     name: Sonic 3 Latest
     match:
       equals: cartesia/sonic-3-latest
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -88,6 +97,7 @@ models:
     name: Sonic 3.5
     match:
       equals: cartesia/sonic-3.5
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -96,6 +106,7 @@ models:
     name: Sonic 3.5 (2026-05-04)
     match:
       equals: cartesia/sonic-3.5-2026-05-04
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -104,6 +115,7 @@ models:
     name: Sonic Latest
     match:
       equals: cartesia/sonic-latest
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -112,6 +124,7 @@ models:
     name: Sonic Turbo
     match:
       equals: cartesia/sonic-turbo
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -120,6 +133,7 @@ models:
     name: Aura-2
     match:
       equals: deepgram/aura-2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -128,6 +142,7 @@ models:
     name: Flux
     match:
       equals: deepgram/flux-general-en
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -136,6 +151,7 @@ models:
     name: Flux (Multilingual)
     match:
       equals: deepgram/flux-general-multi
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -144,6 +160,7 @@ models:
     name: Nova-2
     match:
       equals: deepgram/nova-2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -152,6 +169,7 @@ models:
     name: Nova-2 Conversational AI
     match:
       equals: deepgram/nova-2-conversationalai
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -160,6 +178,7 @@ models:
     name: Nova-2 Medical
     match:
       equals: deepgram/nova-2-medical
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -168,6 +187,7 @@ models:
     name: Nova-2 Phone Call
     match:
       equals: deepgram/nova-2-phonecall
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -176,6 +196,7 @@ models:
     name: Nova-3 (Monolingual)
     match:
       equals: deepgram/nova-3
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -184,6 +205,7 @@ models:
     name: Nova-3 Medical
     match:
       equals: deepgram/nova-3-medical
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -192,6 +214,7 @@ models:
     name: Nova-3 (Multilingual)
     match:
       equals: deepgram/nova-3-multi
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -200,6 +223,7 @@ models:
     name: Eleven Flash v2
     match:
       equals: elevenlabs/eleven_flash_v2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -208,6 +232,7 @@ models:
     name: Eleven Flash v2.5
     match:
       equals: elevenlabs/eleven_flash_v2_5
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -216,6 +241,7 @@ models:
     name: Eleven Multilingual v2
     match:
       equals: elevenlabs/eleven_multilingual_v2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -224,6 +250,7 @@ models:
     name: Eleven Turbo v2
     match:
       equals: elevenlabs/eleven_turbo_v2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -232,6 +259,7 @@ models:
     name: Eleven Turbo v2.5
     match:
       equals: elevenlabs/eleven_turbo_v2_5
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -240,6 +268,7 @@ models:
     name: Eleven v3
     match:
       equals: elevenlabs/eleven_v3
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -248,6 +277,7 @@ models:
     name: Realtime TTS 1.5 Max
     match:
       equals: inworld/inworld-tts-1.5-max
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -256,6 +286,7 @@ models:
     name: Realtime TTS 1.5 Mini
     match:
       equals: inworld/inworld-tts-1.5-mini
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -264,6 +295,7 @@ models:
     name: Realtime TTS 2.0
     match:
       equals: inworld/inworld-tts-2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -272,6 +304,7 @@ models:
     name: Arcana
     match:
       equals: rime/arcana
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -280,6 +313,7 @@ models:
     name: Mist
     match:
       equals: rime/mist
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -288,6 +322,7 @@ models:
     name: Mist v2
     match:
       equals: rime/mistv2
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
@@ -296,6 +331,7 @@ models:
     name: Mist v3
     match:
       equals: rime/mistv3
+    collapse: false
     prices_checked: 2026-06-04
     pricing_source_url: https://livekit.io/pricing
     prices:
