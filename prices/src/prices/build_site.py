@@ -313,6 +313,22 @@ def build_comparison(data: list[dict[str, Any]]) -> Comparison:
     return comparison
 
 
+def missing_alias_targets(data: list[dict[str, Any]]) -> list[str]:
+    """LiveKit alias slugs whose curated direct-catalog target model is absent from `data`.
+
+    A non-empty result means a `LIVEKIT_DIRECT_ALIASES` entry points at a renamed or removed direct
+    model, so the comparison would silently fall back to "LiveKit-only" and lose that baseline.
+    `build_site` surfaces this as a warning so it is caught rather than degrading quietly.
+    """
+    present: set[tuple[str, str]] = set()
+    for provider in data:
+        provider_id = str(provider.get('id', ''))
+        for raw_model in cast('list[Any]', provider.get('models') or []):
+            if isinstance(raw_model, dict):
+                present.add((provider_id, str(cast('dict[str, Any]', raw_model).get('id', ''))))
+    return sorted(slug for slug, target in LIVEKIT_DIRECT_ALIASES.items() if target not in present)
+
+
 def render_html(catalog: Catalog, comparison: Comparison) -> str:
     """Inject the catalog + comparison JSON and add-provider URL into the template."""
     template = TEMPLATE_PATH.read_text()
@@ -333,6 +349,11 @@ def build_site(out_dir: Path | None = None) -> Path:
     data = cast('list[dict[str, Any]]', json.loads(DATA_JSON.read_text()))
     catalog = build_catalog(data)
     comparison = build_comparison(data)
+    missing = missing_alias_targets(data)
+    if missing:
+        print(
+            f'WARNING: {len(missing)} LiveKit alias(es) point at a missing direct model (comparison baseline lost): {missing}'
+        )
     out_path = out_dir / 'index.html'
     out_path.write_text(render_html(catalog, comparison))
     counts = {modality: len(entries) for modality, entries in catalog.items()}
