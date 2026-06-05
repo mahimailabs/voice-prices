@@ -115,6 +115,12 @@ class ComparisonRow(TypedDict):
 Comparison = dict[Modality, list[ComparisonRow]]
 
 
+class HeroStat(TypedDict):
+    label: str
+    detail: str
+    sign: str  # 'up' (markup) | 'down' (cheaper) | 'flat' (pass-through / at-cost)
+
+
 def base_prices(prices: Any) -> tuple[dict[str, float], bool, bool]:
     """Normalize a model's ``prices`` to a flat ``{field: rate}`` dict plus flags.
 
@@ -330,16 +336,68 @@ def missing_alias_targets(data: list[dict[str, Any]]) -> list[str]:
     return sorted(slug for slug, target in LIVEKIT_DIRECT_ALIASES.items() if target not in present)
 
 
-def render_html(catalog: Catalog, comparison: Comparison, today: date) -> str:
-    """Inject the catalog + comparison JSON, the add-provider URL, and the build date."""
+def hero_stats(comparison: Comparison) -> list[HeroStat]:
+    """A small, balanced set of headline stats for the homepage hero, drawn from the comparison.
+
+    Deterministic and never all-markups: the biggest gateway markup, the cheapest/at-cost model, a
+    pass-through LLM, and a distinct Scale-tier win, each a different model. Returns [] when there is
+    nothing priced to compare.
+    """
+    priced: list[tuple[float, ComparisonRow]] = []
+    for rows in comparison.values():
+        for row in rows:
+            delta = row['delta']
+            if delta is not None:
+                priced.append((delta, row))
+
+    stats: list[HeroStat] = []
+    used: set[str] = set()
+
+    def add(label: str, detail: str, sign: str) -> None:
+        if label and label not in used:
+            stats.append({'label': label, 'detail': detail, 'sign': sign})
+            used.add(label)
+
+    markups = [(d, r) for d, r in priced if d > 0]
+    if markups:
+        d, r = max(markups, key=lambda t: t[0])
+        add(r['name'], f'+{round(d)}% via LiveKit', 'up')
+
+    if priced:
+        d, r = min(priced, key=lambda t: t[0])
+        add(r['name'], f'{round(d):+d}% via LiveKit', 'down' if d < 0 else 'flat')
+
+    for row in comparison.get('llm', []):
+        if row['delta'] == 0:
+            add(row['name'], 'identical via LiveKit (pass-through)', 'flat')
+            break
+
+    best: tuple[float, str] | None = None
+    for _delta, row in priced:
+        scale, livekit, name = row['scale'], row['livekit'], row['name']
+        if scale is None or livekit is None or livekit == 0 or scale >= livekit or name in used:
+            continue
+        reduction = (livekit - scale) / livekit
+        if best is None or reduction > best[0]:
+            best = (reduction, name)
+    if best is not None:
+        add(best[1], f'{round(best[0] * 100)}% cheaper on Scale', 'down')
+
+    return stats
+
+
+def render_html(catalog: Catalog, comparison: Comparison, hero: list[HeroStat], today: date) -> str:
+    """Inject the catalog + comparison + hero-stats JSON, the add-provider URL, and the build date."""
     template = TEMPLATE_PATH.read_text()
     # Guard against an accidental </script> inside the embedded JSON.
     catalog_json = json.dumps(catalog, separators=(',', ':')).replace('</', '<\\/')
     comparison_json = json.dumps(comparison, separators=(',', ':')).replace('</', '<\\/')
+    hero_json = json.dumps(hero, separators=(',', ':')).replace('</', '<\\/')
     last_updated = f'{today:%B} {today.day}, {today.year}'
     return (
         template.replace('__CATALOG_JSON__', catalog_json)
         .replace('__COMPARISON_JSON__', comparison_json)
+        .replace('__HERO_STATS__', hero_json)
         .replace('__LAST_UPDATED__', last_updated)
         .replace('__ADD_PROVIDER_URL__', ADD_PROVIDER_URL)
     )
@@ -358,7 +416,7 @@ def build_site(out_dir: Path | None = None) -> Path:
             f'WARNING: {len(missing)} LiveKit alias(es) point at a missing direct model (comparison baseline lost): {missing}'
         )
     out_path = out_dir / 'index.html'
-    out_path.write_text(render_html(catalog, comparison, date.today()))
+    out_path.write_text(render_html(catalog, comparison, hero_stats(comparison), date.today()))
     counts = {modality: len(entries) for modality, entries in catalog.items()}
     compared = sum(len(rows) for rows in comparison.values())
     print(f'site written to {out_path} (providers per modality: {counts}; livekit models compared: {compared})')

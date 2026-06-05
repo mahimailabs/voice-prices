@@ -15,11 +15,13 @@ from typing import Any
 
 from prices.build_site import (
     DATA_JSON,
+    Comparison,
     base_prices,
     build_catalog,
     build_comparison,
     build_site,
     detect_modality,
+    hero_stats,
     missing_alias_targets,
     render_html,
 )
@@ -231,8 +233,69 @@ def test_missing_alias_targets_detects_renamed_target():
     assert 'cartesia/sonic-2' in missing  # its alias target cartesia:sonic-3 is now gone
 
 
+def test_hero_stats_picks_a_balanced_set():
+    comp: Comparison = {
+        'llm': [
+            {'id': 'openai/gpt-4o', 'name': 'GPT-4o', 'direct': 2.5, 'livekit': 2.5, 'scale': None, 'delta': 0.0},
+        ],
+        'tts': [
+            {
+                'id': 'elevenlabs/eleven_multilingual_v2',
+                'name': 'Eleven Multilingual v2',
+                'direct': 91.0,
+                'livekit': 300.0,
+                'scale': 120.0,
+                'delta': 229.7,
+            },
+            {
+                'id': 'cartesia/sonic-2',
+                'name': 'Sonic 2',
+                'direct': 40.0,
+                'livekit': 50.0,
+                'scale': 37.5,
+                'delta': 25.0,
+            },
+        ],
+        'stt': [
+            {
+                'id': 'deepgram/nova-2',
+                'name': 'Nova-2',
+                'direct': 0.0059,
+                'livekit': 0.0058,
+                'scale': 0.0047,
+                'delta': -1.7,
+            },
+        ],
+    }
+    stats = hero_stats(comp)
+    labels = [s['label'] for s in stats]
+    assert len(labels) == len(set(labels))  # distinct models
+    assert any(s['sign'] != 'up' for s in stats)  # balance: never all markups
+
+    by_label = {s['label']: s for s in stats}
+    # biggest markup
+    assert by_label['Eleven Multilingual v2'] == {
+        'label': 'Eleven Multilingual v2',
+        'detail': '+230% via LiveKit',
+        'sign': 'up',
+    }
+    # cheapest / at-cost (min delta)
+    assert by_label['Nova-2']['detail'] == '-2% via LiveKit'
+    assert by_label['Nova-2']['sign'] == 'down'
+    # pass-through LLM
+    assert 'pass-through' in by_label['GPT-4o']['detail']
+    assert by_label['GPT-4o']['sign'] == 'flat'
+    # Scale win, distinct from the markup model
+    assert by_label['Sonic 2']['detail'] == '25% cheaper on Scale'
+
+
+def test_hero_stats_empty_when_no_priced_rows():
+    empty: Comparison = {'llm': [], 'tts': [], 'stt': []}
+    assert hero_stats(empty) == []
+
+
 def test_render_html_stamps_last_updated_date():
-    out = render_html(build_catalog([]), build_comparison([]), today=date(2026, 6, 5))
+    out = render_html(build_catalog([]), build_comparison([]), [], today=date(2026, 6, 5))
     assert 'last updated' in out
     assert 'June 5, 2026' in out
 
@@ -259,3 +322,11 @@ def test_build_site_writes_valid_html(tmp_path: Path):
     comparison = json.loads(cmp_match.group(1))
     assert set(comparison) == {'llm', 'tts', 'stt'}
     assert sum(len(rows) for rows in comparison.values()) >= 70  # ~78 LiveKit models
+    # Launch hero: headline, quick-start dialog, and embedded balanced stats.
+    assert 'Know the real cost' in html
+    assert 'id="quickstart"' in html
+    assert 'Use in code' in html
+    hero_match = re.search(r'<script id="hero-stats" type="application/json">(.*?)</script>', html, re.DOTALL)
+    assert hero_match is not None
+    stats = json.loads(hero_match.group(1))
+    assert stats and any(s['sign'] != 'up' for s in stats)  # non-empty and never all-markups
