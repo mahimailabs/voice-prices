@@ -111,7 +111,7 @@
   /* hero */
   .hero { padding: 26px 18px 18px; border-bottom: 1px solid var(--line); background: var(--accent-soft); }
   .hero h1 { font-size: 22px; margin: 0 0 4px; }
-  .hero .sub { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+  .hero .sub { color: #4b5563; font-size: 14px; margin: 0 0 12px; }
   .hero-stat { font-size: 15px; font-variant-numeric: tabular-nums; min-height: 22px; margin: 0 0 14px; }
   .hero-stat b { font-weight: 600; }
   .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -133,6 +133,8 @@
   .snippet .copy.copied { color: #4ade80; border-color: #4ade80; }
   .modal-links { font-size: 13px; margin-top: 6px; }
   .modal-links a { margin-right: 14px; }
+  .btn:focus-visible, .x:focus-visible, .copy:focus-visible, .tab:focus-visible, .phead:focus-visible, .search:focus-visible, .add:focus-visible, .modal-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  body.modal-open { overflow: hidden; }
   @media (max-width: 560px) { .hero h1 { font-size: 19px; } }
 </style>
 </head>
@@ -160,7 +162,7 @@
     <p class="sub">Direct vs gateway pricing for every model: LLM, TTS, STT, and LiveKit Inference.</p>
     <p id="hero-stat" class="hero-stat"></p>
     <div class="hero-cta">
-      <button id="hero-use" class="btn primary" type="button">&lt;/&gt; Use in code</button>
+      <button id="hero-use" class="btn primary" type="button"><span aria-hidden="true">&lt;/&gt;</span> Use in code</button>
       <button id="hero-browse" class="btn" type="button">Browse prices</button>
     </div>
   </section>
@@ -420,8 +422,9 @@ print(price.total_price)</code><button class="copy" type="button">copy</button><
     showHeroStat();
     heroStatEl.addEventListener("mouseenter", function () { hsPaused = true; });
     heroStatEl.addEventListener("mouseleave", function () { hsPaused = false; });
-    if (HERO_STATS.length > 1)
-      setInterval(function () { if (!hsPaused) { heroIdx = (heroIdx + 1) % HERO_STATS.length; showHeroStat(); } }, 3500);
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (HERO_STATS.length > 1 && !reduceMotion)
+      setInterval(function () { if (!hsPaused) { heroIdx = (heroIdx + 1) % HERO_STATS.length; showHeroStat(); } }, 5000);
   } else if (heroStatEl) {
     heroStatEl.style.display = "none";
   }
@@ -430,26 +433,53 @@ print(price.total_price)</code><button class="copy" type="button">copy</button><
   var qsOverlay = document.getElementById("quickstart");
   var qsClose = qsOverlay ? qsOverlay.querySelector(".x") : null;
   var qsLastFocus = null;
-  var openQuickstart = function () { if (qsOverlay) { qsLastFocus = document.activeElement; qsOverlay.classList.add("open"); if (qsClose) qsClose.focus(); } };
-  var closeQuickstart = function () { if (qsOverlay) { qsOverlay.classList.remove("open"); if (qsLastFocus && qsLastFocus.focus) qsLastFocus.focus(); } };
+  var qsBackground = [document.querySelector("header"), document.querySelector("main"), document.querySelector("footer")];
+  var setBackgroundInert = function (on) {
+    for (var bi = 0; bi < qsBackground.length; bi++) {
+      if (!qsBackground[bi]) continue;
+      if (on) qsBackground[bi].setAttribute("inert", ""); else qsBackground[bi].removeAttribute("inert");
+    }
+  };
+  var openQuickstart = function () { if (qsOverlay) { qsLastFocus = document.activeElement; qsOverlay.classList.add("open"); document.body.classList.add("modal-open"); setBackgroundInert(true); if (qsClose) qsClose.focus(); } };
+  var closeQuickstart = function () { if (qsOverlay) { qsOverlay.classList.remove("open"); document.body.classList.remove("modal-open"); setBackgroundInert(false); if (qsLastFocus && qsLastFocus.focus) qsLastFocus.focus(); } };
   var heroUse = document.getElementById("hero-use");
   if (heroUse) heroUse.addEventListener("click", openQuickstart);
   if (qsClose) qsClose.addEventListener("click", closeQuickstart);
   if (qsOverlay) qsOverlay.addEventListener("click", function (e) { if (e.target === qsOverlay) closeQuickstart(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && qsOverlay && qsOverlay.classList.contains("open")) closeQuickstart(); });
+  document.addEventListener("keydown", function (e) {
+    if (!qsOverlay || !qsOverlay.classList.contains("open")) return;
+    if (e.key === "Escape") { closeQuickstart(); return; }
+    if (e.key === "Tab") {
+      var f = qsOverlay.querySelectorAll("button, a[href]");
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
   var heroBrowse = document.getElementById("hero-browse");
-  if (heroBrowse) heroBrowse.addEventListener("click", function () { var c = document.getElementById("count"); if (c) c.scrollIntoView({ behavior: "smooth", block: "start" }); });
+  if (heroBrowse) heroBrowse.addEventListener("click", function () { var lst = document.getElementById("list"); if (lst) lst.scrollIntoView({ behavior: "smooth", block: "start" }); });
 
   // ---- copy-to-clipboard (reads textContent, never innerHTML) ----
+  var copyFallback = function (text, done) {
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.left = "-9999px";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  };
   var copyBtns = document.querySelectorAll(".snippet .copy");
   for (var ci = 0; ci < copyBtns.length; ci++) {
+    var snip = copyBtns[ci].parentNode.parentNode;
+    var slab = snip ? snip.querySelector(".slabel") : null;
+    if (slab) copyBtns[ci].setAttribute("aria-label", "Copy: " + slab.textContent);
     copyBtns[ci].addEventListener("click", function () {
       var btn = this;
       var codeEl = btn.parentNode.querySelector("code");
       var text = codeEl ? codeEl.textContent : "";
       var done = function () { btn.classList.add("copied"); btn.textContent = "copied"; setTimeout(function () { btn.classList.remove("copied"); btn.textContent = "copy"; }, 1500); };
-      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, function () {}); }
-      else { var ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch (e) {} document.body.removeChild(ta); }
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, function () { copyFallback(text, done); }); }
+      else { copyFallback(text, done); }
     });
   }
 

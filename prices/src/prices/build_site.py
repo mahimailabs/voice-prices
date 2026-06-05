@@ -336,12 +336,22 @@ def missing_alias_targets(data: list[dict[str, Any]]) -> list[str]:
     return sorted(slug for slug, target in LIVEKIT_DIRECT_ALIASES.items() if target not in present)
 
 
-def hero_stats(comparison: Comparison) -> list[HeroStat]:
-    """A small, balanced set of headline stats for the homepage hero, drawn from the comparison.
+def _fmt_hero_delta(delta: float) -> tuple[str, str]:
+    """Render a delta percent as ``(detail, sign)``: sign-correct and never showing a misleading +0%."""
+    rounded = round(delta)
+    if rounded == 0:
+        return 'about the same via LiveKit', 'flat'
+    return f'{rounded:+d}% via LiveKit', 'up' if rounded > 0 else 'down'
 
-    Deterministic and never all-markups: the biggest gateway markup, the cheapest/at-cost model, a
-    pass-through LLM, and a distinct Scale-tier win, each a different model. Returns [] when there is
-    nothing priced to compare.
+
+def hero_stats(comparison: Comparison) -> list[HeroStat]:
+    """A small set of headline stats for the homepage hero, drawn from the comparison.
+
+    Deterministic, and balanced in practice: the biggest gateway markup, the cheapest/at-cost model,
+    a pass-through LLM, and a distinct Scale-tier win, each a different model (deduped by id, not
+    display name). Because LLMs are gateway pass-throughs (delta 0), the at-cost and pass-through
+    slots essentially always yield a non-markup stat, so the hero is not all markups. Returns [] when
+    there is nothing priced to compare.
     """
     priced: list[tuple[float, ComparisonRow]] = []
     for rows in comparison.values():
@@ -353,33 +363,35 @@ def hero_stats(comparison: Comparison) -> list[HeroStat]:
     stats: list[HeroStat] = []
     used: set[str] = set()
 
-    def add(label: str, detail: str, sign: str) -> None:
-        if label and label not in used:
-            stats.append({'label': label, 'detail': detail, 'sign': sign})
-            used.add(label)
+    def add(row: ComparisonRow, detail: str, sign: str) -> None:
+        if row['id'] not in used:
+            stats.append({'label': row['name'], 'detail': detail, 'sign': sign})
+            used.add(row['id'])
 
     markups = [(d, r) for d, r in priced if d > 0]
     if markups:
         d, r = max(markups, key=lambda t: t[0])
-        add(r['name'], f'+{round(d)}% via LiveKit', 'up')
+        detail, sign = _fmt_hero_delta(d)
+        add(r, detail, sign)
 
     if priced:
         d, r = min(priced, key=lambda t: t[0])
-        add(r['name'], f'{round(d):+d}% via LiveKit', 'down' if d < 0 else 'flat')
+        detail, sign = _fmt_hero_delta(d)
+        add(r, detail, sign)
 
     for row in comparison.get('llm', []):
         if row['delta'] == 0:
-            add(row['name'], 'identical via LiveKit (pass-through)', 'flat')
+            add(row, 'identical via LiveKit (pass-through)', 'flat')
             break
 
-    best: tuple[float, str] | None = None
+    best: tuple[float, ComparisonRow] | None = None
     for _delta, row in priced:
-        scale, livekit, name = row['scale'], row['livekit'], row['name']
-        if scale is None or livekit is None or livekit == 0 or scale >= livekit or name in used:
+        scale, livekit = row['scale'], row['livekit']
+        if scale is None or livekit is None or livekit == 0 or scale >= livekit or row['id'] in used:
             continue
         reduction = (livekit - scale) / livekit
         if best is None or reduction > best[0]:
-            best = (reduction, name)
+            best = (reduction, row)
     if best is not None:
         add(best[1], f'{round(best[0] * 100)}% cheaper on Scale', 'down')
 

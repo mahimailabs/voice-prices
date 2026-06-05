@@ -294,6 +294,43 @@ def test_hero_stats_empty_when_no_priced_rows():
     assert hero_stats(empty) == []
 
 
+def test_hero_stats_marks_a_positive_min_delta_as_up():
+    # When every priced row is a markup, the at-cost slot must still color it 'up', not 'flat'.
+    comp: Comparison = {
+        'llm': [],
+        'tts': [
+            {'id': 'v/a', 'name': 'A', 'direct': 10.0, 'livekit': 30.0, 'scale': None, 'delta': 200.0},
+            {'id': 'v/b', 'name': 'B', 'direct': 10.0, 'livekit': 11.0, 'scale': None, 'delta': 10.0},
+        ],
+        'stt': [],
+    }
+    b = next(s for s in hero_stats(comp) if s['label'] == 'B')
+    assert b['detail'] == '+10% via LiveKit'
+    assert b['sign'] == 'up'
+
+
+def test_hero_stats_near_zero_delta_reads_about_the_same():
+    comp: Comparison = {
+        'llm': [],
+        'tts': [{'id': 'v/m', 'name': 'M', 'direct': 100.0, 'livekit': 130.0, 'scale': None, 'delta': 30.0}],
+        'stt': [{'id': 's/n', 'name': 'N', 'direct': 0.005, 'livekit': 0.00498, 'scale': None, 'delta': -0.4}],
+    }
+    n = next(s for s in hero_stats(comp) if s['label'] == 'N')
+    assert n['detail'] == 'about the same via LiveKit'
+    assert n['sign'] == 'flat'
+
+
+def test_hero_stats_dedupes_by_id_not_display_name():
+    # Two different models that share a display name (different modalities) must both be eligible.
+    comp: Comparison = {
+        'llm': [{'id': 'x/nova', 'name': 'Nova', 'direct': 2.0, 'livekit': 2.0, 'scale': None, 'delta': 0.0}],
+        'tts': [{'id': 'y/nova', 'name': 'Nova', 'direct': 10.0, 'livekit': 18.0, 'scale': None, 'delta': 80.0}],
+        'stt': [],
+    }
+    nova_stats = [s for s in hero_stats(comp) if s['label'] == 'Nova']
+    assert len(nova_stats) == 2  # deduped by id; name-based dedup would drop one
+
+
 def test_render_html_stamps_last_updated_date():
     out = render_html(build_catalog([]), build_comparison([]), [], today=date(2026, 6, 5))
     assert 'last updated' in out
