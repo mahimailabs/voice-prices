@@ -247,8 +247,8 @@ def test_livekit_xai_grok_resolves_to_a_direct_baseline():
     data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
     comp = build_comparison(data)
     grok = next(r for r in comp['llm'] if r['id'] == 'xai/grok-4-1-fast-non-reasoning')
-    assert grok['direct'] is not None
-    assert grok['delta'] == 0.0  # LiveKit LLM is pass-through
+    assert grok['direct'] is not None  # the regression: was wrongly None
+    assert grok['direct'] == grok['livekit']  # resolved to the same-priced direct model (pass-through)
     latest = next(r for r in comp['llm'] if r['id'] == 'openai/gpt-5.3-chat-latest')
     assert latest['direct'] is not None
 
