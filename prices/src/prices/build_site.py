@@ -94,9 +94,8 @@ LIVEKIT_DIRECT_ALIASES: dict[str, tuple[str, str]] = {
     'deepgram/nova-3-multi': ('deepgram', 'nova-3-multilingual'),
     'deepgram/flux-general-en': ('deepgram', 'flux-general'),
     'deepgram/flux-general-multi': ('deepgram', 'flux-general'),
-    # ElevenLabs: older versions map to the nearest direct version.
-    'elevenlabs/eleven_flash_v2': ('elevenlabs', 'eleven_flash_v2_5'),
-    'elevenlabs/eleven_turbo_v2': ('elevenlabs', 'eleven_turbo_v2_5'),
+    # ElevenLabs Flash/Turbo v2 are NOT aliased to v2.5: they have their own direct entries at the
+    # same 0.5 credits/char rate, so each version compares against itself (no cross-version proxy).
     # OpenAI chat-latest aliases map to their numbered direct model.
     'openai/gpt-5.1-chat-latest': ('openai', 'gpt-5.1'),
     'openai/gpt-5.2-chat-latest': ('openai', 'gpt-5.2'),

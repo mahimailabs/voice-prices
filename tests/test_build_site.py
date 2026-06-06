@@ -16,6 +16,7 @@ from typing import Any
 from prices.build_site import (
     DATA_JSON,
     Comparison,
+    _resolve_direct,
     base_prices,
     build_catalog,
     build_comparison,
@@ -239,6 +240,41 @@ def test_livekit_prefix_providers_all_exist_in_catalog():
     # every model with that prefix show as LiveKit-only even when a direct baseline exists.
     data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
     assert unknown_prefix_providers(data) == []
+
+
+def test_elevenlabs_flash_and_turbo_v2_resolve_to_their_own_direct_entry():
+    # Flash/Turbo v2 must compare against their OWN direct price, not the v2.5 entry. A cross-version
+    # alias made the hero report a "+233% Flash v2" markup computed against Flash v2.5's price, which
+    # is indefensible (two different models). They now have explicit direct entries.
+    assert _resolve_direct('elevenlabs/eleven_flash_v2') == ('elevenlabs', 'eleven_flash_v2')
+    assert _resolve_direct('elevenlabs/eleven_turbo_v2') == ('elevenlabs', 'eleven_turbo_v2')
+
+
+def test_elevenlabs_flash_and_turbo_v2_are_distinct_priced_direct_models():
+    # The v2 and v2.5 entries share a price ($0.045/kchar) and an id prefix, so the collapse hook
+    # would merge v2.5 into v2 and drop it. Both must survive in the catalog so each LiveKit model
+    # compares against its matching version.
+    data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
+    elevenlabs = next(p for p in data if p['id'] == 'elevenlabs')
+    priced = {m['id']: m for m in elevenlabs['models'] if m.get('prices')}
+    for model_id in ('eleven_flash_v2', 'eleven_flash_v2_5', 'eleven_turbo_v2', 'eleven_turbo_v2_5'):
+        assert model_id in priced, f'{model_id} missing from the direct ElevenLabs catalog'
+        assert priced[model_id]['prices'].get('input_kchars') is not None
+
+
+def test_elevenlabs_flash_v2_markup_is_a_true_same_model_comparison():
+    # Flash v2's baseline must come from Flash v2's OWN direct entry (guaranteed by the resolve test
+    # above), not a cross-version proxy. Flash v2 and v2.5 bill the same direct rate, so both rows show
+    # the same real markup. Value-independent on purpose: the exact percentage is not pinned, because it
+    # tracks whatever direct-rate basis the catalog uses and would churn on any legitimate reprice.
+    data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
+    comp = build_comparison(data)
+    v2 = next(r for r in comp['tts'] if r['id'] == 'elevenlabs/eleven_flash_v2')
+    v2_5 = next(r for r in comp['tts'] if r['id'] == 'elevenlabs/eleven_flash_v2_5')
+    assert v2['direct'] is not None and v2_5['direct'] is not None
+    assert v2['direct'] == v2_5['direct']  # both Flash models bill the same direct rate
+    assert v2['delta'] == v2_5['delta']
+    assert v2['delta'] is not None and v2['delta'] > 0  # a real markup against its own baseline
 
 
 def test_livekit_xai_grok_resolves_to_a_direct_baseline():

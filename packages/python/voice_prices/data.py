@@ -1752,6 +1752,15 @@ providers: list[Provider] = [
         staleness_threshold_days=60,
         models=[
             ModelInfo(
+                id='eleven_flash_v2',
+                match=ClauseEquals(equals='eleven_flash_v2'),
+                name='Eleven Flash v2',
+                description='Low-latency English TTS model (the v2 predecessor of Flash v2.5). Same per-character credit rate as Flash v2.5.',
+                price_comments='Flash models bill 0.5 credits/character; at Creator tier ($0.0000909/credit) that is $0.045/kchar, the same rate as Flash v2.5.',
+                pricing_source_url='https://elevenlabs.io/pricing',
+                prices=ModelPrice(input_kchars=Decimal('0.045')),
+            ),
+            ModelInfo(
                 id='eleven_flash_v2_5',
                 match=ClauseStartsWith(starts_with='eleven_flash_v2_5'),
                 name='Eleven Flash v2.5',
@@ -1768,6 +1777,15 @@ providers: list[Provider] = [
                 price_comments='1 credit/character at Creator tier ($0.0000909/credit) = $0.091/kchar.',
                 pricing_source_url='https://elevenlabs.io/pricing',
                 prices=ModelPrice(input_kchars=Decimal('0.091')),
+            ),
+            ModelInfo(
+                id='eleven_turbo_v2',
+                match=ClauseEquals(equals='eleven_turbo_v2'),
+                name='Eleven Turbo v2',
+                description='Low-latency TTS model (the v2 predecessor of Turbo v2.5). Same per-character credit rate as Turbo v2.5.',
+                price_comments='ElevenLabs cut Turbo v2 and v2.5 to 0.5 credits/character; at Creator tier ($0.0000909/credit) that is $0.045/kchar, the same rate as Turbo v2.5.',
+                pricing_source_url='https://elevenlabs.io/pricing',
+                prices=ModelPrice(input_kchars=Decimal('0.045')),
             ),
             ModelInfo(
                 id='eleven_turbo_v2_5',
