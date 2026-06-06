@@ -2,7 +2,7 @@
 name: ElevenLabs
 id: elevenlabs
 pricing_urls:
-  - https://elevenlabs.io/pricing
+  - https://elevenlabs.io/pricing/api
 
 api_pattern: 'https://api\.elevenlabs\.io'
 
@@ -13,77 +13,71 @@ provider_match:
   contains: elevenlabs
 
 price_comments: >-
-  ElevenLabs bills in credits, not directly in dollars per character. The rates in
-  this catalog convert credits to dollars using ElevenLabs' Creator tier
-  ($11/month for 121,000 credits ~= $0.0000909 per credit), which is the most
-  common paid tier for API users. Per-model credit costs from ElevenLabs docs:
-  Turbo v2.5 and Flash v2.5 use 0.5 credits/character (API discount), Multilingual
-  v2 uses 1 credit/character. Consumers on Starter ($6/month for 30k credits,
-  ~$0.0002/credit), Pro ($99/month for 600k credits, ~$0.000165/credit), or Scale
-  ($299/month for 1.8M credits, ~$0.000166/credit) tiers should derive their own
-  effective per-character rate from these conversions.
+  ElevenLabs publishes a per-character API rate that is consistent across paid
+  subscription tiers (higher tiers include a larger character allowance, not a
+  lower per-character rate). This catalog uses that published API rate: Flash and
+  Turbo models are $0.05/kchar (0.5 credits/character) and Multilingual v2 is
+  $0.10/kchar (1 credit/character). See https://elevenlabs.io/pricing/api.
 
 models:
   - id: eleven_flash_v2
     name: Eleven Flash v2
     description: >-
       Low-latency English TTS model (the v2 predecessor of Flash v2.5). Same
-      per-character credit rate as Flash v2.5.
+      per-character API rate as Flash v2.5.
     match:
       equals: eleven_flash_v2
     prices_checked: 2026-06-06
-    pricing_source_url: https://elevenlabs.io/pricing
+    pricing_source_url: https://elevenlabs.io/pricing/api
     price_comments: >-
-      Flash models bill 0.5 credits/character; at Creator tier ($0.0000909/credit)
-      that is $0.045/kchar, the same rate as Flash v2.5.
+      $0.05/kchar via the ElevenLabs API (Flash/Turbo, 0.5 credits/character).
     prices:
-      input_kchars: 0.045
+      input_kchars: 0.05
 
   - id: eleven_flash_v2_5
     name: Eleven Flash v2.5
     description: >-
       Low-latency multilingual TTS model. Optimized for real-time / streaming
-      use cases. Same per-character credit rate as Turbo v2.5.
+      use cases. Same per-character API rate as Turbo v2.5.
     match:
       starts_with: eleven_flash_v2_5
     # collapse: false because this id starts with eleven_flash_v2 and shares its price; without the pin
     # the collapse hook would merge this row into eleven_flash_v2 and drop the v2.5 comparison.
     collapse: false
-    prices_checked: 2026-05-27
-    pricing_source_url: https://elevenlabs.io/pricing
+    prices_checked: 2026-06-06
+    pricing_source_url: https://elevenlabs.io/pricing/api
     price_comments: >-
-      0.5 credits/character at Creator tier ($0.0000909/credit) = $0.045/kchar.
+      $0.05/kchar via the ElevenLabs API (Flash/Turbo, 0.5 credits/character).
     prices:
-      input_kchars: 0.045
+      input_kchars: 0.05
 
   - id: eleven_multilingual_v2
     name: Eleven Multilingual v2
     description: >-
-      Full-fidelity multilingual TTS model. Higher per-character credit cost
-      than Turbo/Flash; used when output quality matters more than latency.
+      Full-fidelity multilingual TTS model. Higher per-character cost than
+      Turbo/Flash; used when output quality matters more than latency.
     match:
       starts_with: eleven_multilingual_v2
-    prices_checked: 2026-05-27
-    pricing_source_url: https://elevenlabs.io/pricing
+    prices_checked: 2026-06-06
+    pricing_source_url: https://elevenlabs.io/pricing/api
     price_comments: >-
-      1 credit/character at Creator tier ($0.0000909/credit) = $0.091/kchar.
+      $0.10/kchar via the ElevenLabs API (Multilingual v2, 1 credit/character).
     prices:
-      input_kchars: 0.091
+      input_kchars: 0.1
 
   - id: eleven_turbo_v2
     name: Eleven Turbo v2
     description: >-
       Low-latency TTS model (the v2 predecessor of Turbo v2.5). Same
-      per-character credit rate as Turbo v2.5.
+      per-character API rate as Turbo v2.5.
     match:
       equals: eleven_turbo_v2
     prices_checked: 2026-06-06
-    pricing_source_url: https://elevenlabs.io/pricing
+    pricing_source_url: https://elevenlabs.io/pricing/api
     price_comments: >-
-      ElevenLabs cut Turbo v2 and v2.5 to 0.5 credits/character; at Creator tier
-      ($0.0000909/credit) that is $0.045/kchar, the same rate as Turbo v2.5.
+      $0.05/kchar via the ElevenLabs API (Flash/Turbo, 0.5 credits/character).
     prices:
-      input_kchars: 0.045
+      input_kchars: 0.05
 
   - id: eleven_turbo_v2_5
     name: Eleven Turbo v2.5
@@ -95,9 +89,9 @@ models:
     # collapse: false for the same reason as eleven_flash_v2_5 above (shares price + id prefix with
     # eleven_turbo_v2, which would otherwise merge this row away).
     collapse: false
-    prices_checked: 2026-05-27
-    pricing_source_url: https://elevenlabs.io/pricing
+    prices_checked: 2026-06-06
+    pricing_source_url: https://elevenlabs.io/pricing/api
     price_comments: >-
-      0.5 credits/character at Creator tier ($0.0000909/credit) = $0.045/kchar.
+      $0.05/kchar via the ElevenLabs API (Flash/Turbo, 0.5 credits/character).
     prices:
-      input_kchars: 0.045
+      input_kchars: 0.05
