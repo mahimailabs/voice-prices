@@ -31,9 +31,6 @@ models:
       per-character credit rate as Flash v2.5.
     match:
       equals: eleven_flash_v2
-    # Flash v2 and v2.5 share a price and an id prefix; both are pinned with `collapse: false` so the
-    # collapse hook cannot merge them, keeping each version's LiveKit comparison self-contained.
-    collapse: false
     prices_checked: 2026-06-06
     pricing_source_url: https://elevenlabs.io/pricing
     price_comments: >-
@@ -49,6 +46,8 @@ models:
       use cases. Same per-character credit rate as Turbo v2.5.
     match:
       starts_with: eleven_flash_v2_5
+    # collapse: false because this id starts with eleven_flash_v2 and shares its price; without the pin
+    # the collapse hook would merge this row into eleven_flash_v2 and drop the v2.5 comparison.
     collapse: false
     prices_checked: 2026-05-27
     pricing_source_url: https://elevenlabs.io/pricing
@@ -78,8 +77,6 @@ models:
       per-character credit rate as Turbo v2.5.
     match:
       equals: eleven_turbo_v2
-    # Pinned distinct from eleven_turbo_v2_5 (see the Flash v2 note above).
-    collapse: false
     prices_checked: 2026-06-06
     pricing_source_url: https://elevenlabs.io/pricing
     price_comments: >-
@@ -95,6 +92,8 @@ models:
       cases where latency matters more than absolute audio fidelity.
     match:
       starts_with: eleven_turbo_v2_5
+    # collapse: false for the same reason as eleven_flash_v2_5 above (shares price + id prefix with
+    # eleven_turbo_v2, which would otherwise merge this row away).
     collapse: false
     prices_checked: 2026-05-27
     pricing_source_url: https://elevenlabs.io/pricing
