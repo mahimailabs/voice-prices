@@ -207,7 +207,8 @@ class Provenance(_Model):
     agent_votes: AgentVotes | None = None
     """Verifier-agent tally written by the freshness bot."""
     evidence: str | None = None
-    """Exact price string the verifier agent quoted from the vendor page."""
+    """The exact price string an agent quoted from the vendor page, recorded on a consensus run
+    (the freshness bot writes this only when a verifier agent ran alongside the extractor)."""
     source_rate: SourceRate | None = None
     """The observed rate in the vendor's own unit, for audit."""
 
@@ -247,8 +248,8 @@ class ModelInfo(_Model):
     """Date indicating when the prices were last checked for discrepancies."""
     provenance: Provenance | None = None
     """Freshness provenance emitted to consumers. `last_verified` is build-populated from
-    `prices_checked`; the rest is written by the import (`source`) and the freshness bot
-    (`agent_votes`, `evidence`, `source_rate`). See `Provenance`."""
+    `prices_checked` and `source` marks the origin; the freshness bot may add consensus details.
+    See `Provenance`. (`data_slim` keeps only `source` + `last_verified`.)"""
     collapse: bool = Field(default=True, exclude=True)
     """Flag indicating whether this price should be collapsed into other prices."""
     deprecated: bool | None = None

@@ -1,27 +1,5 @@
 {
   "$defs": {
-    "AgentVotes": {
-      "additionalProperties": false,
-      "description": "Verifier-agent vote tally recorded by the freshness bot (never a human date).",
-      "properties": {
-        "approve": {
-          "description": "Number of independent agents that approved the extracted rate.",
-          "title": "Approve",
-          "type": "integer"
-        },
-        "total": {
-          "description": "Total number of agents that voted.",
-          "title": "Total",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "approve",
-        "total"
-      ],
-      "title": "AgentVotes",
-      "type": "object"
-    },
     "ArrayMatch": {
       "additionalProperties": false,
       "properties": {
@@ -305,7 +283,7 @@
         },
         "provenance": {
           "$ref": "#/$defs/Provenance",
-          "description": "Freshness provenance emitted to consumers. `last_verified` is build-populated from\n`prices_checked`; the rest is written by the import (`source`) and the freshness bot\n(`agent_votes`, `evidence`, `source_rate`). See `Provenance`."
+          "description": "Freshness provenance emitted to consumers. `last_verified` is build-populated from\n`prices_checked` and `source` marks the origin; the freshness bot may add consensus details.\nSee `Provenance`. (`data_slim` keeps only `source` + `last_verified`.)"
         },
         "deprecated": {
           "type": "boolean",
@@ -578,32 +556,6 @@
         "models"
       ],
       "title": "Provider",
-      "type": "object"
-    },
-    "SourceRate": {
-      "additionalProperties": false,
-      "description": "The rate as observed on the vendor page, in the vendor's own unit, for audit.",
-      "properties": {
-        "value": {
-          "description": "Observed rate value in the source unit.",
-          "title": "Value",
-          "type": "number"
-        },
-        "unit": {
-          "description": "Source unit: `per_kchar` maps to `input_kchars` (TTS), `per_ksecond` maps to `input_audio_kseconds` (STT).",
-          "enum": [
-            "per_kchar",
-            "per_ksecond"
-          ],
-          "title": "Unit",
-          "type": "string"
-        }
-      },
-      "required": [
-        "value",
-        "unit"
-      ],
-      "title": "SourceRate",
       "type": "object"
     },
     "StartDateConstraint": {

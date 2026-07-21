@@ -121,6 +121,9 @@ def write_prices(providers: list[Provider], prices_file: str, *, slim: bool = Fa
             provenance_props.pop('evidence', None)
             provenance_props.pop('source_rate', None)
             provenance_props.pop('agent_votes', None)
+            # agent_votes / source_rate were the only refs to these defs; drop them so slim carries no orphans.
+            for orphan in ('AgentVotes', 'SourceRate'):
+                data_json_schema['$defs'].pop(orphan, None)
 
     prices_json_schema_path = prices_json_path.with_suffix('.schema.json')
     prices_json_schema_path.write_bytes(pydantic_core.to_json(data_json_schema, indent=2) + b'\n')

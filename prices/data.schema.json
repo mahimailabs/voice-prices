@@ -331,7 +331,7 @@
         },
         "provenance": {
           "$ref": "#/$defs/Provenance",
-          "description": "Freshness provenance emitted to consumers. `last_verified` is build-populated from\n`prices_checked`; the rest is written by the import (`source`) and the freshness bot\n(`agent_votes`, `evidence`, `source_rate`). See `Provenance`."
+          "description": "Freshness provenance emitted to consumers. `last_verified` is build-populated from\n`prices_checked` and `source` marks the origin; the freshness bot may add consensus details.\nSee `Provenance`. (`data_slim` keeps only `source` + `last_verified`.)"
         },
         "deprecated": {
           "type": "boolean",
@@ -492,7 +492,7 @@
         },
         "evidence": {
           "type": "string",
-          "description": "Exact price string the verifier agent quoted from the vendor page.",
+          "description": "The exact price string an agent quoted from the vendor page, recorded on a consensus run\n(the freshness bot writes this only when a verifier agent ran alongside the extractor).",
           "title": "Evidence"
         },
         "source_rate": {

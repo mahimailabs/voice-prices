@@ -723,7 +723,7 @@ class Provenance:
     agent_votes: AgentVotes | None = None
     """Verifier-agent tally written by the freshness bot."""
     evidence: str | None = None
-    """Exact price string the verifier agent quoted from the vendor page."""
+    """The exact price string an agent quoted from the vendor page, recorded on a consensus run."""
     source_rate: SourceRate | None = None
     """The observed rate in the vendor's own unit, for audit."""
 
