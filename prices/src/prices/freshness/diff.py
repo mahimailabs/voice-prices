@@ -104,10 +104,55 @@ def _within_tolerance(a: float, b: float) -> bool:
     return abs(a - b) <= max(1e-6, 1e-4 * abs(b))
 
 
-def classify(item: WorkItem, render: RenderResult, extraction: Extraction | None) -> Finding:
-    """Categorize one work item. Network/LLM results come in; a Finding goes out."""
+def _verifier_agrees(
+    item: WorkItem, primary_our_value: float, rendered_text: str, verifier: Extraction | None
+) -> tuple[bool, str]:
+    """A second, independent agent must reach the same reading through the same guards.
 
-    def finding(cat: Category, reason: str, proposed: Decimal | None = None, src: float | None = None) -> Finding:
+    Decorrelation (Codex #3) is provided upstream (distinct prompt, ideally a different provider);
+    here the verifier must independently pass every guard AND its rate, once converted to our unit,
+    must agree with the primary within tolerance. Anything less downgrades the finding to UNVERIFIED,
+    so a plausible single-agent misread (or a quote bound to the wrong row/unit, Codex #4) cannot
+    become a proposed change on its own.
+    """
+    if verifier is None or not verifier.found:
+        return False, 'verifier did not return a reading'
+    if verifier.confidence != 'high':
+        return False, f'verifier confidence is {verifier.confidence}'
+    passed, why = _guards_pass(item, verifier, rendered_text)
+    if not passed:
+        return False, f'verifier guard failed: {why}'
+    assert verifier.rate_value is not None and verifier.rate_unit is not None
+    verifier_value = to_our_unit(verifier.rate_value, verifier.rate_unit, item.field)
+    if verifier_value is None:  # pragma: no cover - unreachable once _guards_pass checks convertibility
+        return False, 'verifier rate not convertible'
+    if not _within_tolerance(verifier_value, primary_our_value):
+        return False, f'agents disagree: {primary_our_value:.6g} vs {verifier_value:.6g}'
+    return True, ''
+
+
+def classify(
+    item: WorkItem,
+    render: RenderResult,
+    extraction: Extraction | None,
+    verifier_extraction: Extraction | None = None,
+    *,
+    require_verifier: bool = False,
+) -> Finding:
+    """Categorize one work item. Network/LLM results come in; a Finding goes out.
+
+    When ``require_verifier`` is set, a MATCH/DRIFT is proposed only if a second independent agent
+    agrees (consensus runs AFTER the existing six guards, it does not replace any of them); a
+    disagreement yields UNVERIFIED. When it is not set, behavior is exactly the single-agent pipeline.
+    """
+
+    def finding(
+        cat: Category,
+        reason: str,
+        proposed: Decimal | None = None,
+        src: float | None = None,
+        votes: tuple[int, int] | None = None,
+    ) -> Finding:
         return Finding(
             item=item,
             category=cat,
@@ -116,6 +161,7 @@ def classify(item: WorkItem, render: RenderResult, extraction: Extraction | None
             observed_source_rate=src,
             observed_source_unit=(extraction.rate_unit if extraction else None),
             reason=reason,
+            agent_votes=votes,
         )
 
     # Page-level problems first.
@@ -141,8 +187,19 @@ def classify(item: WorkItem, render: RenderResult, extraction: Extraction | None
     assert our_value is not None  # guard 5 already ensured convertibility
     stored = float(item.current_rate)
 
+    # Consensus gate: a second independent agent must agree on the observed reading before it can
+    # become a MATCH or a proposed DRIFT. Runs after the six guards; disagreement -> UNVERIFIED.
+    votes: tuple[int, int] | None = None
+    if require_verifier:
+        agrees, why = _verifier_agrees(item, our_value, render.text, verifier_extraction)
+        if not agrees:
+            return finding(
+                Category.UNVERIFIED, f'no verifier consensus: {why}', src=extraction.rate_value, votes=(1, 2)
+            )
+        votes = (2, 2)
+
     if _within_tolerance(our_value, stored):
-        return finding(Category.MATCH, 'rate matches', src=extraction.rate_value)
+        return finding(Category.MATCH, 'rate matches', src=extraction.rate_value, votes=votes)
 
     # A >10x swing is almost always a unit error, not a real price move.
     if stored > 0 and (our_value > 10 * stored or our_value < stored / 10):
@@ -150,6 +207,7 @@ def classify(item: WorkItem, render: RenderResult, extraction: Extraction | None
             Category.UNVERIFIED,
             f'normalized rate {our_value:.6g} differs from stored {stored:.6g} by more than 10x (likely a unit error)',
             src=extraction.rate_value,
+            votes=votes,
         )
 
     proposed = Decimal(format(our_value, '.6f')).normalize()
@@ -158,4 +216,5 @@ def classify(item: WorkItem, render: RenderResult, extraction: Extraction | None
         f'rate changed: stored {stored:.6g} -> observed {our_value:.6g}',
         proposed=proposed,
         src=extraction.rate_value,
+        votes=votes,
     )

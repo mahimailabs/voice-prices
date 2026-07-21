@@ -11,6 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
+from typing import Any
 
 from prices.prices_types import ModelPrice
 from prices.update import ProviderYaml
@@ -25,6 +26,8 @@ class DriftEdit:
     field: str
     proposed_rate: Decimal
     note: str
+    agent_votes: tuple[int, int] | None = None  # written to provenance so consensus is auditable
+    evidence: str | None = None  # the verifier's quoted price string
 
 
 @dataclass
@@ -62,7 +65,15 @@ def build_report(findings: list[Finding], today: date) -> Report:
         ref = f'{f.item.provider_id}/{f.item.model_id}'
         if f.category is Category.DRIFT and f.proposed_rate is not None:
             edits.append(
-                DriftEdit(f.item.provider_id, f.item.model_id, f.item.field, f.proposed_rate, _drift_note(f, today))
+                DriftEdit(
+                    f.item.provider_id,
+                    f.item.model_id,
+                    f.item.field,
+                    f.proposed_rate,
+                    _drift_note(f, today),
+                    agent_votes=f.agent_votes,
+                    evidence=(f.extraction.evidence_quote if f.extraction else None),
+                )
             )
             drift_rows.append(
                 f'| {ref} | `{f.item.field}` | {f.item.current_rate} | {f.proposed_rate} | '
@@ -113,6 +124,22 @@ def build_report(findings: list[Finding], today: date) -> Report:
     return Report(counts=counts, drift_edits=edits, pr_title=title, pr_body='\n'.join(body_parts))
 
 
+def _record_provenance(model_yaml: dict[str, Any], edit: DriftEdit) -> None:
+    """Record the verifier consensus (votes + the quoted evidence) into the model's provenance.
+
+    Never touches `source` or `prices_checked`: the bot does not claim a model verified; a human does.
+    """
+    if edit.agent_votes is None and not edit.evidence:
+        return
+    provenance: dict[str, Any] = model_yaml.get('provenance') or {}
+    if edit.agent_votes is not None:
+        approve, total = edit.agent_votes
+        provenance['agent_votes'] = {'approve': approve, 'total': total}
+    if edit.evidence:
+        provenance['evidence'] = edit.evidence
+    model_yaml['provenance'] = provenance
+
+
 def apply_edits(report: Report, providers: dict[str, ProviderYaml]) -> set[str]:
     """Apply DRIFT rate edits to the given provider YAMLs and save them.
 
@@ -131,6 +158,7 @@ def apply_edits(report: Report, providers: dict[str, ProviderYaml]) -> set[str]:
         for m in pyaml.data['models']:
             if m['id'] == edit.model_id:
                 m['price_comments'] = edit.note
+                _record_provenance(m, edit)
                 break
         changed.add(edit.provider_id)
     for provider_id in changed:
