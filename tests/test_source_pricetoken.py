@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from decimal import Decimal
+from pathlib import Path
 
 import pytest
 
@@ -8,10 +9,15 @@ from prices.prices_types import ClauseEquals, ModelPrice
 from prices.source_pricetoken import (
     IMPORT_ATTRIBUTION,
     PROVIDER_MAP,
+    ProviderTarget,
+    apply_import,
     convert_model,
     convert_stt_rate,
     convert_tts_rate,
+    plan_import,
+    render_report,
 )
+from prices.update import ProviderYaml
 
 
 def test_tts_rate_conversion():
@@ -100,3 +106,102 @@ def test_provider_map_targets():
     for pt_id, target in PROVIDER_MAP.items():
         if target.is_new:
             assert target.name, f'{pt_id} new provider needs a name'
+
+
+def test_default_provider_map_refuses_everything_until_urls_authored():
+    # As shipped, no target has a pricing_source_url, so a live run imports nothing (safe by default).
+    tts = [{'modelId': 'a', 'provider': 'deepgram', 'costPerMChars': 30}]
+    plans, _ = plan_import({'tts': tts, 'stt': []}, {})
+    assert plans['deepgram'].refused_reason is not None
+    assert plans['deepgram'].to_add == []
+
+
+_MAP = {
+    'deepgram': ProviderTarget('deepgram', is_new=False, pricing_source_url='https://deepgram.com/pricing'),
+    'amazon': ProviderTarget(
+        'amazon_polly',
+        is_new=True,
+        name='Amazon Polly',
+        api_pattern=r'.*polly.*',
+        pricing_source_url='https://aws.amazon.com/polly/pricing/',
+    ),
+    'azure': ProviderTarget('azure_speech', is_new=True, name='Azure Speech'),  # unconfigured -> refused
+}
+
+
+def test_plan_import_routes_dedups_and_refuses():
+    tts = [
+        {'modelId': 'nova-voice', 'provider': 'deepgram', 'costPerMChars': 30, 'status': 'active'},
+        {'modelId': 'aura-2', 'provider': 'deepgram', 'costPerMChars': 30},  # already present -> skipped
+        {'modelId': 'amazon-polly-generative', 'provider': 'amazon', 'costPerMChars': 30},
+        {'modelId': 'azure-neural', 'provider': 'azure', 'costPerMChars': 16},  # refused (no url)
+        {'modelId': 'x', 'provider': 'unknownprov', 'costPerMChars': 5},  # unmapped
+    ]
+    plans, unmapped = plan_import({'tts': tts, 'stt': []}, {'deepgram': {'aura-2'}}, provider_map=_MAP)
+
+    assert [m.id for m in plans['deepgram'].to_add] == ['nova-voice']
+    assert plans['deepgram'].skipped_existing == ['aura-2']
+    assert str(plans['deepgram'].to_add[0].pricing_source_url) == 'https://deepgram.com/pricing'
+
+    assert [m.id for m in plans['amazon_polly'].to_add] == ['amazon-polly-generative']
+    assert plans['azure_speech'].refused_reason is not None
+    assert plans['azure_speech'].to_add == []
+    assert unmapped == ['unknownprov']
+
+
+def test_render_report_mentions_refusal_and_unmapped():
+    tts = [
+        {'modelId': 'nova-voice', 'provider': 'deepgram', 'costPerMChars': 30},
+        {'modelId': 'azure-neural', 'provider': 'azure', 'costPerMChars': 16},
+        {'modelId': 'x', 'provider': 'unknownprov', 'costPerMChars': 5},
+    ]
+    plans, unmapped = plan_import({'tts': tts, 'stt': []}, {}, provider_map=_MAP)
+    report = render_report(plans, unmapped)
+    assert 'REFUSED' in report
+    assert 'unknownprov' in report
+    assert '+1 to add' in report
+
+
+def test_apply_writes_new_provider_file(tmp_path: Path):
+    tts = [{'modelId': 'amazon-polly-generative', 'provider': 'amazon', 'costPerMChars': 30, 'status': 'active'}]
+    plans, _ = plan_import({'tts': tts, 'stt': []}, {}, provider_map={'amazon': _MAP['amazon']})
+    apply_import(plans, providers_dir=tmp_path)
+
+    written = tmp_path / 'amazon_polly.yml'
+    assert written.exists()
+    provider = ProviderYaml(written).provider
+    assert provider.id == 'amazon_polly'
+    [model] = provider.models
+    assert model.id == 'amazon-polly-generative'
+    assert model.provenance is not None and model.provenance.source == 'imported'
+    assert isinstance(model.prices, ModelPrice) and model.prices.input_kchars == Decimal('0.03')
+    assert model.prices_checked is None  # imported, unverified
+
+
+def test_apply_appends_to_existing_without_clobbering(tmp_path: Path):
+    existing = tmp_path / 'deepgram.yml'
+    existing.write_text(
+        'id: deepgram\n'
+        'name: Deepgram\n'
+        'api_pattern: .*deepgram.*\n'
+        'models:\n'
+        '  - id: aura-existing\n'
+        '    match:\n'
+        '      equals: aura-existing\n'
+        '    prices:\n'
+        '      input_kchars: 0.015\n'
+    )
+    tts = [
+        {'modelId': 'nova-new', 'provider': 'deepgram', 'costPerMChars': 30},
+        {'modelId': 'aura-existing', 'provider': 'deepgram', 'costPerMChars': 99},  # collides -> never-clobber
+    ]
+    plans, _ = plan_import(
+        {'tts': tts, 'stt': []}, {'deepgram': {'aura-existing'}}, provider_map={'deepgram': _MAP['deepgram']}
+    )
+    apply_import(plans, providers_dir=tmp_path)
+
+    models = {m.id: m for m in ProviderYaml(existing).provider.models}
+    assert set(models) == {'aura-existing', 'nova-new'}
+    # the existing verified rate is untouched, not overwritten by the colliding import
+    assert isinstance(models['aura-existing'].prices, ModelPrice)
+    assert models['aura-existing'].prices.input_kchars == Decimal('0.015')

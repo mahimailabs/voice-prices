@@ -16,9 +16,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Any, Literal
+from pathlib import Path
+from typing import Any, Literal, cast
 
-from .prices_types import ClauseEquals, ModelInfo, ModelPrice, Provenance
+from .prices_types import ClauseEquals, ModelInfo, ModelPrice, Provenance, Provider
+from .update import ProviderYaml, ProviderYamlDict, get_provider_yaml_string, get_providers_yaml
+from .utils import package_dir
+
+#: Raw GitHub location of PriceToken's MIT-licensed registry.
+PRICETOKEN_RAW = 'https://raw.githubusercontent.com/affromero/pricetoken/main/registry'
 
 Modality = Literal['tts', 'stt']
 
@@ -64,6 +70,7 @@ PROVIDER_MAP: dict[str, ProviderTarget] = {
     'azure': ProviderTarget('azure_speech', is_new=True, name='Azure AI Speech'),
     'google-cloud': ProviderTarget('google_cloud', is_new=True, name='Google Cloud Speech'),
     'amazon': ProviderTarget('amazon_polly', is_new=True, name='Amazon Polly'),
+    'mistral': ProviderTarget('mistral_speech', is_new=True, name='Mistral (Voxtral)'),
     # zero-collision new providers
     'fal': ProviderTarget('fal', is_new=True, name='fal'),
     'playht': ProviderTarget('playht', is_new=True, name='PlayHT'),
@@ -81,7 +88,7 @@ def convert_stt_rate(cost_per_minute: Decimal | float | int | str) -> Decimal:
     return Decimal(str(cost_per_minute)) * Decimal(1000) / Decimal(60)
 
 
-def convert_model(pt_model: dict[str, Any], modality: Modality) -> ModelInfo:
+def convert_model(pt_model: dict[str, Any], modality: Modality, *, pricing_source_url: str | None = None) -> ModelInfo:
     """Convert one PriceToken registry entry into an unverified voice-prices ``ModelInfo``.
 
     Fails closed on any pricing structure other than the expected single field for the modality,
@@ -113,8 +120,143 @@ def convert_model(pt_model: dict[str, Any], modality: Modality) -> ModelInfo:
         id=model_id,
         match=ClauseEquals(equals=model_id),
         name=pt_model.get('displayName'),
+        pricing_source_url=cast(Any, pricing_source_url),
         deprecated=deprecated,
         price_comments=IMPORT_ATTRIBUTION,
         prices=prices,
         provenance=Provenance(source='imported'),
     )
+
+
+@dataclass
+class ImportPlan:
+    """What the import would do for one target provider (never mutates anything itself)."""
+
+    target: ProviderTarget
+    to_add: list[ModelInfo]
+    skipped_existing: list[str]
+    refused_reason: str | None = None
+
+
+def plan_import(
+    models_by_modality: dict[Modality, list[dict[str, Any]]],
+    existing_model_ids: dict[str, set[str]],
+    *,
+    provider_map: dict[str, ProviderTarget] = PROVIDER_MAP,
+) -> tuple[dict[str, ImportPlan], list[str]]:
+    """Compute the import plan without writing anything.
+
+    A target is REFUSED (nothing added) until its ``pricing_source_url`` (and, for a new provider,
+    its ``api_pattern``) is authored, so unverified rates cannot land before the config + human
+    verification are done. Models already present in the target provider are skipped (never-clobber).
+    Returns (plans keyed by target id, sorted list of unmapped PriceToken provider ids).
+    """
+    plans: dict[str, ImportPlan] = {}
+    unmapped: set[str] = set()
+    for modality, models in models_by_modality.items():
+        for pt in models:
+            pt_provider = pt.get('provider')
+            target = provider_map.get(pt_provider) if isinstance(pt_provider, str) else None
+            if target is None:
+                if isinstance(pt_provider, str):
+                    unmapped.add(pt_provider)
+                continue
+
+            plan = plans.setdefault(target.target_id, ImportPlan(target=target, to_add=[], skipped_existing=[]))
+
+            if target.pricing_source_url is None or (target.is_new and target.api_pattern is None):
+                plan.refused_reason = 'pricing_source_url / api_pattern not authored yet'
+                continue
+
+            model = convert_model(pt, modality, pricing_source_url=target.pricing_source_url)
+            if model.id in existing_model_ids.get(target.target_id, set()):
+                plan.skipped_existing.append(model.id)
+                continue
+            if any(m.id == model.id for m in plan.to_add):
+                continue  # de-duplicate within this import
+            plan.to_add.append(model)
+
+    return plans, sorted(unmapped)
+
+
+def render_report(plans: dict[str, ImportPlan], unmapped: list[str]) -> str:
+    """Human-readable summary of a plan (for the dry run and the grouped PR body, Codex #13)."""
+    lines: list[str] = ['PriceToken import plan:']
+    for target_id in sorted(plans):
+        plan = plans[target_id]
+        kind = 'new provider' if plan.target.is_new else 'existing provider'
+        if plan.refused_reason:
+            lines.append(f'  {target_id} ({kind}): REFUSED, {plan.refused_reason}')
+        else:
+            url = plan.target.pricing_source_url
+            lines.append(
+                f'  {target_id} ({kind}): +{len(plan.to_add)} to add, '
+                f'{len(plan.skipped_existing)} already present -> verify against {url}'
+            )
+    if unmapped:
+        lines.append(f'  unmapped PriceToken providers (skipped): {", ".join(unmapped)}')
+    return '\n'.join(lines)
+
+
+def _write_new_provider(plan: ImportPlan, providers_dir: Path) -> None:
+    target = plan.target
+    data: dict[str, Any] = {
+        'id': target.target_id,
+        'name': target.name,
+        'api_pattern': target.api_pattern,
+        'models': [m.model_dump(by_alias=True, mode='json', exclude_none=True) for m in plan.to_add],
+    }
+    Provider.model_validate(data)  # fail fast if the generated provider is not schema-valid
+    path = providers_dir / f'{target.target_id}.yml'
+    if path.exists():
+        raise FileExistsError(f'{path} already exists; refusing to overwrite an existing provider')
+    path.write_text(get_provider_yaml_string(cast(ProviderYamlDict, data)))
+
+
+def _append_to_existing(plan: ImportPlan, providers_dir: Path) -> None:
+    path = providers_dir / f'{plan.target.target_id}.yml'
+    provider_yaml = ProviderYaml(path)
+    existing_ids = {m.id for m in provider_yaml.provider.models}
+    for model in plan.to_add:
+        if model.id in existing_ids:  # never-clobber, belt-and-suspenders vs the plan-time skip
+            continue
+        provider_yaml.add_model(model)
+    provider_yaml.save()
+
+
+def apply_import(plans: dict[str, ImportPlan], *, providers_dir: Path | None = None) -> None:
+    """Write the (non-refused) plans to disk. Imports land unverified; a human confirms on merge."""
+    providers_dir = providers_dir or (package_dir / 'providers')
+    for plan in plans.values():
+        if plan.refused_reason or not plan.to_add:
+            continue
+        if plan.target.is_new:
+            _write_new_provider(plan, providers_dir)
+        else:
+            _append_to_existing(plan, providers_dir)
+
+
+def fetch_pricetoken_models(modality: Modality) -> list[dict[str, Any]]:  # pragma: no cover - network I/O
+    import httpx
+    from ruamel.yaml import YAML
+
+    resp = httpx.get(f'{PRICETOKEN_RAW}/{modality}.yaml', timeout=30)
+    resp.raise_for_status()
+    data = cast('dict[str, Any]', YAML(typ='safe').load(resp.text))  # pyright: ignore[reportUnknownMemberType]
+    return list(data['models'])
+
+
+def import_pricetoken(*, write: bool = False) -> None:  # pragma: no cover - CLI glue over network + fs
+    """CLI action: dry-run by default; pass write=True only after authoring URLs and verifying rates."""
+    models_by_modality: dict[Modality, list[dict[str, Any]]] = {m: fetch_pricetoken_models(m) for m in ('tts', 'stt')}
+    existing = {pid: {model.id for model in py.provider.models} for pid, py in get_providers_yaml().items()}
+    plans, unmapped = plan_import(models_by_modality, existing)
+    print(render_report(plans, unmapped))
+    if not write:
+        print('\nDry run: no files written. Complete PROVIDER_MAP urls and verify rates, then write=True.')
+        return
+    refused = sorted(p.target.target_id for p in plans.values() if p.refused_reason)
+    if refused:
+        raise SystemExit(f'Refusing to write: author pricing_source_url / api_pattern for {refused} first.')
+    apply_import(plans)
+    print('Wrote imports (source=imported, unverified). Run `make build`, verify each rate, set prices_checked.')
