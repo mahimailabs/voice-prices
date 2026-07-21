@@ -14,7 +14,7 @@ the maintainer's per-provider rate verification. See the module tests for the co
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal
 from pathlib import Path
 from typing import Any, Literal, cast
@@ -136,6 +136,7 @@ class ImportPlan:
     to_add: list[ModelInfo]
     skipped_existing: list[str]
     refused_reason: str | None = None
+    errors: list[str] = field(default_factory=list)  # models that failed conversion (skipped, run continues)
 
 
 def plan_import(
@@ -168,7 +169,12 @@ def plan_import(
                 plan.refused_reason = 'pricing_source_url / api_pattern not authored yet'
                 continue
 
-            model = convert_model(pt, modality, pricing_source_url=target.pricing_source_url)
+            try:
+                model = convert_model(pt, modality, pricing_source_url=target.pricing_source_url)
+            except ValueError as exc:
+                # one malformed upstream entry must not abort the whole import
+                plan.errors.append(f'{pt.get("modelId", "?")}: {exc}')
+                continue
             if model.id in existing_model_ids.get(target.target_id, set()):
                 plan.skipped_existing.append(model.id)
                 continue
@@ -193,6 +199,8 @@ def render_report(plans: dict[str, ImportPlan], unmapped: list[str]) -> str:
                 f'  {target_id} ({kind}): +{len(plan.to_add)} to add, '
                 f'{len(plan.skipped_existing)} already present -> verify against {url}'
             )
+        if plan.errors:
+            lines.append(f'    {len(plan.errors)} model(s) failed conversion: {"; ".join(plan.errors)}')
     if unmapped:
         lines.append(f'  unmapped PriceToken providers (skipped): {", ".join(unmapped)}')
     return '\n'.join(lines)
@@ -200,11 +208,17 @@ def render_report(plans: dict[str, ImportPlan], unmapped: list[str]) -> str:
 
 def _write_new_provider(plan: ImportPlan, providers_dir: Path) -> None:
     target = plan.target
+    # Provider.validate requires models sorted by id, so sort before validating (get_provider_yaml_string
+    # sorts again on write, but validation runs first and would otherwise reject an unsorted import).
+    models = sorted(
+        (m.model_dump(by_alias=True, mode='json', exclude_none=True) for m in plan.to_add),
+        key=lambda m: cast('str', m['id']),
+    )
     data: dict[str, Any] = {
         'id': target.target_id,
         'name': target.name,
         'api_pattern': target.api_pattern,
-        'models': [m.model_dump(by_alias=True, mode='json', exclude_none=True) for m in plan.to_add],
+        'models': models,
     }
     Provider.model_validate(data)  # fail fast if the generated provider is not schema-valid
     path = providers_dir / f'{target.target_id}.yml'
@@ -216,9 +230,11 @@ def _write_new_provider(plan: ImportPlan, providers_dir: Path) -> None:
 def _append_to_existing(plan: ImportPlan, providers_dir: Path) -> None:
     path = providers_dir / f'{plan.target.target_id}.yml'
     provider_yaml = ProviderYaml(path)
-    existing_ids = {m.id for m in provider_yaml.provider.models}
     for model in plan.to_add:
-        if model.id in existing_ids:  # never-clobber, belt-and-suspenders vs the plan-time skip
+        # match-aware never-clobber: skip if the id matches ANY existing model's match clause, not just
+        # an exact id, so an import cannot introduce a model that collides with an existing starts_with/
+        # regex clause (which would produce a schema-invalid YAML on the next build).
+        if provider_yaml.provider.find_model(model.id) is not None:
             continue
         provider_yaml.add_model(model)
     provider_yaml.save()

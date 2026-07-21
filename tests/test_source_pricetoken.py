@@ -205,3 +205,50 @@ def test_apply_appends_to_existing_without_clobbering(tmp_path: Path):
     # the existing verified rate is untouched, not overwritten by the colliding import
     assert isinstance(models['aura-existing'].prices, ModelPrice)
     assert models['aura-existing'].prices.input_kchars == Decimal('0.015')
+
+
+def test_apply_new_provider_sorts_models_before_validation(tmp_path: Path):
+    # Provider.validate requires models sorted by id; the write path must sort or it crashes on a
+    # multi-model new provider imported in registry (unsorted) order.
+    tts = [
+        {'modelId': 'polly-z', 'provider': 'amazon', 'costPerMChars': 30},
+        {'modelId': 'polly-a', 'provider': 'amazon', 'costPerMChars': 16},
+    ]
+    plans, _ = plan_import({'tts': tts, 'stt': []}, {}, provider_map={'amazon': _MAP['amazon']})
+    assert [m.id for m in plans['amazon_polly'].to_add] == ['polly-z', 'polly-a']  # unsorted in the plan
+    apply_import(plans, providers_dir=tmp_path)  # must not raise
+    ids = [m.id for m in ProviderYaml(tmp_path / 'amazon_polly.yml').provider.models]
+    assert ids == ['polly-a', 'polly-z']  # written sorted
+
+
+def test_append_never_clobbers_on_match_overlap(tmp_path: Path):
+    # An existing model with a starts_with clause; an imported id that MATCHES that clause (but is a
+    # different id) must be skipped, or the saved YAML would be schema-invalid (two models matching one id).
+    existing = tmp_path / 'deepgram.yml'
+    existing.write_text(
+        'id: deepgram\n'
+        'name: Deepgram\n'
+        'api_pattern: .*deepgram.*\n'
+        'models:\n'
+        '  - id: nova\n'
+        '    match:\n'
+        '      starts_with: nova\n'
+        '    prices:\n'
+        '      input_kchars: 0.015\n'
+    )
+    tts = [{'modelId': 'nova-3', 'provider': 'deepgram', 'costPerMChars': 30}]  # id matches starts_with: nova
+    plans, _ = plan_import({'tts': tts, 'stt': []}, {'deepgram': {'nova'}}, provider_map={'deepgram': _MAP['deepgram']})
+    apply_import(plans, providers_dir=tmp_path)
+    ids = [m.id for m in ProviderYaml(existing).provider.models]
+    assert ids == ['nova']  # nova-3 skipped; the file still validates
+
+
+def test_plan_import_bad_model_does_not_abort_run():
+    tts = [
+        {'modelId': 'good', 'provider': 'amazon', 'costPerMChars': 30},
+        {'modelId': 'bad', 'provider': 'amazon', 'costPerMChars': 30, 'costPerToken': 1},  # unexpected field
+    ]
+    plans, _ = plan_import({'tts': tts, 'stt': []}, {}, provider_map={'amazon': _MAP['amazon']})
+    assert [m.id for m in plans['amazon_polly'].to_add] == ['good']  # the good model still imported
+    assert len(plans['amazon_polly'].errors) == 1
+    assert 'bad' in plans['amazon_polly'].errors[0]
