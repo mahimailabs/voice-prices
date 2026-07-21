@@ -170,6 +170,11 @@ def _run_anthropic(prompt: str) -> str:  # pragma: no cover - network I/O
     return ''.join(str(block.text) for block in blocks if getattr(block, 'type', None) == 'text')
 
 
+#: Providers the second verifier agent supports; run.py validates the env value against this
+#: up front so an unsupported value never enables verify and then crashes mid-run.
+SUPPORTED_VERIFIER_PROVIDERS = ('anthropic', 'openai')
+
+
 def default_verify(
     rendered_text: str, items: Sequence[WorkItem]
 ) -> dict[str, Extraction]:  # pragma: no cover - network

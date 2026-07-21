@@ -72,7 +72,9 @@ def build_report(findings: list[Finding], today: date) -> Report:
                     f.proposed_rate,
                     _drift_note(f, today),
                     agent_votes=f.agent_votes,
-                    evidence=(f.extraction.evidence_quote if f.extraction else None),
+                    # only record provenance evidence on a consensus run (agent_votes present); a
+                    # single-agent run writes no provenance block, exactly as before PR2.
+                    evidence=(f.extraction.evidence_quote if (f.agent_votes is not None and f.extraction) else None),
                 )
             )
             drift_rows.append(

@@ -17,7 +17,15 @@ from pathlib import Path
 from prices.update import ProviderYaml, get_providers_yaml
 
 from .diff import classify
-from .fetch import ExtractFn, RenderFn, default_extract, default_render, default_verify, fetch_page
+from .fetch import (
+    SUPPORTED_VERIFIER_PROVIDERS,
+    ExtractFn,
+    RenderFn,
+    default_extract,
+    default_render,
+    default_verify,
+    fetch_page,
+)
 from .models import Extraction, Finding, RenderResult, WorkItem
 from .report import Report, apply_edits, build_report
 from .select import select_stale
@@ -80,9 +88,13 @@ def freshness_check() -> int:
     def render(url: str) -> RenderResult:
         return default_render(url, screenshot_dir=output_dir / 'screenshots')
 
-    # Opt-in second agent: enabled only when a verifier provider is configured, so the default run
-    # stays single-agent (and free of a second key/cost) unless the workflow asks for consensus.
-    verify = default_verify if os.environ.get('FRESHNESS_VERIFIER_PROVIDER') else None
+    # Opt-in second agent: enabled only when a SUPPORTED verifier provider is configured, so the
+    # default run stays single-agent, and an unsupported value is rejected here (single-agent) rather
+    # than enabling verify and crashing on the first URL after paying for renders + primary LLM calls.
+    verifier_provider = os.environ.get('FRESHNESS_VERIFIER_PROVIDER')
+    verify = default_verify if verifier_provider in SUPPORTED_VERIFIER_PROVIDERS else None
+    if verifier_provider and verify is None:
+        print(f'ignoring unsupported FRESHNESS_VERIFIER_PROVIDER {verifier_provider!r}; running single-agent')
 
     report = run_freshness_check(
         today,

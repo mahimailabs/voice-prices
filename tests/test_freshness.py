@@ -373,3 +373,22 @@ def test_apply_edits_records_provenance_votes_and_evidence(tmp_path: Path):
     assert (model.provenance.agent_votes.approve, model.provenance.agent_votes.total) == (2, 2)
     assert model.provenance.evidence == 'TNova $0.006 per minute'
     assert model.prices_checked == date(2026, 5, 1)  # bot still never sets prices_checked
+
+
+def test_single_agent_drift_writes_no_provenance_evidence():
+    # REGRESSION: a single-agent DRIFT (no verifier) carries no agent_votes and no evidence, so
+    # apply_edits writes no provenance block, exactly as before PR2.
+    it = item('nova-x', rate='0.08')
+    ex = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    edit = build_report([classify(it, render_with(ex.evidence_quote), ex)], date(2026, 5, 29)).drift_edits[0]
+    assert edit.agent_votes is None
+    assert edit.evidence is None
+
+
+def test_consensus_drift_carries_votes_and_evidence():
+    it = item('nova-x', rate='0.08')
+    ex = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    f = classify(it, render_with(ex.evidence_quote), ex, ex, require_verifier=True)
+    edit = build_report([f], date(2026, 5, 29)).drift_edits[0]
+    assert edit.agent_votes == (2, 2)
+    assert edit.evidence == 'Nova-x $0.006 per minute'
