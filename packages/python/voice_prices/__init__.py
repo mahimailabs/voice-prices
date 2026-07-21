@@ -5,11 +5,21 @@ from importlib.metadata import version as _metadata_version
 from typing import Any, overload
 
 from . import data_snapshot, types
+from .confidence import Freshness, model_freshness
 from .types import Usage
 from .update_prices import UpdatePrices, wait_prices_updated_async, wait_prices_updated_sync
 
 __version__ = _metadata_version('voice_prices')
-__all__ = 'Usage', 'calc_price', 'UpdatePrices', 'wait_prices_updated_sync', 'wait_prices_updated_async', '__version__'
+__all__ = (
+    'Usage',
+    'calc_price',
+    'UpdatePrices',
+    'wait_prices_updated_sync',
+    'wait_prices_updated_async',
+    'model_freshness',
+    'Freshness',
+    '__version__',
+)
 
 
 @overload

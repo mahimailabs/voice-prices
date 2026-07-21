@@ -12,8 +12,25 @@ import ruamel.yaml
 from pydantic import ValidationError
 from pydantic.main import IncEx
 
-from prices.prices_types import Provider, providers_schema
+from prices.prices_types import Provenance, Provider, providers_schema
 from prices.utils import package_dir, pretty_size, root_dir, simplify_json_schema
+
+
+def populate_provenance(provider: Provider) -> None:
+    """Mirror each model's human-owned `prices_checked` into `provenance.last_verified` for output.
+
+    `prices_checked` is `exclude=True`, so it never reaches `data.json` or the shipped `data.py`,
+    and the package cannot read it at load time. The consumer-facing `provenance.last_verified`
+    carries the date instead. Build-managed: any value hand-set in YAML is overwritten here, so the
+    human-owned `prices_checked` stays the single source of truth for the verified date.
+    """
+    for model in provider.models:
+        if model.prices_checked is None:
+            continue
+        if model.provenance is None:
+            model.provenance = Provenance(last_verified=model.prices_checked)
+        else:
+            model.provenance.last_verified = model.prices_checked
 
 
 def decimal_constructor(loader: ruamel.yaml.SafeLoader, node: ruamel.yaml.ScalarNode) -> Decimal:
@@ -23,6 +40,26 @@ def decimal_constructor(loader: ruamel.yaml.SafeLoader, node: ruamel.yaml.Scalar
 
 yaml = ruamel.yaml.YAML(typ='safe')
 yaml.constructor.add_constructor('tag:yaml.org,2002:float', decimal_constructor)  # pyright: ignore[reportUnknownMemberType]
+
+
+# Fields dropped from data_slim.json. Keep provenance.source + provenance.last_verified so slim
+# clients can still derive verification_status/stale/confidence; drop only the heavy audit fields.
+SLIM_EXCLUDE: IncEx = {
+    '__all__': {
+        'pricing_url': True,
+        'description': True,
+        'price_comments': True,
+        'models': {
+            '__all__': {
+                'name': True,
+                'description': True,
+                'price_comments': True,
+                'pricing_source_url': True,
+                'provenance': {'evidence': True, 'source_rate': True, 'agent_votes': True},
+            }
+        },
+    }
+}
 
 
 def build():
@@ -53,6 +90,7 @@ def build():
 
     providers.sort(key=attrgetter('id'))
     for provider in providers:
+        populate_provenance(provider)
         provider.exclude_removed()
     write_prices(providers, 'data.json')
     for provider in providers:
@@ -77,21 +115,18 @@ def write_prices(providers: list[Provider], prices_file: str, *, slim: bool = Fa
         data_json_schema['$defs']['ModelInfo']['properties'].pop('description')
         data_json_schema['$defs']['ModelInfo']['properties'].pop('price_comments')
         data_json_schema['$defs']['ModelInfo']['properties'].pop('pricing_source_url')
+        # drop heavy provenance sub-fields from slim (keep source + last_verified for client-side status)
+        if 'Provenance' in data_json_schema.get('$defs', {}):
+            provenance_props = data_json_schema['$defs']['Provenance']['properties']
+            provenance_props.pop('evidence', None)
+            provenance_props.pop('source_rate', None)
+            provenance_props.pop('agent_votes', None)
 
     prices_json_schema_path = prices_json_path.with_suffix('.schema.json')
     prices_json_schema_path.write_bytes(pydantic_core.to_json(data_json_schema, indent=2) + b'\n')
     print(f'Prices data JSON schema written to {prices_json_schema_path.relative_to(root_dir)}')
 
-    exclude: IncEx | None = None
-    if slim:
-        exclude = {
-            '__all__': {
-                'pricing_url': True,
-                'description': True,
-                'price_comments': True,
-                'models': {'__all__': {'name', 'description', 'price_comments', 'pricing_source_url'}},
-            }
-        }
+    exclude: IncEx | None = SLIM_EXCLUDE if slim else None
 
     json_data = providers_schema.dump_json(providers, by_alias=True, exclude_none=True, exclude=exclude) + b'\n'
     current_data = prices_json_path.read_bytes() if prices_json_path.exists() else None

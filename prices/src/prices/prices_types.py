@@ -172,6 +172,46 @@ class UsageExtractor(_Model):
     """Mappings from used to build usage."""
 
 
+class AgentVotes(_Model):
+    """Verifier-agent vote tally recorded by the freshness bot (never a human date)."""
+
+    approve: int
+    """Number of independent agents that approved the extracted rate."""
+    total: int
+    """Total number of agents that voted."""
+
+
+class SourceRate(_Model):
+    """The rate as observed on the vendor page, in the vendor's own unit, for audit."""
+
+    value: DollarPrice
+    """Observed rate value in the source unit."""
+    unit: Literal['per_kchar', 'per_ksecond']
+    """Source unit: `per_kchar` maps to `input_kchars` (TTS), `per_ksecond` maps to `input_audio_kseconds` (STT)."""
+
+
+class Provenance(_Model):
+    """Freshness provenance for a model's price.
+
+    Consumer-facing verification signal. `verification_status` / `stale` / a coarse confidence
+    label are derived at load time (in the package) from `last_verified` plus the provider's
+    `staleness_threshold_days`; they are not stored here. This block carries only the raw inputs.
+    """
+
+    source: Literal['imported', 'seed'] | None = None
+    """Origin of an unverified rate: `imported` (from another catalog, e.g. PriceToken) or `seed`
+    (bootstrap). A `verified` status is not stored: it is derived from `last_verified` being present."""
+    last_verified: date | None = None
+    """Date the rate was last human-verified. Populated at BUILD from the model's `prices_checked`
+    (which is itself excluded from output); never set by hand in YAML and never written by the bot."""
+    agent_votes: AgentVotes | None = None
+    """Verifier-agent tally written by the freshness bot."""
+    evidence: str | None = None
+    """Exact price string the verifier agent quoted from the vendor page."""
+    source_rate: SourceRate | None = None
+    """The observed rate in the vendor's own unit, for audit."""
+
+
 class ModelInfo(_Model):
     """Information about an LLM model"""
 
@@ -205,6 +245,10 @@ class ModelInfo(_Model):
     """List of price discrepancies based on external sources."""
     prices_checked: date | None = Field(default=None, exclude=True)
     """Date indicating when the prices were last checked for discrepancies."""
+    provenance: Provenance | None = None
+    """Freshness provenance emitted to consumers. `last_verified` is build-populated from
+    `prices_checked`; the rest is written by the import (`source`) and the freshness bot
+    (`agent_votes`, `evidence`, `source_rate`). See `Provenance`."""
     collapse: bool = Field(default=True, exclude=True)
     """Flag indicating whether this price should be collapsed into other prices."""
     deprecated: bool | None = None

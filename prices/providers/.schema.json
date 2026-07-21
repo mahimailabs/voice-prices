@@ -1,5 +1,27 @@
 {
   "$defs": {
+    "AgentVotes": {
+      "additionalProperties": false,
+      "description": "Verifier-agent vote tally recorded by the freshness bot (never a human date).",
+      "properties": {
+        "approve": {
+          "description": "Number of independent agents that approved the extracted rate.",
+          "title": "Approve",
+          "type": "integer"
+        },
+        "total": {
+          "description": "Total number of agents that voted.",
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "approve",
+        "total"
+      ],
+      "title": "AgentVotes",
+      "type": "object"
+    },
     "ArrayMatch": {
       "additionalProperties": false,
       "properties": {
@@ -319,6 +341,10 @@
           "description": "Date indicating when the prices were last checked for discrepancies.",
           "title": "Prices Checked"
         },
+        "provenance": {
+          "$ref": "#/$defs/Provenance",
+          "description": "Freshness provenance emitted to consumers. `last_verified` is build-populated from\n`prices_checked`; the rest is written by the import (`source`) and the freshness bot\n(`agent_votes`, `evidence`, `source_rate`). See `Provenance`."
+        },
         "collapse": {
           "default": true,
           "description": "Flag indicating whether this price should be collapsed into other prices.",
@@ -463,6 +489,68 @@
         }
       },
       "title": "ModelPrice",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Freshness provenance for a model's price.\n\nConsumer-facing verification signal. `verification_status` / `stale` / a coarse confidence\nlabel are derived at load time (in the package) from `last_verified` plus the provider's\n`staleness_threshold_days`; they are not stored here. This block carries only the raw inputs.",
+      "properties": {
+        "source": {
+          "enum": [
+            "imported",
+            "seed"
+          ],
+          "type": "string",
+          "description": "Origin of an unverified rate: `imported` (from another catalog, e.g. PriceToken) or `seed`\n(bootstrap). A `verified` status is not stored: it is derived from `last_verified` being present.",
+          "title": "Source"
+        },
+        "last_verified": {
+          "format": "date",
+          "type": "string",
+          "description": "Date the rate was last human-verified. Populated at BUILD from the model's `prices_checked`\n(which is itself excluded from output); never set by hand in YAML and never written by the bot.",
+          "title": "Last Verified"
+        },
+        "agent_votes": {
+          "$ref": "#/$defs/AgentVotes",
+          "description": "Verifier-agent tally written by the freshness bot."
+        },
+        "evidence": {
+          "type": "string",
+          "description": "Exact price string the verifier agent quoted from the vendor page.",
+          "title": "Evidence"
+        },
+        "source_rate": {
+          "$ref": "#/$defs/SourceRate",
+          "description": "The observed rate in the vendor's own unit, for audit."
+        }
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
+    "SourceRate": {
+      "additionalProperties": false,
+      "description": "The rate as observed on the vendor page, in the vendor's own unit, for audit.",
+      "properties": {
+        "value": {
+          "description": "Observed rate value in the source unit.",
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "description": "Source unit: `per_kchar` maps to `input_kchars` (TTS), `per_ksecond` maps to `input_audio_kseconds` (STT).",
+          "enum": [
+            "per_kchar",
+            "per_ksecond"
+          ],
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "title": "SourceRate",
       "type": "object"
     },
     "StartDateConstraint": {
