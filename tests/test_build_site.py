@@ -123,6 +123,44 @@ def test_stt_derives_per_minute():
     assert row.get('per_min') == 0.08 * 60 / 1000  # 0.0048
 
 
+def test_voice_rows_carry_freshness_status():
+    data: list[dict[str, Any]] = [
+        {
+            'id': 'd',
+            'name': 'D',
+            'staleness_threshold_days': 60,
+            'models': [
+                {
+                    'id': 'nova',
+                    'prices': {'input_audio_kseconds': 0.08},
+                    'provenance': {'last_verified': '2026-07-01'},  # verified + fresh
+                },
+                {
+                    'id': 'imported-model',
+                    'prices': {'input_audio_kseconds': 0.09},
+                    'provenance': {'source': 'imported'},  # unverified import
+                },
+            ],
+        }
+    ]
+    catalog = build_catalog(data, date(2026, 7, 21))
+    rows = {r['id']: r for r in catalog['stt'][0]['models']}
+    assert rows['nova'].get('verification_status') == 'verified'
+    assert rows['nova'].get('confidence') == 'high'
+    assert rows['imported-model'].get('verification_status') == 'imported'
+    assert rows['imported-model'].get('confidence') == 'low'
+
+
+def test_llm_rows_have_no_freshness_status():
+    data: list[dict[str, Any]] = [
+        {'id': 'o', 'name': 'O', 'models': [{'id': 'gpt', 'prices': {'input_mtok': 2.5, 'output_mtok': 10.0}}]}
+    ]
+    catalog = build_catalog(data, date(2026, 7, 21))
+    row = catalog['llm'][0]['models'][0]
+    assert 'verification_status' not in row  # freshness is voice-only
+    assert 'confidence' not in row  # both status keys are omitted together for LLM
+
+
 def test_build_catalog_from_real_data_json():
     data: list[dict[str, Any]] = json.loads(DATA_JSON.read_text())
     catalog = build_catalog(data)
