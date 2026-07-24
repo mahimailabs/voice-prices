@@ -52,6 +52,9 @@ class ModelRow(_ModelRowBase, total=False):
     # markers
     tiered: bool
     daily: bool
+    # freshness (voice only): verified | stale | imported | seed, and a coarse high/medium/low label
+    verification_status: str
+    confidence: str
 
 
 class ProviderEntry(TypedDict):
@@ -204,18 +207,27 @@ def _model_row(
     return row
 
 
-def build_catalog(data: list[dict[str, Any]]) -> Catalog:
+def build_catalog(data: list[dict[str, Any]], today: date | None = None) -> Catalog:
     """Build the slim per-modality catalog from the raw data.json providers list.
 
     Excludes unpriced (``prices == {}``) and deprecated models. A provider appears
     under each modality it has at least one model in (e.g. OpenAI under llm + tts).
     Providers are sorted by id; models keep their catalog order.
+
+    Voice rows also carry the freshness signal (verification_status + coarse confidence), computed
+    from each model's provenance and the provider staleness threshold. LLM rows do not: most LLM
+    entries are not freshness-tracked, so a status there would misread as low confidence.
     """
+    from voice_prices.confidence import freshness_from_provenance
+
+    today = today or date.today()
     catalog: Catalog = {'llm': [], 'tts': [], 'stt': []}
 
     for provider in sorted(data, key=lambda p: str(p.get('id', ''))):
         provider_id = _esc(str(provider.get('id', '')))
         provider_name = _esc(str(provider.get('name') or provider.get('id') or ''))
+        raw_staleness = provider.get('staleness_threshold_days')
+        staleness = raw_staleness if isinstance(raw_staleness, int) else 60
         models = provider.get('models')
         if not isinstance(models, list):
             continue
@@ -233,7 +245,12 @@ def build_catalog(data: list[dict[str, Any]]) -> Catalog:
             modality = detect_modality(flat)
             if modality is None:
                 continue
-            by_modality[modality].append(_model_row(model, modality, flat, tiered, daily))
+            row = _model_row(model, modality, flat, tiered, daily)
+            if modality in ('tts', 'stt'):
+                fresh = freshness_from_provenance(model.get('provenance'), staleness, today=today)
+                row['verification_status'] = fresh.verification_status
+                row['confidence'] = fresh.confidence
+            by_modality[modality].append(row)
 
         for modality, rows in by_modality.items():
             if rows:

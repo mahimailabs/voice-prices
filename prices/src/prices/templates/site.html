@@ -268,8 +268,14 @@ print(price.total_price)</code><button class="copy" type="button">copy</button><
     if (modality === "llm")
       return "<th>Model</th><th class='num'>Input $/Mtok</th><th class='num'>Output $/Mtok</th><th class='num'>Cache read</th><th class='num'>Context</th>";
     if (modality === "tts")
-      return "<th>Model</th><th class='num'>$/1k chars</th>";
-    return "<th>Model</th><th class='num'>$/1k sec</th><th class='num'>$/min</th>";
+      return "<th>Model</th><th class='num'>$/1k chars</th><th>Status</th>";
+    return "<th>Model</th><th class='num'>$/1k sec</th><th class='num'>$/min</th><th>Status</th>";
+  }
+  function fmtStatus(m) {
+    if (!m.verification_status) return "";
+    var color = m.confidence === "high" ? "#22c55e" : (m.confidence === "medium" ? "#eab308" : "#9ca3af");
+    var dot = "<span style='display:inline-block;width:8px;height:8px;border-radius:50%;background:" + color + ";margin-right:6px'></span>";
+    return "<span title='" + m.confidence + " confidence'>" + dot + m.verification_status + "</span>";
   }
   function rowCells(modality, m) {
     var markers = "";
@@ -283,10 +289,12 @@ print(price.total_price)</code><button class="copy" type="button">copy</button><
         + "<td class='num mid'>" + fmtNum(m.cache_read_mtok) + "</td>"
         + "<td class='num mid'>" + fmtCtx(m.context_window) + "</td>";
     if (modality === "tts")
-      return model + "<td class='num mid'>" + fmtNum(m.input_kchars) + "</td>";
+      return model + "<td class='num mid'>" + fmtNum(m.input_kchars) + "</td>"
+        + "<td class='mid'>" + fmtStatus(m) + "</td>";
     return model
       + "<td class='num mid'>" + fmtNum(m.input_audio_kseconds) + "</td>"
-      + "<td class='num mid'>" + fmtNum(m.per_min) + "</td>";
+      + "<td class='num mid'>" + fmtNum(m.per_min) + "</td>"
+      + "<td class='mid'>" + fmtStatus(m) + "</td>";
   }
 
   function matches(provider, q) {
