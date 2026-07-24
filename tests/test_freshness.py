@@ -248,3 +248,147 @@ def test_run_shared_url_single_pass_absent_model_is_gone_not_drift():
     assert report.counts[Category.MATCH] == 1
     assert report.counts[Category.GONE] == 1
     assert report.counts[Category.DRIFT] == 0  # absent model never becomes a false DRIFT
+
+
+# ---- consensus (second verifier agent) --------------------------------------
+
+
+def test_single_agent_regression_unchanged_and_no_votes():
+    # REGRESSION: with no verifier (default), classify behaves exactly as the single-agent pipeline
+    # and records no agent_votes. This is the guarantee that PR2 does not change existing behavior.
+    it = item('nova-x', rate='0.08')  # stored $0.0048/min
+    ex = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    f = classify(it, render_with(ex.evidence_quote), ex)  # require_verifier defaults to False
+    assert f.category is Category.DRIFT
+    assert f.proposed_rate == Decimal('0.1')
+    assert f.agent_votes is None
+
+
+def test_consensus_agree_proposes_drift_with_two_votes():
+    it = item('nova-x', rate='0.08')
+    primary = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    verifier = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    f = classify(it, render_with(primary.evidence_quote), primary, verifier, require_verifier=True)
+    assert f.category is Category.DRIFT
+    assert f.agent_votes == (2, 2)
+
+
+def test_consensus_agree_on_matching_rate_is_match():
+    it = item('nova-x', rate='0.1')  # stored already equals the observed $0.006/min -> 0.1
+    primary = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    verifier = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    f = classify(it, render_with(primary.evidence_quote), primary, verifier, require_verifier=True)
+    assert f.category is Category.MATCH
+    assert f.agent_votes == (2, 2)
+
+
+def test_consensus_disagreement_is_unverified():
+    it = item('nova-x', rate='0.08')
+    page = 'Nova-x $0.006 per minute\nNova-x $0.009 per minute'  # both quotes present on the page
+    primary = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    verifier = good_extraction(0.009, 'per minute', quote='Nova-x $0.009 per minute', row='nova-x')  # different rate
+    f = classify(it, render_with(page), primary, verifier, require_verifier=True)
+    assert f.category is Category.UNVERIFIED
+    assert 'agents disagree' in f.reason
+    assert f.agent_votes == (1, 2)
+
+
+def test_consensus_missing_verifier_is_unverified():
+    it = item('nova-x', rate='0.08')
+    primary = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    f = classify(it, render_with(primary.evidence_quote), primary, None, require_verifier=True)
+    assert f.category is Category.UNVERIFIED
+    assert f.agent_votes == (1, 2)
+
+
+def test_consensus_verifier_failing_its_own_guard_is_unverified():
+    it = item('nova-x', rate='0.08')
+    primary = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    # verifier quotes a price string that is NOT on the page -> its guard fails -> no consensus
+    verifier = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute (fabricated)', row='nova-x')
+    f = classify(it, render_with(primary.evidence_quote), primary, verifier, require_verifier=True)
+    assert f.category is Category.UNVERIFIED
+    assert 'verifier guard failed' in f.reason
+
+
+def test_run_with_verify_reaches_consensus_and_records_votes():
+    items = [item('nova-x', rate='0.08')]
+
+    def fake_render(_url: str) -> RenderResult:
+        return render_with('Nova-x $0.006 per minute')
+
+    def agree(_text: str, _work: object) -> dict[str, Extraction]:
+        return {'nova-x': good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')}
+
+    report = run_freshness_check(date(2026, 5, 29), items, render=fake_render, extract=agree, verify=agree)
+    assert report.counts[Category.DRIFT] == 1
+    assert report.drift_edits[0].agent_votes == (2, 2)
+    assert report.drift_edits[0].evidence == 'Nova-x $0.006 per minute'
+
+
+def test_run_with_verify_disagreement_blocks_drift():
+    items = [item('nova-x', rate='0.08')]
+    page = 'Nova-x $0.006 per minute\nNova-x $0.009 per minute'
+
+    def fake_render(_url: str) -> RenderResult:
+        return render_with(page)
+
+    def primary(_text: str, _work: object) -> dict[str, Extraction]:
+        return {'nova-x': good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')}
+
+    def verifier(_text: str, _work: object) -> dict[str, Extraction]:
+        return {'nova-x': good_extraction(0.009, 'per minute', quote='Nova-x $0.009 per minute', row='nova-x')}
+
+    report = run_freshness_check(date(2026, 5, 29), items, render=fake_render, extract=primary, verify=verifier)
+    assert report.counts[Category.DRIFT] == 0
+    assert report.counts[Category.UNVERIFIED] == 1
+
+
+def test_apply_edits_records_provenance_votes_and_evidence(tmp_path: Path):
+    yml = tmp_path / 'testgram.yml'
+    yml.write_text(
+        'name: Testgram\n'
+        'id: testgram\n'
+        "api_pattern: 'https://api\\.t\\.example'\n"
+        'models:\n'
+        '  - id: tnova-1\n'
+        '    match:\n      equals: tnova-1\n'
+        '    prices_checked: 2026-05-01\n'
+        '    prices:\n      input_audio_kseconds: 0.08\n'
+    )
+    edit = DriftEdit(
+        'testgram',
+        'tnova-1',
+        'input_audio_kseconds',
+        Decimal('0.1'),
+        'bot note',
+        agent_votes=(2, 2),
+        evidence='TNova $0.006 per minute',
+    )
+    apply_edits(Report(drift_edits=[edit]), {'testgram': ProviderYaml(yml)})
+
+    model = ProviderYaml(yml).provider.find_model('tnova-1')
+    assert model is not None and model.provenance is not None
+    assert model.provenance.agent_votes is not None
+    assert (model.provenance.agent_votes.approve, model.provenance.agent_votes.total) == (2, 2)
+    assert model.provenance.evidence == 'TNova $0.006 per minute'
+    assert model.prices_checked == date(2026, 5, 1)  # bot still never sets prices_checked
+
+
+def test_single_agent_drift_writes_no_provenance_evidence():
+    # REGRESSION: a single-agent DRIFT (no verifier) carries no agent_votes and no evidence, so
+    # apply_edits writes no provenance block, exactly as before PR2.
+    it = item('nova-x', rate='0.08')
+    ex = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    edit = build_report([classify(it, render_with(ex.evidence_quote), ex)], date(2026, 5, 29)).drift_edits[0]
+    assert edit.agent_votes is None
+    assert edit.evidence is None
+
+
+def test_consensus_drift_carries_votes_and_evidence():
+    it = item('nova-x', rate='0.08')
+    ex = good_extraction(0.006, 'per minute', quote='Nova-x $0.006 per minute', row='nova-x')
+    f = classify(it, render_with(ex.evidence_quote), ex, ex, require_verifier=True)
+    edit = build_report([f], date(2026, 5, 29)).drift_edits[0]
+    assert edit.agent_votes == (2, 2)
+    assert edit.evidence == 'Nova-x $0.006 per minute'

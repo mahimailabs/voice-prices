@@ -127,6 +127,73 @@ def default_extract(rendered_text: str, items: Sequence[WorkItem]) -> dict[str, 
     return _parse_extractions(_run_openai(_extract_prompt(rendered_text, items)))
 
 
+def _verify_prompt(rendered_text: str, items: Sequence[WorkItem]) -> str:
+    """A deliberately different prompt from the extractor, so the two agents fail differently.
+
+    Decorrelation (Codex #3): framed as an independent auditor that must locate each exact model row
+    and bind the rate to that row and its unit, rather than scanning for any per-use number. Same JSON
+    shape as the extractor so the same parser handles both.
+    """
+    names = '\n'.join(f'- {it.model_id} (expected unit class: {it.unit_class})' for it in items)
+    return (
+        'You are an independent pricing auditor double-checking specific speech models. For EACH model '
+        'below, find the exact row that names that model on the page, and read its Pay-As-You-Go rate '
+        'ONLY from that row. Do not report a number from a different tier, region, plan, or model. '
+        'Ignore monthly/subscription/credit pricing. Report the rate in USD per use '
+        '(per minute, per second, per hour, or per character).\n\n'
+        f'Models to confirm:\n{names}\n\n'
+        'Return ONLY a JSON object mapping each model id to an object with keys: found (bool), '
+        'rate_value (number or null), rate_unit (string), currency (string), '
+        'confidence ("high"|"medium"|"low"), evidence_quote (the exact row text you read the rate from, '
+        'copied verbatim), matched_row_name (the row/model label). If you cannot find the model or bind '
+        'the rate to its row, set found=false.\n\n'
+        f'PAGE TEXT:\n{rendered_text[:20000]}'
+    )
+
+
+def _run_anthropic(prompt: str) -> str:  # pragma: no cover - network I/O
+    """Call the Anthropic API and return the model's text answer.
+
+    Imported dynamically (behind an Any boundary) so anthropic stays an optional, untyped extra
+    rather than a hard dependency of the package.
+    """
+    import importlib
+
+    anthropic = cast(Any, importlib.import_module('anthropic'))
+    client = anthropic.Anthropic()
+    message = client.messages.create(
+        model=os.environ.get('FRESHNESS_VERIFIER_MODEL', 'claude-haiku-4-5'),
+        max_tokens=1024,
+        messages=[{'role': 'user', 'content': prompt}],
+    )
+    blocks = cast('list[Any]', message.content)
+    return ''.join(str(block.text) for block in blocks if getattr(block, 'type', None) == 'text')
+
+
+#: Providers the second verifier agent supports; run.py validates the env value against this
+#: up front so an unsupported value never enables verify and then crashes mid-run.
+SUPPORTED_VERIFIER_PROVIDERS = ('anthropic', 'openai')
+
+
+def default_verify(
+    rendered_text: str, items: Sequence[WorkItem]
+) -> dict[str, Extraction]:  # pragma: no cover - network
+    """Second-agent extraction. Provider is FRESHNESS_VERIFIER_PROVIDER (default a different vendor).
+
+    A different provider gives real independence from the primary OpenAI extractor. 'openai' is
+    supported for setups with only one key (decorrelation then rests on the distinct prompt + model).
+    """
+    provider = os.environ.get('FRESHNESS_VERIFIER_PROVIDER', 'anthropic')
+    prompt = _verify_prompt(rendered_text, items)
+    if provider == 'anthropic':
+        raw = _run_anthropic(prompt)
+    elif provider == 'openai':
+        raw = _run_openai(prompt)
+    else:
+        raise ValueError(f'unsupported FRESHNESS_VERIFIER_PROVIDER {provider!r} (use anthropic or openai)')
+    return _parse_extractions(raw)
+
+
 def fetch_page(
     url: str,
     items: Sequence[WorkItem],

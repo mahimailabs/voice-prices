@@ -74,3 +74,4 @@ class Finding:
     observed_source_rate: float | None  # the provider-unit rate we read (for the PR note)
     observed_source_unit: str | None
     reason: str  # human-readable explanation (why UNVERIFIED, what changed, etc.)
+    agent_votes: tuple[int, int] | None = None  # (approve, total) when a verifier ran; None for single-agent

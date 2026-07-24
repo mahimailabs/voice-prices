@@ -7,10 +7,13 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date, datetime, time, timezone
 from decimal import Decimal
-from typing import Annotated, Any, Literal, Protocol, TypeGuard, TypeVar, cast, overload
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Protocol, TypeGuard, TypeVar, cast, overload
 
 import pydantic
 from typing_extensions import TypedDict
+
+if TYPE_CHECKING:
+    from .confidence import Freshness
 
 __all__ = (
     'ProviderID',
@@ -189,6 +192,16 @@ class PriceCalculation:
             f'model_price=ModelPrice({self.model_price}), '
             f'auto_update_timestamp={self.auto_update_timestamp!r})'
         )
+
+    def freshness(self, *, today: date | None = None) -> Freshness:
+        """How trustworthy this rate is: verification_status, a coarse confidence label, and staleness.
+
+        Derived at call time from the model's provenance and the provider's staleness threshold.
+        See ``voice_prices.confidence`` for the rules.
+        """
+        from .confidence import model_freshness
+
+        return model_freshness(self.model, self.provider, today=today)
 
 
 @dataclass(repr=False)
