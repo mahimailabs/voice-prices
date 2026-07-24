@@ -22,6 +22,9 @@ __all__ = (
     'UsageExtractorMapping',
     'UsageExtractor',
     'ModelInfo',
+    'Provenance',
+    'AgentVotes',
+    'SourceRate',
     'ModelPrice',
     'TieredPrices',
     'Tier',
@@ -688,6 +691,44 @@ def _type_name(v: Any) -> str:
 
 
 @dataclass
+class AgentVotes:
+    """Verifier-agent vote tally recorded by the freshness bot (never a human date)."""
+
+    approve: int
+    total: int
+
+
+@dataclass
+class SourceRate:
+    """The rate as observed on the vendor page, in the vendor's own unit, for audit."""
+
+    value: Decimal
+    unit: Literal['per_kchar', 'per_ksecond']
+
+
+@dataclass
+class Provenance:
+    """Freshness provenance for a model's price.
+
+    `verification_status` / `stale` / a coarse confidence label are derived at load time (see
+    `voice_prices.confidence`) from `last_verified` plus the provider's `staleness_threshold_days`;
+    they are not stored here. This block carries only the raw inputs.
+    """
+
+    source: Literal['imported', 'seed'] | None = None
+    """Origin of an unverified rate: `imported` (from another catalog) or `seed` (bootstrap).
+    A `verified` status is not stored: it is derived from `last_verified` being present."""
+    last_verified: date | None = None
+    """Date the rate was last human-verified. Emitted at build from the model's `prices_checked`."""
+    agent_votes: AgentVotes | None = None
+    """Verifier-agent tally written by the freshness bot."""
+    evidence: str | None = None
+    """The exact price string an agent quoted from the vendor page, recorded on a consensus run."""
+    source_rate: SourceRate | None = None
+    """The observed rate in the vendor's own unit, for audit."""
+
+
+@dataclass
 class ModelInfo:
     """Information about an LLM model"""
 
@@ -709,6 +750,9 @@ class ModelInfo:
     """
     deprecated: bool | None = None
     """Flag indicating this model is deprecated by the provider but still functional."""
+    provenance: Provenance | None = None
+    """Freshness provenance emitted to consumers (source, last_verified, agent_votes, evidence,
+    source_rate). Derived status/confidence live in `voice_prices.confidence`."""
 
     prices: ModelPrice | list[ConditionalPrice] = dataclasses.field(default_factory=list)
     """Set of prices for using this model.
