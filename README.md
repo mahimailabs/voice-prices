@@ -17,6 +17,41 @@
 </div>
 <br/>
 
+## Why voice-prices
+
+A voice agent runs three meters at once (an LLM, TTS, and STT), and once you route them through a gateway like [LiveKit Inference](https://livekit.io/pricing) it is hard to tell what you actually pay versus going direct. voice-prices is an open, auto-updated source that shows **direct vs gateway cost per model**, side by side.
+
+It is not anti-gateway: gateways are often at cost, and cheaper still at scale. The point is to make the real number visible.
+
+| Model | Direct | LiveKit (Build/Ship) | LiveKit Scale | vs direct |
+|---|---|---|---|---|
+| ElevenLabs Flash v2.5 (TTS, per 1M chars) | $50 | $150 | $60 | **+200%** |
+| ElevenLabs Multilingual v2 (TTS, per 1M chars) | $100 | $300 | $120 | **+200%** |
+| Deepgram Nova-2 (STT, per min) | $0.0059 | $0.0058 | $0.0047 | **-2%** (at cost) |
+| Gemini 2.5 Flash (LLM, per 1M input tokens) | $0.30 | $0.30 | n/a | **identical** (pass-through) |
+
+LiveKit passes LLM pricing through unchanged, so gateway markups show up on TTS and STT. Every rate is dated, traceable to the vendor's pricing page, and re-checked by an automated freshness job. [Browse the full LLM / TTS / STT / LiveKit comparison ->](https://mahimailabs.github.io/voice-prices/)
+
+## Quick start
+
+```bash
+uv add voice-prices   # or: pip install voice-prices
+```
+
+```python
+from voice_prices import Usage, calc_price
+
+# Price an LLM call going direct to the provider
+direct = calc_price(Usage(input_tokens=1000, output_tokens=100), model_ref='gpt-4o', provider_id='openai')
+
+# ...and through the LiveKit gateway, for the same model
+gateway = calc_price(Usage(input_tokens=1000, output_tokens=100), model_ref='gpt-4o', provider_id='livekit')
+
+print(direct.total_price, gateway.total_price)
+```
+
+voice-prices is a fork of [pydantic/genai-prices](https://github.com/pydantic/genai-prices) extended with first-class voice (TTS/STT) pricing and the direct-vs-gateway comparison. Disclosure: it is maintained alongside a voice infrastructure product (VoiceGateway); the dataset is open and neutral, and it flags its maintainer's own markups too.
+
 ## Features
 
 - Advanced logic for matching on model and provider IDs to maximise the chance of using the correct model
