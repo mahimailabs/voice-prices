@@ -23,6 +23,9 @@ packages/js/.genai-prices-cache.json
 docs/superpowers
 .superpowers
 
+# Local marketing workspace (launch plan, copy, assets) - not part of the package
+docs/marketing/
+
 # Generated documentation site (built and deployed by .github/workflows/pages.yml)
 /site/
 
