@@ -107,7 +107,6 @@ def test_default_today_smoke():
     # a 2020 verification is far past any sane threshold, so it is stale.
     assert fresh.stale is True
 
-
 # ---- freshness_from_provenance (dict entry point, used by the docs site) -----
 
 
@@ -176,3 +175,19 @@ def test_price_calculation_freshness_accessor():
     assert isinstance(fresh, Freshness)
     assert fresh.verification_status == 'verified'
     assert fresh.confidence == 'high'
+
+def test_model_freshness_on_shipped_data():
+    # Round-trip guard: the build emits provenance.last_verified into the shipped data.py, and it
+    # must deserialize back through the package types and produce a valid Freshness.
+    from voice_prices.data import providers
+
+    checked: list[str] = []
+    for provider in providers:
+        for model in provider.models:
+            if model.provenance is not None and model.provenance.last_verified is not None:
+                fresh = model_freshness(model, provider, today=date(2026, 7, 21))
+                assert fresh.last_verified == model.provenance.last_verified
+                assert fresh.verification_status in ('verified', 'stale')
+                assert fresh.confidence in ('high', 'medium', 'low')
+                checked.append(model.id)
+    assert checked, 'expected at least one shipped model to carry provenance.last_verified'
