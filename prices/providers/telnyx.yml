@@ -1,0 +1,103 @@
+# yaml-language-server: $schema=.schema.json
+name: Telnyx
+id: telnyx
+pricing_urls:
+  - https://telnyx.com/pricing/text-to-speech
+  - https://telnyx.com/pricing/speech-to-text
+
+api_pattern: 'https://api\.telnyx\.com'
+
+model_match:
+  contains: telnyx
+
+provider_match:
+  contains: telnyx
+
+price_comments: >-
+  Telnyx offers STT and TTS both as standalone API calls (billed per unit) and
+  bundled in the Conversational AI plan ($0.05/min all-in). This catalog uses
+  the standalone per-unit rates from the public pricing pages. TTS is billed
+  per character; STT is billed per minute.
+
+  Voice format: `Telnyx.<Model>.<VoiceId>` (e.g. `Telnyx.NaturalHD.astra`).
+  The livekit-plugins-telnyx TTS plugin exposes the full voice string as its
+  `model` attribute, so model_match rules operate on the full voice string.
+
+  Models not yet listed (KokoroTTS, Grok, Bayan, Sukhan) do not have public
+  per-character pricing on the pricing pages as of 2026-07-17. They can be
+  added in a follow-up once Telnyx publishes per-unit rates.
+
+models:
+  - id: natural
+    name: Telnyx Natural TTS
+    description: >-
+      Telnyx Natural TTS model (Rime Mist pre-built voices). Low latency, good
+      quality, English only. Voice IDs: `Telnyx.Natural.<voice>`.
+    match:
+      starts_with: telnyx.natural.
+    prices_checked: "2026-07-17"
+    pricing_source_url: https://telnyx.com/pricing/text-to-speech
+    price_comments: >-
+      Source rate $0.000003 per character = $0.003 / 1k chars.
+    prices:
+      input_kchars: 0.003
+
+  - id: natural-hd
+    name: Telnyx NaturalHD TTS
+    description: >-
+      Telnyx NaturalHD TTS model (Rime Arcana pre-built voices). Low latency,
+      better quality, 9 languages. Voice IDs: `Telnyx.NaturalHD.<voice>`.
+    match:
+      starts_with: telnyx.naturalhd.
+    prices_checked: "2026-07-17"
+    pricing_source_url: https://telnyx.com/pricing/text-to-speech
+    price_comments: >-
+      Source rate $0.000048 per character = $0.048 / 1k chars.
+    prices:
+      input_kchars: 0.048
+
+  - id: qwen3tts
+    name: Telnyx Qwen3TTS
+    description: >-
+      Telnyx Qwen3TTS model. Medium latency, high quality, 11 languages.
+      Requires a cloned voice from Voice Design. Voice IDs:
+      `Telnyx.Qwen3TTS.<voice>`.
+    match:
+      starts_with: telnyx.qwen3tts.
+    prices_checked: "2026-07-17"
+    pricing_source_url: https://telnyx.com/pricing/text-to-speech
+    price_comments: >-
+      Source rate $0.000032 per character = $0.032 / 1k chars.
+    prices:
+      input_kchars: 0.032
+
+  - id: telnyx-stt
+    name: Telnyx STT
+    description: >-
+      Telnyx native speech-to-text (powered by Whisper), accessed via the
+      Telnyx STT WebSocket streaming API. The livekit-plugins-telnyx STT
+      plugin reports `model = transcription_engine` (default: "telnyx").
+    match:
+      equals: telnyx
+    prices_checked: "2026-07-17"
+    pricing_source_url: https://telnyx.com/pricing/speech-to-text
+    price_comments: >-
+      Source rate $0.015/minute. Converted to $/k seconds:
+      0.015 * 1000 / 60 = 0.25.
+    prices:
+      input_audio_kseconds: 0.25
+
+  - id: ultra
+    name: Telnyx Ultra TTS
+    description: >-
+      Telnyx Ultra TTS model. Lowest latency, highest quality, 44 languages.
+      Pre-built voices. REST only (no WebSocket). Voice IDs:
+      `Telnyx.Ultra.<voice>`.
+    match:
+      starts_with: telnyx.ultra.
+    prices_checked: "2026-07-17"
+    pricing_source_url: https://telnyx.com/pricing/text-to-speech
+    price_comments: >-
+      Source rate $0.000032 per character = $0.032 / 1k chars.
+    prices:
+      input_kchars: 0.032

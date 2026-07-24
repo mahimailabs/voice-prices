@@ -104,6 +104,7 @@ The following providers are currently supported:
 - [OpenRouter](prices/providers/openrouter.yml) - 586 models
 - [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) - 15 models
 - [Perplexity](prices/providers/perplexity.yml) - 8 models
+- [Telnyx](prices/providers/telnyx.yml) - 5 models
 - [Together AI](prices/providers/together.yml) - 72 models
 - [X AI](prices/providers/x_ai.yml) - 13 models
 
