@@ -10,7 +10,7 @@
 </div>
 <br/>
 <div align="center">
-  Pricing data and cost calculation for voice-agent APIs: LLM, text-to-speech (TTS), and speech-to-text (STT).
+  Open pricing data and cost calculation for every API a voice agent bills against: speech-to-text, LLM, text-to-speech, speech-to-speech, and voice activity detection.
 </div>
 <div align="center">
   <a href="https://github.com/mahimailabs/voice-prices/tree/main/docs">Browse providers and prices</a>
@@ -19,18 +19,21 @@
 
 ## Why voice-prices
 
-A voice agent runs three meters at once (an LLM, TTS, and STT), and once you route them through a gateway like [LiveKit Inference](https://livekit.io/pricing) it is hard to tell what you actually pay versus going direct. voice-prices is an open, auto-updated source that shows **direct vs gateway cost per model**, side by side.
+A voice agent runs several meters at once (STT, an LLM, and TTS, or a single speech-to-speech model), each billed in a different unit. Route them through a gateway like [LiveKit Inference](https://livekit.io/pricing) and a fourth layer sits on top, quoted in its own units again. voice-prices is an open, dated source that puts **direct and gateway cost side by side, per model**.
 
-It is not anti-gateway: gateways are often at cost, and cheaper still at scale. The point is to make the real number visible.
+It is not an argument against gateways. Of the 54 models where both a direct and a gateway rate exist, **33 are priced at or below going direct**, and on the discounted Scale tier 17 come in below the vendor's own price. The point is to make the number visible, whichever way it falls.
 
 | Model | Direct | LiveKit (Build/Ship) | LiveKit Scale | vs direct |
 |---|---|---|---|---|
 | ElevenLabs Flash v2.5 (TTS, per 1M chars) | $50 | $150 | $60 | **+200%** |
-| ElevenLabs Multilingual v2 (TTS, per 1M chars) | $100 | $300 | $120 | **+200%** |
-| Deepgram Nova-2 (STT, per min) | $0.0059 | $0.0058 | $0.0047 | **-2%** (at cost) |
-| Gemini 2.5 Flash (LLM, per 1M input tokens) | $0.30 | $0.30 | n/a | **identical** (pass-through) |
+| Cartesia Sonic 3 (TTS, per 1M chars) | $40 | $50 | $37.50 | **+25%**, but Scale is under direct |
+| Deepgram Nova-2 (STT, per min) | $0.0059 | $0.0058 | $0.0047 | **-2%**, at cost |
+| GPT-5 (LLM, per 1M input tokens) | $1.25 | $1.25 | n/a | **identical**, pass-through |
+| GPT-5.4 (LLM, per 1M input tokens) | $2.50 | $5.00 | n/a | **+100%** |
 
-LiveKit passes LLM pricing through unchanged, so gateway markups show up on TTS and STT. Every rate is dated, traceable to the vendor's pricing page, and re-checked by an automated freshness job. [Browse the full STT / LLM / TTS / S2S / VAD catalog ->](https://github.com/mahimailabs/voice-prices/tree/main/docs)
+Most LLM rates pass straight through (23 of the 27 comparable models are identical to the penny), so gateway markups mostly land on TTS and STT. The exception is worth knowing: the frontier models are not passed through. GPT-5.4, GPT-5.5, Gemini 2.5 Pro and Gemini 3.1 Pro are each +100%.
+
+Every rate is dated, links to the vendor pricing page it came from, and is re-checked by an LLM-assisted freshness job that a human confirms. [Browse the full catalog ->](https://github.com/mahimailabs/voice-prices/tree/main/docs)
 
 ## Quick start
 
@@ -59,55 +62,60 @@ voice-prices is a fork of [pydantic/genai-prices](https://github.com/pydantic/ge
 - Support for variable daily prices, e.g. we support calculating deepseek prices even with off-peak pricing
 - tiered pricing support for Gemini models where you pay a separate price for very large contexts
 - support for [identifying price discrepancies](prices/README.md) from other sources
-- support for voice modalities (TTS character billing, STT audio-second billing)
-- automated [voice price freshness checks](#keeping-voice-prices-fresh): a manually-triggered GitHub Action re-verifies TTS/STT rates against each provider's pricing page and opens a PR when a rate has drifted
-- Python package, CLI
-- TODO: API and web UI
+- first-class voice billing units: TTS per character, STT and VAD per audio second, speech-to-speech per audio token
+- direct vs gateway comparison per model, in the unit each category is actually quoted in
+- automated [voice price freshness checks](#keeping-voice-prices-fresh): a manually-triggered GitHub Action re-verifies voice rates against each provider's pricing page and opens a PR when a rate has drifted
+- Python package, CLI, and a [browsable catalog](https://github.com/mahimailabs/voice-prices/tree/main/docs)
+- TODO: hosted API
 
 ### Providers
 
-The following providers are currently supported:
+Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-- [ai-coustics](prices/providers/ai_coustics.yml) - 2 models
-- [Anthropic](prices/providers/anthropic.yml) - 20 models
-- [AssemblyAI](prices/providers/assemblyai.yml) - 1 models
-- [Avian](prices/providers/avian.yml) - 4 models
-- [AWS Bedrock](prices/providers/aws.yml) - 70 models
-- [Microsoft Azure](prices/providers/azure.yml) - 21 models
-- [Cartesia](prices/providers/cartesia.yml) - 1 models
-- [Cerebras](prices/providers/cerebras.yml) - 5 models
-- [Cohere](prices/providers/cohere.yml) - 6 models
-- [Deepgram](prices/providers/deepgram.yml) - 10 models
-- [Deepseek](prices/providers/deepseek.yml) - 4 models
-- [ElevenLabs](prices/providers/elevenlabs.yml) - 5 models
-- [Fireworks](prices/providers/fireworks.yml) - 13 models
-- [Google](prices/providers/google.yml) - 35 models
-- [Groq](prices/providers/groq.yml) - 30 models
-- [HuggingFace (cerebras)](prices/providers/huggingface_cerebras.yml) - 1 models
-- [HuggingFace (fireworks-ai)](prices/providers/huggingface_fireworks-ai.yml) - 3 models
-- [HuggingFace (groq)](prices/providers/huggingface_groq.yml) - 5 models
-- [HuggingFace (hyperbolic)](prices/providers/huggingface_hyperbolic.yml) - 12 models
-- [HuggingFace (nebius)](prices/providers/huggingface_nebius.yml) - 26 models
-- [HuggingFace (novita)](prices/providers/huggingface_novita.yml) - 61 models
-- [HuggingFace (nscale)](prices/providers/huggingface_nscale.yml) - 20 models
-- [HuggingFace (ovhcloud)](prices/providers/huggingface_ovhcloud.yml) - 7 models
-- [HuggingFace (publicai)](prices/providers/huggingface_publicai.yml) - 8 models
-- [HuggingFace (sambanova)](prices/providers/huggingface_sambanova.yml) - 8 models
-- [HuggingFace (together)](prices/providers/huggingface_together.yml) - 24 models
-- [LiveKit Inference](prices/providers/livekit.yml) - 78 models
-- [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) - 36 models
-- [Mistral](prices/providers/mistral.yml) - 22 models
-- [MoonshotAi](prices/providers/moonshotai.yml) - 9 models
-- [Novita](prices/providers/novita.yml) - 34 models
-- [OpenAI](prices/providers/openai.yml) - 74 models
-- [OpenRouter](prices/providers/openrouter.yml) - 586 models
-- [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) - 15 models
-- [Perplexity](prices/providers/perplexity.yml) - 8 models
-- [Telnyx](prices/providers/telnyx.yml) - 5 models
-- [Together AI](prices/providers/together.yml) - 72 models
-- [X AI](prices/providers/x_ai.yml) - 13 models
+**38 providers, 1,213 priced models.** 47 STT, 1,095 LLM, 63 TTS, 6 S2S, 2 VAD.
+
+| Provider | Models | Categories |
+| --- | ---: | --- |
+| [ai-coustics](prices/providers/ai_coustics.yml) | 2 | VAD |
+| [Anthropic](prices/providers/anthropic.yml) | 18 | LLM |
+| [AssemblyAI](prices/providers/assemblyai.yml) | 1 | STT |
+| [Avian](prices/providers/avian.yml) | 4 | LLM |
+| [AWS Bedrock](prices/providers/aws.yml) | 70 | LLM, S2S |
+| [Microsoft Azure](prices/providers/azure.yml) | 18 | LLM |
+| [Cartesia](prices/providers/cartesia.yml) | 1 | TTS |
+| [Cerebras](prices/providers/cerebras.yml) | 4 | LLM |
+| [Cohere](prices/providers/cohere.yml) | 6 | LLM |
+| [Deepgram](prices/providers/deepgram.yml) | 10 | STT, TTS |
+| [Deepseek](prices/providers/deepseek.yml) | 4 | LLM |
+| [ElevenLabs](prices/providers/elevenlabs.yml) | 5 | TTS |
+| [Fireworks](prices/providers/fireworks.yml) | 13 | LLM |
+| [Google](prices/providers/google.yml) | 32 | LLM, S2S |
+| [Groq](prices/providers/groq.yml) | 30 | STT, LLM |
+| [HuggingFace (cerebras)](prices/providers/huggingface_cerebras.yml) | 1 | LLM |
+| [HuggingFace (fireworks-ai)](prices/providers/huggingface_fireworks-ai.yml) | 3 | LLM |
+| [HuggingFace (groq)](prices/providers/huggingface_groq.yml) | 5 | LLM |
+| [HuggingFace (hyperbolic)](prices/providers/huggingface_hyperbolic.yml) | 12 | LLM |
+| [HuggingFace (nebius)](prices/providers/huggingface_nebius.yml) | 26 | LLM |
+| [HuggingFace (novita)](prices/providers/huggingface_novita.yml) | 61 | LLM |
+| [HuggingFace (nscale)](prices/providers/huggingface_nscale.yml) | 20 | LLM |
+| [HuggingFace (ovhcloud)](prices/providers/huggingface_ovhcloud.yml) | 7 | LLM |
+| [HuggingFace (publicai)](prices/providers/huggingface_publicai.yml) | 8 | LLM |
+| [HuggingFace (sambanova)](prices/providers/huggingface_sambanova.yml) | 8 | LLM |
+| [HuggingFace (together)](prices/providers/huggingface_together.yml) | 23 | LLM |
+| [LiveKit Inference](prices/providers/livekit.yml) | 78 | STT, LLM, TTS |
+| [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 36 | STT, TTS |
+| [Mistral](prices/providers/mistral.yml) | 18 | LLM |
+| [MoonshotAi](prices/providers/moonshotai.yml) | 9 | LLM |
+| [Novita](prices/providers/novita.yml) | 34 | LLM |
+| [OpenAI](prices/providers/openai.yml) | 73 | STT, LLM, TTS, S2S |
+| [OpenRouter](prices/providers/openrouter.yml) | 461 | LLM |
+| [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) | 15 | LLM |
+| [Perplexity](prices/providers/perplexity.yml) | 8 | LLM |
+| [Telnyx](prices/providers/telnyx.yml) | 5 | STT, TTS |
+| [Together AI](prices/providers/together.yml) | 72 | LLM |
+| [X AI](prices/providers/x_ai.yml) | 12 | LLM |
 
 [comment]: <> (providers-end)
 
@@ -136,7 +144,7 @@ Coming soon...
 <h2 id="warning">⚠️ Warning: these prices will not be 100% accurate</h2>
 
 This project is a best effort by the maintainers and community to provide an indicative
-estimate of the price you might pay for calling an LLM, TTS, or STT API.
+estimate of the price you might pay for calling a voice or LLM API.
 
 The price data cannot be exactly correct because model providers do not provide exact price information for their APIs
 in a format which can be reliably processed.
