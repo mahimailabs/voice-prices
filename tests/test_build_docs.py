@@ -521,6 +521,7 @@ LUCIDE_ICONS = {
     'clock',
     'git-pull-request',
     'mic',
+    'rss',
     'volume-2',
 }
 

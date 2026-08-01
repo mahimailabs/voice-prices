@@ -1,0 +1,161 @@
+---
+title: "Serve a pricing feed"
+sidebarTitle: "Serve a pricing feed"
+description: "Publish your rates once, in a file, so every tool that quotes you gets them right."
+icon: "rss"
+---
+
+If you work at a model or inference provider, this is the highest-value thing you can do for the developers costing out your API.
+
+Today your prices reach tools like this one by someone reading your pricing page. That is slow, it breaks every time you restyle the page, and when it breaks the wrong number gets published under your name. A small JSON file fixes it permanently.
+
+<Note>
+Nothing here is a new standard. [OpenRouter](https://openrouter.ai/docs/api/api-reference/models/get-models) and [LiteLLM](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) already publish per-token rates in this shape, and this project already pulls from both. The only addition is the two meters voice needs: characters of text and seconds of audio.
+</Note>
+
+## The file
+
+```json
+{
+  "provider": "acme",
+  "updated": "2026-08-01",
+  "currency": "USD",
+  "models": [
+    {
+      "id": "acme-tts-1",
+      "name": "Acme TTS v1",
+      "modality": "tts",
+      "rates": [
+        { "meter": "text_input", "amount": "0.000030", "unit": "character" }
+      ]
+    },
+    {
+      "id": "acme-stt-1",
+      "modality": "stt",
+      "rates": [
+        { "meter": "audio_input", "amount": "0.0043", "unit": "minute" }
+      ]
+    }
+  ]
+}
+```
+
+That is a complete, valid feed. If you publish nothing else, publish that.
+
+## The one rule
+
+**Quote every rate per one base unit**: one character, one second, one token, one request. Never per thousand or per million.
+
+Per-unit pricing is where public pricing data goes wrong most often, because `$30` is a plausible price per million characters and a catastrophic one per thousand. If the number is small and the unit is singular, there is nothing to misread. Publish amounts as **strings** for the same reason: `0.0000003` as a JSON number does not survive a round trip through every language's float parser.
+
+## Fields
+
+### Top level
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| `provider` | yes | Short stable id for your company, lowercase. |
+| `models` | yes | The list below. |
+| `currency` | no | ISO 4217. Defaults to `USD`. |
+| `updated` | no | ISO date you last changed this file. |
+
+### Per model
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| `id` | yes | **The exact string your API accepts.** See below. |
+| `rates` | yes | One entry per priced meter. |
+| `name` | no | Human-readable name. |
+| `modality` | no | `stt`, `llm`, `tts`, `s2s`, or `vad`. Inferred from the rates when omitted, except for `vad`, which is indistinguishable from `stt` by price alone. |
+| `status` | no | `ga`, `preview`, or `deprecated`. |
+| `sunset_on` | no | ISO date the model stops accepting traffic. |
+| `docs_url` | no | Link to that model's docs. |
+
+### Per rate
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| `meter` | yes | What is being counted. See the grid below. |
+| `unit` | yes | The base unit the amount is quoted per. |
+| `amount` | yes | Decimal string, per one unit. |
+| `plan` | no | Your plan name, when the rate is plan-specific. |
+| `from_quantity` | no | Lower bound of a volume tier, in `unit`s per month. |
+| `voice_class` | no | When cloned or premium voices bill differently. |
+| `effective_from` | no | ISO date, for a price change you have already announced. |
+
+A rate with no `plan`, `from_quantity`, or `voice_class` is your headline rate. Publish at least one of those per meter, or there is nothing to compare against.
+
+## Supported meter and unit pairs
+
+Every combination below maps to exactly one field in this catalog. Anything not listed is rejected rather than guessed at, because a wrong unit and a wrong price look identical once stored.
+
+{/* generated:rate-grid start */}
+| Meter | Unit | Catalog field | Conversion |
+| --- | --- | --- | --- |
+| `audio_input` | `minute` | `input_audio_kseconds` | amount x 1,000 / 60 |
+| `audio_input` | `second` | `input_audio_kseconds` | amount x 1,000 |
+| `audio_input` | `token` | `input_audio_mtok` | amount x 1,000,000 |
+| `audio_output` | `minute` | `output_audio_kseconds` | amount x 1,000 / 60 |
+| `audio_output` | `second` | `output_audio_kseconds` | amount x 1,000 |
+| `audio_output` | `token` | `output_audio_mtok` | amount x 1,000,000 |
+| `cached_text_input` | `token` | `cache_read_mtok` | amount x 1,000,000 |
+| `request` | `request` | `requests_kcount` | amount x 1,000 |
+| `text_input` | `character` | `input_kchars` | amount x 1,000 |
+| `text_input` | `token` | `input_mtok` | amount x 1,000,000 |
+| `text_output` | `token` | `output_mtok` | amount x 1,000,000 |
+{/* generated:rate-grid end */}
+
+## Get the model id right
+
+This is the field most often wrong and the only one that makes a feed machine-usable.
+
+`id` must be the literal string a caller passes to your API. Not the marketing name, not the docs slug, not the pricing-page row label.
+
+```json
+{ "id": "acme-tts-1" }          // correct: this is what the API accepts
+{ "id": "Acme TTS v1 (HD)" }    // useless: nothing can route on this
+```
+
+Every downstream tool has a fuzzy matching layer purely because providers publish the second form. Getting this right deletes that layer.
+
+## Serving it
+
+- **A stable URL that does not change.** `/.well-known/pricing.json` on your API host is a good convention.
+- **No authentication**, so client-side cost calculators can read it.
+- **`Access-Control-Allow-Origin: *`**.
+- **An `ETag` or `Last-Modified` header**, so pollers are cheap for you.
+
+Hand-maintaining the file is fine and is much better than nothing. Generating it from whatever your billing system treats as the source of truth is the version that never drifts.
+
+## Check it
+
+```bash
+git clone https://github.com/mahimailabs/voice-prices && cd voice-prices
+make install
+make feed-check FEED=https://api.acme.com/.well-known/pricing.json
+```
+
+This validates the file, converts every rate, and diffs it against what this catalog currently publishes about you. It works on a local path too, so you can check the file before you ship it:
+
+```bash
+make feed-check FEED=./pricing.json
+```
+
+It exits non-zero when something drifts or cannot be mapped, so it works as a CI check on your side: fail the build when your published feed stops agreeing with what the public catalog says you charge. Note that `make` prints its own `Error 1` line on a non-zero exit, which means findings, not a crash. In CI, call the module directly to avoid the noise:
+
+```bash
+FEED=./pricing.json uv run -m prices feed_check
+```
+
+<Warning>
+`feed-check` never writes to the catalog. A drift report is a prompt for a human to review and update the rate by hand. No bot in this project is allowed to mark a price as verified. [How Fresh?](/how-fresh) explains why.
+</Warning>
+
+## If you cannot host a file
+
+Two smaller asks that still help:
+
+1. Give your pricing page stable `id` anchors on each price row, and do not render the numbers only in client-side JavaScript. Extraction becomes reliable instead of best-effort.
+2. Tell us where to watch for changes: a changelog feed, a mailing list, or a person to ping. Being told beats finding out.
+
+Either way, [open an issue](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) and we will wire it up.
