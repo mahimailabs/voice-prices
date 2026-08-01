@@ -13,7 +13,7 @@
   Pricing data and cost calculation for voice-agent APIs: LLM, text-to-speech (TTS), and speech-to-text (STT).
 </div>
 <div align="center">
-  <a href="https://mahimailabs.github.io/voice-prices/">Browse providers and prices</a>
+  <a href="https://github.com/mahimailabs/voice-prices/tree/main/docs">Browse providers and prices</a>
 </div>
 <br/>
 
@@ -30,7 +30,7 @@ It is not anti-gateway: gateways are often at cost, and cheaper still at scale. 
 | Deepgram Nova-2 (STT, per min) | $0.0059 | $0.0058 | $0.0047 | **-2%** (at cost) |
 | Gemini 2.5 Flash (LLM, per 1M input tokens) | $0.30 | $0.30 | n/a | **identical** (pass-through) |
 
-LiveKit passes LLM pricing through unchanged, so gateway markups show up on TTS and STT. Every rate is dated, traceable to the vendor's pricing page, and re-checked by an automated freshness job. [Browse the full LLM / TTS / STT / LiveKit comparison ->](https://mahimailabs.github.io/voice-prices/)
+LiveKit passes LLM pricing through unchanged, so gateway markups show up on TTS and STT. Every rate is dated, traceable to the vendor's pricing page, and re-checked by an automated freshness job. [Browse the full STT / LLM / TTS / S2S / VAD catalog ->](https://github.com/mahimailabs/voice-prices/tree/main/docs)
 
 ## Quick start
 
@@ -70,6 +70,7 @@ The following providers are currently supported:
 
 [comment]: <> (providers-start)
 
+- [ai-coustics](prices/providers/ai_coustics.yml) - 2 models
 - [Anthropic](prices/providers/anthropic.yml) - 20 models
 - [AssemblyAI](prices/providers/assemblyai.yml) - 1 models
 - [Avian](prices/providers/avian.yml) - 4 models
@@ -156,7 +157,7 @@ endpoint we could pull from. It would dramatically improve pricing accuracy for 
 Otherwise, to contribute:
 
 - See [`prices/README.md`](prices) for instructions on how to contribute to the price data.
-- To add a new provider, follow [`docs/contributing-a-provider.md`](docs/contributing-a-provider.md) and copy the template for your modality (LLM, TTS, or STT), or open an [Add a provider](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) issue.
+- To add a new provider, follow [`CONTRIBUTING.md`](CONTRIBUTING.md) and copy the template for your modality (LLM, TTS, or STT), or open an [Add a provider](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) issue.
 - Feel free to submit pull requests or issues about the Python package.
 - If you need a library for another language, please create an issue, we'd be happy to discuss building it, hosting it here,
   or helping you maintain it elsewhere.

@@ -1,0 +1,61 @@
+---
+title: "How fresh are these prices?"
+sidebarTitle: "How Fresh?"
+description: "What verified, stale, imported, and seed mean, and who is allowed to set them."
+icon: "clock"
+---
+
+`prices_checked` is set by a human. A maintainer confirms a rate against the provider's own pricing page and writes that date into the provider YAML. The freshness bot never writes it, not on a drift fix and not on a match. At build time the date is copied into `provenance.last_verified`, which is the input every signal below is derived from.
+
+## Status
+
+`verification_status` is derived at load time, not stored in the data:
+
+| Status | Meaning |
+| --- | --- |
+| <Badge color="green" size="sm">verified</Badge> | `last_verified` is present and its age is within the provider's `staleness_threshold_days`. |
+| <Badge color="yellow" size="sm">stale</Badge> | `last_verified` is present but older than the provider's `staleness_threshold_days`. Confirmed once, possibly moved since. |
+| <Badge color="gray" size="sm">imported</Badge> | Never human-confirmed. The rate came from another catalog (`provenance.source` is `imported`). |
+| <Badge color="gray" size="sm">seed</Badge> | Never human-confirmed. Bootstrap data with no import origin. |
+
+`imported` and `seed` are never reported as stale: stale implies the price was verified at some point.
+
+The provider tables on this site show three of the four (`verified`, `imported`, `seed`) next to the date a human last confirmed the rate. They deliberately never show `stale`. Staleness depends on today's date, and those pages are files committed to the repository, so a `stale` badge baked into one would start lying the day after it was written. Read the date and judge, or compute the live answer with `model_freshness` from the Python package.
+
+## Confidence
+
+`confidence` is a coarse `high` / `medium` / `low` label. It is not a probability and not a score. A calibrated score was deferred until there is observed bot-accuracy data to calibrate against. The rule is exactly:
+
+- `high`: status is `verified`.
+- `medium`: status is `stale`, or status is `imported` and the verifier agents were unanimous (`agent_votes.total > 0` and `approve == total`).
+- `low`: everything else, meaning `seed`, and `imported` without a unanimous agent vote.
+
+Status and confidence are computed at load time against today's date. A shipped snapshot therefore decays with wall-clock age: a `verified` price drops to `stale` (and `high` to `medium`) once it passes the threshold, with nobody editing the data. `staleness_threshold_days` is set per provider and defaults to 60.
+
+## How LLM rates are checked
+
+LLM rates are cross-checked against four external aggregators: Helicone, OpenRouter, LiteLLM, and Simon Willison's llm-prices. That pipeline is a local tool a maintainer runs (`make get-update-price-discrepancies`); each discrepancy is then resolved by hand.
+
+LLM models do not carry a per-model verification status for this reason. They are covered by aggregator cross-check rather than per-model verification, so a status on an [LLM](/llm/all-models) row would misread as low confidence. Only [TTS](/tts/all-models) and [STT](/stt/all-models) rows carry one.
+
+## How voice rates are checked
+
+Those aggregators do not carry TTS and STT models, so voice rates have no cross-check to fall back on. Instead, a maintainer-triggered GitHub Action re-verifies each voice rate against that model's own `pricing_source_url`: a headless browser renders the page and an LLM extracts the current rate. Deterministic guards (quote must be a literal substring of the page, number must match the quote, right row, USD, right unit class, no implausible magnitude jump) run before anything is proposed.
+
+When a rate has drifted, the job opens or refreshes a single rolling PR on the `bot/pricing-freshness` branch. It is manual only: `workflow_dispatch`, no schedule, so it costs nothing until someone runs it. It is never auto-merged. Every proposed change is reviewed by a human, and that human sets `prices_checked` when merging, which is what resets the staleness clock. A run where every rate matches produces no diff and no PR.
+
+## Staying current
+
+The price data ships inside the installed package, so it ages with your pinned version. The Python package can refresh it at runtime with `UpdatePrices`, which is explicitly opt-in: it downloads `prices/data.json` from GitHub once on start and then hourly.
+
+```python
+from voice_prices import UpdatePrices, Usage, calc_price
+
+with UpdatePrices() as update_prices:
+    update_prices.wait()  # optionally wait for prices to have updated
+    print(calc_price(Usage(input_tokens=123, output_tokens=456), 'gpt-5'))
+```
+
+<Warning>
+These prices are a best effort by the maintainers and community. They will not be 100% accurate: providers do not publish exact pricing in a form that can be reliably processed. Verify a rate against the provider's own pricing page before relying on it, and read the [LICENSE](https://github.com/mahimailabs/voice-prices/blob/main/LICENSE) this project is distributed under. Found something wrong? [Contribute a fix](/contribute).
+</Warning>

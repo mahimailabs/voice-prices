@@ -9,6 +9,38 @@ __all__ = ('providers',)
 
 providers: list[Provider] = [
     Provider(
+        id='ai_coustics',
+        name='ai-coustics',
+        api_pattern='https://api\\.ai-coustics\\.io',
+        pricing_urls=['https://ai-coustics.com/pricing'],
+        price_comments='ai-coustics sells an on-device SDK licence, not hosted inference: audio is processed locally and the API is used only for auth and metering. Usage is metered by duration of audio processed, not session uptime, so it maps onto `input_audio_kseconds` as STT does.\nThis is a subscription with an included quota, not a pay-as-you-go meter. Plans as of 2026-07-31: Startup $150/mo for 100,000 minutes, Pro $400/mo for 300,000, Business $600/mo for 500,000, Enterprise from $2,000/mo. Single minutes cannot be bought. This catalog uses the Startup effective rate, published verbatim as "0.15 cents per minute ($0.0015)" and reconciling exactly. Business publishes $0.0012 (also exact). The published Pro rate $0.00135 does not reconcile with $400 / 300,000 = $0.0013333, so it is not used.\nAll models share one pooled quota, so no per-model rate is published. Only VAD is listed here; the enhancement line (Quail, Quail Voice Focus, Rook) and Tyto share the same meter.',
+        model_match=ClauseContains(contains='quail'),
+        provider_match=ClauseContains(contains='coustics'),
+        staleness_threshold_days=60,
+        models=[
+            ModelInfo(
+                id='quail-vad-2.0-xxs-16khz',
+                match=ClauseEquals(equals='quail-vad-2.0-xxs-16khz'),
+                name='Quail VAD 2.0',
+                description='Standalone voice activity detection trained for noisy, multi-speaker environments. Predicts speech activity directly from the input audio and does not require Quail, Quail Voice Focus, or Rook enhancement to run. Positioned for turn-taking and endpointing; exposed to LiveKit through the `livekit-plugins-aic-vad` plugin.',
+                price_comments='Startup tier effective rate $0.0015/minute. Converted to $/k seconds: 0.0015 * 1000 / 60 = 0.025. Not separately priced by ai-coustics: every model is included in the plan and draws on one pooled minute quota.',
+                pricing_source_url='https://ai-coustics.com/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 7, 31)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.025')),
+            ),
+            ModelInfo(
+                id='quail-vf-vad-2.0-s-16khz',
+                match=ClauseEquals(equals='quail-vf-vad-2.0-s-16khz'),
+                name='Quail Voice Focus VAD 2.0',
+                description='Voice activity detection restricted to the primary speaker, so background speech does not register as activity. Same meter and plan inclusion as Quail VAD.',
+                price_comments='Startup tier effective rate $0.0015/minute. Converted to $/k seconds: 0.0015 * 1000 / 60 = 0.025. Not separately priced by ai-coustics: every model is included in the plan and draws on one pooled minute quota.',
+                pricing_source_url='https://ai-coustics.com/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 7, 31)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.025')),
+            ),
+        ],
+    ),
+    Provider(
         id='anthropic',
         name='Anthropic',
         api_pattern='https://api\\.anthropic\\.com',

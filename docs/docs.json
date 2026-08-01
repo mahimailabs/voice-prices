@@ -1,0 +1,167 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Voice Prices",
+  "description": "Open pricing data for voice-agent APIs: STT, LLM, TTS, S2S, and VAD.",
+  "colors": {
+    "primary": "#0B7285",
+    "light": "#22B8CF",
+    "dark": "#0B7285"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Add a provider",
+        "href": "https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml"
+      }
+    ],
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/mahimailabs/voice-prices"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/mahimailabs/voice-prices",
+      "website": "https://pypi.org/project/voice-prices/"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Overview",
+        "icon": "book-open",
+        "pages": [
+          "index",
+          "how-fresh"
+        ]
+      },
+      {
+        "tab": "STT",
+        "icon": "mic",
+        "pages": [
+          "stt/all-models",
+          {
+            "group": "Direct vendors",
+            "pages": [
+              "stt/assemblyai",
+              "stt/deepgram",
+              "stt/groq",
+              "stt/openai",
+              "stt/telnyx"
+            ]
+          },
+          {
+            "group": "Gateways",
+            "pages": [
+              "stt/livekit",
+              "stt/livekit-scale"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "LLM",
+        "icon": "brain",
+        "pages": [
+          "llm/all-models",
+          {
+            "group": "Direct vendors",
+            "pages": [
+              "llm/anthropic",
+              "llm/avian",
+              "llm/aws",
+              "llm/azure",
+              "llm/cerebras",
+              "llm/cohere",
+              "llm/deepseek",
+              "llm/fireworks",
+              "llm/google",
+              "llm/groq",
+              "llm/mistral",
+              "llm/moonshotai",
+              "llm/novita",
+              "llm/openai",
+              "llm/ovhcloud",
+              "llm/perplexity",
+              "llm/together",
+              "llm/x-ai"
+            ]
+          },
+          {
+            "group": "Gateways",
+            "pages": [
+              "llm/livekit",
+              "llm/openrouter"
+            ]
+          },
+          {
+            "group": "HuggingFace Inference",
+            "pages": [
+              "llm/huggingface-cerebras",
+              "llm/huggingface-fireworks-ai",
+              "llm/huggingface-groq",
+              "llm/huggingface-hyperbolic",
+              "llm/huggingface-nebius",
+              "llm/huggingface-novita",
+              "llm/huggingface-nscale",
+              "llm/huggingface-ovhcloud",
+              "llm/huggingface-publicai",
+              "llm/huggingface-sambanova",
+              "llm/huggingface-together"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "TTS",
+        "icon": "volume-2",
+        "pages": [
+          "tts/all-models",
+          {
+            "group": "Direct vendors",
+            "pages": [
+              "tts/cartesia",
+              "tts/deepgram",
+              "tts/elevenlabs",
+              "tts/openai",
+              "tts/telnyx"
+            ]
+          },
+          {
+            "group": "Gateways",
+            "pages": [
+              "tts/livekit",
+              "tts/livekit-scale"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "S2S",
+        "icon": "audio-waveform",
+        "pages": [
+          "s2s/all-models",
+          "s2s/aws",
+          "s2s/google",
+          "s2s/openai"
+        ]
+      },
+      {
+        "tab": "VAD",
+        "icon": "activity",
+        "pages": [
+          "vad/all-models",
+          "vad/ai-coustics"
+        ]
+      },
+      {
+        "tab": "Add Yours",
+        "icon": "git-pull-request",
+        "pages": [
+          "contribute"
+        ]
+      }
+    ]
+  }
+}

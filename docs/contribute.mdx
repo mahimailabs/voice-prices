@@ -1,0 +1,133 @@
+---
+title: "Add your provider"
+sidebarTitle: "How to contribute"
+description: "Fix a price or add a new provider to voice-prices."
+icon: "git-pull-request"
+---
+
+Two paths: correct a rate in an existing provider YAML, or add a provider that is not in the catalog yet.
+
+<Note>
+If you work for a model or inference provider, the highest-value contribution is serving a machine-readable pricing file or endpoint we can pull from. It improves pricing accuracy for every developer using your API.
+</Note>
+
+## Fix a price
+
+Edit `prices/providers/<provider>.yml`. Set `prices_checked` on the model to today's date ([why it matters](/how-fresh)), add or update `price_comments` explaining the change with a reference URL, then run `make build` to regenerate the JSON files. Pre-commit does this for you if you ran `make install`.
+
+Please do not:
+
+- edit any JSON file directly: they are all built with `make build` and are compact by design
+- add verbose descriptions to providers or models, we only need enough detail to give the end user a rough idea of the model's capabilities
+- try to change the schema of providers or models without creating an issue to discuss the changes first
+- add new providers without creating an issue to discuss the changes first, adding models is fine
+
+## Add a provider
+
+| Modality | Priced field | Usage field | Template |
+| --- | --- | --- | --- |
+| LLM | `input_mtok` / `output_mtok` ($ per 1M tokens), plus optional cache / audio / request fields | `Usage(input_tokens=..., output_tokens=...)` | `provider-llm.yml` |
+| TTS | `input_kchars` ($ per 1k characters) | `Usage(characters=...)` | `provider-tts.yml` |
+| STT | `input_audio_kseconds` ($ per 1k seconds) | `Usage(audio_input_seconds=Decimal(...))` | `provider-stt.yml` |
+
+Two categories have no template of their own because they reuse a priced shape above:
+
+- [S2S](/s2s/all-models) uses the LLM shape with `input_audio_mtok` and `output_audio_mtok` set. A model is filed as speech-to-speech when it prices audio in **both** directions, so nothing extra is needed.
+- [VAD](/vad/all-models) uses the STT shape, since both bill per second of audio. That makes it indistinguishable from STT by price alone, so a VAD model also needs an entry in `MODALITY_OVERRIDES` in `prices/src/prices/build_docs.py` or it lands on the STT tab. Say so in your issue and the maintainer will add it.
+
+<Steps>
+<Step title="Discuss first">
+Open an [Add a provider issue](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) with the provider name, pricing page, models, and modality. This catches duplicates and naming conflicts before you write YAML.
+</Step>
+<Step title="Find the rates">
+You need the per-unit rate for each model, any tier or mode differences (premium voices, streaming versus batch, context tiers), and a deep-linked source URL per model.
+
+Most STT providers quote per minute. Convert with `rate_per_min * 1000 / 60` and record the source rate in `price_comments`.
+
+Credit-billed TTS converts the same way: ElevenLabs Creator is $22/month for 100,000 credits ($0.00022 per credit) and Turbo v2.5 burns 0.5 credits per character, so `input_kchars = 0.00022 * 0.5 * 1000 = 0.11`.
+</Step>
+<Step title="Copy the template">
+Copy [the template](https://github.com/mahimailabs/voice-prices/tree/main/docs/templates) for your modality to `prices/providers/<your-provider>.yml`. The filename is lowercase and hyphenated, matching the provider's common name.
+</Step>
+<Step title="Fill in provider metadata">
+Set `name`, `id`, `pricing_urls`, `api_pattern`, `model_match`, and `provider_match`. Metadata is identical across modalities.
+
+<Warning>
+`model_match` routes a bare `model_ref` (no `provider_id`) to your provider. If its prefix or regex does not cover your model IDs, consumers get `LookupError: Unable to find provider matching '<your-model>'` even though your YAML is in the catalog.
+</Warning>
+</Step>
+<Step title="Add the models">
+The `models` list must be sorted alphabetically by `id`: the Pydantic validator enforces it. Every model with a voice priced field needs `pricing_source_url`, and `prices_checked` is the date you verified that URL. Prefer `match: equals: <id>` so a `model_ref` resolves to exactly one row or fails loudly.
+
+<CodeGroup>
+```yaml TTS
+models:
+  - id: murf-standard
+    match:
+      equals: murf-standard
+    prices_checked: 2026-05-27
+    pricing_source_url: https://murf.ai/pricing#murf-standard
+    prices:
+      input_kchars: 0.020
+```
+```yaml STT
+models:
+  - id: acme-1
+    match:
+      equals: acme-1
+    prices_checked: 2026-05-28
+    pricing_source_url: https://acme.example/pricing#acme-1
+    price_comments: Source rate $0.006/minute. 0.006 * 1000 / 60 = 0.1 exactly.
+    prices:
+      input_audio_kseconds: 0.1
+```
+```yaml LLM
+models:
+  - id: nimbus-large
+    match:
+      equals: nimbus-large
+    context_window: 128000
+    prices_checked: 2026-05-28
+    pricing_source_url: https://nimbus.example/pricing#nimbus-large
+    prices:
+      input_mtok: 2.0
+      output_mtok: 8.0
+```
+</CodeGroup>
+</Step>
+<Step title="Add voice multipliers (TTS only)">
+Skip this unless your TTS provider bills premium or cloned voices at a different per-character rate. `default` is required, and multipliers need `input_kchars` (or `output_audio_kseconds`) to scale.
+
+```yaml
+voice_multipliers:
+  standard: 1.0
+  premium: 1.5
+  default: 1.0
+```
+</Step>
+<Step title="Build and verify">
+Run `make build` then `make test`. Smoke-check routing in a REPL: `calc_price(Usage(characters=200), model_ref='murf-standard')` should return your price and your provider id.
+</Step>
+<Step title="Open the PR">
+Commit the YAML plus the regenerated `prices/data*.json`, the schema files, and `packages/python/voice_prices/data.py`. In the PR body, give the pricing URL you verified against, the date you verified it, and any quirks: voice tiers, streaming or language splits, non-standard billing units, deprecated models you excluded.
+</Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="LookupError: Unable to find provider matching '<model-ref>'">
+Your provider-level `model_match` clause does not cover the model ID the user passed. Update the prefix or regex and rebuild.
+</Accordion>
+<Accordion title="Models are not sorted by ID">
+The validator enforces alphabetical sorting of the `models` list by `id`. The error message tells you exactly which entry to move and where.
+</Accordion>
+<Accordion title="My provider bills in credits, tokens, or minutes">
+Pick a default subscription tier (usually pay-as-you-go or Creator) and convert to the native priced field. Document the tier and the conversion formula in `price_comments` on each model so consumers on other tiers can derive their own rate.
+</Accordion>
+<Accordion title="voice_multipliers are not supported for STT">
+Setting `voice_multipliers` on a model priced by `input_audio_kseconds` fails validation by design. If your provider charges different rates by language, ship separate model entries with distinct IDs, the way Deepgram does with `nova-3` and `nova-3-multilingual`.
+</Accordion>
+</AccordionGroup>
+
+Advanced LLM pricing (tiered rates, conditional daily windows, cache-write, usage extractors) and the complete FAQ live in the [full contributing guide](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md).

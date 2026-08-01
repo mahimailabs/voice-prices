@@ -53,9 +53,18 @@ def test_select_real_catalog_staleness_boundary():
     # Far in the future, every voice entry is stale; all=True ignores staleness.
     future = select_stale(date(2030, 1, 1))
     every = select_stale(date(2020, 1, 1), all=True)
-    assert len(future) == len(every) == 26
+    assert len(future) == len(every) == 28
     providers = {w.provider_id for w in every}
-    assert providers == {'deepgram', 'elevenlabs', 'openai', 'assemblyai', 'cartesia', 'groq', 'telnyx'}
+    assert providers == {
+        'ai_coustics',
+        'assemblyai',
+        'cartesia',
+        'deepgram',
+        'elevenlabs',
+        'groq',
+        'openai',
+        'telnyx',
+    }
     for w in every:
         assert w.field in ('input_kchars', 'input_audio_kseconds', 'output_audio_kseconds')
         assert w.url.startswith('http')
