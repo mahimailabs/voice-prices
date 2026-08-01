@@ -80,6 +80,10 @@ ovhcloud-get: ## get ovhcloud ai endpoints prices
 livekit-get: ## regenerate livekit + livekit-scale YAMLs from prices/sources/livekit_pricing.json
 	uv run -m prices livekit_gen
 
+.PHONY: feed-check
+feed-check: ## validate a provider pricing feed and diff it against the catalog (FEED=<url|path>)
+	FEED="$(FEED)" uv run -m prices feed_check
+
 .PHONY: pricetoken-get
 pricetoken-get: ## dry-run the PriceToken voice-price import (writes nothing; author URLs + verify first)
 	uv run -m prices import_pricetoken

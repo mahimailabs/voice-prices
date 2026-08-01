@@ -162,7 +162,8 @@
         "tab": "Add Yours",
         "icon": "git-pull-request",
         "pages": [
-          "contribute"
+          "contribute",
+          "pricing-feed"
         ]
       }
     ]

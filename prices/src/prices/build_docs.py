@@ -840,7 +840,7 @@ def build_navigation(catalog: Catalog) -> dict[str, Any]:
     """The full ``navigation`` block. Generated, so the nav can never list a page that does not exist."""
     tabs: list[dict[str, Any]] = [{'tab': 'Overview', 'icon': 'book-open', 'pages': ['index', 'how-fresh']}]
     tabs += [category_tab(category, catalog[category]) for category in CATEGORIES]
-    tabs.append({'tab': 'Add Yours', 'icon': 'git-pull-request', 'pages': ['contribute']})
+    tabs.append({'tab': 'Add Yours', 'icon': 'git-pull-request', 'pages': ['contribute', 'pricing-feed']})
     return {'tabs': tabs}
 
 
@@ -952,6 +952,14 @@ def build_docs(docs_dir: Path | None = None) -> list[Path]:
     overview = docs_dir / 'index.mdx'
     if overview.exists() and inject_blocks(overview, overview_blocks(catalog, comparison)):
         written.append(overview)
+
+    # Imported here rather than at module scope: source_feed reads base_prices and detect_modality
+    # from this module, so a top-level import would be circular.
+    from .source_feed import render_rate_grid
+
+    feed_page = docs_dir / 'pricing-feed.mdx'
+    if feed_page.exists() and inject_blocks(feed_page, {'rate-grid': render_rate_grid()}):
+        written.append(feed_page)
 
     docs_json = docs_dir / 'docs.json'
     if docs_json.exists():
