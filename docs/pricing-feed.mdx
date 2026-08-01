@@ -60,11 +60,11 @@ That is a complete, valid response.
 
 | Requirement | Why |
 | --- | --- |
-| A stable URL that does not move | It goes in a config file. `/.well-known/pricing.json` on your API host is a good convention. |
-| No authentication | So client-side cost calculators can read it too. |
+| A stable HTTPS URL that does not move | It goes in a config file. `/.well-known/pricing.json` on your API host is a good convention. Plain HTTP is rejected: a rate that can be rewritten in transit is worse than no rate. |
+| No authentication | So client-side cost calculators can read it too. A registered URL may not embed credentials, since provider files are public. |
 | `Access-Control-Allow-Origin: *` | Same reason. |
 | `ETag` or `Last-Modified` | So daily polling costs you a 304 rather than a payload. |
-| No query parameters | There is nothing to parameterise. Rates are public and the same for everyone reading them. |
+| A bare URL, no query string | Nothing to parameterise: rates are public and identical for everyone. Not enforced, but it keeps caching simple. |
 
 It does not need to be fast or highly available. We poll once a day and treat a timeout as a transient failure, never as a price change.
 

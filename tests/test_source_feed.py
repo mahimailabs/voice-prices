@@ -283,6 +283,36 @@ def test_report_says_so_when_nothing_drifted():
     assert 'no drift' in report
 
 
+def test_pricing_feed_url_must_be_https():
+    # A polled rate fetched over plaintext can be rewritten in transit, which defeats the point of
+    # having a trusted source at all.
+    from prices.prices_types import Provider
+
+    base: dict[str, Any] = {'id': 'p', 'name': 'P', 'api_pattern': '.*', 'models': []}
+    assert Provider.model_validate({**base, 'pricing_feed_url': 'https://api.acme.com/pricing.json'})
+    with pytest.raises(ValidationError, match='must be https'):
+        Provider.model_validate({**base, 'pricing_feed_url': 'http://api.acme.com/pricing.json'})
+
+
+def test_pricing_feed_url_may_not_embed_credentials():
+    # Provider files are public and feed into a published schema, so a URL with a password in it
+    # would leak it the moment it merged.
+    from prices.prices_types import Provider
+
+    base: dict[str, Any] = {'id': 'p', 'name': 'P', 'api_pattern': '.*', 'models': []}
+    with pytest.raises(ValidationError, match='must not embed credentials'):
+        Provider.model_validate({**base, 'pricing_feed_url': 'https://user:pw@api.acme.com/pricing.json'})
+
+
+def test_pricing_feed_url_allows_a_query_string():
+    # Deliberately not enforced: a version marker is a reasonable thing for a provider to serve, and
+    # refusing it would block a valid registration over a style preference.
+    from prices.prices_types import Provider
+
+    base: dict[str, Any] = {'id': 'p', 'name': 'P', 'api_pattern': '.*', 'models': []}
+    assert Provider.model_validate({**base, 'pricing_feed_url': 'https://api.acme.com/pricing.json?v=1'})
+
+
 def test_registered_feeds_reads_the_provider_yaml_registry():
     # The registry is the provider files themselves, so there is no second list to fall out of sync.
     from prices.source_feed import registered_feeds

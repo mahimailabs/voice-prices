@@ -77,6 +77,24 @@ class Provider(_Model):
     models: list[ModelInfo]
     """List of models supported by this provider"""
 
+    @field_validator('pricing_feed_url', mode='after')
+    @classmethod
+    def validate_pricing_feed_url(cls, url: HttpUrl | None) -> HttpUrl | None:
+        """Enforce the two properties the endpoint contract actually depends on.
+
+        Plaintext matters here more than usual: this catalog's whole value is that its numbers are
+        right, so an endpoint whose response can be rewritten in transit is worse than no endpoint.
+        Credentials matter because provider files are public and end up in a published schema, so a
+        URL carrying a password would leak it the moment it was merged.
+        """
+        if url is None:
+            return url
+        if url.scheme != 'https':
+            raise ValueError('pricing_feed_url must be https, so a polled rate cannot be rewritten in transit')
+        if url.username or url.password:
+            raise ValueError('pricing_feed_url must not embed credentials: provider files are public')
+        return url
+
     @field_validator('extractors', mode='after')
     @classmethod
     def validate_extract(cls, extract: list[UsageExtractor] | None) -> list[UsageExtractor] | None:
