@@ -36,11 +36,11 @@ package-data: ## Prepare data for packages
 	uv run -m prices package_data
 
 .PHONY: build
-build: build-prices package-data inject-providers ## Build prices and package data
+build: build-prices package-data inject-providers build-docs ## Build prices, package data, and docs pages
 
-.PHONY: build-site
-build-site: ## Generate the static documentation site into site/ from prices/data.json
-	uv run -m prices build_site
+.PHONY: build-docs
+build-docs: ## Regenerate the docs/ provider pages and navigation from prices/data.json
+	uv run -m prices build_docs
 
 .PHONY: collapse-models
 collapse-models: ## Collapse duplicate similar models

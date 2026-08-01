@@ -5,7 +5,7 @@
 # 1. Copy this file to prices/providers/<your-provider>.yml
 # 2. Replace every value below the comment markers
 # 3. Run `make build` from the repo root to validate + regenerate data.json
-# 4. Follow the walkthrough at docs/contributing-a-provider.md for the full flow
+# 4. Follow the walkthrough at CONTRIBUTING.md for the full flow
 #
 # This template is a complete, validating YAML. The accompanying
 # `test_provider_template_validates` test parses it on every CI run so a broken

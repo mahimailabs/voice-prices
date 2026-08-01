@@ -1,0 +1,60 @@
+---
+title: "Why Voice Prices"
+sidebarTitle: "Why Voice Prices"
+description: "Open pricing data and cost calculation for voice-agent APIs, direct and through a gateway."
+icon: "book-open"
+---
+
+Voice Prices is an open, dated price database for the APIs a voice agent bills against: speech-to-text, LLM, text-to-speech, speech-to-speech, and voice activity detection. Every rate is traceable to the vendor page it came from.
+
+## The problem
+
+A voice agent runs three meters at once. An STT model bills per minute of audio, an LLM bills per token, and a TTS model bills per character. Route them through a gateway and a fourth layer sits on top, quoted in its own units. Working out what you actually pay, and what the gateway adds, means reading four pricing pages in three different units.
+
+This project puts them in one place, in the units vendors quote, with the date each rate was last checked.
+
+{/* generated:catalog-counts start */}
+**38 providers, 1,213 priced models.** 47 speech-to-text, 63 text-to-speech, 6 speech-to-speech, 2 voice activity detection, and 1,095 LLM.
+{/* generated:catalog-counts end */}
+
+## Direct versus gateway
+
+The same model costs different amounts depending on how you reach it. Voice Prices records both, so the difference is visible rather than inferred.
+
+{/* generated:livekit-summary start */}
+| Category | Models compared | Median vs direct | Range |
+| --- | ---: | ---: | ---: |
+| [STT](/stt/all-models) | 12 | +0% | -2% to +200% |
+| [LLM](/llm/all-models) | 27 | +0% | +0% to +100% |
+| [TTS](/tts/all-models) | 15 | +25% | +0% to +200% |
+{/* generated:livekit-summary end */}
+
+This is not an argument against gateways. LLM rates pass through unchanged, which is why the median LLM difference is zero, and the discounted Scale tier is cheaper than Build/Ship on every model that has one. Gateways buy you one integration, one bill, and failover. The point is that the number should be visible when you choose.
+
+Disclosure: Voice Prices is maintained alongside a voice infrastructure product (VoiceGateway). The dataset is open, the sources are cited, and it publishes its maintainer's own markups on the same terms as everyone else's.
+
+## Quick start
+
+```bash
+uv add voice-prices
+```
+
+```python
+from voice_prices import Usage, calc_price
+
+# Direct to the provider
+direct = calc_price(Usage(input_tokens=1000, output_tokens=100), model_ref='gpt-4o', provider_id='openai')
+
+# The same call through the LiveKit gateway
+gateway = calc_price(Usage(input_tokens=1000, output_tokens=100), model_ref='gpt-4o', provider_id='livekit')
+
+print(direct.total_price, gateway.total_price)
+```
+
+The raw data ships as [`data.json`](https://github.com/mahimailabs/voice-prices/blob/main/prices/data.json) and [`data_slim.json`](https://github.com/mahimailabs/voice-prices/blob/main/prices/data_slim.json), each with a JSON Schema, under the repository's licence. Use them directly if you do not want the Python package.
+
+## How to read these prices
+
+[How Fresh?](/how-fresh) explains what `verified`, `stale`, `imported`, and `seed` mean on every voice row, and who is allowed to set them. Read it before you rely on a number.
+
+Voice Prices is a fork of [pydantic/genai-prices](https://github.com/pydantic/genai-prices), extended with first-class voice pricing. Full attribution is in the [repository README](https://github.com/mahimailabs/voice-prices#thanks).
