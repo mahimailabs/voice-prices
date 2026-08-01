@@ -510,6 +510,42 @@ def test_build_navigation_has_the_seven_tabs_in_order():
     assert [tab['tab'] for tab in nav['tabs']] == ['Overview', 'STT', 'LLM', 'TTS', 'S2S', 'VAD', 'Add Yours']
 
 
+# Every icon name used anywhere in docs/, verified to exist in the Lucide set. Mintlify defaults to
+# Font Awesome, where most of these names do not exist, so the library declaration below and this
+# list have to stay in step: a mismatch silently renders a tab with no icon at all.
+LUCIDE_ICONS = {
+    'activity',
+    'audio-waveform',
+    'book-open',
+    'brain',
+    'clock',
+    'git-pull-request',
+    'mic',
+    'volume-2',
+}
+
+
+def test_docs_json_declares_the_lucide_icon_library():
+    config = json.loads((DOCS_DIR / 'docs.json').read_text())
+    assert config.get('icons', {}).get('library') == 'lucide'
+
+
+def test_every_navigation_icon_is_a_known_lucide_name():
+    nav = build_navigation(build_catalog(_real_data()))
+    icons = {str(tab['icon']) for tab in nav['tabs']}
+    assert icons <= LUCIDE_ICONS, f'unverified icon name(s): {sorted(icons - LUCIDE_ICONS)}'
+    assert len(icons) == len(nav['tabs'])  # every tab has its own icon, none dropped
+
+
+def test_every_page_frontmatter_icon_is_a_known_lucide_name():
+    used: set[str] = set()
+    for page in DOCS_DIR.rglob('*.mdx'):
+        match = re.search(r'^icon: "([^"]+)"$', page.read_text(), re.MULTILINE)
+        if match:
+            used.add(match.group(1))
+    assert used <= LUCIDE_ICONS, f'unverified icon name(s): {sorted(used - LUCIDE_ICONS)}'
+
+
 def _nav_pages(pages: list[Any]) -> list[str]:
     flat: list[str] = []
     for page in pages:
