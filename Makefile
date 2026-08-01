@@ -1,5 +1,10 @@
 .DEFAULT_GOAL := all
 
+# Every generator below reads or writes the same files (prices/data.json first, then the package
+# data, the README provider list, and the docs pages), so `make -j build` would race:
+# build-docs could start before build-prices has written the catalog it reads.
+.NOTPARALLEL:
+
 .PHONY: .uv
 .uv: ## Check that uv is installed
 	@uv --version || echo 'Please install uv: https://docs.astral.sh/uv/getting-started/installation/'

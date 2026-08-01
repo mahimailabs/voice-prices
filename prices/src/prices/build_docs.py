@@ -626,8 +626,25 @@ def _split_token_priced(category: Modality, rows: list[ModelRow]) -> tuple[list[
 
 
 def _frontmatter(fields: dict[str, str]) -> str:
-    body = '\n'.join(f'{key}: "{value}"' for key, value in fields.items())
+    """YAML frontmatter.
+
+    Values are contributor-supplied (a provider `name` comes straight from its YAML), so they are
+    escaped: one unescaped quote would produce invalid YAML and fail the whole docs build.
+    """
+
+    def quoted(value: str) -> str:
+        return '"' + value.replace('\\', '\\\\').replace('"', '\\"') + '"'
+
+    body = '\n'.join(f'{key}: {quoted(value)}' for key, value in fields.items())
     return f'---\n{body}\n---'
+
+
+def _page_summary(category: Modality) -> str:
+    """What a provider page actually shows. LLM pages render no per-model source column, so
+    claiming one in their description would be false."""
+    if category == 'llm':
+        return 'with input and output token rates'
+    return 'with the rate and where it came from'
 
 
 def _token_table_intro(category: Modality) -> str:
@@ -649,8 +666,7 @@ def render_provider_page(category: Modality, entry: ProviderEntry) -> str:
             {
                 'title': f'{entry["name"]} {meta.tab} pricing',
                 'sidebarTitle': entry['name'],
-                'description': f'{len(rows)} {meta.tab} model(s) from {entry["name"]}, with the rate and '
-                'verification status for each.',
+                'description': f'{len(rows)} {meta.tab} model(s) from {entry["name"]}, {_page_summary(category)}.',
                 'mode': 'wide',
             }
         ),
@@ -712,12 +728,15 @@ def render_index_page(category: Modality, entries: list[ProviderEntry], comparis
     """The category landing page: every model across every vendor, cheapest first."""
     meta = CATEGORY_META[category]
     total = sum(len(entry['models']) for entry in entries)
+    # The LLM index summarises by vendor rather than listing models, so "cheapest first" would be a
+    # lie on that page.
+    ordering = 'largest catalogs first' if category == 'llm' else 'cheapest first'
     parts = [
         _frontmatter(
             {
                 'title': meta.title,
                 'sidebarTitle': 'All models',
-                'description': f'{total} {meta.tab} model(s) from {len(entries)} provider(s), cheapest first.',
+                'description': f'{total} {meta.tab} model(s) from {len(entries)} provider(s), {ordering}.',
                 'mode': 'wide',
             }
         ),

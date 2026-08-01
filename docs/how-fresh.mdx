@@ -36,7 +36,7 @@ Status and confidence are computed at load time against today's date. A shipped 
 
 LLM rates are cross-checked against four external aggregators: Helicone, OpenRouter, LiteLLM, and Simon Willison's llm-prices. That pipeline is a local tool a maintainer runs (`make get-update-price-discrepancies`); each discrepancy is then resolved by hand.
 
-LLM models do not carry a per-model verification status for this reason. They are covered by aggregator cross-check rather than per-model verification, so a status on an [LLM](/llm/all-models) row would misread as low confidence. Only [TTS](/tts/all-models) and [STT](/stt/all-models) rows carry one.
+LLM models do not carry a per-model verification status for this reason. They are covered by aggregator cross-check rather than per-model verification, so a status on an [LLM](/llm/all-models) row would misread as low confidence. Every other category carries one: [STT](/stt/all-models), [TTS](/tts/all-models), [S2S](/s2s/all-models), and [VAD](/vad/all-models).
 
 ## How voice rates are checked
 

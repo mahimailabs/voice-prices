@@ -24,6 +24,7 @@ from prices.build_docs import (
     Column,
     Comparison,
     ModelRow,
+    ProviderEntry,
     _resolve_direct,
     active_columns,
     base_prices,
@@ -413,6 +414,26 @@ def test_render_provider_page_has_frontmatter_and_the_do_not_edit_notice():
     assert '$ / min' in page
 
 
+def test_frontmatter_escapes_quotes_in_contributor_supplied_values():
+    # A provider `name` comes straight from YAML someone else wrote. One unescaped quote would make
+    # the frontmatter invalid and fail the whole docs build, not just that page.
+    entry: ProviderEntry = {'id': 'q', 'name': 'A "quoted" vendor', 'models': [_row(per_min=0.01)]}
+    page = render_provider_page('stt', entry)
+    assert 'sidebarTitle: "A \\"quoted\\" vendor"' in page
+
+
+def test_page_descriptions_only_claim_what_the_page_renders():
+    # An LLM page shows no per-model source, so its description must not promise one.
+    catalog = build_catalog(_real_data())
+    llm = render_provider_page('llm', next(e for e in catalog['llm'] if e['id'] == 'anthropic'))
+    assert 'where it came from' not in llm
+    stt = render_provider_page('stt', next(e for e in catalog['stt'] if e['id'] == 'deepgram'))
+    assert 'where it came from' in stt
+    # The LLM index summarises by vendor, so it is not "cheapest first" either.
+    index = render_index_page('llm', catalog['llm'], build_comparison(_real_data())['llm'])
+    assert 'cheapest first' not in index
+
+
 def test_llm_pages_carry_no_source_column():
     # LLM rates are cross-checked against aggregators rather than per-model vendor pages, so a
     # per-model source column there would read as low confidence when it means nothing of the sort.
@@ -489,6 +510,42 @@ def test_build_navigation_has_the_seven_tabs_in_order():
     assert [tab['tab'] for tab in nav['tabs']] == ['Overview', 'STT', 'LLM', 'TTS', 'S2S', 'VAD', 'Add Yours']
 
 
+# Every icon name used anywhere in docs/, verified to exist in the Lucide set. Mintlify defaults to
+# Font Awesome, where most of these names do not exist, so the library declaration below and this
+# list have to stay in step: a mismatch silently renders a tab with no icon at all.
+LUCIDE_ICONS = {
+    'activity',
+    'audio-waveform',
+    'book-open',
+    'brain',
+    'clock',
+    'git-pull-request',
+    'mic',
+    'volume-2',
+}
+
+
+def test_docs_json_declares_the_lucide_icon_library():
+    config = json.loads((DOCS_DIR / 'docs.json').read_text())
+    assert config.get('icons', {}).get('library') == 'lucide'
+
+
+def test_every_navigation_icon_is_a_known_lucide_name():
+    nav = build_navigation(build_catalog(_real_data()))
+    icons = {str(tab['icon']) for tab in nav['tabs']}
+    assert icons <= LUCIDE_ICONS, f'unverified icon name(s): {sorted(icons - LUCIDE_ICONS)}'
+    assert len(icons) == len(nav['tabs'])  # every tab has its own icon, none dropped
+
+
+def test_every_page_frontmatter_icon_is_a_known_lucide_name():
+    used: set[str] = set()
+    for page in DOCS_DIR.rglob('*.mdx'):
+        match = re.search(r'^icon: "([^"]+)"$', page.read_text(), re.MULTILINE)
+        if match:
+            used.add(match.group(1))
+    assert used <= LUCIDE_ICONS, f'unverified icon name(s): {sorted(used - LUCIDE_ICONS)}'
+
+
 def _nav_pages(pages: list[Any]) -> list[str]:
     flat: list[str] = []
     for page in pages:
@@ -558,14 +615,14 @@ def test_inject_blocks_raises_when_the_marker_is_missing(tmp_path: Path):
 # ---- full build --------------------------------------------------------------
 
 
-def test_build_docs_is_deterministic_and_committed_output_is_in_sync():
+def test_build_docs_is_deterministic_and_committed_output_is_in_sync(tmp_path: Path):
     """The drift gate.
 
     Regenerate the whole site into a scratch copy and byte-compare against what is committed. A
     failure here means someone edited a price without running `make build`, so the published docs
     would show a number the library no longer agrees with.
     """
-    scratch = Path(__import__('tempfile').mkdtemp()) / 'docs'
+    scratch = tmp_path / 'docs'
     shutil.copytree(DOCS_DIR, scratch)
     build_docs(scratch)
 
