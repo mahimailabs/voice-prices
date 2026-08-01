@@ -1,19 +1,27 @@
 ---
-title: "Serve a pricing feed"
-sidebarTitle: "Serve a pricing feed"
-description: "Publish your rates once, in a file, so every tool that quotes you gets them right."
+title: "Serve a pricing endpoint"
+sidebarTitle: "Serve a pricing endpoint"
+description: "Publish your rates at a URL we can poll, and this catalog tracks your prices automatically."
 icon: "rss"
 ---
 
 If you work at a model or inference provider, this is the highest-value thing you can do for the developers costing out your API.
 
-Today your prices reach tools like this one by someone reading your pricing page. That is slow, it breaks every time you restyle the page, and when it breaks the wrong number gets published under your name. A small JSON file fixes it permanently.
+Right now your prices reach this catalog because a person reads your pricing page. That is slow, it breaks whenever you restyle the page, and when it breaks the wrong number gets published under your name.
+
+Publish one endpoint instead and that stops happening permanently. We poll it every day, and when a rate moves the catalog follows.
 
 <Note>
-Nothing here is a new standard. [OpenRouter](https://openrouter.ai/docs/api/api-reference/models/get-models) and [LiteLLM](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) already publish per-token rates in this shape, and this project already pulls from both. The only addition is the two meters voice needs: characters of text and seconds of audio.
+This is not a new standard. [OpenRouter](https://openrouter.ai/docs/api/api-reference/models/get-models) and [LiteLLM](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) already publish per-token rates in this shape, and this project already pulls from both. The only addition is the two meters that voice needs: characters of text and seconds of audio.
 </Note>
 
-## The file
+## What we need
+
+A single HTTPS `GET` that returns your current rates as JSON.
+
+```http
+GET https://api.acme.com/.well-known/pricing.json
+```
 
 ```json
 {
@@ -40,13 +48,25 @@ Nothing here is a new standard. [OpenRouter](https://openrouter.ai/docs/api/api-
 }
 ```
 
-That is a complete, valid feed. If you publish nothing else, publish that.
+That is a complete, valid response.
 
-## The one rule
+## The two requirements that make it worth doing
 
-**Quote every rate per one base unit**: one character, one second, one token, one request. Never per thousand or per million.
+**Generate it from whatever your billing system treats as the source of truth.** This is the whole point. An endpoint a human edits by hand is a pricing page with extra steps: it will drift, and because we poll it, that drift becomes visible rather than staying quietly wrong. If the number you serve is the number you bill, the endpoint is correct permanently and you never think about it again.
 
-Per-unit pricing is where public pricing data goes wrong most often, because `$30` is a plausible price per million characters and a catastrophic one per thousand. If the number is small and the unit is singular, there is nothing to misread. Publish amounts as **strings** for the same reason: `0.0000003` as a JSON number does not survive a round trip through every language's float parser.
+**Quote every rate per one base unit**: one character, one second, one token, one request. Never per thousand or per million. This is where public pricing data goes wrong most often, because `$30` is a plausible price per million characters and a catastrophic one per thousand. If the number is small and the unit is singular, there is nothing to misread. Publish amounts as **strings** for the same reason: `0.0000003` as a JSON number does not survive a round trip through every language's float parser.
+
+## Serving it
+
+| Requirement | Why |
+| --- | --- |
+| A stable URL that does not move | It goes in a config file. `/.well-known/pricing.json` on your API host is a good convention. |
+| No authentication | So client-side cost calculators can read it too. |
+| `Access-Control-Allow-Origin: *` | Same reason. |
+| `ETag` or `Last-Modified` | So daily polling costs you a 304 rather than a payload. |
+| No query parameters | There is nothing to parameterise. Rates are public and the same for everyone reading them. |
+
+It does not need to be fast or highly available. We poll once a day and treat a timeout as a transient failure, never as a price change.
 
 ## Fields
 
@@ -57,7 +77,7 @@ Per-unit pricing is where public pricing data goes wrong most often, because `$3
 | `provider` | yes | Short stable id for your company, lowercase. |
 | `models` | yes | The list below. |
 | `currency` | no | ISO 4217. Defaults to `USD`. |
-| `updated` | no | ISO date you last changed this file. |
+| `updated` | no | ISO date the rates last changed. |
 
 ### Per model
 
@@ -107,7 +127,7 @@ Every combination below maps to exactly one field in this catalog. Anything not 
 
 ## Get the model id right
 
-This is the field most often wrong and the only one that makes a feed machine-usable.
+This is the field most often wrong and the only one that makes an endpoint machine-usable.
 
 `id` must be the literal string a caller passes to your API. Not the marketing name, not the docs slug, not the pricing-page row label.
 
@@ -118,16 +138,7 @@ This is the field most often wrong and the only one that makes a feed machine-us
 
 Every downstream tool has a fuzzy matching layer purely because providers publish the second form. Getting this right deletes that layer.
 
-## Serving it
-
-- **A stable URL that does not change.** `/.well-known/pricing.json` on your API host is a good convention.
-- **No authentication**, so client-side cost calculators can read it.
-- **`Access-Control-Allow-Origin: *`**.
-- **An `ETag` or `Last-Modified` header**, so pollers are cheap for you.
-
-Hand-maintaining the file is fine and is much better than nothing. Generating it from whatever your billing system treats as the source of truth is the version that never drifts.
-
-## Check it
+## Check it before you ship it
 
 ```bash
 git clone https://github.com/mahimailabs/voice-prices && cd voice-prices
@@ -135,27 +146,30 @@ make install
 make feed-check FEED=https://api.acme.com/.well-known/pricing.json
 ```
 
-This validates the file, converts every rate, and diffs it against what this catalog currently publishes about you. It works on a local path too, so you can check the file before you ship it:
+This validates the response, converts every rate, and diffs it against what this catalog currently publishes about you. It works on a local path too, so you can check what your build produces before it goes live:
 
 ```bash
 make feed-check FEED=./pricing.json
 ```
 
-It exits non-zero when something drifts or cannot be mapped, so it works as a CI check on your side: fail the build when your published feed stops agreeing with what the public catalog says you charge. Note that `make` prints its own `Error 1` line on a non-zero exit, which means findings, not a crash. In CI, call the module directly to avoid the noise:
+It exits non-zero when something drifts or cannot be mapped, so it doubles as a check in **your** CI: fail your build the day your published rates stop matching what you actually charge. Call the module directly there to avoid make's own error line, which signals findings rather than a crash:
 
 ```bash
 FEED=./pricing.json uv run -m prices feed_check
 ```
 
+## Register it
+
+Open an [issue](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) with the URL, or send a pull request adding one line to your provider file:
+
+```yaml
+pricing_feed_url: https://api.acme.com/.well-known/pricing.json
+```
+
+From then on a scheduled job polls your endpoint daily and flags any rate that has moved away from the catalog.
+
 <Warning>
-`feed-check` never writes to the catalog. A drift report is a prompt for a human to review and update the rate by hand. No bot in this project is allowed to mark a price as verified. [How Fresh?](/how-fresh) explains why.
+Polling never rewrites a price on its own. A moved rate alerts a maintainer, who confirms it and updates the entry by hand. No job in this project is allowed to mark a price as verified, which is what makes the dates on every page mean something. [How Fresh?](/how-fresh) explains the rule.
 </Warning>
 
-## If you cannot host a file
-
-Two smaller asks that still help:
-
-1. Give your pricing page stable `id` anchors on each price row, and do not render the numbers only in client-side JavaScript. Extraction becomes reliable instead of best-effort.
-2. Tell us where to watch for changes: a changelog feed, a mailing list, or a person to ping. Being told beats finding out.
-
-Either way, [open an issue](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) and we will wire it up.
+Anything that does not fit the shape above, [open an issue](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) and we will work it out.

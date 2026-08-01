@@ -283,6 +283,24 @@ def test_report_says_so_when_nothing_drifted():
     assert 'no drift' in report
 
 
+def test_registered_feeds_reads_the_provider_yaml_registry():
+    # The registry is the provider files themselves, so there is no second list to fall out of sync.
+    from prices.source_feed import registered_feeds
+
+    feeds = registered_feeds()
+    assert all(url.startswith('http') for _, url in feeds)
+    assert len({provider_id for provider_id, _ in feeds}) == len(feeds)  # one endpoint per provider
+
+
+def test_feed_sync_is_a_no_op_until_a_provider_registers_an_endpoint(capsys: pytest.CaptureFixture[str]):
+    from prices.source_feed import feed_sync, registered_feeds
+
+    if registered_feeds():
+        pytest.skip('a provider now publishes an endpoint; this test covers the empty registry only')
+    assert feed_sync() == 0  # nothing registered is not a failure
+    assert 'pricing_feed_url' in capsys.readouterr().out
+
+
 def test_feed_check_without_a_feed_env_var_explains_itself(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ):

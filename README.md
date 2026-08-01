@@ -159,8 +159,10 @@ If you're a developer, please [contribute](#contributing) to fix any missing or 
 
 We welcome contributions from the community and especially model/inference providers!
 
-**If you're a model provider:** it would be amazing if you served a machine-readable pricing file or
-endpoint we could pull from. It would dramatically improve pricing accuracy for developers using your API.
+**If you're a model provider:** serve a pricing endpoint and we will track your rates automatically
+instead of reading your pricing page. It is one HTTPS GET returning JSON, it takes an afternoon, and
+it permanently fixes pricing accuracy for every developer using your API.
+[Here is exactly what we need](docs/pricing-feed.mdx).
 
 Otherwise, to contribute:
 

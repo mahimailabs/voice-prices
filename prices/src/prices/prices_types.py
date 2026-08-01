@@ -42,6 +42,13 @@ class Provider(_Model):
     """Common name of the organization"""
     pricing_urls: list[HttpUrl] | None = None
     """Link to pricing page for the provider"""
+    pricing_feed_url: HttpUrl | None = Field(default=None, exclude=True)
+    """Machine-readable pricing endpoint this provider publishes, in the format documented at
+    `docs/pricing-feed.mdx`.
+
+    When set, `make feed-sync` polls it and reports any rate that has moved away from the catalog.
+    Build-side only (excluded from data.json): consumers get the resulting rates, not the plumbing.
+    """
     api_pattern: str
     """Pattern to identify provider via HTTP API URL."""
     description: DescriptionField | None = None

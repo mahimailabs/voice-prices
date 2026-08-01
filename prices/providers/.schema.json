@@ -797,6 +797,14 @@
       "description": "Link to pricing page for the provider",
       "title": "Pricing Urls"
     },
+    "pricing_feed_url": {
+      "format": "uri",
+      "maxLength": 2083,
+      "minLength": 1,
+      "type": "string",
+      "description": "Machine-readable pricing endpoint this provider publishes, in the format documented at\n`docs/pricing-feed.mdx`.\n\nWhen set, `make feed-sync` polls it and reports any rate that has moved away from the catalog.\nBuild-side only (excluded from data.json): consumers get the resulting rates, not the plumbing.",
+      "title": "Pricing Feed Url"
+    },
     "api_pattern": {
       "description": "Pattern to identify provider via HTTP API URL.",
       "title": "Api Pattern",

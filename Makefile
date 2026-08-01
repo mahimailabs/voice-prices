@@ -84,6 +84,10 @@ livekit-get: ## regenerate livekit + livekit-scale YAMLs from prices/sources/liv
 feed-check: ## validate a provider pricing feed and diff it against the catalog (FEED=<url|path>)
 	FEED="$(FEED)" uv run -m prices feed_check
 
+.PHONY: feed-sync
+feed-sync: ## poll every registered provider pricing endpoint and report moved rates
+	uv run -m prices feed_sync
+
 .PHONY: pricetoken-get
 pricetoken-get: ## dry-run the PriceToken voice-price import (writes nothing; author URLs + verify first)
 	uv run -m prices import_pricetoken
