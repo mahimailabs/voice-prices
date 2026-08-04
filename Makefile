@@ -88,6 +88,10 @@ feed-check: ## validate a provider pricing feed and diff it against the catalog 
 feed-sync: ## poll every registered provider pricing endpoint and report moved rates
 	uv run -m prices feed_sync
 
+.PHONY: telnyx-get
+telnyx-get: ## import Telnyx Inference LLM pricing from their public API (DRY_RUN=1 to only report)
+	uv run -m prices telnyx_get
+
 .PHONY: pricetoken-get
 pricetoken-get: ## dry-run the PriceToken voice-price import (writes nothing; author URLs + verify first)
 	uv run -m prices import_pricetoken

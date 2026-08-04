@@ -17,6 +17,7 @@ from .source_openrouter import get_openrouter_prices, update_from_openrouter
 from .source_ovhcloud import get_ovhcloud_prices
 from .source_pricetoken import import_pricetoken
 from .source_simonw_prices import get_simonw_prices
+from .source_telnyx import telnyx_get
 
 
 def main():
@@ -32,6 +33,7 @@ def main():
         get_openrouter_prices,
         get_ovhcloud_prices,
         get_simonw_prices,
+        telnyx_get,
         import_pricetoken,
         update_price_discrepancies,
         check_for_price_discrepancies,

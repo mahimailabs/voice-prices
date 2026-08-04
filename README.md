@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**38 providers, 1,213 priced models.** 47 STT, 1,095 LLM, 63 TTS, 6 S2S, 2 VAD.
+**38 providers, 1,220 priced models.** 47 STT, 1,102 LLM, 63 TTS, 6 S2S, 2 VAD.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -113,7 +113,7 @@ Every provider in the catalog, and which categories it prices:
 | [OpenRouter](prices/providers/openrouter.yml) | 461 | LLM |
 | [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) | 15 | LLM |
 | [Perplexity](prices/providers/perplexity.yml) | 8 | LLM |
-| [Telnyx](prices/providers/telnyx.yml) | 5 | STT, TTS |
+| [Telnyx](prices/providers/telnyx.yml) | 12 | STT, LLM, TTS |
 | [Together AI](prices/providers/together.yml) | 72 | LLM |
 | [X AI](prices/providers/x_ai.yml) | 12 | LLM |
 
