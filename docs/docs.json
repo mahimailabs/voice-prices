@@ -87,6 +87,7 @@
               "llm/openai",
               "llm/ovhcloud",
               "llm/perplexity",
+              "llm/telnyx",
               "llm/together",
               "llm/x-ai"
             ]
