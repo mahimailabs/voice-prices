@@ -313,6 +313,59 @@ def render_rate_grid() -> str:
     return '\n'.join(rows)
 
 
+def registered_feeds() -> list[tuple[str, str]]:
+    """Every provider that publishes a pricing endpoint, as ``(provider_id, url)``.
+
+    The registry is the provider YAML itself (`pricing_feed_url`), so adding a provider to the poll
+    is a one-line change reviewed like any other, and there is no second list to fall out of sync.
+    """
+    from .update import get_providers_yaml
+
+    feeds: list[tuple[str, str]] = []
+    for provider_yml in sorted(get_providers_yaml().values(), key=lambda x: x.provider.id):
+        url = provider_yml.provider.pricing_feed_url
+        if url is not None:
+            feeds.append((provider_yml.provider.id, str(url)))
+    return feeds
+
+
+def feed_sync() -> int:
+    """Poll every registered provider pricing endpoint and report rates that have moved."""
+    feeds = registered_feeds()
+    if not feeds:
+        print('no provider publishes a pricing endpoint yet (set pricing_feed_url in a provider YAML)')
+        return 0
+
+    data = cast('list[dict[str, Any]]', json.loads(DATA_JSON.read_text()))
+    blocking = 0
+    unreachable = 0
+
+    for provider_id, url in feeds:
+        print(f'\n=== {provider_id}: {url} ===')
+        try:
+            feed, warnings = load_feed(url)
+        except ValidationError as exc:
+            print(f'  INVALID   the endpoint no longer matches the feed format:\n{exc}')
+            blocking += 1
+            continue
+        except (OSError, ValueError, httpx2.HTTPError) as exc:
+            # An endpoint being down is not a pricing problem, so it is reported but does not fail
+            # the run. A permanently dead feed shows up as a repeated warning.
+            print(f'  UNREACHABLE  {exc}')
+            unreachable += 1
+            continue
+
+        if feed.provider != provider_id:
+            print(f'  WARN  endpoint declares provider "{feed.provider}" but is registered under "{provider_id}"')
+
+        findings = compare(feed, data)
+        print(render_report(feed, findings, warnings))
+        blocking += sum(1 for f in findings if f.kind in ('DRIFT', 'UNSUPPORTED'))
+
+    print(f'\n{len(feeds)} endpoint(s) polled, {unreachable} unreachable, {blocking} rate(s) needing a human look.')
+    return 1 if blocking else 0
+
+
 def feed_check() -> int:
     """Validate a provider pricing feed and diff it against the catalog (set FEED=<url|path>)."""
     source = os.environ.get('FEED', '').strip()

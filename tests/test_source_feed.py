@@ -283,6 +283,54 @@ def test_report_says_so_when_nothing_drifted():
     assert 'no drift' in report
 
 
+def test_pricing_feed_url_must_be_https():
+    # A polled rate fetched over plaintext can be rewritten in transit, which defeats the point of
+    # having a trusted source at all.
+    from prices.prices_types import Provider
+
+    base: dict[str, Any] = {'id': 'p', 'name': 'P', 'api_pattern': '.*', 'models': []}
+    assert Provider.model_validate({**base, 'pricing_feed_url': 'https://api.acme.com/pricing.json'})
+    with pytest.raises(ValidationError, match='must be https'):
+        Provider.model_validate({**base, 'pricing_feed_url': 'http://api.acme.com/pricing.json'})
+
+
+def test_pricing_feed_url_may_not_embed_credentials():
+    # Provider files are public and feed into a published schema, so a URL with a password in it
+    # would leak it the moment it merged.
+    from prices.prices_types import Provider
+
+    base: dict[str, Any] = {'id': 'p', 'name': 'P', 'api_pattern': '.*', 'models': []}
+    with pytest.raises(ValidationError, match='must not embed credentials'):
+        Provider.model_validate({**base, 'pricing_feed_url': 'https://user:pw@api.acme.com/pricing.json'})
+
+
+def test_pricing_feed_url_allows_a_query_string():
+    # Deliberately not enforced: a version marker is a reasonable thing for a provider to serve, and
+    # refusing it would block a valid registration over a style preference.
+    from prices.prices_types import Provider
+
+    base: dict[str, Any] = {'id': 'p', 'name': 'P', 'api_pattern': '.*', 'models': []}
+    assert Provider.model_validate({**base, 'pricing_feed_url': 'https://api.acme.com/pricing.json?v=1'})
+
+
+def test_registered_feeds_reads_the_provider_yaml_registry():
+    # The registry is the provider files themselves, so there is no second list to fall out of sync.
+    from prices.source_feed import registered_feeds
+
+    feeds = registered_feeds()
+    assert all(url.startswith('http') for _, url in feeds)
+    assert len({provider_id for provider_id, _ in feeds}) == len(feeds)  # one endpoint per provider
+
+
+def test_feed_sync_is_a_no_op_until_a_provider_registers_an_endpoint(capsys: pytest.CaptureFixture[str]):
+    from prices.source_feed import feed_sync, registered_feeds
+
+    if registered_feeds():
+        pytest.skip('a provider now publishes an endpoint; this test covers the empty registry only')
+    assert feed_sync() == 0  # nothing registered is not a failure
+    assert 'pricing_feed_url' in capsys.readouterr().out
+
+
 def test_feed_check_without_a_feed_env_var_explains_itself(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ):

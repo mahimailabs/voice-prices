@@ -10,7 +10,7 @@ from .inject_providers import inject_providers
 from .livekit_gen import livekit_gen
 from .package_data import package_data
 from .price_discrepancies import check_for_price_discrepancies, update_price_discrepancies
-from .source_feed import feed_check
+from .source_feed import feed_check, feed_sync
 from .source_huggingface import get_huggingface_prices
 from .source_litellm import get_litellm_prices
 from .source_openrouter import get_openrouter_prices, update_from_openrouter
@@ -26,6 +26,7 @@ def main():
         collapse,
         detect_deprecated,
         feed_check,
+        feed_sync,
         get_huggingface_prices,
         get_litellm_prices,
         get_openrouter_prices,

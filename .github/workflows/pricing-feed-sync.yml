@@ -1,0 +1,37 @@
+name: Pricing feed sync
+
+# Polls every provider pricing endpoint registered via `pricing_feed_url` and fails when a rate has
+# moved away from the catalog. Unlike the LLM-assisted freshness check, this is a plain HTTP GET and
+# a decimal comparison: no browser, no model, no API key, so it is cheap enough to run on a schedule.
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+    paths:
+      - prices/providers/**
+      - prices/src/prices/source_feed.py
+      - .github/workflows/pricing-feed-sync.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pricing-feed-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - run: uv sync --frozen --all-packages
+      # Exits non-zero when a registered endpoint disagrees with the committed catalog. That is a
+      # finding, not a crash: a maintainer reads the diff and updates the rate by hand. No job in
+      # this repository is allowed to write prices_checked.
+      - run: make feed-sync
