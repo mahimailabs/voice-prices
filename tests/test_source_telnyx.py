@@ -98,11 +98,32 @@ def test_model_id_is_used_verbatim_as_the_match():
     assert model.match.equals == 'anthropic-claude-haiku-4.5'  # type: ignore[union-attr]
 
 
-def test_a_zero_cached_rate_is_omitted_rather_than_published_as_free():
-    model, _ = convert_row(_row(cached_input_rate='0.00', cached_input_tiers=[{'min': 0, 'max': None, 'rate': '0.00'}]))
-    assert model is not None
+def test_a_flat_zero_cached_rate_is_left_unset_rather_than_published_as_free():
+    # Zero reads the same whether cache reads are free or the model has no cache, and the API does
+    # not distinguish them, so the field is left unset rather than asserting one reading.
+    model, reason = convert_row(
+        _row(cached_input_rate='0.00', cached_input_tiers=[{'min': 0, 'max': None, 'rate': '0.00'}])
+    )
+    assert reason is None and model is not None
     assert isinstance(model.prices, ModelPrice)
     assert model.prices.cache_read_mtok is None
+
+
+def test_a_zero_cached_headline_hiding_a_tiered_rate_is_refused():
+    # Decimal('0') is falsy, so a truthiness check here would skip tier validation entirely and let
+    # a tiered cached price through unchecked while input and output were being verified.
+    model, reason = convert_row(
+        _row(
+            cached_input_rate='0.00',
+            cached_input_tiers=[
+                {'min': 0, 'max': 1_000_000, 'rate': '0.00'},
+                {'min': 1_000_000, 'max': None, 'rate': '0.0004'},
+            ],
+        )
+    )
+    assert model is None
+    assert reason is not None and reason.startswith('cached input headline rate')
+    assert '0.0004' in reason
 
 
 def test_input_headline_disagreeing_with_tiers_is_refused():

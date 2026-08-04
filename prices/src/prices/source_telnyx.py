@@ -122,9 +122,22 @@ def convert_row(row: InferenceRow) -> tuple[ModelInfo | None, str | None]:
         input_mtok=input_rate * PER_1K_TO_MTOK,
         output_mtok=output_rate * PER_1K_TO_MTOK,
     )
-    cached = flat_rate(row.cached_input_rate, row.cached_input_tiers) if row.cached_input_rate else None
-    if cached:
-        prices.cache_read_mtok = cached * PER_1K_TO_MTOK
+    # Validated whenever Telnyx publishes the field, including when the headline reads 0.00.
+    # Decimal('0') is falsy, so gating this on truthiness would silently skip tier validation on the
+    # cached dimension while input and output were being checked.
+    if row.cached_input_rate is not None:
+        cached = flat_rate(row.cached_input_rate, row.cached_input_tiers)
+        if cached is None:
+            rates = sorted({str(tier.rate) for tier in row.cached_input_tiers})
+            return None, (
+                f'cached input headline rate {row.cached_input_rate} disagrees with its tiers '
+                f'({", ".join(rates)}); the API does not document what the tier bounds measure'
+            )
+        # A flat zero is ambiguous: it reads the same whether cache reads are free or the model has
+        # no cache at all, and the API does not distinguish the two. Left unset rather than
+        # published as free, which is the same call made everywhere else in this module.
+        if cached > 0:
+            prices.cache_read_mtok = cached * PER_1K_TO_MTOK
 
     return (
         ModelInfo(
@@ -199,7 +212,7 @@ def render_report(plan: Plan, total: int) -> str:
         lines.append('')
     for model in plan.to_add:
         prices = cast('ModelPrice', model.prices)
-        cached = f', cached {prices.cache_read_mtok}' if prices.cache_read_mtok else ''
+        cached = f', cached {prices.cache_read_mtok}' if prices.cache_read_mtok is not None else ''
         lines.append(f'  ADD       {model.id}: in {prices.input_mtok}, out {prices.output_mtok}{cached} $/Mtok')
     if plan.to_add:
         lines.append('')
