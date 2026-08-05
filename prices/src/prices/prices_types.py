@@ -226,6 +226,18 @@ class Provenance(_Model):
     source: Literal['imported', 'seed'] | None = None
     """Origin of an unverified rate: `imported` (from another catalog, e.g. PriceToken) or `seed`
     (bootstrap). A `verified` status is not stored: it is derived from `last_verified` being present."""
+    api_backed: bool | None = None
+    """Whether this rate is published by the vendor at a machine-readable endpoint.
+
+    Tri-state so that only `true` is ever written: a `false` on every one of the twelve hundred
+    models that are not API-backed would be a byte of noise per model and no information, since
+    absent already means "read off a pricing page".
+
+    True means the rate can be re-read and compared automatically, so a reprice surfaces without a
+    human re-reading a pricing page. False means it was read off a pricing page and only a person
+    (or the LLM-assisted freshness job) can confirm it still holds. This is the split the docs
+    expose, and the reason `docs/pricing-feed.mdx` exists.
+    """
     last_verified: date | None = None
     """Date the rate was last human-verified. Populated at BUILD from the model's `prices_checked`
     (which is itself excluded from output); never set by hand in YAML and never written by the bot."""

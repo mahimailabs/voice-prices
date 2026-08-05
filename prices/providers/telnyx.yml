@@ -40,6 +40,7 @@ models:
       output_mtok: 5
     provenance:
       source: imported
+      api_backed: true
   - id: gpt-4.1
     match:
       equals: gpt-4.1
@@ -52,6 +53,7 @@ models:
       output_mtok: 8
     provenance:
       source: imported
+      api_backed: true
   - id: gpt-4o
     match:
       equals: gpt-4o
@@ -64,6 +66,7 @@ models:
       output_mtok: 10
     provenance:
       source: imported
+      api_backed: true
   - id: gpt-5
     match:
       or:
@@ -78,6 +81,7 @@ models:
       output_mtok: 10
     provenance:
       source: imported
+      api_backed: true
   - id: gpt-5.2
     match:
       equals: gpt-5.2
@@ -90,6 +94,7 @@ models:
       output_mtok: 14
     provenance:
       source: imported
+      api_backed: true
   - id: gpt-5.4
     match:
       equals: gpt-5.4
@@ -102,6 +107,7 @@ models:
       output_mtok: 15
     provenance:
       source: imported
+      api_backed: true
   - id: natural
     name: Telnyx Natural TTS
     description: >-
@@ -115,7 +121,8 @@ models:
       Source rate $0.000003 per character = $0.003 / 1k chars.
     prices:
       input_kchars: 0.003
-
+    provenance:
+      api_backed: true
   - id: natural-hd
     name: Telnyx NaturalHD TTS
     description: >-
@@ -129,7 +136,8 @@ models:
       Source rate $0.000048 per character = $0.048 / 1k chars.
     prices:
       input_kchars: 0.048
-
+    provenance:
+      api_backed: true
   - id: openai-gpt-5.4-mini
     match:
       equals: openai-gpt-5.4-mini
@@ -142,6 +150,7 @@ models:
       output_mtok: 4.5
     provenance:
       source: imported
+      api_backed: true
   - id: qwen3tts
     name: Telnyx Qwen3TTS
     description: >-
@@ -156,7 +165,8 @@ models:
       Source rate $0.000032 per character = $0.032 / 1k chars.
     prices:
       input_kchars: 0.032
-
+    provenance:
+      api_backed: true
   - id: telnyx-stt
     name: Telnyx STT
     description: >-
@@ -172,7 +182,8 @@ models:
       0.015 * 1000 / 60 = 0.25.
     prices:
       input_audio_kseconds: 0.25
-
+    provenance:
+      api_backed: true
   - id: ultra
     name: Telnyx Ultra TTS
     description: >-
@@ -187,3 +198,5 @@ models:
       Source rate $0.000032 per character = $0.032 / 1k chars.
     prices:
       input_kchars: 0.032
+    provenance:
+      api_backed: true

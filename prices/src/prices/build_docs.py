@@ -316,7 +316,12 @@ def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, dail
     prices = model.get('prices')
     has_voices = isinstance(prices, dict) and bool(cast('dict[str, Any]', prices).get('voice_multipliers'))
 
+    provenance = model.get('provenance')
+    api_backed = isinstance(provenance, dict) and bool(cast('dict[str, Any]', provenance).get('api_backed'))
+
     markers: list[str] = []
+    if api_backed:
+        markers.append('api')
     if tiered:
         markers.append('tiered')
     if daily:
@@ -589,11 +594,13 @@ def _markers_footnote(rows: list[ModelRow]) -> str:
     """Explain only the markers that actually appear on this page."""
     seen = {marker for row in rows for marker in row['markers']}
     notes = {
+        'api': '`api` the vendor publishes this rate at a machine-readable endpoint, so it is '
+        're-read and compared automatically rather than by a human reading a pricing page.',
         'tiered': '`tiered` the rate changes above a token threshold. The base rate is shown.',
         'daily': '`daily` the rate changes with the time of day. The standard rate is shown.',
         'voices': '`voices` some voice classes cost a multiple of the base rate.',
     }
-    lines = [notes[marker] for marker in ('tiered', 'daily', 'voices') if marker in seen]
+    lines = [notes[marker] for marker in ('api', 'tiered', 'daily', 'voices') if marker in seen]
     return '\n'.join(f'- {line}' for line in lines)
 
 
@@ -899,7 +906,29 @@ def overview_blocks(catalog: Catalog, comparison: Comparison) -> dict[str, str]:
     table = '\n'.join(
         ['| Category | Models compared | Median vs direct | Range |', '| --- | ---: | ---: | ---: |', *lines]
     )
-    return {'catalog-counts': totals, 'livekit-summary': table}
+    backed = sum(
+        1
+        for category in CATEGORIES
+        for entry in catalog[category]
+        for row in entry['models']
+        if 'api' in row['markers']
+    )
+    providers_backed = sorted(
+        {
+            entry['name']
+            for category in CATEGORIES
+            for entry in catalog[category]
+            if any('api' in row['markers'] for row in entry['models'])
+        }
+    )
+    coverage = (
+        f'**{backed} of {sum(counts.values()):,} priced models** are published by their vendor at a '
+        'machine-readable endpoint, so this catalog re-reads and compares them automatically. '
+        + (f'That is {", ".join(providers_backed)}. ' if providers_backed else '')
+        + 'Every other rate is read off a pricing page by a person. '
+        '[Serving an endpoint](/pricing-feed) is the single most useful thing a provider can do here.'
+    )
+    return {'catalog-counts': totals, 'livekit-summary': table, 'api-coverage': coverage}
 
 
 def _prune(directory: Path, keep: set[Path]) -> list[Path]:

@@ -86,7 +86,18 @@ def test_full_dump_keeps_all_provenance_fields():
     )
     provider = _provider([_model(provenance=provenance)])
     out = _dump(provider, slim=False)
+    # api_backed is absent: it is tri-state so only `true` is written, and this model is not
+    # published at a machine-readable endpoint.
     assert set(out) == {'source', 'last_verified', 'agent_votes', 'evidence', 'source_rate'}
+
+
+def test_api_backed_is_written_only_when_true():
+    provider = _provider([_model(provenance=Provenance(api_backed=True))])
+    assert _dump(provider, slim=False)['api_backed'] is True
+    assert _dump(provider, slim=True)['api_backed'] is True  # small and useful, so it survives slim
+
+    plain = _provider([_model(provenance=Provenance(source='seed'))])
+    assert 'api_backed' not in _dump(plain, slim=False)
 
 
 def test_slim_dump_drops_heavy_provenance_fields():
