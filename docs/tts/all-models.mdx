@@ -13,7 +13,7 @@ Vendors that sell credits rather than characters are converted at a named plan t
 
 | Provider | Model | Name | $ / 1M chars | Source | Last verified |
 | --- | --- | --- | ---: | ---: | ---: |
-| [Telnyx](/tts/telnyx) | `natural` | Telnyx Natural TTS | $3 | <Badge color="green" size="sm">verified</Badge> | 2026-07-17 |
+| [Telnyx](/tts/telnyx) | `natural` <sup>api</sup> | Telnyx Natural TTS | $3 | <Badge color="green" size="sm">verified</Badge> | 2026-07-17 |
 | [Deepgram](/tts/deepgram) | `aura-1` | Aura | $15 | <Badge color="green" size="sm">verified</Badge> | 2026-05-27 |
 | [LiveKit Inference](/tts/livekit) | `xai/tts-1` | Text to Speech | $15 | <Badge color="green" size="sm">verified</Badge> | 2026-06-04 |
 | [OpenAI](/tts/openai) | `tts-1` | TTS-1 | $15 | <Badge color="green" size="sm">verified</Badge> | 2026-05-27 |
@@ -32,8 +32,8 @@ Vendors that sell credits rather than characters are converted at a named plan t
 | [LiveKit Inference (Scale)](/tts/livekit-scale) | `inworld/inworld-tts-2` | Realtime TTS 2.0 | $30 | <Badge color="green" size="sm">verified</Badge> | 2026-06-04 |
 | [LiveKit Inference (Scale)](/tts/livekit-scale) | `rime/arcana` | Arcana | $30 | <Badge color="green" size="sm">verified</Badge> | 2026-06-04 |
 | [OpenAI](/tts/openai) | `tts-1-hd` | TTS-1 HD | $30 | <Badge color="green" size="sm">verified</Badge> | 2026-05-27 |
-| [Telnyx](/tts/telnyx) | `qwen3tts` | Telnyx Qwen3TTS | $32 | <Badge color="green" size="sm">verified</Badge> | 2026-07-17 |
-| [Telnyx](/tts/telnyx) | `ultra` | Telnyx Ultra TTS | $32 | <Badge color="green" size="sm">verified</Badge> | 2026-07-17 |
+| [Telnyx](/tts/telnyx) | `qwen3tts` <sup>api</sup> | Telnyx Qwen3TTS | $32 | <Badge color="green" size="sm">verified</Badge> | 2026-07-17 |
+| [Telnyx](/tts/telnyx) | `ultra` <sup>api</sup> | Telnyx Ultra TTS | $32 | <Badge color="green" size="sm">verified</Badge> | 2026-07-17 |
 | [LiveKit Inference](/tts/livekit) | `inworld/inworld-tts-1.5-max` | Realtime TTS 1.5 Max | $35 | <Badge color="green" size="sm">verified</Badge> | 2026-06-04 |
 | [LiveKit Inference](/tts/livekit) | `inworld/inworld-tts-2` | Realtime TTS 2.0 | $35 | <Badge color="green" size="sm">verified</Badge> | 2026-06-04 |
 | [LiveKit Inference (Scale)](/tts/livekit-scale) | `cartesia/sonic-2` | Sonic 2 | $37.5 | <Badge color="green" size="sm">verified</Badge> | 2026-06-04 |
@@ -47,7 +47,7 @@ Vendors that sell credits rather than characters are converted at a named plan t
 | [LiveKit Inference (Scale)](/tts/livekit-scale) | `cartesia/sonic-turbo` | Sonic Turbo | $37.5 | <Badge color="green" size="sm">verified</Badge> | 2026-06-04 |
 | [Cartesia](/tts/cartesia) | `sonic-3` <sup>voices</sup> | Sonic-3 | $40 | <Badge color="green" size="sm">verified</Badge> | 2026-05-27 |
 | [LiveKit Inference](/tts/livekit) | `rime/arcana` | Arcana | $40 | <Badge color="green" size="sm">verified</Badge> | 2026-06-04 |
-| [Telnyx](/tts/telnyx) | `natural-hd` | Telnyx NaturalHD TTS | $48 | <Badge color="green" size="sm">verified</Badge> | 2026-07-17 |
+| [Telnyx](/tts/telnyx) | `natural-hd` <sup>api</sup> | Telnyx NaturalHD TTS | $48 | <Badge color="green" size="sm">verified</Badge> | 2026-07-17 |
 | [ElevenLabs](/tts/elevenlabs) | `eleven_flash_v2` | Eleven Flash v2 | $50 | <Badge color="green" size="sm">verified</Badge> | 2026-06-06 |
 | [ElevenLabs](/tts/elevenlabs) | `eleven_flash_v2_5` | Eleven Flash v2.5 | $50 | <Badge color="green" size="sm">verified</Badge> | 2026-06-06 |
 | [ElevenLabs](/tts/elevenlabs) | `eleven_turbo_v2` | Eleven Turbo v2 | $50 | <Badge color="green" size="sm">verified</Badge> | 2026-06-06 |
@@ -78,6 +78,7 @@ Vendors that sell credits rather than characters are converted at a named plan t
 
 1 further TTS model(s) bill audio as tokens rather than by the character and are listed on their vendor page: `gpt-4o-mini-tts`.
 
+- `api` the vendor publishes this rate at a machine-readable endpoint, so it is re-read and compared automatically rather than by a human reading a pricing page.
 - `voices` some voice classes cost a multiple of the base rate.
 
 ## Via LiveKit Inference

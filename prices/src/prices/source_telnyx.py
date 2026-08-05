@@ -272,7 +272,7 @@ def convert_row(row: InferenceRow) -> tuple[ModelInfo | None, str | None]:
             prices=prices,
             pricing_source_url=cast('Any', PRICING_SOURCE_URL),
             price_comments=IMPORT_ATTRIBUTION,
-            provenance=Provenance(source='imported'),
+            provenance=Provenance(source='imported', api_backed=True),
         ),
         None,
     )

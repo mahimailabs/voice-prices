@@ -88,6 +88,14 @@ def test_per_1k_tokens_converts_to_per_million():
     assert prices.cache_read_mtok == Decimal('1.25')
 
 
+def test_imported_models_are_marked_api_backed():
+    # Pulled straight from a vendor endpoint, so a reprice can be caught without a human reading a
+    # pricing page. This is what the `api` marker in the docs is driven by.
+    model, _ = convert_row(_row())
+    assert model is not None
+    assert model.provenance is not None and model.provenance.api_backed is True
+
+
 def test_imported_models_land_unverified():
     # A human sets prices_checked. The importer never does, so a re-run cannot fake verification.
     model, _ = convert_row(_row())
@@ -429,3 +437,20 @@ def test_every_curated_voice_row_targets_a_model_the_catalog_actually_has():
     ids = {model.id for model in provider.models}
     assert set(VOICE_ROWS.values()) <= ids
     assert not set(VOICE_UNLISTED.values()) & ids  # once carried, move it out of VOICE_UNLISTED
+
+
+def test_every_api_confirmed_telnyx_model_is_marked_api_backed():
+    # The five voice rates are confirmed against voice-api on every run, and the LLM models are
+    # pulled from inference. Both sets must carry the flag, or the docs undercount the coverage.
+    from prices.utils import package_dir
+
+    provider = ProviderYaml(Path(package_dir) / 'providers' / 'telnyx.yml').provider
+    by_id = {model.id: model for model in provider.models}
+
+    for model_id in VOICE_ROWS.values():
+        provenance = by_id[model_id].provenance
+        assert provenance is not None and provenance.api_backed, f'{model_id} is drift-checked but not marked'
+
+    for model in provider.models:
+        if str(model.pricing_source_url) == PRICING_SOURCE_URL:
+            assert model.provenance is not None and model.provenance.api_backed, model.id

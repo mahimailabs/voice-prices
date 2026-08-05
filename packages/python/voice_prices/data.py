@@ -11537,9 +11537,7 @@ providers: list[Provider] = [
                 match=ClauseEquals(equals='anthropic-claude-haiku-4.5'),
                 price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
                 pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
-                provenance=Provenance(
-                    source='imported', last_verified=None, agent_votes=None, evidence=None, source_rate=None
-                ),
+                provenance=Provenance(source='imported', api_backed=True),
                 prices=ModelPrice(input_mtok=Decimal('1'), cache_read_mtok=Decimal('0.1'), output_mtok=Decimal('5')),
             ),
             ModelInfo(
@@ -11547,9 +11545,7 @@ providers: list[Provider] = [
                 match=ClauseEquals(equals='gpt-4.1'),
                 price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
                 pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
-                provenance=Provenance(
-                    source='imported', last_verified=None, agent_votes=None, evidence=None, source_rate=None
-                ),
+                provenance=Provenance(source='imported', api_backed=True),
                 prices=ModelPrice(input_mtok=Decimal('2'), cache_read_mtok=Decimal('0.5'), output_mtok=Decimal('8')),
             ),
             ModelInfo(
@@ -11557,9 +11553,7 @@ providers: list[Provider] = [
                 match=ClauseEquals(equals='gpt-4o'),
                 price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
                 pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
-                provenance=Provenance(
-                    source='imported', last_verified=None, agent_votes=None, evidence=None, source_rate=None
-                ),
+                provenance=Provenance(source='imported', api_backed=True),
                 prices=ModelPrice(
                     input_mtok=Decimal('2.5'), cache_read_mtok=Decimal('1.25'), output_mtok=Decimal('10')
                 ),
@@ -11569,9 +11563,7 @@ providers: list[Provider] = [
                 match=ClauseOr(or_=[ClauseEquals(equals='gpt-5'), ClauseEquals(equals='gpt-5.1')]),
                 price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
                 pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
-                provenance=Provenance(
-                    source='imported', last_verified=None, agent_votes=None, evidence=None, source_rate=None
-                ),
+                provenance=Provenance(source='imported', api_backed=True),
                 prices=ModelPrice(
                     input_mtok=Decimal('1.25'), cache_read_mtok=Decimal('0.125'), output_mtok=Decimal('10')
                 ),
@@ -11581,9 +11573,7 @@ providers: list[Provider] = [
                 match=ClauseEquals(equals='gpt-5.2'),
                 price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
                 pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
-                provenance=Provenance(
-                    source='imported', last_verified=None, agent_votes=None, evidence=None, source_rate=None
-                ),
+                provenance=Provenance(source='imported', api_backed=True),
                 prices=ModelPrice(
                     input_mtok=Decimal('1.75'), cache_read_mtok=Decimal('0.175'), output_mtok=Decimal('14')
                 ),
@@ -11593,9 +11583,7 @@ providers: list[Provider] = [
                 match=ClauseEquals(equals='gpt-5.4'),
                 price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
                 pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
-                provenance=Provenance(
-                    source='imported', last_verified=None, agent_votes=None, evidence=None, source_rate=None
-                ),
+                provenance=Provenance(source='imported', api_backed=True),
                 prices=ModelPrice(
                     input_mtok=Decimal('2.5'), cache_read_mtok=Decimal('0.25'), output_mtok=Decimal('15')
                 ),
@@ -11607,7 +11595,7 @@ providers: list[Provider] = [
                 description='Telnyx Natural TTS model (Rime Mist pre-built voices). Low latency, good quality, English only. Voice IDs: `Telnyx.Natural.<voice>`.',
                 price_comments='Source rate $0.000003 per character = $0.003 / 1k chars.',
                 pricing_source_url='https://telnyx.com/pricing/text-to-speech',
-                provenance=Provenance(last_verified=datetime.date(2026, 7, 17)),
+                provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 7, 17)),
                 prices=ModelPrice(input_kchars=Decimal('0.003')),
             ),
             ModelInfo(
@@ -11617,7 +11605,7 @@ providers: list[Provider] = [
                 description='Telnyx NaturalHD TTS model (Rime Arcana pre-built voices). Low latency, better quality, 9 languages. Voice IDs: `Telnyx.NaturalHD.<voice>`.',
                 price_comments='Source rate $0.000048 per character = $0.048 / 1k chars.',
                 pricing_source_url='https://telnyx.com/pricing/text-to-speech',
-                provenance=Provenance(last_verified=datetime.date(2026, 7, 17)),
+                provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 7, 17)),
                 prices=ModelPrice(input_kchars=Decimal('0.048')),
             ),
             ModelInfo(
@@ -11625,9 +11613,7 @@ providers: list[Provider] = [
                 match=ClauseEquals(equals='openai-gpt-5.4-mini'),
                 price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
                 pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
-                provenance=Provenance(
-                    source='imported', last_verified=None, agent_votes=None, evidence=None, source_rate=None
-                ),
+                provenance=Provenance(source='imported', api_backed=True),
                 prices=ModelPrice(
                     input_mtok=Decimal('0.75'), cache_read_mtok=Decimal('0.075'), output_mtok=Decimal('4.5')
                 ),
@@ -11639,7 +11625,7 @@ providers: list[Provider] = [
                 description='Telnyx Qwen3TTS model. Medium latency, high quality, 11 languages. Requires a cloned voice from Voice Design. Voice IDs: `Telnyx.Qwen3TTS.<voice>`.',
                 price_comments='Source rate $0.000032 per character = $0.032 / 1k chars.',
                 pricing_source_url='https://telnyx.com/pricing/text-to-speech',
-                provenance=Provenance(last_verified=datetime.date(2026, 7, 17)),
+                provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 7, 17)),
                 prices=ModelPrice(input_kchars=Decimal('0.032')),
             ),
             ModelInfo(
@@ -11649,7 +11635,7 @@ providers: list[Provider] = [
                 description='Telnyx native speech-to-text (powered by Whisper), accessed via the Telnyx STT WebSocket streaming API. The livekit-plugins-telnyx STT plugin reports `model = transcription_engine` (default: "telnyx").',
                 price_comments='Source rate $0.015/minute. Converted to $/k seconds: 0.015 * 1000 / 60 = 0.25.',
                 pricing_source_url='https://telnyx.com/pricing/speech-to-text',
-                provenance=Provenance(last_verified=datetime.date(2026, 7, 17)),
+                provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 7, 17)),
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.25')),
             ),
             ModelInfo(
@@ -11659,7 +11645,7 @@ providers: list[Provider] = [
                 description='Telnyx Ultra TTS model. Lowest latency, highest quality, 44 languages. Pre-built voices. REST only (no WebSocket). Voice IDs: `Telnyx.Ultra.<voice>`.',
                 price_comments='Source rate $0.000032 per character = $0.032 / 1k chars.',
                 pricing_source_url='https://telnyx.com/pricing/text-to-speech',
-                provenance=Provenance(last_verified=datetime.date(2026, 7, 17)),
+                provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 7, 17)),
                 prices=ModelPrice(input_kchars=Decimal('0.032')),
             ),
         ],

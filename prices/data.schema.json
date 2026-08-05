@@ -480,6 +480,11 @@
           "description": "Origin of an unverified rate: `imported` (from another catalog, e.g. PriceToken) or `seed`\n(bootstrap). A `verified` status is not stored: it is derived from `last_verified` being present.",
           "title": "Source"
         },
+        "api_backed": {
+          "type": "boolean",
+          "description": "Whether this rate is published by the vendor at a machine-readable endpoint.\n\nTri-state so that only `true` is ever written: a `false` on every one of the twelve hundred\nmodels that are not API-backed would be a byte of noise per model and no information, since\nabsent already means \"read off a pricing page\".\n\nTrue means the rate can be re-read and compared automatically, so a reprice surfaces without a\nhuman re-reading a pricing page. False means it was read off a pricing page and only a person\n(or the LLM-assisted freshness job) can confirm it still holds. This is the split the docs\nexpose, and the reason `docs/pricing-feed.mdx` exists.",
+          "title": "Api Backed"
+        },
         "last_verified": {
           "format": "date",
           "type": "string",

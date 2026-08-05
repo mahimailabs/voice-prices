@@ -256,6 +256,53 @@ def test_provenance_source_never_computes_staleness():
     assert provenance_source({'source': 'imported'}) == ('imported', None)
 
 
+def test_api_backed_models_carry_an_api_marker():
+    # The split the docs expose: a rate a machine can re-read versus one a person read off a page.
+    data: list[dict[str, Any]] = [
+        {
+            'id': 'acme',
+            'name': 'Acme',
+            'models': [
+                {'id': 'from-api', 'prices': {'input_mtok': 1.0}, 'provenance': {'api_backed': True}},
+                {'id': 'from-page', 'prices': {'input_mtok': 2.0}, 'provenance': {'last_verified': '2026-07-01'}},
+                {'id': 'no-provenance', 'prices': {'input_mtok': 3.0}},
+            ],
+        }
+    ]
+    rows = {row['id']: row for row in build_catalog(data)['llm'][0]['models']}
+    assert rows['from-api']['markers'] == ['api']
+    assert rows['from-page']['markers'] == []
+    assert rows['no-provenance']['markers'] == []
+
+
+def test_the_api_marker_is_explained_only_when_it_appears():
+    data: list[dict[str, Any]] = [
+        {
+            'id': 'a',
+            'name': 'A',
+            'models': [{'id': 'm', 'prices': {'input_mtok': 1.0}, 'provenance': {'api_backed': True}}],
+        }
+    ]
+    catalog = build_catalog(data)
+    page = render_provider_page('llm', catalog['llm'][0])
+    assert '<sup>api</sup>' in page
+    assert 'machine-readable endpoint' in page
+
+
+def test_real_catalog_has_at_least_one_api_backed_model():
+    # Telnyx publishes a pricing API, so the coverage line on the overview is not vacuous.
+    catalog = build_catalog(_real_data())
+    backed = [
+        (entry['id'], row['id'])
+        for category in CATEGORIES
+        for entry in catalog[category]
+        for row in entry['models']
+        if 'api' in row['markers']
+    ]
+    assert backed
+    assert {provider for provider, _ in backed} == {'telnyx'}
+
+
 def test_markers_flag_tiered_daily_and_voices():
     data: list[dict[str, Any]] = [
         {
