@@ -14,13 +14,19 @@ from typing import Any
 from prices.prices_types import ClauseEquals, ClauseOr, ConditionalPrice, ModelInfo, ModelPrice
 from prices.source_telnyx import (
     PRICING_SOURCE_URL,
+    VOICE_ROWS,
+    VOICE_UNLISTED,
     InferenceRow,
     Tier,
+    VoiceRow,
+    check_voice,
     convert_row,
     flat_rate,
     plan_import,
     price_diff,
     render_report,
+    render_voice_report,
+    voice_rate_in_catalog_units,
 )
 from prices.update import ProviderYaml
 
@@ -337,3 +343,89 @@ def test_imported_llm_models_coexist_with_the_hand_verified_voice_models():
     for model in provider.models:
         resolved = provider.find_model(model.id)
         assert resolved is None or resolved is model, f'{model.id} resolves to another model'
+
+
+# ---- voice-api ---------------------------------------------------------------
+
+
+def _voice(name: str, rate: str, unit: str) -> VoiceRow:
+    return VoiceRow.model_validate({'name': name, 'rate': rate, 'unit': unit})
+
+
+IN_HOUSE_TTS = 'Call Control Features In-House Text-To-Speech - per character'
+IN_HOUSE_STT = 'Call Control Features Realtime Speech-To-Text In House (Telnyx) - per minute.'
+
+
+def test_a_per_character_rate_becomes_dollars_per_thousand_characters():
+    assert voice_rate_in_catalog_units(_voice('x', '0.000003', 'character')) == ('input_kchars', Decimal('0.003'))
+
+
+def test_a_per_minute_rate_becomes_dollars_per_thousand_seconds():
+    converted = voice_rate_in_catalog_units(_voice('x', '0.015', 'minute'))
+    assert converted is not None
+    field, rate = converted
+    assert field == 'input_audio_kseconds'
+    assert rate == Decimal('0.25')
+
+
+def test_call_control_infrastructure_units_are_skipped_not_errored():
+    # Most of voice-api is per-number, per-invocation billing rather than model pricing.
+    assert voice_rate_in_catalog_units(_voice('a number', '1.00', 'number')) is None
+    assert voice_rate_in_catalog_units(_voice('an invocation', '0.01', 'invocation')) is None
+
+
+def test_matching_voice_rates_report_unchanged(tmp_path: Path):
+    rows = [_voice(IN_HOUSE_TTS, '0.000003', 'character'), _voice(IN_HOUSE_STT, '0.015', 'minute')]
+    check = check_voice(rows, _provider_yaml(tmp_path))
+    assert set(check.unchanged) == {'natural', 'telnyx-stt'}
+    assert check.drifted == []
+
+
+def test_a_changed_voice_rate_reports_drift(tmp_path: Path):
+    # The point of reading voice-api: these five rates were verified by hand once, and a reprice has
+    # to surface without anyone re-reading the pricing page.
+    rows = [_voice(IN_HOUSE_TTS, '0.000006', 'character')]
+    check = check_voice(rows, _provider_yaml(tmp_path))
+    assert [model_id for model_id, _ in check.drifted] == ['natural']
+    assert 'catalog 0.003 vs API 0.006' in check.drifted[0][1]
+
+
+def test_a_renamed_row_is_reported_rather_than_silently_ignored(tmp_path: Path):
+    # The map is keyed on prose Telnyx controls. If they reword a row, this must break loudly
+    # instead of quietly checking nothing.
+    check = check_voice(
+        [_voice('Call Control Features In-House TTS (renamed)', '0.000003', 'character')], _provider_yaml(tmp_path)
+    )
+    assert check.unchanged == []
+    assert any(IN_HOUSE_TTS in detail for detail in check.missing_rows)
+
+
+def test_a_first_party_model_we_do_not_carry_is_reported_as_available(tmp_path: Path):
+    name = next(iter(VOICE_UNLISTED))
+    check = check_voice([_voice(name, '0.000032', 'character')], _provider_yaml(tmp_path))
+    assert [model_id for model_id, _ in check.unlisted] == [VOICE_UNLISTED[name]]
+
+
+def test_available_models_are_never_added_automatically(tmp_path: Path):
+    name = next(iter(VOICE_UNLISTED))
+    check = check_voice([_voice(name, '0.000032', 'character')], _provider_yaml(tmp_path))
+    report = render_voice_report(check, 1)
+    assert 'AVAILABLE' in report
+    assert 'not added automatically' in report
+    assert 'match clause confirmed' in report
+
+
+def test_voice_maps_do_not_overlap():
+    assert not set(VOICE_ROWS) & set(VOICE_UNLISTED)
+    assert not set(VOICE_ROWS.values()) & set(VOICE_UNLISTED.values())
+
+
+def test_every_curated_voice_row_targets_a_model_the_catalog_actually_has():
+    # A rename on our side would leave the map pointing at nothing and silently stop drift-checking
+    # a rate we publish.
+    from prices.utils import package_dir
+
+    provider = ProviderYaml(Path(package_dir) / 'providers' / 'telnyx.yml').provider
+    ids = {model.id for model in provider.models}
+    assert set(VOICE_ROWS.values()) <= ids
+    assert not set(VOICE_UNLISTED.values()) & ids  # once carried, move it out of VOICE_UNLISTED

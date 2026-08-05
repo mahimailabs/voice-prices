@@ -4,18 +4,27 @@ Telnyx publishes rates at ``GET https://api.telnyx.com/v2/pricing/products/{slug
 This reads the ``inference`` product and appends the models it can represent to
 ``prices/providers/telnyx.yml``.
 
-Two things about that API drive the whole design of this module:
+Two things about that API drive the design of this module.
 
-1. **It is LLM only.** There is no text-to-speech or speech-to-text product, so the four Telnyx TTS
-   models and the STT model this catalog already carries cannot be refreshed from it. Those stay
-   hand-verified against the pricing pages.
+1. **Two products matter, and both need explicit paging.** ``inference`` carries the LLMs;
+   ``voice-api`` carries text-to-speech and speech-to-text. Every endpoint here, including the
+   product list itself, defaults to 20 items per page and silently ignores ``page_size``: the
+   parameter is ``page[size]``. Reading the product list without it returns 20 of 33 products and
+   hides ``voice-api`` entirely, which is exactly how this module first concluded, wrongly, that
+   Telnyx published no voice pricing.
 
-2. **The headline rate is not always the price.** Ten of the eighteen models report
+2. **The headline rate is not always the price.** Ten of the eighteen inference models report
    ``input_rate: "0.00"`` while their tier list prices the same dimension above 1,000,000 units.
    The API documents tiers as "volume-based" but does not say what the volume is measured over, and
    does not define how ``input_rate`` relates to ``input_tiers`` when they disagree. Publishing
    ``$0`` for those models would say a paid model is free, so they are refused rather than guessed
    at, and named in the report.
+
+The two products are handled differently on purpose. Inference rows carry a machine ``model`` id, so
+they can be imported automatically. Voice rows carry only a prose ``name`` ("Call Control Features
+In-House HD Text-To-Speech - per character") and no id at all, so they cannot be mapped without a
+curated table; those are drift-checked against the models this catalog already publishes, never
+auto-added.
 
 Only models whose every tier agrees with the headline rate are imported. Those land unverified
 (``provenance.source = imported``, no ``prices_checked``), because a human sets the verified date.
@@ -78,6 +87,123 @@ class InferenceRow(BaseModel):
     cached_input_tiers: list[Tier] = Field(default_factory=list)
     unit: str
     currency: str
+
+
+VOICE_SLUG = 'voice-api'
+VOICE_SOURCE_URL = f'{PRICING_API}/products/{VOICE_SLUG}'
+
+#: Voice rows are identified by prose, not by an id, so this map cannot be derived and is curated by
+#: hand. Each key is the exact `name` Telnyx publishes; a rename shows up as a missing row, not as a
+#: silently wrong price.
+VOICE_ROWS: dict[str, str] = {
+    'Call Control Features In-House Text-To-Speech - per character': 'natural',
+    'Call Control Features In-House HD Text-To-Speech - per character': 'natural-hd',
+    'Call Control Features Qwen3 Text-To-Speech - per character': 'qwen3tts',
+    'Call Control Features Telnyx Ultra Text-To-Speech - per character': 'ultra',
+    'Call Control Features Realtime Speech-To-Text In House (Telnyx) - per minute.': 'telnyx-stt',
+}
+
+#: First-party Telnyx voice models the API now prices that this catalog does not carry yet. Reported
+#: so they are visible, never auto-added: each needs a `telnyx.<model>.<voice>` match clause
+#: confirmed against the voice docs before it can route anything.
+VOICE_UNLISTED: dict[str, str] = {
+    'Bayan Text-To-Speech - charge is per character.': 'bayan',
+    'Sukhan Text-To-Speech - charge is per character.': 'sukhan',
+}
+
+
+class VoiceRow(BaseModel):
+    """One row of the ``voice-api`` product. Prose name, one rate, one unit."""
+
+    model_config = ConfigDict(extra='allow')
+
+    name: str
+    rate: Decimal
+    unit: str
+    currency: str | None = None
+
+
+def voice_rate_in_catalog_units(row: VoiceRow) -> tuple[str, Decimal] | None:
+    """``(field, rate)`` in the unit the catalog stores, or None when the unit is not a voice one.
+
+    Most of ``voice-api`` is call-control infrastructure (media forking, conferencing, per-number
+    charges) rather than model pricing, so an unrecognised unit is skipped, not an error.
+    """
+    if row.unit == 'character':
+        return 'input_kchars', row.rate * 1000  # $/char -> $/1k chars
+    if row.unit == 'minute':
+        return 'input_audio_kseconds', row.rate * 1000 / 60  # $/min -> $/1k seconds
+    return None
+
+
+class VoiceCheck(NamedTuple):
+    unchanged: list[str]
+    drifted: list[tuple[str, str]]
+    unlisted: list[tuple[str, str]]
+    missing_rows: list[str]
+
+
+def check_voice(rows: list[VoiceRow], provider_yaml: ProviderYaml) -> VoiceCheck:
+    """Compare the curated voice rows against what the catalog publishes.
+
+    Never writes. These five rates were verified by hand against the pricing pages; this turns that
+    one-off check into something a scheduled run can repeat.
+    """
+    by_name = {row.name: row for row in rows}
+    by_id = {model.id: model for model in provider_yaml.provider.models}
+
+    unchanged: list[str] = []
+    drifted: list[tuple[str, str]] = []
+    missing_rows: list[str] = []
+
+    for name, model_id in VOICE_ROWS.items():
+        row = by_name.get(name)
+        if row is None:
+            missing_rows.append(f'{name!r} (backs {model_id})')
+            continue
+        converted = voice_rate_in_catalog_units(row)
+        model = by_id.get(model_id)
+        if converted is None or model is None or not isinstance(model.prices, ModelPrice):
+            missing_rows.append(f'{name!r} could not be compared against {model_id}')
+            continue
+        field, rate = converted
+        current = getattr(model.prices, field)
+        if current is None:
+            drifted.append((model_id, f'{field}: catalog has no rate, API says {rate}'))
+        elif abs(current - rate) / rate > Decimal('0.001'):
+            drifted.append((model_id, f'{field}: catalog {current} vs API {rate}'))
+        else:
+            unchanged.append(model_id)
+
+    unlisted = [
+        (model_id, str(by_name[name].rate))
+        for name, model_id in VOICE_UNLISTED.items()
+        if name in by_name and model_id not in by_id
+    ]
+    return VoiceCheck(unchanged, drifted, unlisted, missing_rows)
+
+
+def render_voice_report(check: VoiceCheck, total: int) -> str:
+    lines = [
+        f'Telnyx voice-api: {total} row(s) published, {len(check.unchanged)} unchanged, '
+        f'{len(check.drifted)} drifted, {len(check.unlisted)} first-party model(s) not yet carried.',
+        '',
+    ]
+    lines += [f'  DRIFT     {model_id}: {detail}' for model_id, detail in check.drifted]
+    lines += [f'  UNCHANGED {model_id}' for model_id in check.unchanged]
+    lines += [
+        f'  AVAILABLE {model_id}: published at {rate} per unit, not in the catalog' for model_id, rate in check.unlisted
+    ]
+    lines += [f'  NO ROW    {detail}' for detail in check.missing_rows]
+    if check.unlisted:
+        lines += [
+            '',
+            '  AVAILABLE models are not added automatically: each needs a telnyx.<model>.<voice>',
+            '  match clause confirmed against the voice docs before it can route.',
+        ]
+    if check.missing_rows:
+        lines += ['', '  NO ROW means Telnyx renamed or dropped a row this map depends on. Fix VOICE_ROWS.']
+    return '\n'.join(lines)
 
 
 class Plan(NamedTuple):
@@ -234,19 +360,24 @@ def render_report(plan: Plan, total: int) -> str:
     return '\n'.join(lines)
 
 
-def fetch_inference() -> list[InferenceRow]:  # pragma: no cover - network I/O
-    """Read every page of the inference product. Public endpoint, no API key."""
-    rows: list[InferenceRow] = []
+def fetch_product(slug: str, row_type: type[Any]) -> list[Any]:  # pragma: no cover - network I/O
+    """Read every page of one pricing product.
+
+    `page[size]` is the bracket form the API actually honours: a plain `page_size` is accepted and
+    silently ignored, which caps any request at the 20-item default. Paging is followed to the end
+    rather than trusting one large page.
+    """
+    rows: list[Any] = []
     page = 1
     while True:
         response = httpx2.get(
-            f'{PRICING_SOURCE_URL}',
+            f'{PRICING_API}/products/{slug}',
             params={'page[number]': page, 'page[size]': 100},
             timeout=30,
         )
         response.raise_for_status()
         payload = cast('dict[str, Any]', response.json())
-        rows += [InferenceRow.model_validate(row) for row in cast('list[Any]', payload.get('data') or [])]
+        rows += [row_type.model_validate(row) for row in cast('list[Any]', payload.get('data') or [])]
         meta = cast('dict[str, Any]', payload.get('meta') or {})
         total_pages = meta.get('total_pages')
         if not isinstance(total_pages, int) or page >= total_pages:
@@ -255,23 +386,33 @@ def fetch_inference() -> list[InferenceRow]:  # pragma: no cover - network I/O
 
 
 def telnyx_get() -> int:  # pragma: no cover - CLI glue over network + fs
-    """Import Telnyx Inference LLM pricing from their public API (DRY_RUN=1 to only report)."""
+    """Import Telnyx LLM pricing and drift-check its voice rates (DRY_RUN=1 to only report)."""
     path = Path(package_dir) / 'providers' / 'telnyx.yml'
-    rows = fetch_inference()
     provider_yaml = ProviderYaml(path)
-    plan = plan_import(rows, provider_yaml)
-    print(render_report(plan, len(rows)))
+
+    inference_rows = cast('list[InferenceRow]', fetch_product(INFERENCE_SLUG, InferenceRow))
+    plan = plan_import(inference_rows, provider_yaml)
+    print(render_report(plan, len(inference_rows)))
+
+    # Voice is drift-check only: those rows carry no id, so the mapping is curated and adding a
+    # model from it would mean inventing a match clause.
+    voice_rows = cast('list[VoiceRow]', fetch_product(VOICE_SLUG, VoiceRow))
+    check = check_voice(voice_rows, provider_yaml)
+    print()
+    print(render_voice_report(check, len(voice_rows)))
+
+    blocking = bool(plan.drifted or check.drifted or check.missing_rows)
 
     if os.environ.get('DRY_RUN'):
         print('\nDRY_RUN set: nothing written.')
-        return 1 if plan.drifted else 0
+        return 1 if blocking else 0
     if not plan.to_add:
         print('\nNothing to add.')
-        return 1 if plan.drifted else 0
+        return 1 if blocking else 0
 
     for model in plan.to_add:
         provider_yaml.add_model(model)
     provider_yaml.save()
     print(f'\n{len(plan.to_add)} model(s) written to {path.name}. They land unverified: review the')
     print('rates, then add prices_checked yourself. Run `make build` to regenerate.')
-    return 1 if plan.drifted else 0
+    return 1 if blocking else 0
