@@ -213,8 +213,10 @@ def cerebras_get() -> int:  # pragma: no cover - CLI glue over network + fs
 
     blocking = bool(plan.drifted or plan.retired or plan.refused)
     if os.environ.get('DRY_RUN'):
+        # A dry run writes nothing, so a model waiting to be added is still outstanding work and
+        # has to be reported. A live run adds it, which is why this only applies here.
         print('\nDRY_RUN set: nothing written.')
-        return 1 if blocking else 0
+        return 1 if blocking or plan.to_add else 0
     if not plan.to_add:
         print('\nNothing to add.')
         return 1 if blocking else 0
