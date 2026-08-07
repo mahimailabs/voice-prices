@@ -117,8 +117,9 @@ CATEGORY_META: dict[Modality, CategoryMeta] = {
         title='Speech-to-text pricing',
         tab='STT',
         icon='mic',
-        unit='Priced from `input_audio_kseconds`, US dollars per 1,000 seconds of input audio. '
-        'Shown per minute, the unit vendors quote.',
+        unit='Priced from `input_audio_kseconds`, US dollars per 1,000 seconds of input audio, and '
+        'shown converted to a per-minute rate for comparison. Vendors quote in whatever unit they '
+        'prefer (per minute, per second, per hour), so the figure here is a conversion, not a quote.',
         note='Streaming and batch ship as separate rows, as do language tiers, because vendors price them separately.',
     ),
     'llm': CategoryMeta(
@@ -134,8 +135,9 @@ CATEGORY_META: dict[Modality, CategoryMeta] = {
         title='Text-to-speech pricing',
         tab='TTS',
         icon='volume-2',
-        unit='Priced from `input_kchars`, US dollars per 1,000 characters of input text. '
-        'Shown per 1M characters, the unit vendors quote.',
+        unit='Priced from `input_kchars`, US dollars per 1,000 characters of input text, and shown '
+        'converted to a per-1M-character rate for comparison. Vendors quote per character, per 1,000 '
+        'or per 1M, so the figure here is a conversion, not a quote.',
         note='Vendors that sell credits rather than characters are converted at a named plan tier, '
         'recorded in `price_comments` on the model.',
     ),
@@ -921,10 +923,16 @@ def overview_blocks(catalog: Catalog, comparison: Comparison) -> dict[str, str]:
             if any('api' in row['markers'] for row in entry['models'])
         }
     )
+    if len(providers_backed) > 1:
+        named = f'The providers are {", ".join(providers_backed[:-1])} and {providers_backed[-1]}. '
+    elif providers_backed:
+        named = f'The provider is {providers_backed[0]}. '
+    else:
+        named = ''
     coverage = (
         f'**{backed} of {sum(counts.values()):,} priced models** are published by their vendor at a '
         'machine-readable endpoint, so this catalog re-reads and compares them automatically. '
-        + (f'That is {", ".join(providers_backed)}. ' if providers_backed else '')
+        + named
         + 'Every other rate is read off a pricing page by a person. '
         '[Serving an endpoint](/pricing-feed) is the single most useful thing a provider can do here.'
     )
