@@ -36,8 +36,13 @@ jobs:
       id-token: write # required for the action's GitHub App authentication
       actions: read # read CI results on a pull request
     steps:
+      # persist-credentials: false matches every other workflow here and satisfies zizmor's
+      # artipacked audit. The action does not need them: it receives its own short-lived token
+      # scoped to this repository when `github_token` is omitted, and pushes with that. If pushing
+      # ever fails with an authentication error, this line is the first thing to check.
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 1
       - uses: anthropics/claude-code-action@1623c36729ac1cd5895198cded705a287de7db79 # v1.0.187
         with:
