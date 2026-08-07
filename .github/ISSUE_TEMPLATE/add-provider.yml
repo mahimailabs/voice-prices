@@ -7,7 +7,7 @@ body:
       value: >
         Thanks for helping grow voice-prices. Fill in what you can; a maintainer or
         contributor will turn it into a provider YAML. See the
-        [contributor walkthrough](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md)
+        [contributor walkthrough](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md). If you work at the provider, [serving a pricing endpoint](https://prices.voicegateway.dev/pricing-feed) is better than any of this
         if you would like to open the pull request yourself.
   - type: input
     id: provider-name
