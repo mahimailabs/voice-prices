@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**38 providers, 1,220 priced models.** 47 STT, 1,102 LLM, 63 TTS, 6 S2S, 2 VAD.
+**39 providers, 1,224 priced models.** 48 STT, 1,102 LLM, 66 TTS, 6 S2S, 2 VAD.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -104,6 +104,7 @@ Every provider in the catalog, and which categories it prices:
 | [HuggingFace (publicai)](prices/providers/huggingface_publicai.yml) | 8 | LLM |
 | [HuggingFace (sambanova)](prices/providers/huggingface_sambanova.yml) | 8 | LLM |
 | [HuggingFace (together)](prices/providers/huggingface_together.yml) | 23 | LLM |
+| [Inworld](prices/providers/inworld.yml) | 4 | STT, TTS |
 | [LiveKit Inference](prices/providers/livekit.yml) | 78 | STT, LLM, TTS |
 | [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 36 | STT, TTS |
 | [Mistral](prices/providers/mistral.yml) | 18 | LLM |

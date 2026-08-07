@@ -290,7 +290,9 @@ def test_the_api_marker_is_explained_only_when_it_appears():
 
 
 def test_real_catalog_has_at_least_one_api_backed_model():
-    # Telnyx publishes a pricing API, so the coverage line on the overview is not vacuous.
+    # Telnyx and Cerebras both publish a machine-readable pricing endpoint, so the coverage line on
+    # the overview is not vacuous. Pinned as a set so adding a provider here is a deliberate change:
+    # the marker asserts a rate is re-read automatically, which is only true if an importer reads it.
     catalog = build_catalog(_real_data())
     backed = [
         (entry['id'], row['id'])
@@ -300,7 +302,7 @@ def test_real_catalog_has_at_least_one_api_backed_model():
         if 'api' in row['markers']
     ]
     assert backed
-    assert {provider for provider, _ in backed} == {'telnyx'}
+    assert {provider for provider, _ in backed} == {'telnyx', 'cerebras'}
 
 
 def test_markers_flag_tiered_daily_and_voices():

@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=.schema.json
+name: Inworld
+id: inworld
+pricing_urls:
+  - https://inworld.ai/pricing
+  - https://docs.inworld.ai/tts/resources/billing
+  - https://docs.inworld.ai/stt/resources/billing
+
+api_pattern: 'https://api\.inworld\.ai'
+
+# Both id shapes are deliberate and match Inworld's own docs: TTS models are bare ids passed as
+# `audio.model` (`"model": "inworld-tts-2"`), while the STT model is provider-prefixed because
+# Inworld's speech-to-text API also fronts Groq, AssemblyAI and Soniox models.
+model_match:
+  or:
+    - starts_with: inworld-
+    - equals: inworld/inworld-stt-1
+
+provider_match:
+  contains: inworld
+
+price_comments: >-
+  Rates are the On-Demand tier, which is Inworld's pay-as-you-go plan and costs nothing to enter
+  ("Start free"). It is the only tier comparable to how every other provider in this catalog is
+  priced. Overage past the bundled free allowance bills at the same rate.
+
+  The cheaper columns on the pricing page (Creator $25/mo through Growth $1,500/mo) are prepaid
+  subscriptions, not usage rates, so they are not used here. Enterprise is contact-us and has no
+  public rate. Professional Voice Cloning and the on-prem build (`inworld-tts-onprem`) are also
+  unpriced publicly and are therefore absent rather than guessed at.
+
+  Units are Inworld's own, verbatim: "Text-to-Speech usage is billed per million characters
+  synthesized" and "Speech-to-Text usage is billed based on audio duration". On-Demand includes 40
+  free minutes of TTS and 170 of STT, which this catalog does not model.
+
+  LiveKit Inference resells these TTS models; those entries are LiveKit's rates, not Inworld's.
+
+models:
+  - id: inworld-tts-1.5-max
+    name: Realtime TTS 1.5 Max
+    description: >-
+      Inworld's highest-quality realtime text-to-speech model.
+    match:
+      equals: inworld-tts-1.5-max
+    prices_checked: 2026-08-07
+    pricing_source_url: https://inworld.ai/pricing
+    price_comments: >-
+      On-Demand rate $35 per 1M characters. Converted to $/1k chars: 35 / 1000 = 0.035.
+    prices:
+      input_kchars: 0.035
+
+  - id: inworld-tts-1.5-mini
+    name: Realtime TTS 1.5 Mini
+    description: >-
+      Inworld's low-cost realtime text-to-speech model.
+    match:
+      equals: inworld-tts-1.5-mini
+    prices_checked: 2026-08-07
+    pricing_source_url: https://inworld.ai/pricing
+    price_comments: >-
+      On-Demand rate $15 per 1M characters. Converted to $/1k chars: 15 / 1000 = 0.015.
+    prices:
+      input_kchars: 0.015
+
+  - id: inworld-tts-2
+    name: Realtime TTS 2
+    description: >-
+      Inworld's current-generation realtime text-to-speech model, passed as `audio.model` on the
+      chat completions endpoint.
+    match:
+      equals: inworld-tts-2
+    prices_checked: 2026-08-07
+    pricing_source_url: https://inworld.ai/pricing
+    price_comments: >-
+      On-Demand rate $25 per 1M characters. Converted to $/1k chars: 25 / 1000 = 0.025.
+    prices:
+      input_kchars: 0.025
+
+  - id: inworld/inworld-stt-1
+    name: Inworld STT 1
+    description: >-
+      Inworld's first-party speech-to-text model, available over the sync API and a WebSocket
+      streaming endpoint, with 30 languages. The id carries an `inworld/` prefix because the same
+      endpoint also serves third-party models (Groq Whisper, AssemblyAI, Soniox).
+    match:
+      equals: inworld/inworld-stt-1
+    prices_checked: 2026-08-07
+    pricing_source_url: https://inworld.ai/pricing
+    price_comments: >-
+      On-Demand rate $0.15 per hour of audio. Converted to $/1k seconds:
+      0.15 * 1000 / 3600 = 0.041667.
+    prices:
+      input_audio_kseconds: 0.041667
