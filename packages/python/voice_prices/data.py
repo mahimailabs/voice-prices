@@ -1457,9 +1457,11 @@ providers: list[Provider] = [
         name='Cerebras',
         api_pattern='https://api\\.cerebras\\.ai',
         pricing_urls=[
-            'https://www.cerebras.ai/pricing#pricing',
-            'https://inference-docs.cerebras.ai/models/openai-oss',
+            'https://www.cerebras.ai/pricing',
+            'https://inference-docs.cerebras.ai/models/overview',
+            'https://api.cerebras.ai/public/v1/models',
         ],
+        price_comments='Cerebras publishes a keyless, unauthenticated models endpoint at https://api.cerebras.ai/public/v1/models that carries per-token rates as decimal strings (`{"prompt": "0.00000035", "completion": "0.00000075"}`), in the same shape OpenRouter uses. `make cerebras-get` reads it and reports any rate that has moved, so these rates are machine-re-readable rather than read off a pricing page.\nPublic endpoints carry one rate card covering the free trial and pay-as-you-go tiers; the free tier changes context limits, not prices. Dedicated Endpoints (the Qwen3, Kimi, DeepSeek, Llama and GLM families) are enterprise contact-us and have no public rate, so they are not listed.\nCerebras charges nothing extra for prompt caching: cached input bills at the standard input rate, so `cache_read_mtok` is deliberately absent rather than set to zero.',
         model_match=ClauseContains(contains='cerebras'),
         provider_match=ClauseContains(contains='cerebras'),
         extractors=[
@@ -1476,6 +1478,23 @@ providers: list[Provider] = [
         staleness_threshold_days=60,
         models=[
             ModelInfo(
+                id='gemma-4-31b',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='gemma-4-31b'),
+                        ClauseStartsWith(starts_with='cerebras/gemma-4-31b'),
+                        ClauseStartsWith(starts_with='cerebras:gemma-4-31b'),
+                    ]
+                ),
+                name='Gemma 4 31B',
+                description="Google DeepMind's Gemma 4 31B, served on Cerebras hardware at roughly 1,800 tokens/second. Cerebras' first model with image input.",
+                context_window=131072,
+                price_comments='$0.99 / $1.49 per 1M tokens. Free tier is capped at 65k context, paid at 131k.',
+                pricing_source_url='https://api.cerebras.ai/public/v1/models',
+                provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 8, 7)),
+                prices=ModelPrice(input_mtok=Decimal('0.99'), output_mtok=Decimal('1.49')),
+            ),
+            ModelInfo(
                 id='gpt-oss-120b',
                 match=ClauseOr(
                     or_=[
@@ -1487,8 +1506,9 @@ providers: list[Provider] = [
                 name='GPT-OSS 120B',
                 description="OpenAI's flagship open source model, built on a Mixture-of-Experts (MoE) architecture with 120 billion parameters and 128 experts. Delivers frontier reasoning capabilities with record-breaking inference speeds on Cerebras hardware (~3,000 tokens/second).",
                 context_window=131072,
-                price_comments='Developer tier pricing. Free tier: 65k context, Paid tier: 131k context.',
-                provenance=Provenance(last_verified=datetime.date(2025, 11, 6)),
+                price_comments='$0.35 / $0.75 per 1M tokens, unchanged since 2025-11-06 despite a full catalog turnover around it. Free tier is capped at 65k context, paid at 131k. Cerebras now recommends this model as the migration target for every deprecated model below.',
+                pricing_source_url='https://api.cerebras.ai/public/v1/models',
+                provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 8, 7)),
                 prices=ModelPrice(input_mtok=Decimal('0.35'), output_mtok=Decimal('0.75')),
             ),
             ModelInfo(
@@ -1501,50 +1521,35 @@ providers: list[Provider] = [
                     ]
                 ),
                 name='Llama 3.3 70B',
-                description="Meta's enhanced 70B model delivering 405B-level accuracy. Optimized for chat, coding, instruction following, mathematics, and reasoning with high-speed inference on Cerebras hardware (~2,100 tokens/second).",
+                description="Retired. Meta's enhanced 70B model, previously served on Cerebras hardware at ~2,100 tokens/second. Kept to price historical usage.",
                 context_window=128000,
-                price_comments='Developer tier pricing. Free tier: 65k context, Paid tier: 128k context.',
+                price_comments='Deprecated by Cerebras on 2026-02-16 (migration target: GPT OSS 120B) and now absent from the public models endpoint, which returns 404 for this id as of 2026-08-07. The rate below is the last published one and is retained only to cost usage logged before the retirement. Not re-verified, so `prices_checked` is deliberately left at its original date.\nDeliberately NOT marked `removed`, unlike the other two retirements below: the test dataset exercises this id through a real Cerebras cassette, so excluding it from data.json fails tests/dataset/extract_usages.py. Same reason qwen-3-coder-480b is retained.',
                 provenance=Provenance(last_verified=datetime.date(2025, 11, 7)),
                 prices=ModelPrice(input_mtok=Decimal('0.85'), output_mtok=Decimal('1.2')),
-            ),
-            ModelInfo(
-                id='llama3.1-8b',
-                match=ClauseOr(
-                    or_=[
-                        ClauseEquals(equals='llama3.1-8b'),
-                        ClauseStartsWith(starts_with='cerebras/llama3.1-8b'),
-                        ClauseStartsWith(starts_with='cerebras:llama3.1-8b'),
-                    ]
-                ),
-                name='Llama 3.1 8B',
-                description="Meta's Llama 3.1 8B model for general-purpose tasks including chat, coding, and instruction following. Optimized for fast inference on Cerebras hardware (~2,200 tokens/second).",
-                context_window=32768,
-                price_comments='Developer tier pricing. Free tier: 8k context, Paid tier: 32k context.',
-                provenance=Provenance(last_verified=datetime.date(2025, 11, 7)),
-                prices=ModelPrice(input_mtok=Decimal('0.1'), output_mtok=Decimal('0.1')),
-            ),
-            ModelInfo(
-                id='qwen-3-32b',
-                match=ClauseOr(
-                    or_=[
-                        ClauseEquals(equals='qwen-3-32b'),
-                        ClauseStartsWith(starts_with='cerebras/qwen-3-32b'),
-                        ClauseStartsWith(starts_with='cerebras:qwen-3-32b'),
-                    ]
-                ),
-                name='Qwen 3 32B',
-                description="Qwen's 32B parameter model with enhanced reasoning and coding capabilities. Supports both standard and reasoning modes for complex tasks, with fast inference speeds on Cerebras hardware (~2,600 tokens/second).",
-                context_window=131072,
-                price_comments='Developer tier pricing. Free tier: 65k context, Paid tier: 131k context.',
-                provenance=Provenance(last_verified=datetime.date(2025, 11, 7)),
-                prices=ModelPrice(input_mtok=Decimal('0.4'), output_mtok=Decimal('0.8')),
             ),
             ModelInfo(
                 id='qwen-3-coder-480b',
                 match=ClauseEquals(equals='qwen-3-coder-480b'),
                 name='qwen-3-coder-480b',
-                price_comments='Seems to be no longer available on cerebras, here to help with tests',
+                price_comments='Deprecated by Cerebras on 2025-11-05 (migration target: Z.ai GLM 4.7) and 404 on the public models endpoint. No rate was ever recorded here. Kept unpriced because the test dataset references this id.',
                 prices=ModelPrice(),
+            ),
+            ModelInfo(
+                id='zai-glm-4.7',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='zai-glm-4.7'),
+                        ClauseStartsWith(starts_with='cerebras/zai-glm-4.7'),
+                        ClauseStartsWith(starts_with='cerebras:zai-glm-4.7'),
+                    ]
+                ),
+                name='Z.ai GLM 4.7',
+                description="Z.ai's GLM 4.7, a 355B parameter model served on Cerebras hardware at roughly 1,000 tokens/second. Cerebras lists it as a preview model.",
+                context_window=131072,
+                price_comments='$2.25 / $2.75 per 1M tokens. Free tier is capped at 64k context, paid at 131k. Cerebras has scheduled this model for deprecation on 2026-08-17; it is listed because it has been billable for months and the rate is needed to cost that usage. Re-check after that date.',
+                pricing_source_url='https://api.cerebras.ai/public/v1/models',
+                provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 8, 7)),
+                prices=ModelPrice(input_mtok=Decimal('2.25'), output_mtok=Decimal('2.75')),
             ),
         ],
     ),
@@ -5160,6 +5165,64 @@ providers: list[Provider] = [
                 name='GLM-5',
                 context_window=202752,
                 prices=ModelPrice(input_mtok=Decimal('1'), output_mtok=Decimal('3.2')),
+            ),
+        ],
+    ),
+    Provider(
+        id='inworld',
+        name='Inworld',
+        api_pattern='https://api\\.inworld\\.ai',
+        pricing_urls=[
+            'https://inworld.ai/pricing',
+            'https://docs.inworld.ai/tts/resources/billing',
+            'https://docs.inworld.ai/stt/resources/billing',
+        ],
+        price_comments='Rates are the On-Demand tier, which is Inworld\'s pay-as-you-go plan and costs nothing to enter ("Start free"). It is the only tier comparable to how every other provider in this catalog is priced. Overage past the bundled free allowance bills at the same rate.\nThe cheaper columns on the pricing page (Creator $25/mo through Growth $1,500/mo) are prepaid subscriptions, not usage rates, so they are not used here. Enterprise is contact-us and has no public rate. Professional Voice Cloning and the on-prem build (`inworld-tts-onprem`) are also unpriced publicly and are therefore absent rather than guessed at.\nUnits are Inworld\'s own, verbatim: "Text-to-Speech usage is billed per million characters synthesized" and "Speech-to-Text usage is billed based on audio duration". On-Demand includes 40 free minutes of TTS and 170 of STT, which this catalog does not model.\nLiveKit Inference resells these TTS models; those entries are LiveKit\'s rates, not Inworld\'s.',
+        model_match=ClauseOr(
+            or_=[ClauseStartsWith(starts_with='inworld-'), ClauseEquals(equals='inworld/inworld-stt-1')]
+        ),
+        provider_match=ClauseContains(contains='inworld'),
+        staleness_threshold_days=60,
+        models=[
+            ModelInfo(
+                id='inworld-tts-1.5-max',
+                match=ClauseEquals(equals='inworld-tts-1.5-max'),
+                name='Realtime TTS 1.5 Max',
+                description="Inworld's highest-quality realtime text-to-speech model.",
+                price_comments='On-Demand rate $35 per 1M characters. Converted to $/1k chars: 35 / 1000 = 0.035.',
+                pricing_source_url='https://inworld.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 7)),
+                prices=ModelPrice(input_kchars=Decimal('0.035')),
+            ),
+            ModelInfo(
+                id='inworld-tts-1.5-mini',
+                match=ClauseEquals(equals='inworld-tts-1.5-mini'),
+                name='Realtime TTS 1.5 Mini',
+                description="Inworld's low-cost realtime text-to-speech model.",
+                price_comments='On-Demand rate $15 per 1M characters. Converted to $/1k chars: 15 / 1000 = 0.015.',
+                pricing_source_url='https://inworld.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 7)),
+                prices=ModelPrice(input_kchars=Decimal('0.015')),
+            ),
+            ModelInfo(
+                id='inworld-tts-2',
+                match=ClauseEquals(equals='inworld-tts-2'),
+                name='Realtime TTS 2',
+                description="Inworld's current-generation realtime text-to-speech model, passed as `audio.model` on the chat completions endpoint.",
+                price_comments='On-Demand rate $25 per 1M characters. Converted to $/1k chars: 25 / 1000 = 0.025.',
+                pricing_source_url='https://inworld.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 7)),
+                prices=ModelPrice(input_kchars=Decimal('0.025')),
+            ),
+            ModelInfo(
+                id='inworld/inworld-stt-1',
+                match=ClauseEquals(equals='inworld/inworld-stt-1'),
+                name='Inworld STT 1',
+                description="Inworld's first-party speech-to-text model, available over the sync API and a WebSocket streaming endpoint, with 30 languages. The id carries an `inworld/` prefix because the same endpoint also serves third-party models (Groq Whisper, AssemblyAI, Soniox).",
+                price_comments='On-Demand rate $0.15 per hour of audio. Converted to $/1k seconds: 0.15 * 1000 / 3600 = 0.041667.',
+                pricing_source_url='https://inworld.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 7)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.041667')),
             ),
         ],
     ),

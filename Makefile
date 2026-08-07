@@ -88,6 +88,10 @@ feed-check: ## validate a provider pricing feed and diff it against the catalog 
 feed-sync: ## poll every registered provider pricing endpoint and report moved rates
 	uv run -m prices feed_sync
 
+.PHONY: cerebras-get
+cerebras-get: ## read Cerebras pricing from their public models API (DRY_RUN=1 to only report)
+	uv run -m prices cerebras_get
+
 .PHONY: telnyx-get
 telnyx-get: ## import Telnyx Inference LLM pricing from their public API (DRY_RUN=1 to only report)
 	uv run -m prices telnyx_get

@@ -2,13 +2,29 @@
 name: Cerebras
 id: cerebras
 pricing_urls:
-  - https://www.cerebras.ai/pricing#pricing
-  - https://inference-docs.cerebras.ai/models/openai-oss
+  - https://www.cerebras.ai/pricing
+  - https://inference-docs.cerebras.ai/models/overview
+  - https://api.cerebras.ai/public/v1/models
+
 api_pattern: 'https://api\.cerebras\.ai'
 model_match:
   contains: cerebras
 provider_match:
   contains: cerebras
+
+price_comments: >-
+  Cerebras publishes a keyless, unauthenticated models endpoint at
+  https://api.cerebras.ai/public/v1/models that carries per-token rates as decimal strings
+  (`{"prompt": "0.00000035", "completion": "0.00000075"}`), in the same shape OpenRouter uses.
+  `make cerebras-get` reads it and reports any rate that has moved, so these rates are
+  machine-re-readable rather than read off a pricing page.
+
+  Public endpoints carry one rate card covering the free trial and pay-as-you-go tiers; the free
+  tier changes context limits, not prices. Dedicated Endpoints (the Qwen3, Kimi, DeepSeek, Llama
+  and GLM families) are enterprise contact-us and have no public rate, so they are not listed.
+
+  Cerebras charges nothing extra for prompt caching: cached input bills at the standard input
+  rate, so `cache_read_mtok` is deliberately absent rather than set to zero.
 
 # Cerebras uses OpenAI-compatible API format
 # https://inference-docs.cerebras.ai/api-reference/chat-completions
@@ -22,6 +38,27 @@ extractors:
         dest: output_tokens
 
 models:
+  - id: gemma-4-31b
+    name: Gemma 4 31B
+    description: >-
+      Google DeepMind's Gemma 4 31B, served on Cerebras hardware at roughly 1,800 tokens/second.
+      Cerebras' first model with image input.
+    match:
+      or:
+        - equals: gemma-4-31b
+        - starts_with: cerebras/gemma-4-31b
+        - starts_with: cerebras:gemma-4-31b
+    context_window: 131072
+    prices_checked: 2026-08-07
+    pricing_source_url: https://api.cerebras.ai/public/v1/models
+    price_comments: >-
+      $0.99 / $1.49 per 1M tokens. Free tier is capped at 65k context, paid at 131k.
+    prices:
+      input_mtok: 0.99
+      output_mtok: 1.49
+    provenance:
+      api_backed: true
+
   - id: gpt-oss-120b
     name: GPT-OSS 120B
     description: >-
@@ -34,18 +71,23 @@ models:
         - starts_with: cerebras/gpt-oss-120b
         - starts_with: cerebras:gpt-oss-120b
     context_window: 131072
-    prices_checked: 2025-11-06
-    price_comments: "Developer tier pricing. Free tier: 65k context, Paid tier: 131k context."
+    prices_checked: 2026-08-07
+    pricing_source_url: https://api.cerebras.ai/public/v1/models
+    price_comments: >-
+      $0.35 / $0.75 per 1M tokens, unchanged since 2025-11-06 despite a full catalog turnover
+      around it. Free tier is capped at 65k context, paid at 131k. Cerebras now recommends this
+      model as the migration target for every deprecated model below.
     prices:
       input_mtok: 0.35
       output_mtok: 0.75
+    provenance:
+      api_backed: true
 
   - id: llama-3.3-70b
     name: Llama 3.3 70B
     description: >-
-      Meta's enhanced 70B model delivering 405B-level accuracy. Optimized for chat, coding,
-      instruction following, mathematics, and reasoning with high-speed inference on Cerebras
-      hardware (~2,100 tokens/second).
+      Retired. Meta's enhanced 70B model, previously served on Cerebras hardware at
+      ~2,100 tokens/second. Kept to price historical usage.
     match:
       or:
         - equals: llama-3.3-70b
@@ -53,7 +95,15 @@ models:
         - starts_with: cerebras:llama-3.3-70b
     context_window: 128000
     prices_checked: 2025-11-07
-    price_comments: "Developer tier pricing. Free tier: 65k context, Paid tier: 128k context."
+    price_comments: >-
+      Deprecated by Cerebras on 2026-02-16 (migration target: GPT OSS 120B) and now absent from
+      the public models endpoint, which returns 404 for this id as of 2026-08-07. The rate below
+      is the last published one and is retained only to cost usage logged before the retirement.
+      Not re-verified, so `prices_checked` is deliberately left at its original date.
+
+      Deliberately NOT marked `removed`, unlike the other two retirements below: the test dataset
+      exercises this id through a real Cerebras cassette, so excluding it from data.json fails
+      tests/dataset/extract_usages.py. Same reason qwen-3-coder-480b is retained.
     prices:
       input_mtok: 0.85
       output_mtok: 1.20
@@ -61,9 +111,8 @@ models:
   - id: llama3.1-8b
     name: Llama 3.1 8B
     description: >-
-      Meta's Llama 3.1 8B model for general-purpose tasks including chat, coding,
-      and instruction following. Optimized for fast inference on Cerebras hardware
-      (~2,200 tokens/second).
+      Retired. Meta's Llama 3.1 8B, previously served on Cerebras hardware at ~2,200 tokens/second.
+      Kept to price historical usage.
     match:
       or:
         - equals: llama3.1-8b
@@ -71,7 +120,11 @@ models:
         - starts_with: cerebras:llama3.1-8b
     context_window: 32768
     prices_checked: 2025-11-07
-    price_comments: "Developer tier pricing. Free tier: 8k context, Paid tier: 32k context."
+    price_comments: >-
+      Deprecated by Cerebras on 2026-05-27 (migration target: GPT OSS 120B) and now absent from
+      the public models endpoint, which returns 404 for this id as of 2026-08-07. Rate retained
+      for historical costing only, and not re-verified.
+    removed: true
     prices:
       input_mtok: 0.10
       output_mtok: 0.10
@@ -79,9 +132,8 @@ models:
   - id: qwen-3-32b
     name: Qwen 3 32B
     description: >-
-      Qwen's 32B parameter model with enhanced reasoning and coding capabilities.
-      Supports both standard and reasoning modes for complex tasks, with fast inference
-      speeds on Cerebras hardware (~2,600 tokens/second).
+      Retired. Qwen's 32B model, previously served on Cerebras hardware at ~2,600 tokens/second.
+      Kept to price historical usage.
     match:
       or:
         - equals: qwen-3-32b
@@ -89,7 +141,11 @@ models:
         - starts_with: cerebras:qwen-3-32b
     context_window: 131072
     prices_checked: 2025-11-07
-    price_comments: "Developer tier pricing. Free tier: 65k context, Paid tier: 131k context."
+    price_comments: >-
+      Deprecated by Cerebras on 2026-02-16 (migration target: GPT OSS 120B) and now absent from
+      the public models endpoint, which returns 404 for this id as of 2026-08-07. Rate retained
+      for historical costing only, and not re-verified.
+    removed: true
     prices:
       input_mtok: 0.40
       output_mtok: 0.80
@@ -98,5 +154,31 @@ models:
     name: qwen-3-coder-480b
     match:
       equals: qwen-3-coder-480b
-    price_comments: Seems to be no longer available on cerebras, here to help with tests
+    price_comments: >-
+      Deprecated by Cerebras on 2025-11-05 (migration target: Z.ai GLM 4.7) and 404 on the public
+      models endpoint. No rate was ever recorded here. Kept unpriced because the test dataset
+      references this id.
     prices: {}
+
+  - id: zai-glm-4.7
+    name: Z.ai GLM 4.7
+    description: >-
+      Z.ai's GLM 4.7, a 355B parameter model served on Cerebras hardware at roughly
+      1,000 tokens/second. Cerebras lists it as a preview model.
+    match:
+      or:
+        - equals: zai-glm-4.7
+        - starts_with: cerebras/zai-glm-4.7
+        - starts_with: cerebras:zai-glm-4.7
+    context_window: 131072
+    prices_checked: 2026-08-07
+    pricing_source_url: https://api.cerebras.ai/public/v1/models
+    price_comments: >-
+      $2.25 / $2.75 per 1M tokens. Free tier is capped at 64k context, paid at 131k.
+      Cerebras has scheduled this model for deprecation on 2026-08-17; it is listed because it has
+      been billable for months and the rate is needed to cost that usage. Re-check after that date.
+    prices:
+      input_mtok: 2.25
+      output_mtok: 2.75
+    provenance:
+      api_backed: true
