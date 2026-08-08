@@ -306,7 +306,7 @@ def test_real_catalog_has_at_least_one_api_backed_model():
     # The count is pinned too, not just the provider set: without it this passes even if every
     # marker but one per provider disappeared, and the coverage line on the overview would quietly
     # collapse from 15 to 2 with nothing failing.
-    assert len(backed) == 15, f'expected 15 api-backed models, found {len(backed)}: {sorted(backed)}'
+    assert len(backed) == 17, f'expected 17 api-backed models, found {len(backed)}: {sorted(backed)}'
 
 
 def test_markers_flag_tiered_daily_and_voices():

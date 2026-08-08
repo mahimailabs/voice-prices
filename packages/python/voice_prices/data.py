@@ -11652,6 +11652,24 @@ providers: list[Provider] = [
                 ),
             ),
             ModelInfo(
+                id='gpt-5.6-luna',
+                match=ClauseEquals(equals='gpt-5.6-luna'),
+                price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
+                pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
+                provenance=Provenance(source='imported', api_backed=True),
+                prices=ModelPrice(
+                    input_mtok=Decimal('0.2'), cache_read_mtok=Decimal('0.02'), output_mtok=Decimal('1.2')
+                ),
+            ),
+            ModelInfo(
+                id='gpt-5.6-sol',
+                match=ClauseEquals(equals='gpt-5.6-sol'),
+                price_comments='Imported from the Telnyx public pricing API (https://api.telnyx.com/v2/pricing/products/inference), unit per_1k_tokens, converted x1000 to $/Mtok. Re-run `make telnyx-get` to refresh.',
+                pricing_source_url='https://api.telnyx.com/v2/pricing/products/inference',
+                provenance=Provenance(source='imported', api_backed=True),
+                prices=ModelPrice(input_mtok=Decimal('5'), cache_read_mtok=Decimal('0.5'), output_mtok=Decimal('30')),
+            ),
+            ModelInfo(
                 id='natural',
                 match=ClauseStartsWith(starts_with='telnyx.natural.'),
                 name='Telnyx Natural TTS',
