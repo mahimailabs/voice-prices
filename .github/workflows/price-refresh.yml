@@ -1,0 +1,88 @@
+name: Price refresh
+
+# Weekly deterministic check of every provider whose rates a machine can re-read: the two vendor
+# pricing APIs, and any endpoint registered via `pricing_feed_url`.
+#
+# There is no model and no browser here, so a run costs nothing but runner minutes and cannot
+# invent a number: it is an HTTP GET and a Decimal comparison. That is the whole point. The
+# LLM-assisted check in pricing-freshness.yml handles the providers that publish no API, and stays
+# manual because it costs real money per run.
+#
+# This never writes a price. Every command runs read-only and the result is an issue for a human,
+# because only a human sets prices_checked.
+on:
+  schedule:
+    - cron: '0 7 * * 1' # Mondays, 07:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: price-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - run: uv sync --frozen --all-packages
+
+      # Each check runs read-only (DRY_RUN for the two importers, and feed_sync never writes) and
+      # exits non-zero when a rate moved, a model was retired, or a feed stopped parsing.
+      - id: check
+        run: |
+          status=0
+          : > report.md
+          check() {
+            title="$1"
+            shift
+            printf '### %s\n\n```\n' "$title" >> report.md
+            if "$@" >> report.md 2>&1; then
+              printf '```\n\nNo change.\n\n' >> report.md
+            else
+              status=1
+              printf '```\n\n**Needs a human.**\n\n' >> report.md
+            fi
+          }
+          check 'Cerebras' env DRY_RUN=1 uv run -m prices cerebras_get
+          check 'Telnyx' env DRY_RUN=1 uv run -m prices telnyx_get
+          check 'Registered pricing endpoints' uv run -m prices feed_sync
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat report.md
+
+      # Drift opens an issue rather than failing the job. A red cross on a weekly cron becomes
+      # background noise within a month; an issue is a thing someone closes.
+      - name: Open or update the drift issue
+        if: steps.check.outputs.status == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            printf '\n---\n\nA vendor endpoint disagrees with the committed catalog. Nothing was '
+            printf 'written: confirm each rate against the vendor, update the YAML, and set '
+            printf '`prices_checked` yourself.\n\n'
+            printf 'Run: %s\n' "$RUN_URL"
+          } >> report.md
+
+          gh label create pricing-drift \
+            --color d93f0b \
+            --description 'A vendor pricing endpoint disagrees with the catalog' 2>/dev/null || true
+
+          existing=$(gh issue list --label pricing-drift --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file report.md
+          else
+            gh issue create \
+              --title 'Pricing drift: a vendor endpoint disagrees with the catalog' \
+              --label pricing-drift \
+              --body-file report.md
+          fi

@@ -1,0 +1,49 @@
+name: Claude Code
+
+# Responds to `@claude` in an issue or pull request comment. The intended pairing is with
+# price-refresh.yml: that job catches a moved rate deterministically and opens an issue, then a
+# maintainer comments `@claude` on it for the part that needs judgement, such as deciding whether a
+# vendor repriced or restructured a page, or writing the YAML for a newly launched model.
+#
+# Claude is deliberately not used for the arithmetic. Reading a pricing API and comparing decimals
+# is something a script does exactly and for free, and this catalog's whole value is that its
+# numbers are not guessed.
+#
+# `github_token` is intentionally NOT passed. GitHub does not trigger workflows on commits pushed
+# with the default GITHUB_TOKEN, so passing it would mean CI never runs on Claude's pull requests,
+# and CI is the gate that proves the generated docs and data are in sync. Without the input the
+# action authenticates as the Claude GitHub App and CI runs normally.
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+jobs:
+  claude:
+    # Evaluated as a workflow expression, not a shell command, so the comment body is never
+    # interpolated into a script. Keeps runners from starting on unrelated comments; the action
+    # checks the trigger phrase again itself.
+    if: contains(github.event.comment.body, '@claude')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push commits and branches
+      pull-requests: write # open pull requests
+      issues: write # reply on the triggering issue
+      id-token: write # required for the action's GitHub App authentication
+      actions: read # read CI results on a pull request
+    steps:
+      # persist-credentials: false matches every other workflow here and satisfies zizmor's
+      # artipacked audit. The action does not need them: it receives its own short-lived token
+      # scoped to this repository when `github_token` is omitted, and pushes with that. If pushing
+      # ever fails with an authentication error, this line is the first thing to check.
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: anthropics/claude-code-action@1623c36729ac1cd5895198cded705a287de7db79 # v1.0.187
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
