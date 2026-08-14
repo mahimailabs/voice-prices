@@ -24,6 +24,50 @@ Paths 1 and 2 earn the model an <sup>api</sup> marker in the tables on this site
 There is a fifth thing that looks like a path and is not. LLM rates are cross-checked against Helicone, OpenRouter, LiteLLM, and Simon Willison's llm-prices, downloaded into a gitignored `prices/source_prices/`. Those feeds exist to flag disagreement with a rate we already hold. They never set one. Please do not open a PR that copies a number out of an aggregator.
 </Note>
 
+## Hand it to a coding agent
+
+Most of path 4 is mechanical: read a page, convert a unit, write YAML in a shape that already exists a dozen times over in this repository. Claude Code, Cursor, Codex and friends are good at exactly that. Clone the repo, open your agent in it, and paste this.
+
+<Prompt
+  description="Add a provider's prices to **voice-prices**"
+  icon="robot"
+  iconType="solid"
+  actions={["copy", "cursor"]}
+>
+You are adding a provider's pricing to the voice-prices repository. Work only inside this checkout.
+
+INPUTS (replace these before running):
+- Vendor: <VENDOR NAME>
+- Modality: <stt | tts | s2s | llm | vad>
+- Pricing page: <URL>
+
+RULES, in priority order:
+
+1. Never invent a rate. Every number you write must appear on the pricing page you were given. If a rate is not on that page, stop and tell me which model you could not price. A missing model is fine; a guessed one is not.
+2. Do not take a rate from OpenRouter, LiteLLM, Helicone, llm-prices, Artificial Analysis, or any other aggregator. They are cross-checks, not sources. CI rejects an aggregator URL in pricing_source_url.
+3. Do not take a rate from a reseller or gateway (LiveKit, Telnyx, Vapi, Retell) as evidence of the vendor's own rate. Gateways sometimes sell BELOW a vendor's self-serve tier, so a resold number is neither an upper nor a lower bound.
+
+STEPS:
+
+1. Read prices/providers/deepgram.yml and prices/providers/inworld.yml first. Match their structure exactly; do not invent fields.
+2. Copy the matching template from docs/templates/ to prices/providers/<provider-id>.yml. The id is lowercase, matching the vendor's common name.
+3. Fill in name, id, pricing_urls, api_pattern, model_match and provider_match. model_match must cover every model id you add, or callers get LookupError.
+4. Add one entry per model, sorted alphabetically by id. A validator enforces the sort. Use `match: equals: <id>` so a lookup resolves to exactly one row.
+5. Convert every rate into the field for that modality:
+   - STT and VAD: input_audio_kseconds, dollars per 1000 seconds. From $/minute: rate * 1000 / 60. From $/hour: rate * 1000 / 3600.
+   - TTS: input_kchars, dollars per 1000 characters. From $/1M characters: rate / 1000.
+   - LLM and S2S: input_mtok / output_mtok / input_audio_mtok / output_audio_mtok, dollars per 1M tokens, which is usually how the vendor already quotes it.
+6. On every model set pricing_source_url to the exact page (deep-link the section if the page has anchors), prices_checked to today's date, and price_comments to the rate AS PUBLISHED plus the arithmetic. Example: "Source rate $0.15/hour = $0.0025/minute. 0.0025 * 1000 / 60 ~= 0.041667."
+7. Run `make build` then `make test`, then `make check-contribution`. Fix anything they report. Do not edit any JSON file by hand; they are generated.
+8. Tell me, in a list: every model you added with its rate, every model on the page you did NOT add and why, and anything on the page that was ambiguous (credit pricing, subscription-only tiers, volume discounts, premium voice tiers, rates that did not reconcile).
+
+Then stop. I will take the screenshot and open the pull request myself.
+</Prompt>
+
+<Warning>
+An agent will produce a confident, well-formatted, plausible YAML file whether or not it read the page correctly. The last step exists for that reason: it has to tell you what it skipped and what was ambiguous, and you have to check the rates against the page yourself before opening the PR. `make check-contribution` catches unit errors and missing provenance, not a number that was simply read off the wrong row.
+</Warning>
+
 ## Already in the catalog? Just fix the number
 
 Edit `prices/providers/<provider>.yml`. Set `prices_checked` on the model to today's date ([why it matters](/how-fresh)), add or update `price_comments` explaining the change with a reference URL, then run `make build` to regenerate the JSON files. Pre-commit does this for you if you ran `make install`.
@@ -161,10 +205,31 @@ voice_multipliers:
 <Step title="Build and verify">
 Run `make build` then `make test`. Smoke-check routing in a REPL: `calc_price(Usage(characters=200), model_ref='murf-standard')` should return your price and your provider id.
 </Step>
-<Step title="Open the PR">
+<Step title="Open the PR, with a screenshot">
 Commit the YAML plus the regenerated `prices/data*.json`, the schema files, and `packages/python/voice_prices/data.py`. In the PR body, give the pricing URL you verified against, the date you verified it, and any quirks: voice tiers, streaming or language splits, non-standard billing units, deprecated models you excluded.
+
+**Attach a screenshot of the pricing page showing the rates you added.** CI requires one on any PR that adds a hand-read rate. It is a low bar on purpose: it does not prove the conversion is right, it proves someone loaded the page. Rates written by an importer are exempt, because no human read a page for those.
 </Step>
 </Steps>
+
+## What CI checks, and what it cannot
+
+Run `make check-contribution` before you push. It runs on every PR, including from forks, and it looks at exactly the models your branch adds or reprices:
+
+| Check | Why it exists |
+| --- | --- |
+| `pricing_source_url` present and https | Without it there is nothing to re-verify against, ever |
+| Source host is the vendor's, not an aggregator | A rate copied from OpenRouter is not evidence of what the vendor charges |
+| `prices_checked` present, not in the future, under 30 days old | A date nobody stood behind is worse than no date |
+| `price_comments` present on converted units | A converted rate with the arithmetic hidden cannot be reviewed |
+| Rate is within an order of magnitude of its field's range | Catches the 1000x unit error, the most common way a wrong price looks right |
+| A screenshot on the PR | Evidence a human loaded the page |
+
+None of that tells you a rate is **correct**. It cannot: a fork PR has no secrets, so no browser and no model can run against it. What it does is refuse the shapes a wrong rate takes. Correctness is checked separately, by a maintainer running the [freshness verifier](/how-fresh), which renders the page and requires two independent agents to agree before it will report a rate as matching.
+
+<Note>
+The bands are deliberately loose, about ten times outside the widest rate in the catalog. If your genuinely-new price point trips one, that is worth saying in the PR rather than working around: it usually means a vendor has repriced a whole category.
+</Note>
 
 ## Troubleshooting
 

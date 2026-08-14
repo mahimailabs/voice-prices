@@ -3,6 +3,7 @@ from inspect import getdoc
 
 from .build import build
 from .build_docs import build_docs
+from .check_contribution import check_contribution
 from .collapse import collapse
 from .detect_deprecated import detect_deprecated
 from .freshness.run import freshness_check
@@ -27,6 +28,7 @@ def main():
         update_from_openrouter,
         collapse,
         detect_deprecated,
+        check_contribution,
         cerebras_get,
         feed_check,
         feed_sync,

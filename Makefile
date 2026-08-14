@@ -114,6 +114,10 @@ get-update-price-discrepancies: get-all-prices update-price-discrepancies ## get
 check-for-price-discrepancies: ## check for price discrepancies
 	uv run -m prices check_for_price_discrepancies
 
+.PHONY: check-contribution
+check-contribution: ## validate models this branch adds or reprices (BASE_REF=<ref>, defaults to origin/main)
+	uv run -m prices check_contribution
+
 .PHONY: detect-deprecated
 detect-deprecated: ## Detect models that may be deprecated or removed
 	uv run -m prices detect_deprecated
