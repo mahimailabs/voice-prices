@@ -9,7 +9,7 @@ If you work at a model or inference provider, this is the highest-value thing yo
 
 Right now your prices reach this catalog because a person reads your pricing page. That is slow, it breaks whenever you restyle the page, and when it breaks the wrong number gets published under your name.
 
-Publish one endpoint instead and that stops happening permanently. We poll it every day, and when a rate moves the catalog follows.
+Publish one endpoint instead and that stops happening. We poll it every day, so the day a rate moves we know, and the catalog is corrected from your own numbers rather than from a guess at your page.
 
 <Note>
 This is not a new standard. [OpenRouter](https://openrouter.ai/docs/api/api-reference/models/get-models) and [LiteLLM](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) already publish per-token rates in this shape, and this project already pulls from both. The only addition is the two meters that voice needs: characters of text and seconds of audio.

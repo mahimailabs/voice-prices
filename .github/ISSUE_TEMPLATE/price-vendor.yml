@@ -13,7 +13,8 @@ body:
         Read [the four contribution paths](https://prices.voicegateway.dev/contribute) before
         starting. If you work at the vendor, stop and read
         [Serve a pricing endpoint](https://prices.voicegateway.dev/pricing-feed) instead: it is
-        less work than this issue and it never goes stale.
+        less work than this issue, and a moved rate then surfaces the next day instead of waiting
+        for someone to re-read your pricing page.
   - type: input
     id: vendor
     attributes:

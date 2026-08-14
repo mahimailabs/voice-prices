@@ -5,16 +5,20 @@ description: "The four ways a price gets into voice-prices, and how to pick one.
 icon: "git-pull-request"
 ---
 
-A price gets into this catalog one of four ways. On day one they all produce the same number. They differ on day ninety, in how long that number stays correct without a human looking at it.
+A price gets into this catalog one of four ways. On day one they all produce the same number. They differ on day ninety, in whether anything notices when the vendor changes it.
 
-| | Path | Pick this if | Effort | Correct without a human |
+| | Path | Pick this if | Effort | Drift caught automatically |
 | --- | --- | --- | --- | --- |
-| 1 | [Serve a live pricing endpoint](/pricing-feed) | You work at the provider | Half a day, once | Yes, permanently |
-| 2 | [Read the provider's pricing API](#2-read-the-providers-pricing-api) | The provider already serves rates as JSON | An importer, in Python | Yes, the weekly job catches drift |
-| 3 | [Snapshot a structured rate card](#3-snapshot-a-structured-rate-card) | The provider publishes the whole rate card in one file | A snapshot plus a generator | Until the rate card moves |
-| 4 | [Read the pricing page by hand](#4-read-the-pricing-page-by-hand) | Everything else, which is most vendors | About 30 minutes | No, it decays until someone re-checks |
+| 1 | [Serve a live pricing endpoint](/pricing-feed) | You work at the provider | Half a day, once | Yes, polled daily |
+| 2 | [Read the provider's pricing API](#2-read-the-providers-pricing-api) | The provider already serves rates as JSON | An importer, in Python | Yes, the weekly job re-reads the API |
+| 3 | [Snapshot a structured rate card](#3-snapshot-a-structured-rate-card) | The provider publishes the whole rate card in one file | A snapshot plus a generator | No, only when the snapshot is retaken |
+| 4 | [Read the pricing page by hand](#4-read-the-pricing-page-by-hand) | Everything else, which is most vendors | About 30 minutes | No, nothing is watching the page |
 
 Paths 1 and 2 earn the model an <sup>api</sup> marker in the tables on this site. Paths 3 and 4 do not, because nothing is watching the source between visits.
+
+<Warning>
+"Caught automatically" means detected, not applied. **No path in this project updates a published price on its own.** Polling and importers report that a rate has moved; a maintainer confirms it against the vendor and merges the change, and that human is the only thing that sets `prices_checked`. The difference a feed buys you is that drift surfaces the next day instead of whenever somebody happens to look. [How Fresh?](/how-fresh) explains why the rule exists.
+</Warning>
 
 <Note>
 There is a fifth thing that looks like a path and is not. LLM rates are cross-checked against Helicone, OpenRouter, LiteLLM, and Simon Willison's llm-prices, downloaded into a gitignored `prices/source_prices/`. Those feeds exist to flag disagreement with a rate we already hold. They never set one. Please do not open a PR that copies a number out of an aggregator.
@@ -33,7 +37,7 @@ Please do not:
 
 ## 1. Serve a live pricing endpoint
 
-The best outcome for everyone, and the only one that does not decay. You publish your current rates at one HTTPS URL, generated from whatever your billing system treats as the source of truth. A scheduled job polls it and the catalog follows your prices without anyone editing this repository again.
+The best outcome for everyone. You publish your current rates at one HTTPS URL, generated from whatever your billing system treats as the source of truth. A scheduled job polls it daily, so the day a rate moves we know, instead of finding out months later when someone re-reads your pricing page. A maintainer still confirms and merges the change; what disappears is the part where nobody notices.
 
 The full spec, the meter and unit grid, and a worked example are on [Serve a pricing endpoint](/pricing-feed). If you work at a provider, start there and ignore the rest of this page.
 
