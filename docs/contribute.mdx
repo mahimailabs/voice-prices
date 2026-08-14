@@ -1,17 +1,26 @@
 ---
 title: "Add your provider"
 sidebarTitle: "How to contribute"
-description: "Fix a price or add a new provider to voice-prices."
+description: "The four ways a price gets into voice-prices, and how to pick one."
 icon: "git-pull-request"
 ---
 
-Two paths: correct a rate in an existing provider YAML, or add a provider that is not in the catalog yet.
+A price gets into this catalog one of four ways. On day one they all produce the same number. They differ on day ninety, in how long that number stays correct without a human looking at it.
+
+| | Path | Pick this if | Effort | Correct without a human |
+| --- | --- | --- | --- | --- |
+| 1 | [Serve a live pricing endpoint](/pricing-feed) | You work at the provider | Half a day, once | Yes, permanently |
+| 2 | [Read the provider's pricing API](#2-read-the-providers-pricing-api) | The provider already serves rates as JSON | An importer, in Python | Yes, the weekly job catches drift |
+| 3 | [Snapshot a structured rate card](#3-snapshot-a-structured-rate-card) | The provider publishes the whole rate card in one file | A snapshot plus a generator | Until the rate card moves |
+| 4 | [Read the pricing page by hand](#4-read-the-pricing-page-by-hand) | Everything else, which is most vendors | About 30 minutes | No, it decays until someone re-checks |
+
+Paths 1 and 2 earn the model an <sup>api</sup> marker in the tables on this site. Paths 3 and 4 do not, because nothing is watching the source between visits.
 
 <Note>
-If you work for a model or inference provider, the highest-value contribution is serving a machine-readable pricing file or endpoint we can pull from. It improves pricing accuracy for every developer using your API.
+There is a fifth thing that looks like a path and is not. LLM rates are cross-checked against Helicone, OpenRouter, LiteLLM, and Simon Willison's llm-prices, downloaded into a gitignored `prices/source_prices/`. Those feeds exist to flag disagreement with a rate we already hold. They never set one. Please do not open a PR that copies a number out of an aggregator.
 </Note>
 
-## Fix a price
+## Already in the catalog? Just fix the number
 
 Edit `prices/providers/<provider>.yml`. Set `prices_checked` on the model to today's date ([why it matters](/how-fresh)), add or update `price_comments` explaining the change with a reference URL, then run `make build` to regenerate the JSON files. Pre-commit does this for you if you ran `make install`.
 
@@ -22,7 +31,41 @@ Please do not:
 - try to change the schema of providers or models without creating an issue to discuss the changes first
 - add new providers without creating an issue to discuss the changes first, adding models is fine
 
-## Add a provider
+## 1. Serve a live pricing endpoint
+
+The best outcome for everyone, and the only one that does not decay. You publish your current rates at one HTTPS URL, generated from whatever your billing system treats as the source of truth. A scheduled job polls it and the catalog follows your prices without anyone editing this repository again.
+
+The full spec, the meter and unit grid, and a worked example are on [Serve a pricing endpoint](/pricing-feed). If you work at a provider, start there and ignore the rest of this page.
+
+## 2. Read the provider's pricing API
+
+Some providers already serve machine-readable rates without knowing it: a public models endpoint that happens to carry prices. When that exists, we write an importer instead of transcribing by hand.
+
+Two are in the tree and either is a fine thing to copy:
+
+| Importer | Reads | Run with |
+| --- | --- | --- |
+| `prices/src/prices/source_cerebras.py` | `https://api.cerebras.ai/public/v1/models` | `make cerebras-get` |
+| `prices/src/prices/source_telnyx.py` | Telnyx's public pricing API | `make telnyx-get` |
+
+An importer has four obligations, all of them learned the hard way:
+
+- **Refuse rather than guess.** If the API disagrees with itself, for example a tier rate that contradicts the headline rate, write nothing for that model and report it. A refused model is a question for the vendor, not a number to average.
+- **Never clobber a human.** Look the model up both by `id` and through `find_model` before adding it. A model can be keyed by one id and routed by another, and checking only one of the two silently creates a duplicate row.
+- **Report what vanished.** Models that used to be in the API and no longer are must be surfaced as retired. A quietly dropped model is the failure that survives longest, because nothing about it looks broken.
+- **Support `DRY_RUN=1`.** The weekly job runs every importer read-only. In a dry run, a model that is waiting to be added still counts as outstanding work, so exit non-zero for it.
+
+Add a `make <vendor>-get` target alongside the others. Models an importer writes land as `provenance: source: imported` with `api_backed: true` and **no** `prices_checked`. That is deliberate: the importer proves the number is current, not that a human has agreed with it. Setting `prices_checked` stays a human act.
+
+## 3. Snapshot a structured rate card
+
+Sometimes a provider publishes its entire rate card in one structured file, but there is no stable URL worth polling. Commit the snapshot under `prices/sources/` and write a generator that rebuilds the YAML from it.
+
+`prices/src/prices/livekit_gen.py` does exactly this: it regenerates both `livekit.yml` and `livekit-scale.yml` from `prices/sources/livekit_pricing.json`, and `make livekit-get` reruns it. When the vendor changes prices you replace the snapshot and rerun one command, and the diff shows precisely which rates moved. That is the whole benefit over path 4: the update is mechanical and reviewable rather than a hand edit across dozens of rows.
+
+## 4. Read the pricing page by hand
+
+The common path, and the one most vendors need. It is also the one that goes stale, so the audit trail matters more here than anywhere else: every priced model carries the source URL, the conversion arithmetic, and the date a human read the page.
 
 | Modality | Priced field | Usage field | Template |
 | --- | --- | --- | --- |
@@ -35,6 +78,8 @@ Two categories have no template of their own because they reuse a priced shape a
 - [S2S](/s2s/all-models) uses the LLM shape with `input_audio_mtok` and `output_audio_mtok` set. A model is filed as speech-to-speech when it prices audio in **both** directions, so nothing extra is needed.
 - [VAD](/vad/all-models) uses the STT shape, since both bill per second of audio. That makes it indistinguishable from STT by price alone, so a VAD model also needs an entry in `MODALITY_OVERRIDES` in `prices/src/prices/build_docs.py` or it lands on the STT tab. Say so in your issue and the maintainer will add it.
 
+Paths 2 and 3 produce the same YAML. They just write it from a script instead of by hand, so the shape below is worth reading whichever path you are on.
+
 <Steps>
 <Step title="Discuss first">
 Open an [Add a provider issue](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml) with the provider name, pricing page, models, and modality. This catches duplicates and naming conflicts before you write YAML.
@@ -45,6 +90,10 @@ You need the per-unit rate for each model, any tier or mode differences (premium
 Most STT providers quote per minute. Convert with `rate_per_min * 1000 / 60` and record the source rate in `price_comments`.
 
 Credit-billed TTS converts the same way: ElevenLabs Creator is $22/month for 100,000 credits ($0.00022 per credit) and Turbo v2.5 burns 0.5 credits per character, so `input_kchars = 0.00022 * 0.5 * 1000 = 0.11`.
+
+<Warning>
+A rate quoted by a reseller is not evidence for the vendor's own rate. Gateways sometimes sell below a vendor's public self-serve tier, not just above it, so a resold number is neither an upper nor a lower bound. Price the direct vendor from the vendor's own page or leave the entry out.
+</Warning>
 </Step>
 <Step title="Copy the template">
 Copy [the template](https://github.com/mahimailabs/voice-prices/tree/main/docs/templates) for your modality to `prices/providers/<your-provider>.yml`. The filename is lowercase and hyphenated, matching the provider's common name.
@@ -127,6 +176,9 @@ Pick a default subscription tier (usually pay-as-you-go or Creator) and convert 
 </Accordion>
 <Accordion title="voice_multipliers are not supported for STT">
 Setting `voice_multipliers` on a model priced by `input_audio_kseconds` fails validation by design. If your provider charges different rates by language, ship separate model entries with distinct IDs, the way Deepgram does with `nova-3` and `nova-3-multilingual`.
+</Accordion>
+<Accordion title="The provider's published numbers do not reconcile">
+Do not average them and do not pick the friendlier one. Record what you saw in `price_comments`, price the rate you can defend, and say in the PR which figures disagreed. An honest note beats a confident wrong number.
 </Accordion>
 </AccordionGroup>
 
