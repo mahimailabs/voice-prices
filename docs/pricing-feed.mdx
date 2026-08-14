@@ -9,7 +9,7 @@ If you work at a model or inference provider, this is the highest-value thing yo
 
 Right now your prices reach this catalog because a person reads your pricing page. That is slow, it breaks whenever you restyle the page, and when it breaks the wrong number gets published under your name.
 
-Publish one endpoint instead and that stops happening permanently. We poll it every week, and when a rate moves the catalog follows.
+Publish one endpoint instead and that stops happening permanently. We poll it every day, and when a rate moves the catalog follows.
 
 <Note>
 This is not a new standard. [OpenRouter](https://openrouter.ai/docs/api/api-reference/models/get-models) and [LiteLLM](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) already publish per-token rates in this shape, and this project already pulls from both. The only addition is the two meters that voice needs: characters of text and seconds of audio.
@@ -63,10 +63,10 @@ That is a complete, valid response.
 | A stable HTTPS URL that does not move | It goes in a config file. `/.well-known/pricing.json` on your API host is a good convention. Plain HTTP is rejected: a rate that can be rewritten in transit is worse than no rate. |
 | No authentication | So client-side cost calculators can read it too. A registered URL may not embed credentials, since provider files are public. |
 | `Access-Control-Allow-Origin: *` | Same reason. |
-| `ETag` or `Last-Modified` | So a poll costs you a 304 rather than a payload. |
+| `ETag` or `Last-Modified` | So daily polling costs you a 304 rather than a payload. |
 | A bare URL, no query string | Nothing to parameterise: rates are public and identical for everyone. Not enforced, but it keeps caching simple. |
 
-It does not need to be fast or highly available. We poll once a week and treat a timeout as a transient failure, never as a price change.
+It does not need to be fast or highly available. We poll once a day and treat a timeout as a transient failure, never as a price change.
 
 ## Fields
 
@@ -166,7 +166,7 @@ Open an [issue](https://github.com/mahimailabs/voice-prices/issues/new?template=
 pricing_feed_url: https://api.acme.com/.well-known/pricing.json
 ```
 
-From then on a scheduled job polls your endpoint weekly and flags any rate that has moved away from the catalog.
+From then on a scheduled job polls your endpoint daily and flags any rate that has moved away from the catalog.
 
 <Warning>
 Polling never rewrites a price on its own. A moved rate alerts a maintainer, who confirms it and updates the entry by hand. No job in this project is allowed to mark a price as verified, which is what makes the dates on every page mean something. [How Fresh?](/how-fresh) explains the rule.
