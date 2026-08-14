@@ -1,0 +1,144 @@
+name: Price a vendor
+description: Track pricing one vendor for one modality. One issue per vendor per modality.
+title: "price(modality): Vendor Name"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        One vendor, one modality, one issue. A vendor selling both STT and TTS gets two issues,
+        because they land as separate rows with separate source URLs and separate verification dates.
+
+
+        Read [the four contribution paths](https://prices.voicegateway.dev/contribute) before
+        starting. If you work at the vendor, stop and read
+        [Serve a pricing endpoint](https://prices.voicegateway.dev/pricing-feed) instead: it is
+        less work than this issue and it never goes stale.
+  - type: input
+    id: vendor
+    attributes:
+      label: Vendor
+      placeholder: Speechmatics
+    validations:
+      required: true
+  - type: input
+    id: provider-id
+    attributes:
+      label: Provider id
+      description: lowercase, becomes `prices/providers/<id>.yml`. Reuse the existing id if the vendor is already in the catalog for another modality.
+      placeholder: speechmatics
+    validations:
+      required: true
+  - type: dropdown
+    id: modality
+    attributes:
+      label: Modality
+      description: One only. Open a second issue for a second modality.
+      options:
+        - STT (speech-to-text)
+        - TTS (text-to-speech)
+        - S2S (realtime audio in, audio out)
+        - LLM (text/token pricing)
+        - VAD (voice activity detection)
+    validations:
+      required: true
+  - type: dropdown
+    id: path
+    attributes:
+      label: Ingestion path
+      description: How the numbers will get in. See the table on the contribute page.
+      options:
+        - "1: vendor serves a live pricing endpoint"
+        - "2: vendor has a public pricing API, write an importer"
+        - "3: vendor publishes a structured rate card, snapshot it"
+        - "4: read the pricing page by hand"
+        - "Not sure yet"
+    validations:
+      required: true
+  - type: input
+    id: pricing-url
+    attributes:
+      label: Pricing page URL
+      description: Deep-link the exact section if you can. This becomes `pricing_source_url`.
+      placeholder: https://www.speechmatics.com/pricing
+    validations:
+      required: true
+  - type: textarea
+    id: models
+    attributes:
+      label: Models and published rates
+      description: >
+        Quote the rate in the vendor's own units. Do not convert here, conversion happens in the YAML
+        where `price_comments` can show the arithmetic.
+      value: |
+        | Model id | Published rate | Unit as published | Realtime / batch |
+        | --- | --- | --- | --- |
+        |  |  |  |  |
+    validations:
+      required: true
+  - type: textarea
+    id: conversion
+    attributes:
+      label: Unit conversion
+      description: >
+        The arithmetic that turns the published rate into our field. STT and VAD use
+        `input_audio_kseconds` ($/1k sec), TTS uses `input_kchars` ($/1k chars), LLM and S2S use
+        `input_mtok` / `output_mtok` / `input_audio_mtok` / `output_audio_mtok` ($/1M tokens).
+      placeholder: |
+        $0.15/hour -> 0.15 / 3600 * 1000 = 0.041667 input_audio_kseconds
+    validations:
+      required: false
+  - type: textarea
+    id: gotchas
+    attributes:
+      label: Gotchas
+      description: >
+        Anything that makes the number arguable. Credits or subscription tiers instead of a plain
+        usage rate, volume discounts, premium voice tiers, streaming versus batch splits, language
+        surcharges, free allowances, models that are deprecated but still callable, or a rate that
+        only exists inside an annual commitment.
+      placeholder: >
+        Published rate is a Startup-tier effective rate, not a meter. The Pro tier figure on the same
+        page does not reconcile with the quota arithmetic.
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - "tier1: a voice engineer would name it unprompted"
+        - "tier2: real but niche or newly launched"
+        - "tier3: long tail"
+    validations:
+      required: true
+  - type: checkboxes
+    id: cautions
+    attributes:
+      label: Checked before opening
+      options:
+        - label: This vendor and modality are not already in the catalog.
+          required: false
+        - label: >
+            If this vendor already appears under a gateway (LiveKit, Telnyx), I understand the resold
+            rate is not evidence for the direct rate. Gateways sometimes sell below a vendor's own
+            self-serve tier, so a resold number is neither an upper nor a lower bound.
+          required: false
+  - type: checkboxes
+    id: done
+    attributes:
+      label: Definition of done
+      description: For whoever picks this up. Leave unticked when opening the issue.
+      options:
+        - label: "`prices/providers/<id>.yml` written, `models` sorted alphabetically by `id`"
+          required: false
+        - label: "every priced model has `pricing_source_url`, and `price_comments` showing the conversion"
+          required: false
+        - label: "`prices_checked` set to the date the page was read (paths 3 and 4; importers leave it unset by design)"
+          required: false
+        - label: "`make build` run, and the regenerated JSON, `data.py` and docs pages committed"
+          required: false
+        - label: "`make test`, `make lint` and `make typecheck` pass"
+          required: false
+        - label: "PR body states the URL verified against, the date, and anything deliberately excluded"
+          required: false
