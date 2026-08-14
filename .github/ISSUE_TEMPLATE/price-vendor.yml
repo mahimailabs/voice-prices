@@ -15,6 +15,13 @@ body:
         [Serve a pricing endpoint](https://prices.voicegateway.dev/pricing-feed) instead: it is
         less work than this issue, and a moved rate then surfaces the next day instead of waiting
         for someone to re-read your pricing page.
+
+
+        **Using a coding agent?** There is a ready-made prompt for Claude Code, Cursor and
+        friends on the [contribute page](https://prices.voicegateway.dev/contribute#hand-it-to-a-coding-agent).
+        Copy it, fill in the vendor and the URL, and check its output against the page before you
+        open a PR. An agent writes a confident, well-formatted YAML file whether or not it read
+        the page correctly.
   - type: input
     id: vendor
     attributes:
@@ -90,6 +97,18 @@ body:
     validations:
       required: false
   - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot of the pricing page
+      description: >
+        Drag an image in showing the rates above on the vendor's own page. This is the one piece
+        of evidence a generated rate cannot fabricate cheaply, and CI requires one on the pull
+        request that closes this issue. Skip only when the ingestion path is 1 or 2, where a
+        machine reads the rates and no human reads a page.
+      placeholder: Paste or drag the image here.
+    validations:
+      required: false
+  - type: textarea
     id: gotchas
     attributes:
       label: Gotchas
@@ -142,4 +161,8 @@ body:
         - label: "`make test`, `make lint` and `make typecheck` pass"
           required: false
         - label: "PR body states the URL verified against, the date, and anything deliberately excluded"
+          required: false
+        - label: "a screenshot of the pricing page is attached to the PR (CI enforces this for hand-read rates)"
+          required: false
+        - label: "`make check-contribution` passes"
           required: false
