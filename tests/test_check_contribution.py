@@ -1,15 +1,21 @@
 """Tests for the contribution guard.
 
-`check_model` is the whole of the logic and takes plain dicts, so every case here is a
-unit test against it. The git plumbing (`changed_provider_files`, `base_version`) is
-exercised by `test_check_contribution_on_head`, which runs the real CLI against the real
-repository: on a clean checkout that finds nothing to check, which is the honest
-assertion, since a green run must not depend on what happens to be on the branch.
+`check_model` holds the per-model rules and takes plain dicts, so those cases are unit
+tests against it directly.
+
+The CLI walks real git history, so the `repo` fixture builds a throwaway repository with a
+base commit and a feature branch and runs the real thing against it. An earlier version of
+this file ran the CLI against *this* checkout instead. It passed locally and failed in CI,
+because the test job clones shallowly and has no `origin/main`, which sent the code down a
+fallback that reported all 1,369 catalogued models as newly added. Both the fallback and
+the test were wrong; the fixture is why that cannot recur.
 """
 
 from __future__ import annotations
 
+import subprocess
 from datetime import date, timedelta
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -171,10 +177,133 @@ def test_finding_str_names_the_model():
     assert str(finding).startswith('acme/acme-1: ')
 
 
-def test_check_contribution_on_head(capsys: pytest.CaptureFixture[str]):
-    """The real CLI against the real repo: a clean checkout has nothing to defend."""
+def _run(*args: str, cwd: Path) -> None:
+    subprocess.run(['git', *args], cwd=cwd, check=True, capture_output=True)
+
+
+def _provider_yaml(rate: str, *, checked: str, url: str = 'https://acme.example/pricing') -> str:
+    return (
+        'name: Acme\n'
+        'id: acme\n'
+        'pricing_urls:\n'
+        '  - https://acme.example/pricing\n'
+        'models:\n'
+        '  - id: acme-1\n'
+        f'    prices_checked: {checked}\n'
+        f'    pricing_source_url: {url}\n'
+        '    price_comments: Source rate $0.006/minute. 0.006 * 1000 / 60 = 0.1 exactly.\n'
+        '    prices:\n'
+        f'      input_audio_kseconds: {rate}\n'
+    )
+
+
+@pytest.fixture
+def repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """A throwaway git repo with one committed provider, checked out on a branch.
+
+    The CLI walks real git history, so the only honest way to test it is against a real
+    repository. Using this checkout instead would couple the result to whatever happens to
+    be on the current branch, and to whether CI cloned deeply enough to have `origin/main`.
+    """
+    _run('init', '-q', '-b', 'main', cwd=tmp_path)
+    _run('config', 'user.email', 't@example.com', cwd=tmp_path)
+    _run('config', 'user.name', 'Test', cwd=tmp_path)
+    providers = tmp_path / 'prices' / 'providers'
+    providers.mkdir(parents=True)
+    (providers / 'acme.yml').write_text(_provider_yaml('0.1', checked=str(TODAY)))
+    _run('add', '-A', cwd=tmp_path)
+    _run('commit', '-qm', 'base', cwd=tmp_path)
+    _run('checkout', '-q', '-b', 'feature', cwd=tmp_path)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv('BASE_REF', 'main')
+    monkeypatch.delenv('PR_BODY', raising=False)
+    monkeypatch.delenv('REQUIRE_BASE', raising=False)
+    return tmp_path
+
+
+@pytest.mark.usefixtures('repo')
+def test_unchanged_branch_checks_nothing(capsys: pytest.CaptureFixture[str]):
     assert check_contribution() == 0
-    assert 'model' in capsys.readouterr().out
+    assert 'no added or repriced models' in capsys.readouterr().out
+
+
+def test_repriced_model_is_checked(repo: Path, capsys: pytest.CaptureFixture[str]):
+    (repo / 'prices/providers/acme.yml').write_text(_provider_yaml('0.2', checked=str(TODAY)))
+    _run('commit', '-qam', 'reprice', cwd=repo)
+    assert check_contribution() == 0
+    assert 'checked 1 added or repriced model' in capsys.readouterr().out
+
+
+def test_repriced_model_with_a_unit_error_fails(repo: Path, capsys: pytest.CaptureFixture[str]):
+    (repo / 'prices/providers/acme.yml').write_text(_provider_yaml('600', checked=str(TODAY)))
+    _run('commit', '-qam', 'slop', cwd=repo)
+    assert check_contribution() == 1
+    assert 'plausible band' in capsys.readouterr().out
+
+
+def test_untouched_model_is_not_re_litigated(repo: Path, capsys: pytest.CaptureFixture[str]):
+    """A branch that only edits prose must not inherit an old model's problems."""
+    (repo / 'prices/providers/acme.yml').write_text(
+        _provider_yaml('0.1', checked=str(TODAY)).replace('name: Acme', 'name: Acme Speech')
+    )
+    _run('commit', '-qam', 'rename', cwd=repo)
+    assert check_contribution() == 0
+    assert 'no added or repriced models' in capsys.readouterr().out
+
+
+@pytest.mark.usefixtures('repo')
+def test_missing_base_ref_skips_by_default(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]):
+    """A shallow clone must not report the whole catalog as newly added."""
+    monkeypatch.setenv('BASE_REF', 'origin/nope')
+    assert check_contribution() == 0
+    assert 'not available' in capsys.readouterr().out
+
+
+@pytest.mark.usefixtures('repo')
+def test_missing_base_ref_fails_when_required(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]):
+    """In CI the base ref is guaranteed, so its absence is a broken guard, not a shallow clone."""
+    monkeypatch.setenv('BASE_REF', 'origin/nope')
+    monkeypatch.setenv('REQUIRE_BASE', '1')
+    assert check_contribution() == 1
+    assert 'REQUIRE_BASE=1' in capsys.readouterr().out
+
+
+def test_screenshot_required_for_hand_read_rate(
+    repo: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+):
+    (repo / 'prices/providers/acme.yml').write_text(_provider_yaml('0.2', checked=str(TODAY)))
+    _run('commit', '-qam', 'reprice', cwd=repo)
+    monkeypatch.setenv('PR_BODY', 'I read the page, honest')
+    assert check_contribution() == 1
+    assert 'No screenshot' in capsys.readouterr().out
+
+
+def test_screenshot_satisfies_the_check(repo: Path, monkeypatch: pytest.MonkeyPatch):
+    (repo / 'prices/providers/acme.yml').write_text(_provider_yaml('0.2', checked=str(TODAY)))
+    _run('commit', '-qam', 'reprice', cwd=repo)
+    monkeypatch.setenv('PR_BODY', 'proof: ![page](https://github.com/user-attachments/assets/x.png)')
+    assert check_contribution() == 0
+
+
+def test_importer_rows_are_exempt_from_the_screenshot(repo: Path, monkeypatch: pytest.MonkeyPatch):
+    """No human reads a page for an api_backed row, so demanding evidence of one is theatre."""
+    yaml_text = _provider_yaml('0.2', checked=str(TODAY)).replace(
+        '    prices:', '    provenance:\n      source: imported\n      api_backed: true\n    prices:'
+    )
+    (repo / 'prices/providers/acme.yml').write_text(yaml_text)
+    _run('commit', '-qam', 'importer', cwd=repo)
+    monkeypatch.setenv('PR_BODY', 'no image here')
+    assert check_contribution() == 0
+
+
+def test_new_provider_file_is_all_new_models(repo: Path, capsys: pytest.CaptureFixture[str]):
+    (repo / 'prices/providers/nimbus.yml').write_text(
+        _provider_yaml('0.1', checked=str(TODAY)).replace('acme', 'nimbus').replace('Acme', 'Nimbus')
+    )
+    _run('add', '-A', cwd=repo)
+    _run('commit', '-qm', 'new provider', cwd=repo)
+    assert check_contribution() == 0
+    assert 'checked 1 added or repriced model' in capsys.readouterr().out
 
 
 @pytest.mark.parametrize(

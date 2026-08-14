@@ -116,10 +116,21 @@ def _git(*args: str) -> str | None:
     return result.stdout
 
 
+def base_is_resolvable(base_ref: str) -> bool:
+    return _git('rev-parse', '--verify', '--quiet', f'{base_ref}^{{commit}}') is not None
+
+
 def changed_provider_files(base_ref: str) -> list[Path]:
+    """Provider YAMLs this branch touches relative to `base_ref`.
+
+    Callers must check `base_is_resolvable` first. Falling back to "check every file" when
+    the base ref is missing would be exactly backwards: a shallow clone would then report
+    the whole catalog as newly added, turning an infrastructure gap into 1,300 false
+    failures. No base means no claim to check.
+    """
     out = _git('diff', '--name-only', f'{base_ref}...HEAD', '--', str(PROVIDERS_DIR))
-    if out is None:  # no merge base (shallow clone, or a local run off a branch): check everything
-        return sorted(PROVIDERS_DIR.glob('*.yml'))
+    if out is None:
+        return []
     return [Path(line) for line in out.split('\n') if line.endswith('.yml')]
 
 
@@ -252,6 +263,17 @@ def check_contribution() -> int:
     """CLI action: validate every model this branch adds or reprices."""
     base_ref = os.environ.get('BASE_REF', 'origin/main')
     today = date.today()
+
+    if not base_is_resolvable(base_ref):
+        message = f'base ref {base_ref!r} is not available in this checkout, so there is nothing to diff against'
+        # The CI job that enforces this sets REQUIRE_BASE=1 and checks out with fetch-depth 0.
+        # There, an unresolvable base is a broken guard rather than a shallow clone, and must
+        # fail loudly instead of quietly passing every PR.
+        if os.environ.get('REQUIRE_BASE') == '1':
+            print(f'{message} (REQUIRE_BASE=1): fetch the base ref, or unset REQUIRE_BASE')
+            return 1
+        print(f'{message}; skipping')
+        return 0
 
     findings: list[Finding] = []
     checked_models = 0

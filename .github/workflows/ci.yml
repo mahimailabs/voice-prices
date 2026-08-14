@@ -84,6 +84,9 @@ jobs:
       - run: uv run -m prices check_contribution
         env:
           BASE_REF: origin/${{ github.base_ref }}
+          # fetch-depth: 0 above guarantees the base ref exists, so an unresolvable one here
+          # means the guard is broken, not that the clone is shallow. Fail rather than pass.
+          REQUIRE_BASE: "1"
           # Passed through the environment, never interpolated into the shell: a PR body is
           # attacker-controlled text.
           PR_BODY: ${{ github.event.pull_request.body }}
