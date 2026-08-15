@@ -33,7 +33,10 @@ dev = [
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = "prices/data.json,package-lock.json"
+# The lock glob needs the wildcard: a bare "package-lock.json" only matches one at the repo
+# root, so scripts/package-lock.json was still scanned and several real npm package names
+# were reported as typos in a generated file nobody edits by hand.
+skip = "prices/data.json,*package-lock.json"
 # "rime" is the TTS vendor Rime (not a misspelling of "rhyme").
 ignore-words-list = "rime"
 
