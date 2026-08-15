@@ -65,6 +65,20 @@ jobs:
           uv sync --all-packages --all-extras --resolution lowest-direct
           uv run --no-sync pytest -m "not requires_latest_pydantic"
 
+  # Mintlify only builds on pushes to main, so without this a malformed page merges green
+  # and the deploy aborts afterwards, leaving the site quietly serving the previous version.
+  docs-parse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+      - run: npm install --no-save --no-package-lock @mdx-js/mdx@3.1.1
+      - run: node scripts/mdx_check.mjs
+
   # Structural guard on what a PR claims about prices. Deliberately needs no secrets, so it
   # runs on fork PRs, which is where an unverified rate actually arrives. It cannot tell
   # whether a rate is true (only the freshness verifier can, and that needs an API key); it
@@ -122,12 +136,16 @@ jobs:
   # https://github.com/marketplace/actions/alls-green#why used for branch protection checks
   check:
     if: always()
-    needs: [pre-commit, test-python, coverage, contribution]
+    needs: [pre-commit, test-python, coverage, contribution, docs-parse]
     runs-on: ubuntu-latest
     steps:
       - name: Decide whether the needed jobs succeeded or failed
         uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
         with:
+          # `contribution` only runs on pull requests, so on a push to main it is skipped.
+          # alls-green counts a skipped need as a failure unless it is allowed here, which
+          # turned every push to main red the moment that job was added.
+          allowed-skips: contribution
           jobs: ${{ toJSON(needs) }}
 
   release-pypi:
