@@ -116,7 +116,7 @@ check-for-price-discrepancies: ## check for price discrepancies
 
 .PHONY: docs-parse
 docs-parse: ## parse every docs page with the MDX compiler (needs node)
-	npm install --no-save --no-package-lock @mdx-js/mdx@3.1.1
+	npm ci --prefix scripts
 	node scripts/mdx_check.mjs
 
 .PHONY: check-contribution
