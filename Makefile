@@ -114,6 +114,11 @@ get-update-price-discrepancies: get-all-prices update-price-discrepancies ## get
 check-for-price-discrepancies: ## check for price discrepancies
 	uv run -m prices check_for_price_discrepancies
 
+.PHONY: docs-parse
+docs-parse: ## parse every docs page with the MDX compiler (needs node)
+	npm install --no-save --no-package-lock @mdx-js/mdx@3.1.1
+	node scripts/mdx_check.mjs
+
 .PHONY: check-contribution
 check-contribution: ## validate models this branch adds or reprices (BASE_REF=<ref>, defaults to origin/main)
 	uv run -m prices check_contribution

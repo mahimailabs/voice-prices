@@ -37,9 +37,9 @@ Most of path 4 is mechanical: read a page, convert a unit, write YAML in a shape
 You are adding a provider's pricing to the voice-prices repository. Work only inside this checkout.
 
 INPUTS (replace these before running):
-- Vendor: <VENDOR NAME>
-- Modality: <stt | tts | s2s | llm | vad>
-- Pricing page: <URL>
+- Vendor: [VENDOR NAME]
+- Modality: one of stt, tts, s2s, llm, vad
+- Pricing page: [PRICING PAGE URL]
 
 RULES, in priority order:
 
@@ -50,9 +50,9 @@ RULES, in priority order:
 STEPS:
 
 1. Read prices/providers/deepgram.yml and prices/providers/inworld.yml first. Match their structure exactly; do not invent fields.
-2. Copy the matching template from docs/templates/ to prices/providers/<provider-id>.yml. The id is lowercase, matching the vendor's common name.
+2. Copy the matching template from docs/templates/ to prices/providers/[provider-id].yml. The id is lowercase, matching the vendor's common name.
 3. Fill in name, id, pricing_urls, api_pattern, model_match and provider_match. model_match must cover every model id you add, or callers get LookupError.
-4. Add one entry per model, sorted alphabetically by id. A validator enforces the sort. Use `match: equals: <id>` so a lookup resolves to exactly one row.
+4. Add one entry per model, sorted alphabetically by id. A validator enforces the sort. Use `match: equals: [id]` so a lookup resolves to exactly one row.
 5. Convert every rate into the field for that modality:
    - STT and VAD: input_audio_kseconds, dollars per 1000 seconds. From $/minute: rate * 1000 / 60. From $/hour: rate * 1000 / 3600.
    - TTS: input_kchars, dollars per 1000 characters. From $/1M characters: rate / 1000.
