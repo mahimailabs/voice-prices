@@ -129,6 +129,7 @@
               "tts/cartesia",
               "tts/deepgram",
               "tts/elevenlabs",
+              "tts/fal",
               "tts/inworld",
               "tts/openai",
               "tts/telnyx"
