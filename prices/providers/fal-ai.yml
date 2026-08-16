@@ -1,0 +1,120 @@
+# yaml-language-server: $schema=../../prices/providers/.schema.json
+name: fal.ai
+id: fal
+pricing_urls:
+  - https://fal.ai/pricing
+
+api_pattern: 'https://(queue\.)?fal\.run'
+
+model_match:
+  starts_with: fal-ai/
+
+provider_match:
+  contains: fal
+
+price_comments: >-
+  fal.ai is a model-hosting marketplace; it resells many third-party TTS models (ElevenLabs,
+  MiniMax, F5-TTS, Chatterbox, etc.) through the fal Model API. Every model below bills per
+  1,000 input characters, and fal publishes that unit price directly on each model's page
+  (see the per-model pricing_source_url). input_kchars is therefore the published dollar rate
+  per 1,000 characters with no conversion needed. Rates verified 2026-08-16 from fal's
+  official model pages (fal.ai/models/<endpoint-id>).
+
+models:
+  - id: fal-ai/elevenlabs/tts/eleven-v3
+    name: ElevenLabs TTS Eleven v3 (via fal)
+    description: >-
+      ElevenLabs' Eleven v3 model served through the fal Model API. High-quality
+      multilingual text-to-speech with voice control. Billed per 1,000 characters by fal.
+    match:
+      equals: fal-ai/elevenlabs/tts/eleven-v3
+    prices_checked: 2026-08-16
+    pricing_source_url: https://fal.ai/models/fal-ai/elevenlabs/tts/eleven-v3
+    price_comments: >-
+      fal publishes $0.1 per 1000 characters for this endpoint; input_kchars = 0.1.
+    prices:
+      input_kchars: 0.1
+
+  - id: fal-ai/elevenlabs/tts/multilingual-v2
+    name: ElevenLabs TTS Multilingual v2 (via fal)
+    description: >-
+      ElevenLabs' Multilingual v2 model served through the fal Model API. Full-fidelity
+      multilingual text-to-speech. Billed per 1,000 characters by fal.
+    match:
+      equals: fal-ai/elevenlabs/tts/multilingual-v2
+    prices_checked: 2026-08-16
+    pricing_source_url: https://fal.ai/models/fal-ai/elevenlabs/tts/multilingual-v2
+    price_comments: >-
+      fal publishes $0.1 per 1000 characters for this endpoint; input_kchars = 0.1.
+    prices:
+      input_kchars: 0.1
+
+  - id: fal-ai/elevenlabs/tts/turbo-v2.5
+    name: ElevenLabs TTS Turbo v2.5 (via fal)
+    description: >-
+      ElevenLabs' Turbo v2.5 model served through the fal Model API. Low-latency
+      multilingual text-to-speech for real-time use. Billed per 1,000 characters by fal.
+    match:
+      equals: fal-ai/elevenlabs/tts/turbo-v2.5
+    prices_checked: 2026-08-16
+    pricing_source_url: https://fal.ai/models/fal-ai/elevenlabs/tts/turbo-v2.5
+    price_comments: >-
+      fal publishes $0.05 per 1000 characters for this endpoint; input_kchars = 0.05.
+    prices:
+      input_kchars: 0.05
+
+  - id: fal-ai/f5-tts
+    name: F5 TTS (via fal)
+    description: >-
+      F5-TTS diffusion model served through the fal Model API. Zero-shot voice cloning from
+      a single reference audio sample. Billed per 1,000 characters by fal.
+    match:
+      equals: fal-ai/f5-tts
+    prices_checked: 2026-08-16
+    pricing_source_url: https://fal.ai/models/fal-ai/f5-tts
+    price_comments: >-
+      fal publishes $0.05 per 1000 characters for this endpoint; input_kchars = 0.05.
+    prices:
+      input_kchars: 0.05
+
+  - id: fal-ai/minimax/speech-2.6-turbo
+    name: MiniMax Speech 2.6 Turbo (via fal)
+    description: >-
+      MiniMax Speech-2.6 Turbo model served through the fal Model API. Fast multilingual
+      text-to-speech with interjection and pause tags. Billed per 1,000 characters by fal.
+    match:
+      equals: fal-ai/minimax/speech-2.6-turbo
+    prices_checked: 2026-08-16
+    pricing_source_url: https://fal.ai/models/fal-ai/minimax/speech-2.6-turbo
+    price_comments: >-
+      fal publishes $0.06 per 1000 characters for this endpoint; input_kchars = 0.06.
+    prices:
+      input_kchars: 0.06
+
+  - id: fal-ai/minimax/speech-2.8-hd
+    name: MiniMax Speech 2.8 HD (via fal)
+    description: >-
+      MiniMax Speech-2.8 HD model served through the fal Model API. High-definition
+      multilingual text-to-speech with emotion control. Billed per 1,000 characters by fal.
+    match:
+      equals: fal-ai/minimax/speech-2.8-hd
+    prices_checked: 2026-08-16
+    pricing_source_url: https://fal.ai/models/fal-ai/minimax/speech-2.8-hd
+    price_comments: >-
+      fal publishes $0.1 per 1000 characters for this endpoint; input_kchars = 0.1.
+    prices:
+      input_kchars: 0.1
+
+  - id: fal-ai/minimax/speech-2.8-turbo
+    name: MiniMax Speech 2.8 Turbo (via fal)
+    description: >-
+      MiniMax Speech-2.8 Turbo model served through the fal Model API. Speed-optimized
+      multilingual text-to-speech. Billed per 1,000 characters by fal.
+    match:
+      equals: fal-ai/minimax/speech-2.8-turbo
+    prices_checked: 2026-08-16
+    pricing_source_url: https://fal.ai/models/fal-ai/minimax/speech-2.8-turbo
+    price_comments: >-
+      fal publishes $0.06 per 1000 characters for this endpoint; input_kchars = 0.06.
+    prices:
+      input_kchars: 0.06
