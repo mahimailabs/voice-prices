@@ -226,7 +226,7 @@ Run `make check-contribution` before you push. It runs on every PR, including fr
 | --- | --- |
 | `pricing_source_url` present and https | Without it there is nothing to re-verify against, ever |
 | Source host is the vendor's, not an aggregator | A rate copied from OpenRouter is not evidence of what the vendor charges |
-| `prices_checked` present, not in the future, under 30 days old | A date nobody stood behind is worse than no date |
+| `prices_checked` present, not in the future, under 30 days old | A date nobody stood behind is worse than no date. Waived when `provenance.source` marks the row unverified, because inventing a date to satisfy a checker is the failure this is meant to prevent |
 | `price_comments` present on converted units | A converted rate with the arithmetic hidden cannot be reviewed |
 | Rate is within an order of magnitude of its field's range | Catches the 1000x unit error, the most common way a wrong price looks right |
 | A screenshot on the PR | Evidence a human loaded the page |

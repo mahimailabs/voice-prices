@@ -103,12 +103,26 @@ class Finding:
         return f'{self.provider_id}/{self.model_id}: {self.message}'
 
 
+def _provenance(model: dict[str, Any]) -> dict[object, object]:
+    provenance: object = model.get('provenance')
+    return cast('dict[object, object]', provenance) if isinstance(provenance, dict) else {}
+
+
 def is_api_backed(model: dict[str, Any]) -> bool:
     """True when an importer wrote this row, so a human never read a page for it."""
-    provenance: object = model.get('provenance')
-    if not isinstance(provenance, dict):
-        return False
-    return cast('dict[object, object]', provenance).get('api_backed') is True
+    return _provenance(model).get('api_backed') is True
+
+
+def declares_unverified(model: dict[str, Any]) -> bool:
+    """True when the row explicitly says no human has confirmed it.
+
+    ``provenance.source`` is ``imported`` or ``seed``, which the site renders as an unverified
+    badge. Such a row must NOT be forced to carry a ``prices_checked`` date: inventing one to
+    satisfy a checker would manufacture the exact false verification claim this project exists
+    to prevent. The loophole (marking a hand-read rate as imported to skip the date) is
+    self-penalising, because the row then publishes as unverified.
+    """
+    return _provenance(model).get('source') in ('imported', 'seed')
 
 
 def has_screenshot(pr_body: str) -> bool:
@@ -234,7 +248,11 @@ def check_model(
 
     checked = model.get('prices_checked')
     if checked is None:
-        fail('no `prices_checked`. Set it to the date you read the pricing page.')
+        if not declares_unverified(model):
+            fail(
+                'no `prices_checked`. Set it to the date you read the pricing page, or set '
+                '`provenance.source` to `imported`/`seed` if no human has confirmed this rate.'
+            )
     elif isinstance(checked, date):
         if checked > today:
             fail(f'`prices_checked` is in the future: {checked}.')
@@ -305,7 +323,7 @@ def check_contribution() -> int:
                 continue  # unchanged price: not this PR's claim to defend
             checked_models += 1
             findings.extend(check_model(provider_id, model, pricing_hosts=pricing_hosts, today=today))
-            if _priced_fields(model) and not is_api_backed(model):
+            if _priced_fields(model) and not is_api_backed(model) and not declares_unverified(model):
                 hand_read.append(f'{provider_id}/{model_id}')
 
     if not checked_models:
@@ -324,8 +342,9 @@ def check_contribution() -> int:
             print(f'  {name}')
         print(
             '\nAttach a screenshot of the vendor pricing page showing these rates. It is the one\n'
-            'piece of evidence that someone actually loaded the page. Rates written by an importer\n'
-            '(`provenance.api_backed: true`) are exempt, because no human read a page for those.'
+            'piece of evidence that someone actually loaded the page. Rows that do not claim human\n'
+            'verification are exempt (`provenance.api_backed: true`, or `provenance.source` set to\n'
+            '`imported`/`seed`), because no human read a page for those.'
         )
         return 1
 
