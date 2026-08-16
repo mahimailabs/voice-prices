@@ -7628,7 +7628,7 @@ providers: list[Provider] = [
         id='openrouter',
         name='OpenRouter',
         api_pattern='https://(api\\.)?openrouter\\.ai',
-        pricing_urls=['https://openrouter.ai/models'],
+        pricing_urls=['https://openrouter.ai/models', 'https://developers.openai.com/api/docs/models'],
         extractors=[
             UsageExtractor(
                 root='usage',
