@@ -76,7 +76,7 @@ It does not need to be fast or highly available. We poll once a day and treat a 
 | --- | --- | --- |
 | `provider` | yes | Short stable id for your company, lowercase. |
 | `models` | yes | The list below. |
-| `currency` | no | ISO 4217. Defaults to `USD`. |
+| `currency` | no | Must be `USD`. Defaults to `USD`, and a feed declaring anything else is rejected: this catalog publishes USD only and does not convert. |
 | `updated` | no | ISO date the rates last changed. |
 
 ### Per model

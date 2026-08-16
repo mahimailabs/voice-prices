@@ -24,6 +24,10 @@ Paths 1 and 2 earn the model an <sup>api</sup> marker in the tables on this site
 There is a fifth thing that looks like a path and is not. LLM rates are cross-checked against Helicone, OpenRouter, LiteLLM, and Simon Willison's llm-prices, downloaded into a gitignored `prices/source_prices/`. Those feeds exist to flag disagreement with a rate we already hold. They never set one. Please do not open a PR that copies a number out of an aggregator.
 </Note>
 
+<Warning>
+**Every price in this catalog is US dollars, and we do not convert.** A vendor that publishes only in another currency is out of scope for now, however good the data is: an exchange rate moves daily, so a converted price would be wrong within a week of being written and there would be no honest date to put on it. If a vendor publishes a USD page alongside a local one, use the USD page and say so. If they publish only CNY, INR, KRW or similar, open an issue describing what they publish rather than a PR converting it. A [pricing endpoint](/pricing-feed) declaring a non-USD `currency` is rejected outright for the same reason.
+</Warning>
+
 ## Hand it to a coding agent
 
 Most of path 4 is mechanical: read a page, convert a unit, write YAML in a shape that already exists a dozen times over in this repository. Claude Code, Cursor, Codex and friends are good at exactly that. Clone the repo, open your agent in it, and paste this.
