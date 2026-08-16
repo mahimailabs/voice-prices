@@ -104,7 +104,7 @@ Every provider in the catalog, and which categories it prices:
 | [HuggingFace (publicai)](prices/providers/huggingface_publicai.yml) | 8 | LLM |
 | [HuggingFace (sambanova)](prices/providers/huggingface_sambanova.yml) | 8 | LLM |
 | [HuggingFace (together)](prices/providers/huggingface_together.yml) | 23 | LLM |
-| [Hume AI](prices/providers/hume-ai.yml) | 2 | TTS |
+| [Hume AI](prices/providers/hume.yml) | 2 | TTS |
 | [Inworld](prices/providers/inworld.yml) | 4 | STT, TTS |
 | [LiveKit Inference](prices/providers/livekit.yml) | 78 | STT, LLM, TTS |
 | [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 36 | STT, TTS |
