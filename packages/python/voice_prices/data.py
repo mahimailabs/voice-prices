@@ -1200,6 +1200,7 @@ providers: list[Provider] = [
         api_pattern='(https?://)?([^.]*\\.)?(?:openai\\.azure\\.com|azure-api\\.net|cognitiveservices\\.azure\\.com)',
         pricing_urls=['https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/#pricing'],
         price_comments='These are prices for "*-Global" models, prices for "Regional" models are often slightly higher. Retired models are listed at https://learn.microsoft.com/th-th/azure/ai-foundry/openai/concepts/legacy-models',
+        model_match=ClauseOr(or_=[ClauseStartsWith(starts_with='azure-speech-')]),
         extractors=[
             UsageExtractor(
                 root='usage',
@@ -1268,6 +1269,26 @@ providers: list[Provider] = [
                 ),
                 provenance=Provenance(last_verified=datetime.date(2025, 7, 13)),
                 prices=ModelPrice(input_mtok=Decimal('0.1')),
+            ),
+            ModelInfo(
+                id='azure-speech-neural',
+                match=ClauseEquals(equals='azure-speech-neural'),
+                name='Azure AI Speech prebuilt Neural',
+                description='Prebuilt neural text-to-speech voices (real-time and batch synthesis), including the Neural HD Flash variant. Billed per character of input text across 400+ voices in 140+ languages/locales.',
+                price_comments='Official Azure Speech (Foundry Tools) pay-as-you-go rate: $15 per 1M characters for prebuilt Neural / Neural HD Flash voices. input_kchars = 15 / 1000 = 0.015.',
+                pricing_source_url='https://azure.microsoft.com/en-us/pricing/details/cognitive-services/speech-services/',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(input_kchars=Decimal('0.015')),
+            ),
+            ModelInfo(
+                id='azure-speech-neural-hd',
+                match=ClauseEquals(equals='azure-speech-neural-hd'),
+                name='Azure AI Speech prebuilt Neural HD',
+                description='Prebuilt Neural HD voices (higher-fidelity, more expressive TTS). Billed per character of input text; a premium over standard Neural. Rate reduced from $30 to $22 per 1M characters in March 2026.',
+                price_comments='Official Azure Speech (Foundry Tools) pay-as-you-go rate for standalone Neural HD voices: $22 per 1M characters (reduced from $30 in March 2026, per Microsoft Tech Community Neural HD pricing update). input_kchars = 22 / 1000 = 0.022.',
+                pricing_source_url='https://azure.microsoft.com/en-us/pricing/details/cognitive-services/speech-services/',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(input_kchars=Decimal('0.022')),
             ),
             ModelInfo(
                 id='babbage',
