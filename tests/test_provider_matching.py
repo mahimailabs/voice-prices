@@ -131,6 +131,9 @@ def test_provider_matching(provider_ref: str, provider_id: str):
         ('eleven_turbo_v2_5', 'elevenlabs', {'characters': 200}),
         ('eleven_flash_v2_5', 'elevenlabs', {'characters': 200}),
         ('eleven_multilingual_v2', 'elevenlabs', {'characters': 200}),
+        # Azure AI Speech (prebuilt Neural / Neural HD, routes by `azure-speech-` prefix)
+        ('azure-speech-neural', 'azure', {'characters': 200}),
+        ('azure-speech-neural-hd', 'azure', {'characters': 200}),
         # STT (new for v0.0.7)
         ('nova-3', 'deepgram', {'audio_input_seconds': Decimal('60')}),
         ('nova-3-batch', 'deepgram', {'audio_input_seconds': Decimal('60')}),
