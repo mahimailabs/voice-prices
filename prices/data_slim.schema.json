@@ -407,6 +407,11 @@
           "description": "price in USD per 1,000 seconds of input audio (STT audio input).\n\nModelPrice puts direction before modality (input_audio_kseconds); Usage puts\nmodality before direction (audio_input_seconds). Intentional; mirrors the\nexisting output_audio_kseconds / audio_output_seconds pair.",
           "title": "Input Audio Kseconds"
         },
+        "agent_kminutes": {
+          "type": "number",
+          "description": "price in USD per 1,000 minutes of bundled voice-agent session time.\n\nSet only by platforms that sell one blended per-minute rate covering STT, LLM, TTS\nand orchestration together (Vapi, Retell, Bland, ElevenLabs Agents and similar). A\nmodel priced this way is filed under the `agent` modality.\n\nDeliberately not comparable with the component rates elsewhere in this catalog:\nwhat the bundle contains is the platform's choice and is rarely disclosed, so the\nnumber answers \"what does a minute cost me here\", not \"what does the speech cost\".",
+          "title": "Agent Kminutes"
+        },
         "voice_multipliers": {
           "additionalProperties": {
             "type": "number"
@@ -760,7 +765,8 @@
             "output_audio_tokens",
             "characters",
             "audio_output_seconds",
-            "audio_input_seconds"
+            "audio_input_seconds",
+            "agent_minutes"
           ],
           "title": "Dest",
           "type": "string"

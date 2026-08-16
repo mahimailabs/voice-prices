@@ -56,13 +56,21 @@ PRICE_BANDS: dict[str, tuple[Decimal, Decimal]] = {
     'cache_write_mtok': (Decimal('0.001'), Decimal('1000')),
     'cache_audio_read_mtok': (Decimal('0.001'), Decimal('500')),
     'requests_kcount': (Decimal('0.001'), Decimal('10000')),
+    'agent_kminutes': (Decimal('0.1'), Decimal('10000')),
 }
 
 # Fields whose value is a unit conversion away from what the vendor publishes, so a
 # contributor must show their working. Token fields are excluded: vendors quote those
 # per million already, which is the field's own unit.
 CONVERTED_FIELDS = frozenset(
-    {'input_audio_kseconds', 'output_audio_kseconds', 'input_kchars', 'output_kchars', 'requests_kcount'}
+    {
+        'input_audio_kseconds',
+        'output_audio_kseconds',
+        'input_kchars',
+        'output_kchars',
+        'requests_kcount',
+        'agent_kminutes',
+    }
 )
 
 # A rate copied from one of these is not evidence of what the vendor charges. The

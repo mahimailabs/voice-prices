@@ -124,10 +124,12 @@ The common path, and the one most vendors need. It is also the one that goes sta
 | LLM | `input_mtok` / `output_mtok` ($ per 1M tokens), plus optional cache / audio / request fields | `Usage(input_tokens=..., output_tokens=...)` | `provider-llm.yml` |
 | TTS | `input_kchars` ($ per 1k characters) | `Usage(characters=...)` | `provider-tts.yml` |
 | STT | `input_audio_kseconds` ($ per 1k seconds) | `Usage(audio_input_seconds=Decimal(...))` | `provider-stt.yml` |
+| Agents | `agent_kminutes` ($ per 1k minutes of session) | `Usage(agent_minutes=Decimal(...))` | reuse `provider-stt.yml` |
 
-Two categories have no template of their own because they reuse a priced shape above:
+Three categories have no template of their own because they reuse a priced shape above:
 
 - [S2S](/s2s/all-models) uses the LLM shape with `input_audio_mtok` and `output_audio_mtok` set. A model is filed as speech-to-speech when it prices audio in **both** directions, so nothing extra is needed.
+- [Agents](/agent/all-models) is for platforms selling one bundled per-minute price covering STT, LLM, TTS and orchestration together. Setting `agent_kminutes` files a model there automatically. **Do not also set the component fields**: if a platform publishes both a bundle and its parts, the bundle is what it charges, and the parts belong in that vendor's own entries. State in `price_comments` exactly what the bundle includes and what it excludes, because most platforms bill the model or telephony at cost on top.
 - [VAD](/vad/all-models) uses the STT shape, since both bill per second of audio. That makes it indistinguishable from STT by price alone, so a VAD model also needs an entry in `MODALITY_OVERRIDES` in `prices/src/prices/build_docs.py` or it lands on the STT tab. Say so in your issue and the maintainer will add it.
 
 Paths 2 and 3 produce the same YAML. They just write it from a script instead of by hand, so the shape below is worth reading whichever path you are on.

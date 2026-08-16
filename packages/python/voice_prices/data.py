@@ -12129,6 +12129,28 @@ providers: list[Provider] = [
         ],
     ),
     Provider(
+        id='vapi',
+        name='Vapi',
+        api_pattern='https://api\\.vapi\\.ai',
+        pricing_urls=['https://vapi.ai/pricing'],
+        price_comments="Vapi sells orchestration, not speech. The published per-minute rate is a platform fee; speech-to-text, the model and text-to-speech are passed through at the underlying provider's cost, and are $0 when you bring your own API key. Telephony is separate again. A cost estimate built from this rate alone will be far too low for a self-serve user, and roughly right for one bringing their own keys. That asymmetry is the reason `agent_kminutes` exists as its own field rather than being folded in with the component rates.",
+        model_match=ClauseStartsWith(starts_with='vapi'),
+        provider_match=ClauseContains(contains='vapi'),
+        staleness_threshold_days=60,
+        models=[
+            ModelInfo(
+                id='vapi-platform',
+                match=ClauseEquals(equals='vapi-platform'),
+                name='Vapi platform',
+                description="Vapi's per-minute orchestration fee. Excludes STT, LLM, TTS and telephony.",
+                price_comments="Source rate $0.05 per minute of call hosting. 0.05 * 1000 = 50 agent_kminutes. Excludes STT / LLM / TTS, which Vapi bills at the underlying provider's cost ($0 when the caller supplies their own API key), and excludes telephony. Text messages are $0.005 each and are not represented here: the catalog has no per-message field, and folding them into a per-minute rate would invent a messages-per-minute assumption.",
+                pricing_source_url='https://vapi.ai/pricing',
+                provenance=Provenance(source='imported'),
+                prices=ModelPrice(agent_kminutes=Decimal('50')),
+            )
+        ],
+    ),
+    Provider(
         id='x-ai',
         name='X AI',
         api_pattern='https://api\\.x\\.ai',

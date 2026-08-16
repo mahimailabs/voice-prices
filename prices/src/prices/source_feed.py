@@ -30,7 +30,9 @@ from .utils import package_dir
 DATA_JSON = package_dir / 'data.json'
 
 #: What is being metered. Mirrors the direction/modality split already used by ModelPrice.
-Meter = Literal['text_input', 'text_output', 'cached_text_input', 'audio_input', 'audio_output', 'request']
+Meter = Literal[
+    'text_input', 'text_output', 'cached_text_input', 'audio_input', 'audio_output', 'request', 'agent_session'
+]
 
 #: The base unit a rate is quoted per. Always singular: one character, one second, one token.
 Unit = Literal['character', 'token', 'second', 'minute', 'request']
@@ -66,6 +68,7 @@ RATE_FIELDS: dict[tuple[str, str], RateMap] = {
     ('audio_input', 'token'): RateMap('input_audio_mtok', 1_000_000),
     ('audio_output', 'token'): RateMap('output_audio_mtok', 1_000_000),
     ('request', 'request'): RateMap('requests_kcount', 1_000),
+    ('agent_session', 'minute'): RateMap('agent_kminutes', 1_000),
 }
 
 #: Two rates that convert to within this relative distance are the same price. Per-minute and
@@ -94,7 +97,7 @@ class FeedModel(BaseModel):
 
     id: str
     name: str | None = None
-    modality: Literal['stt', 'llm', 'tts', 's2s', 'vad'] | None = None
+    modality: Literal['stt', 'llm', 'tts', 's2s', 'vad', 'agent'] | None = None
     status: Literal['ga', 'preview', 'deprecated'] | None = None
     sunset_on: str | None = None
     docs_url: str | None = None

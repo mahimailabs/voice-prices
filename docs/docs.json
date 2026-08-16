@@ -162,6 +162,14 @@
         ]
       },
       {
+        "tab": "Agents",
+        "icon": "bot",
+        "pages": [
+          "agent/all-models",
+          "agent/vapi"
+        ]
+      },
+      {
         "tab": "Add Yours",
         "icon": "git-pull-request",
         "pages": [
