@@ -149,6 +149,7 @@
         "pages": [
           "s2s/all-models",
           "s2s/aws",
+          "s2s/boson",
           "s2s/google",
           "s2s/openai"
         ]

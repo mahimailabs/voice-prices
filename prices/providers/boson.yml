@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=.schema.json
+name: Boson AI
+id: boson
+pricing_urls:
+  - https://www.boson.ai/pricing
+api_pattern: 'https://api\.boson\.ai'
+model_match:
+  starts_with: boson-
+provider_match:
+  contains: boson
+extractors:
+  - api_flavor: chat
+    root: usage
+    mappings:
+      - path: prompt_tokens
+        dest: input_tokens
+      - path: [prompt_tokens_details, cached_tokens]
+        dest: cache_read_tokens
+        required: false
+      - path: completion_tokens
+        dest: output_tokens
+
+models:
+  - id: boson-higgs-realtime
+    name: Higgs Realtime
+    description: >-
+      Boson AI's realtime speech-to-speech model for conversational agents.
+      The provider's pricing page describes the token rates as modality-blended;
+      the audio-token mapping below is therefore an explicit assumption.
+    match:
+      equals: boson-higgs-realtime
+    prices_checked: 2026-08-16
+    pricing_source_url: https://www.boson.ai/pricing
+    price_comments: >-
+      Source page lists Input tokens at $0.75 / 1M tokens, Cached input tokens at
+      $0.25 / 1M tokens, and Output tokens at $4.50 / 1M tokens. The page does not
+      publish separate audio-token rates; because this is the Higgs Realtime S2S
+      model, this entry assumes the blended input and output token rates apply to
+      audio tokens: 0.75 = input_audio_mtok and 4.50 = output_audio_mtok. Cached
+      input is recorded as 0.25 = cache_audio_read_mtok. The page also lists
+      transcription input at $0.0025 / minute; it is deliberately excluded because
+      it is not an S2S audio-token meter.
+    prices:
+      input_audio_mtok: 0.75
+      cache_audio_read_mtok: 0.25
+      output_audio_mtok: 4.50

@@ -1428,6 +1428,45 @@ providers: list[Provider] = [
         ],
     ),
     Provider(
+        id='boson',
+        name='Boson AI',
+        api_pattern='https://api\\.boson\\.ai',
+        pricing_urls=['https://www.boson.ai/pricing'],
+        model_match=ClauseStartsWith(starts_with='boson-'),
+        provider_match=ClauseContains(contains='boson'),
+        extractors=[
+            UsageExtractor(
+                root='usage',
+                mappings=[
+                    UsageExtractorMapping(path='prompt_tokens', dest='input_tokens', required=True),
+                    UsageExtractorMapping(
+                        path=['prompt_tokens_details', 'cached_tokens'], dest='cache_read_tokens', required=False
+                    ),
+                    UsageExtractorMapping(path='completion_tokens', dest='output_tokens', required=True),
+                ],
+                api_flavor='chat',
+                model_path='model',
+            )
+        ],
+        staleness_threshold_days=60,
+        models=[
+            ModelInfo(
+                id='boson-higgs-realtime',
+                match=ClauseEquals(equals='boson-higgs-realtime'),
+                name='Higgs Realtime',
+                description="Boson AI's realtime speech-to-speech model for conversational agents. The provider's pricing page describes the token rates as modality-blended; the audio-token mapping below is therefore an explicit assumption.",
+                price_comments='Source page lists Input tokens at $0.75 / 1M tokens, Cached input tokens at $0.25 / 1M tokens, and Output tokens at $4.50 / 1M tokens. The page does not publish separate audio-token rates; because this is the Higgs Realtime S2S model, this entry assumes the blended input and output token rates apply to audio tokens: 0.75 = input_audio_mtok and 4.50 = output_audio_mtok. Cached input is recorded as 0.25 = cache_audio_read_mtok. The page also lists transcription input at $0.0025 / minute; it is deliberately excluded because it is not an S2S audio-token meter.',
+                pricing_source_url='https://www.boson.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(
+                    input_audio_mtok=Decimal('0.75'),
+                    cache_audio_read_mtok=Decimal('0.25'),
+                    output_audio_mtok=Decimal('4.5'),
+                ),
+            )
+        ],
+    ),
+    Provider(
         id='cartesia',
         name='Cartesia',
         api_pattern='https://api\\.cartesia\\.ai',
