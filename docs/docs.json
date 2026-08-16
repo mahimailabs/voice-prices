@@ -130,6 +130,7 @@
               "tts/deepgram",
               "tts/elevenlabs",
               "tts/inworld",
+              "tts/novita",
               "tts/openai",
               "tts/telnyx"
             ]

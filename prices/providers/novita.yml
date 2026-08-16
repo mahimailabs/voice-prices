@@ -4,6 +4,8 @@ id: novita
 pricing_urls:
   - https://novita.ai/pricing
 api_pattern: 'https://api\.novita\.ai'
+provider_match:
+  contains: novita
 models:
   - id: Sao10K/L3-8B-Stheno-v3.2
     match:
@@ -60,6 +62,19 @@ models:
     prices:
       input_mtok: 0.89
       output_mtok: 0.89
+
+  - id: fish-audio-text-to-speech
+    name: Fish Audio Text to Speech
+    description: >-
+      Novita's Fish Audio text-to-speech endpoint.
+    match:
+      equals: fish-audio-text-to-speech
+    prices_checked: 2026-08-16
+    pricing_source_url: https://novita.ai/pricing
+    price_comments: >-
+      Source rate $15.00 per 1M characters. 15.00 / 1000 = 0.015 input_kchars.
+    prices:
+      input_kchars: 0.015
 
   - id: google/gemma-2-9b-it
     match:
@@ -154,6 +169,31 @@ models:
       input_mtok: 0.62
       output_mtok: 0.62
 
+  - id: minimax-speech-2.6-hd
+    name: MiniMax speech-2.6-hd
+    description: >-
+      Novita's MiniMax speech-2.6-hd text-to-speech endpoint.
+    match:
+      equals: minimax-speech-2.6-hd
+    prices_checked: 2026-08-16
+    pricing_source_url: https://novita.ai/pricing
+    price_comments: >-
+      Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars.
+    prices:
+      input_kchars: 0.1
+
+  - id: minimax-speech-2.6-turbo
+    name: MiniMax speech-2.6-turbo
+    description: >-
+      Novita's MiniMax speech-2.6-turbo text-to-speech endpoint.
+    match:
+      equals: minimax-speech-2.6-turbo
+    prices_checked: 2026-08-16
+    pricing_source_url: https://novita.ai/pricing
+    price_comments: >-
+      Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars.
+    prices:
+      input_kchars: 0.06
   - id: mistralai/mistral-7b-instruct
     match:
       equals: mistralai/mistral-7b-instruct
