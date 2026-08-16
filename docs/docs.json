@@ -130,6 +130,7 @@
               "tts/deepgram",
               "tts/elevenlabs",
               "tts/inworld",
+              "tts/minimax",
               "tts/openai",
               "tts/telnyx"
             ]
