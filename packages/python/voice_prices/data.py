@@ -10509,6 +10509,32 @@ providers: list[Provider] = [
                 ),
             ),
             ModelInfo(
+                id='openai/gpt-audio',
+                match=ClauseEquals(equals='openai/gpt-audio'),
+                price_comments='Text: $2.50 input / $10.00 output per 1M tokens, as published. Audio: $32.00 input / $64.00 output per 1M tokens, as published; 32.00 * 1 = 32.00 and 64.00 * 1 = 64.00. OpenRouter adds approximately 5.5% to credit purchases; that fee is not included in these list rates.',
+                pricing_source_url='https://openrouter.ai/openai/gpt-audio',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(
+                    input_mtok=Decimal('2.5'),
+                    output_mtok=Decimal('10'),
+                    input_audio_mtok=Decimal('32'),
+                    output_audio_mtok=Decimal('64'),
+                ),
+            ),
+            ModelInfo(
+                id='openai/gpt-audio-mini',
+                match=ClauseEquals(equals='openai/gpt-audio-mini'),
+                price_comments='Text and audio: $0.60 input / $2.40 output per 1M tokens, as published; 0.60 * 1 = 0.60 and 2.40 * 1 = 2.40. OpenRouter adds approximately 5.5% to credit purchases; that fee is not included in these list rates.',
+                pricing_source_url='https://openrouter.ai/openai/gpt-audio-mini',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(
+                    input_mtok=Decimal('0.6'),
+                    output_mtok=Decimal('2.4'),
+                    input_audio_mtok=Decimal('0.6'),
+                    output_audio_mtok=Decimal('2.4'),
+                ),
+            ),
+            ModelInfo(
                 id='openai/gpt-oss-120b',
                 match=ClauseOr(
                     or_=[ClauseEquals(equals='openai/gpt-oss-120b'), ClauseEquals(equals='openai/gpt-oss-120b:exacto')]
