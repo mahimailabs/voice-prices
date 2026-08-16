@@ -7,7 +7,9 @@ pricing_urls:
   # https://cloud.google.com/vertex-ai/generative-ai/pricing#context-caching explains how caching is calculated
 api_pattern: 'https://(.*\.)?googleapis\.com'
 model_match:
-  contains: gemini
+  or:
+    - contains: gemini
+    - starts_with: google-tts-
 provider_match:
   or:
     - contains: google
@@ -730,3 +732,83 @@ models:
       or:
         - starts_with: gemma-3n
     prices: {}
+
+  # Cloud Text-to-Speech, billed per character rather than per token. Rates come from the
+  # "Legacy TTS models" table. The Gemini-TTS rows on that same page are token-billed and
+  # belong with the Gemini entries above, so they are not repeated here. Entries stay
+  # sorted by id, which is why the tiers are not in price order.
+  - id: google-tts-neural2
+    name: Google Cloud TTS Neural2
+    description: >-
+      Google Cloud Text-to-Speech Neural2 voices use deep neural networks to produce
+      natural-sounding speech across a wide range of languages and voices.
+    match:
+      equals: google-tts-neural2
+    prices_checked: 2026-08-16
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing#legacy-tts-models
+    price_comments: >-
+      Published rate US$0.000016 per character (US$16 per 1 million characters).
+      16 / 1000 = 0.016 per 1,000 characters.
+    prices:
+      input_kchars: 0.016
+
+  - id: google-tts-polyglot
+    name: Google Cloud TTS Polyglot
+    description: >-
+      Google Cloud Text-to-Speech Polyglot (Preview) voices let a single voice speak
+      multiple languages from one multilingual model, for cross-lingual applications.
+    match:
+      equals: google-tts-polyglot
+    prices_checked: 2026-08-16
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing#legacy-tts-models
+    price_comments: >-
+      Published rate US$0.000016 per character (US$16 per 1 million characters).
+      16 / 1000 = 0.016 per 1,000 characters.
+    prices:
+      input_kchars: 0.016
+
+  - id: google-tts-standard
+    name: Google Cloud TTS Standard
+    description: >-
+      Google Cloud Text-to-Speech Standard voices are the baseline concatenative
+      synthesis voices, available in many languages at the lowest cost tier.
+    match:
+      equals: google-tts-standard
+    prices_checked: 2026-08-16
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing#legacy-tts-models
+    price_comments: >-
+      Published rate US$0.000004 per character (US$4 per 1 million characters).
+      4 / 1000 = 0.004 per 1,000 characters.
+    prices:
+      input_kchars: 0.004
+
+  - id: google-tts-studio
+    name: Google Cloud TTS Studio
+    description: >-
+      Google Cloud Text-to-Speech Studio voices are premium, high-fidelity voices for
+      long-form narration and professional audio, with the most natural intonation.
+    match:
+      equals: google-tts-studio
+    prices_checked: 2026-08-16
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing#legacy-tts-models
+    price_comments: >-
+      Published rate US$0.00016 per character (US$160 per 1 million characters).
+      160 / 1000 = 0.16 per 1,000 characters.
+    prices:
+      input_kchars: 0.16
+
+  - id: google-tts-wavenet
+    name: Google Cloud TTS WaveNet
+    description: >-
+      Google Cloud Text-to-Speech WaveNet voices use a deep generative model of audio to
+      produce more natural-sounding speech than the Standard concatenative voices.
+    match:
+      equals: google-tts-wavenet
+    prices_checked: 2026-08-16
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing#legacy-tts-models
+    price_comments: >-
+      Published rate US$0.000004 per character (US$4 per 1 million characters).
+      4 / 1000 = 0.004 per 1,000 characters. WaveNet is listed at the same per-character
+      rate as Standard on the pricing page, which is why the two rows carry equal rates.
+    prices:
+      input_kchars: 0.004

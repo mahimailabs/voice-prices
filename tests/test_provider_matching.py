@@ -131,6 +131,14 @@ def test_provider_matching(provider_ref: str, provider_id: str):
         ('eleven_turbo_v2_5', 'elevenlabs', {'characters': 200}),
         ('eleven_flash_v2_5', 'elevenlabs', {'characters': 200}),
         ('eleven_multilingual_v2', 'elevenlabs', {'characters': 200}),
+        # Google Cloud TTS. These resolve through the `starts_with: google-tts-` arm of
+        # google.yml's `model_match`, the branch that carries no other coverage: every
+        # other Google row in this file routes on `contains: gemini`.
+        ('google-tts-standard', 'google', {'characters': 200}),
+        ('google-tts-wavenet', 'google', {'characters': 200}),
+        ('google-tts-neural2', 'google', {'characters': 200}),
+        ('google-tts-polyglot', 'google', {'characters': 200}),
+        ('google-tts-studio', 'google', {'characters': 200}),
         # STT (new for v0.0.7)
         ('nova-3', 'deepgram', {'audio_input_seconds': Decimal('60')}),
         ('nova-3-batch', 'deepgram', {'audio_input_seconds': Decimal('60')}),
