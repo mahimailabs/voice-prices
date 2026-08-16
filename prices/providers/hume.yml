@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=../../prices/providers/.schema.json
+name: Hume AI
+id: hume
+pricing_urls:
+  - https://hume.ai/pricing
+
+api_pattern: 'https://api\.hume\.ai'
+
+model_match:
+  starts_with: hume-
+
+provider_match:
+  contains: hume
+
+price_comments: >-
+  Hume's TTS is the Octave engine (Octave 1 and Octave 2), billed per character
+  on a usage-based basis. The published "Additional characters cost" is tiered by
+  subscription plan: $0.15/1,000 chars (Free & Creator), $0.12/1,000 (Pro),
+  $0.10/1,000 (Scale), and $0.05/1,000 (Business); Enterprise is custom. We use
+  the entry/standard usage rate of $0.15 per 1,000 characters
+  (input_kchars = 0.15). Both Octave versions share the same character pricing.
+  Source: https://hume.ai/pricing (verified 2026-08-16).
+
+models:
+  - id: hume-octave-1
+    name: Octave 1
+    description: >-
+      Hume's original Octave text-to-speech model built on LLM intelligence, with
+      English and Spanish support and ~200ms latency. Generates expressive,
+      emotionally aware speech from text or voice prompts via the Hume TTS API.
+    match:
+      equals: hume-octave-1
+    prices_checked: 2026-08-16
+    pricing_source_url: https://hume.ai/pricing
+    price_comments: >-
+      $0.15 per 1,000 characters (Free/Creator usage-based rate) => input_kchars
+      0.15. Octave 1 and Octave 2 share the same per-character pricing.
+    prices:
+      input_kchars: 0.15
+  - id: hume-octave-2
+    name: Octave 2 (preview)
+    description: >-
+      Hume's next-generation Octave TTS (preview) with lower ~100ms latency and
+      expanded multilingual support (English, Japanese, Korean, Spanish, French,
+      Portuguese, Italian, German, Russian, Hindi, Arabic). Shares Octave 1's
+      per-character pricing.
+    match:
+      equals: hume-octave-2
+    prices_checked: 2026-08-16
+    pricing_source_url: https://hume.ai/pricing
+    price_comments: >-
+      $0.15 per 1,000 characters (Free/Creator usage-based rate) => input_kchars
+      0.15. Octave 2 shares Octave 1's per-character pricing; higher tiers
+      (Pro/Scale/Business) bill $0.12/$0.10/$0.05 per 1,000 chars respectively.
+    prices:
+      input_kchars: 0.15
