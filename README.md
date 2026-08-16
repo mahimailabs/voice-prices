@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**39 providers, 1,226 priced models.** 48 STT, 1,104 LLM, 66 TTS, 6 S2S, 2 VAD.
+**39 providers, 1,231 priced models.** 48 STT, 1,104 LLM, 71 TTS, 6 S2S, 2 VAD.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -91,7 +91,7 @@ Every provider in the catalog, and which categories it prices:
 | [Deepseek](prices/providers/deepseek.yml) | 4 | LLM |
 | [ElevenLabs](prices/providers/elevenlabs.yml) | 5 | TTS |
 | [Fireworks](prices/providers/fireworks.yml) | 13 | LLM |
-| [Google](prices/providers/google.yml) | 32 | LLM, S2S |
+| [Google](prices/providers/google.yml) | 37 | LLM, TTS, S2S |
 | [Groq](prices/providers/groq.yml) | 30 | STT, LLM |
 | [HuggingFace (cerebras)](prices/providers/huggingface_cerebras.yml) | 1 | LLM |
 | [HuggingFace (fireworks-ai)](prices/providers/huggingface_fireworks-ai.yml) | 3 | LLM |
