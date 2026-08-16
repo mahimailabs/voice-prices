@@ -131,6 +131,7 @@
               "tts/elevenlabs",
               "tts/inworld",
               "tts/openai",
+              "tts/rime",
               "tts/telnyx"
             ]
           },
