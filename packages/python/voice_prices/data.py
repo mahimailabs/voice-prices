@@ -11736,6 +11736,7 @@ providers: list[Provider] = [
         name='Together AI',
         api_pattern='https://api\\.together\\.xyz',
         pricing_urls=['https://www.together.ai/pricing'],
+        model_match=ClauseOr(or_=[ClauseStartsWith(starts_with='together-tts-')]),
         provider_match=ClauseOr(or_=[ClauseEquals(equals='together-ai'), ClauseEquals(equals='together_ai')]),
         staleness_threshold_days=60,
         models=[
@@ -12055,6 +12056,42 @@ providers: list[Provider] = [
                 id='teknium/OpenHermes-2p5-Mistral-7B',
                 match=ClauseEquals(equals='teknium/OpenHermes-2p5-Mistral-7B'),
                 prices=ModelPrice(input_mtok=Decimal('0.2'), output_mtok=Decimal('0.2')),
+            ),
+            ModelInfo(
+                id='together-tts-cartesia-sonic',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='together-tts-cartesia-sonic'),
+                        ClauseEquals(equals='together-tts-cartesia-sonic-2'),
+                        ClauseEquals(equals='together-tts-cartesia-sonic-3'),
+                    ]
+                ),
+                name='Cartesia Sonic',
+                description="Cartesia Sonic real-time text-to-speech model served via Together AI's audio/speech endpoint. Billed per 1M characters of input text.",
+                price_comments='Together AI Audio models table lists Cartesia Sonic (cartesia/sonic) at $65.00 per 1M characters. Converted to $/1k chars: 65.00 / 1000 = 0.065.',
+                pricing_source_url='https://docs.together.ai/docs/serverless-models#audio-models',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(input_kchars=Decimal('0.065')),
+            ),
+            ModelInfo(
+                id='together-tts-kokoro-82m',
+                match=ClauseEquals(equals='together-tts-kokoro-82m'),
+                name='Kokoro 82M',
+                description="Kokoro (hexgrad/Kokoro-82M) open text-to-speech model served via Together AI's audio/speech endpoint. Billed per 1M characters of input text.",
+                price_comments='Together AI Audio models table lists Kokoro (hexgrad/Kokoro-82M) at $4.00 per 1M characters. Converted to $/1k chars: 4.00 / 1000 = 0.004.',
+                pricing_source_url='https://docs.together.ai/docs/serverless-models#audio-models',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(input_kchars=Decimal('0.004')),
+            ),
+            ModelInfo(
+                id='together-tts-orpheus',
+                match=ClauseEquals(equals='together-tts-orpheus'),
+                name='Orpheus 3B',
+                description="Orpheus 3B (canopylabs/orpheus-3b-0.1-ft) emotive text-to-speech model served via Together AI's audio/speech endpoint. Billed per 1M characters of input text.",
+                price_comments='Together AI Audio models table lists Orpheus 3B (canopylabs/orpheus-3b-0.1-ft) at $15.00 per 1M characters. Converted to $/1k chars: 15.00 / 1000 = 0.015.',
+                pricing_source_url='https://docs.together.ai/docs/serverless-models#audio-models',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(input_kchars=Decimal('0.015')),
             ),
             ModelInfo(
                 id='togethercomputer/GPT-JT-Moderation-6B',
