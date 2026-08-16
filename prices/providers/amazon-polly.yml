@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=../../prices/providers/.schema.json
+name: Amazon Polly
+id: amazon_polly
+pricing_urls:
+  - https://aws.amazon.com/polly/pricing/
+
+api_pattern: 'https://polly\.[a-z0-9-]+\.amazonaws\.com'
+
+model_match:
+  starts_with: polly-
+
+provider_match:
+  contains: polly
+
+price_comments: >-
+  Rates derived from the official Amazon Polly pricing page (pay-as-you-go, per 1M characters).
+  Four billing engines: Standard $4.00/1M, Neural $16.00/1M, Generative $30.00/1M, Long-Form
+  $X/1M. input_kchars = $ per 1M / 1000. Source: https://aws.amazon.com/polly/pricing/
+
+models:
+  - id: polly-generative
+    name: Amazon Polly Generative
+    description: >-
+      Generative engine voices use AWS's latest generative TTS technology for expressive,
+      conversational delivery. Billed at the Generative rate of $30.00 per 1M characters.
+    match:
+      equals: polly-generative
+    prices_checked: 2026-08-16
+    pricing_source_url: https://aws.amazon.com/polly/pricing/
+    price_comments: >-
+      Official rate $30.00 per 1M characters for Generative voices => $30.00 / 1000 = 0.030 / 1k chars.
+    prices:
+      input_kchars: 0.030
+
+  - id: polly-long-form
+    name: Amazon Polly Long-Form
+    description: >-
+      Long-Form engine voices are optimized for long-form narration such as audiobooks and
+      articles. Billed at the Long-Form rate of $100.00 per 1M characters.
+    match:
+      equals: polly-long-form
+    prices_checked: 2026-08-16
+    pricing_source_url: https://aws.amazon.com/polly/pricing/
+    price_comments: >-
+      Official rate $100.00 per 1M characters for Long-Form voices => $100.00 / 1000 = 0.100 / 1k chars.
+    prices:
+      input_kchars: 0.100
+
+  - id: polly-neural
+    name: Amazon Polly Neural
+    description: >-
+      Neural engine voices use deep learning for natural-sounding, near-human speech suitable
+      for production applications. Billed at the Neural rate of $16.00 per 1M characters.
+    match:
+      or:
+        - equals: polly-neural
+        - equals: polly-neural2
+    prices_checked: 2026-08-16
+    pricing_source_url: https://aws.amazon.com/polly/pricing/
+    price_comments: >-
+      Official rate $16.00 per 1M characters for Neural voices => $16.00 / 1000 = 0.016 / 1k chars.
+    prices:
+      input_kchars: 0.016
+
+  - id: polly-standard
+    name: Amazon Polly Standard
+    description: >-
+      Standard voices use concatenative synthesis for basic text-to-speech at the lowest cost.
+      Billed at the Standard rate of $4.00 per 1M characters.
+    match:
+      equals: polly-standard
+    prices_checked: 2026-08-16
+    pricing_source_url: https://aws.amazon.com/polly/pricing/
+    price_comments: >-
+      Official rate $4.00 per 1M characters for Standard voices => $4.00 / 1000 = 0.004 / 1k chars.
+    prices:
+      input_kchars: 0.004
