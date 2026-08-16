@@ -360,3 +360,24 @@ def test_feed_check_exits_zero_when_the_feed_agrees(monkeypatch: pytest.MonkeyPa
     )
     monkeypatch.setenv('FEED', str(path))
     assert feed_check() == 0
+
+
+# ---- currency ----------------------------------------------------------------
+
+
+def test_currency_defaults_to_usd():
+    assert Feed.model_validate({'provider': 'acme', 'models': []}).currency == 'USD'
+
+
+@pytest.mark.parametrize('value', ['USD', 'usd', 'Usd'])
+def test_usd_is_accepted_case_insensitively_and_normalised(value: str):
+    assert Feed.model_validate({'provider': 'acme', 'currency': value, 'models': []}).currency == 'USD'
+
+
+@pytest.mark.parametrize('value', ['CNY', 'INR', 'EUR', 'KRW', 'RUB', 'GBP'])
+def test_non_usd_feed_is_rejected(value: str):
+    """Accepting it would ingest the amounts as dollars and publish a wrong price under the
+    vendor's own name. Rejecting is recoverable; a quietly mis-scaled rate is not."""
+    with pytest.raises(ValidationError) as exc:
+        Feed.model_validate({'provider': 'acme', 'currency': value, 'models': []})
+    assert 'USD only' in str(exc.value)

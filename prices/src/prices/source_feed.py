@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any, Literal, NamedTuple, cast
 
 import httpx2
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 
 from .build_docs import base_prices, detect_modality
 from .utils import package_dir
@@ -102,12 +102,31 @@ class FeedModel(BaseModel):
 
 
 class Feed(BaseModel):
+    """A provider's published rate card.
+
+    ``currency`` is validated rather than merely defaulted. This catalog publishes USD only and
+    does not convert, so a feed declaring anything else must be rejected outright: accepting it
+    would ingest the amounts as dollars and silently publish a wrong price under the vendor's
+    own name, which is the worst failure this project has. Rejecting is recoverable; a quietly
+    mis-scaled rate is not.
+    """
+
     model_config = ConfigDict(extra='allow')
 
     provider: str
     updated: str | None = None
     currency: str = 'USD'
     models: list[FeedModel]
+
+    @field_validator('currency')
+    @classmethod
+    def _usd_only(cls, value: str) -> str:
+        if value.upper() != 'USD':
+            raise ValueError(
+                f'currency is {value!r}, but this catalog publishes USD only and does not convert. '
+                'Serve a USD rate card, or open an issue if you need another currency supported.'
+            )
+        return value.upper()
 
 
 class Finding(NamedTuple):

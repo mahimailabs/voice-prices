@@ -77,7 +77,9 @@ body:
       label: Models and published rates
       description: >
         Quote the rate in the vendor's own units. Do not convert here, conversion happens in the YAML
-        where `price_comments` can show the arithmetic.
+        where `price_comments` can show the arithmetic. **USD only**: if the vendor publishes solely
+        in another currency, describe what they publish and stop there. We do not convert, because an
+        exchange rate moves daily and a converted price has no honest verification date.
       value: |
         | Model id | Published rate | Unit as published | Realtime / batch |
         | --- | --- | --- | --- |
