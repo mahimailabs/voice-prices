@@ -74,11 +74,12 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**39 providers, 1,226 priced models.** 48 STT, 1,104 LLM, 66 TTS, 6 S2S, 2 VAD.
+**40 providers, 1,230 priced models.** 48 STT, 1,104 LLM, 70 TTS, 6 S2S, 2 VAD.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
 | [ai-coustics](prices/providers/ai_coustics.yml) | 2 | VAD |
+| [Amazon Polly](prices/providers/amazon_polly.yml) | 4 | TTS |
 | [Anthropic](prices/providers/anthropic.yml) | 18 | LLM |
 | [AssemblyAI](prices/providers/assemblyai.yml) | 1 | STT |
 | [Avian](prices/providers/avian.yml) | 4 | LLM |

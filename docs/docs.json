@@ -126,6 +126,7 @@
           {
             "group": "Direct vendors",
             "pages": [
+              "tts/amazon-polly",
               "tts/cartesia",
               "tts/deepgram",
               "tts/elevenlabs",
