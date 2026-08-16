@@ -126,6 +126,7 @@
           {
             "group": "Direct vendors",
             "pages": [
+              "tts/azure",
               "tts/cartesia",
               "tts/deepgram",
               "tts/elevenlabs",

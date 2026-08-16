@@ -4,6 +4,9 @@ id: azure
 pricing_urls:
   - https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/#pricing
 api_pattern: (https?://)?([^.]*\.)?(?:openai\.azure\.com|azure-api\.net|cognitiveservices\.azure\.com)
+model_match:
+  or:
+    - starts_with: azure-speech-
 price_comments: >-
   These are prices for "*-Global" models, prices for "Regional" models are often slightly higher.
   Retired models are listed at https://learn.microsoft.com/th-th/azure/ai-foundry/openai/concepts/legacy-models
@@ -78,6 +81,36 @@ models:
     prices_checked: 2025-07-13
     prices:
       input_mtok: 0.1
+
+  - id: azure-speech-neural
+    name: Azure AI Speech prebuilt Neural
+    description: >-
+      Prebuilt neural text-to-speech voices (real-time and batch synthesis), including the Neural HD Flash variant.
+      Billed per character of input text across 400+ voices in 140+ languages/locales.
+    match:
+      equals: azure-speech-neural
+    prices_checked: 2026-08-16
+    pricing_source_url: https://azure.microsoft.com/en-us/pricing/details/cognitive-services/speech-services/
+    price_comments: >-
+      Official Azure Speech (Foundry Tools) pay-as-you-go rate: $15 per 1M characters for prebuilt Neural / Neural HD Flash
+      voices. input_kchars = 15 / 1000 = 0.015.
+    prices:
+      input_kchars: 0.015
+
+  - id: azure-speech-neural-hd
+    name: Azure AI Speech prebuilt Neural HD
+    description: >-
+      Prebuilt Neural HD voices (higher-fidelity, more expressive TTS). Billed per character of input text; a premium over
+      standard Neural. Rate reduced from $30 to $22 per 1M characters in March 2026.
+    match:
+      equals: azure-speech-neural-hd
+    prices_checked: 2026-08-16
+    pricing_source_url: https://azure.microsoft.com/en-us/pricing/details/cognitive-services/speech-services/
+    price_comments: >-
+      Official Azure Speech (Foundry Tools) pay-as-you-go rate for standalone Neural HD voices: $22 per 1M characters
+      (reduced from $30 in March 2026, per Microsoft Tech Community Neural HD pricing update). input_kchars = 22 / 1000 = 0.022.
+    prices:
+      input_kchars: 0.022
 
   - id: babbage
     match:
