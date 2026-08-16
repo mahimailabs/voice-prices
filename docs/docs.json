@@ -131,7 +131,8 @@
               "tts/elevenlabs",
               "tts/inworld",
               "tts/openai",
-              "tts/telnyx"
+              "tts/telnyx",
+              "tts/together"
             ]
           },
           {

@@ -3,11 +3,15 @@ name: Together AI
 id: together
 pricing_urls:
   - https://www.together.ai/pricing
+  - https://docs.together.ai/docs/serverless-models
 api_pattern: 'https://api\.together\.xyz'
 provider_match:
   or:
     - equals: together-ai
     - equals: together_ai
+model_match:
+  or:
+    - starts_with: together-tts-
 models:
   - id: Austism/chronos-hermes-13b
     match:
@@ -442,6 +446,54 @@ models:
     prices:
       input_mtok: 0.2
       output_mtok: 0.2
+
+  - id: together-tts-cartesia-sonic
+    name: Cartesia Sonic
+    description: >-
+      Cartesia Sonic real-time text-to-speech model served via Together AI's audio/speech
+      endpoint. Billed per 1M characters of input text.
+    match:
+      or:
+        - equals: together-tts-cartesia-sonic
+        - equals: together-tts-cartesia-sonic-2
+        - equals: together-tts-cartesia-sonic-3
+    prices_checked: 2026-08-16
+    pricing_source_url: https://docs.together.ai/docs/serverless-models#audio-models
+    price_comments: >-
+      Together AI Audio models table lists Cartesia Sonic (cartesia/sonic) at $65.00 per 1M
+      characters. Converted to $/1k chars: 65.00 / 1000 = 0.065.
+    prices:
+      input_kchars: 0.065
+
+  - id: together-tts-kokoro-82m
+    name: Kokoro 82M
+    description: >-
+      Kokoro (hexgrad/Kokoro-82M) open text-to-speech model served via Together AI's
+      audio/speech endpoint. Billed per 1M characters of input text.
+    match:
+      equals: together-tts-kokoro-82m
+    prices_checked: 2026-08-16
+    pricing_source_url: https://docs.together.ai/docs/serverless-models#audio-models
+    price_comments: >-
+      Together AI Audio models table lists Kokoro (hexgrad/Kokoro-82M) at $4.00 per 1M
+      characters. Converted to $/1k chars: 4.00 / 1000 = 0.004.
+    prices:
+      input_kchars: 0.004
+
+  - id: together-tts-orpheus
+    name: Orpheus 3B
+    description: >-
+      Orpheus 3B (canopylabs/orpheus-3b-0.1-ft) emotive text-to-speech model served via
+      Together AI's audio/speech endpoint. Billed per 1M characters of input text.
+    match:
+      equals: together-tts-orpheus
+    prices_checked: 2026-08-16
+    pricing_source_url: https://docs.together.ai/docs/serverless-models#audio-models
+    price_comments: >-
+      Together AI Audio models table lists Orpheus 3B (canopylabs/orpheus-3b-0.1-ft) at
+      $15.00 per 1M characters. Converted to $/1k chars: 15.00 / 1000 = 0.015.
+    prices:
+      input_kchars: 0.015
 
   - id: togethercomputer/GPT-JT-Moderation-6B
     match:
