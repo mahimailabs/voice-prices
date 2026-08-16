@@ -3,6 +3,7 @@ name: Together AI
 id: together
 pricing_urls:
   - https://www.together.ai/pricing
+  - https://docs.together.ai/docs/serverless-models
 api_pattern: 'https://api\.together\.xyz'
 provider_match:
   or:

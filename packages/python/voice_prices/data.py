@@ -11735,7 +11735,7 @@ providers: list[Provider] = [
         id='together',
         name='Together AI',
         api_pattern='https://api\\.together\\.xyz',
-        pricing_urls=['https://www.together.ai/pricing'],
+        pricing_urls=['https://www.together.ai/pricing', 'https://docs.together.ai/docs/serverless-models'],
         model_match=ClauseOr(or_=[ClauseStartsWith(starts_with='together-tts-')]),
         provider_match=ClauseOr(or_=[ClauseEquals(equals='together-ai'), ClauseEquals(equals='together_ai')]),
         staleness_threshold_days=60,
