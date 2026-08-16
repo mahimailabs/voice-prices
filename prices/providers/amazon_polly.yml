@@ -15,7 +15,7 @@ provider_match:
 price_comments: >-
   Rates derived from the official Amazon Polly pricing page (pay-as-you-go, per 1M characters).
   Four billing engines: Standard $4.00/1M, Neural $16.00/1M, Generative $30.00/1M, Long-Form
-  $X/1M. input_kchars = $ per 1M / 1000. Source: https://aws.amazon.com/polly/pricing/
+  $100.00/1M. input_kchars = $ per 1M / 1000. Source: https://aws.amazon.com/polly/pricing/
 
 models:
   - id: polly-generative

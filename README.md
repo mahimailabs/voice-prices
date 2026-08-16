@@ -79,7 +79,7 @@ Every provider in the catalog, and which categories it prices:
 | Provider | Models | Categories |
 | --- | ---: | --- |
 | [ai-coustics](prices/providers/ai_coustics.yml) | 2 | VAD |
-| [Amazon Polly](prices/providers/amazon-polly.yml) | 4 | TTS |
+| [Amazon Polly](prices/providers/amazon_polly.yml) | 4 | TTS |
 | [Anthropic](prices/providers/anthropic.yml) | 18 | LLM |
 | [AssemblyAI](prices/providers/assemblyai.yml) | 1 | STT |
 | [Avian](prices/providers/avian.yml) | 4 | LLM |

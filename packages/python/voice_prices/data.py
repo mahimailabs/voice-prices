@@ -45,7 +45,7 @@ providers: list[Provider] = [
         name='Amazon Polly',
         api_pattern='https://polly\\.[a-z0-9-]+\\.amazonaws\\.com',
         pricing_urls=['https://aws.amazon.com/polly/pricing/'],
-        price_comments='Rates derived from the official Amazon Polly pricing page (pay-as-you-go, per 1M characters). Four billing engines: Standard $4.00/1M, Neural $16.00/1M, Generative $30.00/1M, Long-Form $X/1M. input_kchars = $ per 1M / 1000. Source: https://aws.amazon.com/polly/pricing/',
+        price_comments='Rates derived from the official Amazon Polly pricing page (pay-as-you-go, per 1M characters). Four billing engines: Standard $4.00/1M, Neural $16.00/1M, Generative $30.00/1M, Long-Form $100.00/1M. input_kchars = $ per 1M / 1000. Source: https://aws.amazon.com/polly/pricing/',
         model_match=ClauseStartsWith(starts_with='polly-'),
         provider_match=ClauseContains(contains='polly'),
         staleness_threshold_days=60,
