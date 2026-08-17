@@ -141,6 +141,15 @@ class PriceBreakdown:
     activates with v0.2 catalog expansion for PlayHT/Murf-style models.
     """
 
+    agent_kminutes: Decimal = Decimal(0)
+    """USD for bundled voice-agent session time.
+
+    Neither input nor output: a bundled agent minute prices orchestration plus
+    whatever STT/LLM/TTS the platform chose, in proportions it does not disclose.
+    Attributing it to a direction would invent a split the vendor never published,
+    so it sums into total_price alongside `requests`.
+    """
+
     requests: Decimal = Decimal(0)
 
     def sum(self) -> Decimal:
@@ -158,6 +167,7 @@ class PriceBreakdown:
             + self.input_audio_kseconds
             + self.voice_class_input_adjustment
             + self.voice_class_output_adjustment
+            + self.agent_kminutes
             + self.requests
         )
 
@@ -398,6 +408,15 @@ class Usage:
     from float at the call site.
     """
 
+    agent_minutes: Decimal | None = None
+    """Duration of a bundled voice-agent session, in minutes.
+
+    For platforms that bill one blended per-minute rate covering STT, LLM, TTS and
+    orchestration together (Vapi, Retell, Bland, ElevenLabs Agents and similar).
+    Decimal-typed because calls are not whole minutes; most platforms bill per second
+    and round at the end.
+    """
+
     voice_class: str | None = None
     """Voice class identifier used for this call (matches a key in
     `ModelPrice.voice_multipliers` for the resolved provider+model).
@@ -437,6 +456,7 @@ class Usage:
             characters=_add_int(self.characters, other.characters),
             audio_output_seconds=_add_decimal(self.audio_output_seconds, other.audio_output_seconds),
             audio_input_seconds=_add_decimal(self.audio_input_seconds, other.audio_input_seconds),
+            agent_minutes=_add_decimal(self.agent_minutes, other.agent_minutes),
             voice_class=_coalesce_str(self.voice_class, other.voice_class),
         )
 
@@ -533,6 +553,7 @@ UsageField = Literal[
     'characters',
     'audio_output_seconds',
     'audio_input_seconds',
+    'agent_minutes',
 ]
 
 
@@ -876,6 +897,15 @@ class ModelPrice:
     existing output_audio_kseconds / audio_output_seconds pair.
     """
 
+    agent_kminutes: Decimal | None = None
+    """price in USD per 1,000 minutes of bundled voice-agent session time.
+
+    Set only by platforms that sell one blended per-minute rate covering STT, LLM,
+    TTS and orchestration together. A model priced this way is filed under the
+    `agent` modality and is deliberately not comparable with the component rates:
+    what the bundle contains is the platform's choice and is rarely disclosed.
+    """
+
     voice_multipliers: dict[str, Decimal] | None = None
     """Multiplicative adjustments keyed by voice class.
 
@@ -982,6 +1012,11 @@ class ModelPrice:
         if self.input_audio_kseconds is not None and audio_input_seconds > 0:
             breakdown.input_audio_kseconds = self.input_audio_kseconds * audio_input_seconds / Decimal(1000)
 
+        raw_agent_minutes = getattr(usage, 'agent_minutes', None)
+        agent_minutes = Decimal(0) if raw_agent_minutes is None else Decimal(raw_agent_minutes)
+        if self.agent_kminutes is not None and agent_minutes > 0:
+            breakdown.agent_kminutes = self.agent_kminutes * agent_minutes / Decimal(1000)
+
         # Voice multiplier resolution and per-direction adjustment
         applied_voice_multiplier: Decimal | None = None
         if self.voice_multipliers is not None:
@@ -1024,7 +1059,7 @@ class ModelPrice:
             + breakdown.output_audio_kseconds
             + breakdown.voice_class_output_adjustment
         )
-        total_price = input_price + output_price + breakdown.requests
+        total_price = input_price + output_price + breakdown.requests + breakdown.agent_kminutes
 
         return {
             'input_price': input_price,

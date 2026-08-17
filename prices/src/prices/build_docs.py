@@ -4,7 +4,7 @@ Reads the committed ``prices/data.json`` (the canonical, post-processed catalog)
 MDX page per (category, provider) under ``docs/``, a per-category index page, and the
 ``navigation`` block of ``docs/docs.json``.
 
-Everything under ``docs/stt/``, ``docs/llm/``, ``docs/tts/``, ``docs/s2s/`` and ``docs/vad/`` is
+Everything under ``docs/stt/``, ``docs/llm/``, ``docs/tts/``, ``docs/s2s/``, ``docs/vad/`` and ``docs/agent/`` is
 generated: to change a price, edit the provider YAML and re-run ``make build``, never the MDX. The
 hand-written pages (``docs/index.mdx``, ``docs/how-fresh.mdx``, ``docs/contribute.mdx``) carry
 generated numbers between ``{/* generated:<key> start */}`` markers instead.
@@ -29,10 +29,10 @@ REPO_URL = 'https://github.com/mahimailabs/voice-prices'
 ADD_PROVIDER_URL = f'{REPO_URL}/issues/new?template=add-provider.yml'
 PROVIDER_YAML_URL = f'{REPO_URL}/blob/main/prices/providers'
 
-Modality = Literal['stt', 'llm', 'tts', 's2s', 'vad']
+Modality = Literal['stt', 'llm', 'tts', 's2s', 'vad', 'agent']
 
 #: Tab order on the docs site. Voice first, deliberately: this is a voice pricing project.
-CATEGORIES: tuple[Modality, ...] = ('stt', 'llm', 'tts', 's2s', 'vad')
+CATEGORIES: tuple[Modality, ...] = ('stt', 'llm', 'tts', 's2s', 'vad', 'agent')
 
 # Fields on a price block that are not per-unit rates and must not be treated as one.
 _NON_RATE_FIELDS = {'voice_multipliers'}
@@ -74,6 +74,7 @@ CATEGORY_COLUMNS: dict[Modality, tuple[Column, ...]] = {
     'stt': (Column('$ / min', 'per_min', 'usd'),),
     'tts': (Column('$ / 1M chars', 'per_mchars', 'usd'),),
     'vad': (Column('$ / min', 'per_min', 'usd'),),
+    'agent': (Column('$ / min', 'per_min', 'usd'),),
     'llm': (
         Column('Input $ / Mtok', 'input_mtok', 'usd'),
         Column('Output $ / Mtok', 'output_mtok', 'usd'),
@@ -148,8 +149,20 @@ CATEGORY_META: dict[Modality, CategoryMeta] = {
         unit='Realtime models that bill audio as tokens in both directions. All rates are US dollars '
         'per 1,000,000 tokens.',
         note='A model lands here only when it prices audio in **and** audio out. A chat model that '
-        'merely accepts audio input stays under [LLM](/llm/all-models). Session-minute bundled pricing is '
-        'not expressible in the current schema and is not represented here.',
+        'merely accepts audio input stays under [LLM](/llm/all-models). Platforms that sell one bundled '
+        'session minute instead of audio tokens are under [Agents](/agent/all-models).',
+    ),
+    'agent': CategoryMeta(
+        title='Voice agent pricing',
+        tab='Agents',
+        icon='bot',
+        unit='Priced from `agent_kminutes`, US dollars per 1,000 minutes of agent session time, and '
+        'shown per minute. These platforms sell one blended rate covering speech-to-text, the model, '
+        'text-to-speech and orchestration together.',
+        note='**These rates are not comparable with the rest of the catalog.** A bundled minute prices '
+        'whatever the platform chose to put in it, in proportions it usually does not disclose, and '
+        'several platforms exclude the model or telephony and bill those at cost on top. Read '
+        '`price_comments` on each row for what the number actually covers before comparing anything.',
     ),
     'vad': CategoryMeta(
         title='Voice activity detection pricing',
@@ -299,6 +312,10 @@ def detect_modality(flat: dict[str, float], ref: tuple[str, str] | None = None) 
     """
     if ref is not None and ref in MODALITY_OVERRIDES:
         return MODALITY_OVERRIDES[ref]
+    # Checked before everything else: a bundled agent minute is the whole price of the call, so a
+    # platform that also lists a component rate must still be filed as an agent, not as its parts.
+    if 'agent_kminutes' in flat:
+        return 'agent'
     if 'input_audio_mtok' in flat and 'output_audio_mtok' in flat:
         return 's2s'
     if 'input_kchars' in flat or 'output_audio_kseconds' in flat:
@@ -313,6 +330,7 @@ def detect_modality(flat: dict[str, float], ref: tuple[str, str] | None = None) 
 def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, daily: bool) -> ModelRow:
     """Collect every candidate column value for one model. Column choice happens per page."""
     audio_kseconds = flat.get('input_audio_kseconds')
+    agent_kminutes = flat.get('agent_kminutes')
     kchars = flat.get('input_kchars')
     context = model.get('context_window')
     prices = model.get('prices')
@@ -331,8 +349,14 @@ def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, dail
     if has_voices:
         markers.append('voices')
 
+    per_min: float | None = None
+    if audio_kseconds is not None:
+        per_min = audio_kseconds * 60 / 1000
+    elif agent_kminutes is not None:
+        per_min = agent_kminutes / 1000
+
     values: dict[str, float | int | None] = {
-        'per_min': audio_kseconds * 60 / 1000 if audio_kseconds is not None else None,
+        'per_min': per_min,
         'per_mchars': kchars * 1000 if kchars is not None else None,
         'context_window': context if isinstance(context, int) else None,
     }
@@ -437,6 +461,9 @@ def _primary_rate(category: Modality, flat: dict[str, float] | None) -> float | 
     if category in ('stt', 'vad'):
         rate = flat.get('input_audio_kseconds')
         return rate * 60 / 1000 if rate is not None else None
+    if category == 'agent':
+        rate = flat.get('agent_kminutes')
+        return rate / 1000 if rate is not None else None
     if category == 'tts':
         rate = flat.get('input_kchars')
         return rate * 1000 if rate is not None else None
@@ -705,9 +732,14 @@ def render_comparison(category: Modality, rows: list[ComparisonRow]) -> str:
     priced = [row for row in rows if row['direct'] is not None]
     if not priced:
         return ''
-    unit = {'stt': '$ / min', 'tts': '$ / 1M chars', 'llm': 'input $ / Mtok', 'vad': '$ / min', 's2s': '$ / Mtok'}[
-        category
-    ]
+    unit = {
+        'stt': '$ / min',
+        'tts': '$ / 1M chars',
+        'llm': 'input $ / Mtok',
+        'vad': '$ / min',
+        's2s': '$ / Mtok',
+        'agent': '$ / min',
+    }[category]
     headers = ['Model', 'Name', f'Direct ({unit})', f'LiveKit ({unit})', f'Scale ({unit})', 'vs direct']
     body = [
         [
@@ -890,7 +922,7 @@ def overview_blocks(catalog: Catalog, comparison: Comparison) -> dict[str, str]:
         f'**{len(providers)} providers, {sum(counts.values()):,} priced models.** '
         f'{counts["stt"]} speech-to-text, {counts["tts"]} text-to-speech, '
         f'{counts["s2s"]} speech-to-speech, {counts["vad"]} voice activity detection, '
-        f'and {counts["llm"]:,} LLM.'
+        f'{counts["agent"]} bundled voice agent, and {counts["llm"]:,} LLM.'
     )
 
     lines: list[str] = []

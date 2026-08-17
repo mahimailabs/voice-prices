@@ -164,6 +164,7 @@ UsageField = Literal[
     'characters',
     'audio_output_seconds',
     'audio_input_seconds',
+    'agent_minutes',
 ]
 
 
@@ -391,6 +392,18 @@ class ModelPrice(_Model):
     ModelPrice puts direction before modality (input_audio_kseconds); Usage puts
     modality before direction (audio_input_seconds). Intentional; mirrors the
     existing output_audio_kseconds / audio_output_seconds pair.
+    """
+
+    agent_kminutes: DollarPrice | None = None
+    """price in USD per 1,000 minutes of bundled voice-agent session time.
+
+    Set only by platforms that sell one blended per-minute rate covering STT, LLM, TTS
+    and orchestration together (Vapi, Retell, Bland, ElevenLabs Agents and similar). A
+    model priced this way is filed under the `agent` modality.
+
+    Deliberately not comparable with the component rates elsewhere in this catalog:
+    what the bundle contains is the platform's choice and is rarely disclosed, so the
+    number answers "what does a minute cost me here", not "what does the speech cost".
     """
 
     voice_multipliers: VoiceMultipliers | None = None

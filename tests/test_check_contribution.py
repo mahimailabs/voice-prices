@@ -26,6 +26,7 @@ from prices.check_contribution import (
     PRICE_BANDS,
     check_contribution,
     check_model,
+    declares_unverified,
     has_screenshot,
     is_api_backed,
 )
@@ -337,3 +338,56 @@ def test_api_backed_detection():
     assert not is_api_backed({'provenance': {'api_backed': False}})
     assert not is_api_backed({'provenance': {'source': 'imported'}})
     assert not is_api_backed({})
+
+
+# ---- rows that do not claim human verification -------------------------------
+
+
+def test_imported_row_needs_no_prices_checked():
+    """An importer-written row deliberately carries no date. Forcing one would manufacture
+    the false verification claim this project exists to prevent."""
+    m = model(prices_checked=None, provenance={'source': 'imported'})
+    assert messages(m) == []
+
+
+def test_seed_row_needs_no_prices_checked():
+    m = model(prices_checked=None, provenance={'source': 'seed'})
+    assert messages(m) == []
+
+
+def test_row_claiming_verification_still_needs_a_date():
+    """No provenance means the row is claiming a human read the page, so the date is required."""
+    (msg,) = messages(model(prices_checked=None))
+    assert '`prices_checked`' in msg
+    assert 'provenance.source' in msg
+
+
+def test_api_backed_alone_still_needs_a_date_or_a_source():
+    """api_backed says the rate is machine-readable, not that it is unverified."""
+    m = model(prices_checked=None, provenance={'api_backed': True})
+    assert any('`prices_checked`' in msg for msg in messages(m))
+
+
+@pytest.mark.parametrize(
+    ('provenance', 'expected'),
+    [
+        ({'source': 'imported'}, True),
+        ({'source': 'seed'}, True),
+        ({'source': 'imported', 'api_backed': True}, True),
+        ({'api_backed': True}, False),
+        ({}, False),
+        (None, False),
+    ],
+)
+def test_declares_unverified(provenance: Any, expected: bool):
+    assert declares_unverified({'provenance': provenance} if provenance is not None else {}) is expected
+
+
+def test_unverified_row_is_exempt_from_the_screenshot(repo: Path, monkeypatch: pytest.MonkeyPatch):
+    yaml_text = _provider_yaml('0.2', checked=str(TODAY)).replace(
+        f'    prices_checked: {TODAY}\n', '    provenance:\n      source: imported\n'
+    )
+    (repo / 'prices/providers/acme.yml').write_text(yaml_text)
+    _run('commit', '-qam', 'imported', cwd=repo)
+    monkeypatch.setenv('PR_BODY', 'no image here')
+    assert check_contribution() == 0

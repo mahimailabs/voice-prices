@@ -38,6 +38,9 @@ _PRICED_FIELD_MAP: dict[str, tuple[str, str | None]] = {
     'output_audio_kseconds': ('output_audio_kseconds', 'voice_class_output_adjustment'),
     # STT input duration; intentionally multiplier-exempt (no paired adjustment).
     'input_audio_kseconds': ('input_audio_kseconds', None),
+    # Bundled voice-agent session time. Multiplier-exempt and direction-exempt: a bundled
+    # minute is not attributable to input or output, so it sums into total alongside requests.
+    'agent_kminutes': ('agent_kminutes', None),
 }
 
 # Fields on ModelPrice that are NOT priced (and thus should not appear in the map).

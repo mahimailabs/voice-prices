@@ -560,7 +560,16 @@ def test_category_tab_groups_a_large_sidebar_and_leaves_a_small_one_flat():
 
 def test_build_navigation_has_the_seven_tabs_in_order():
     nav = build_navigation(build_catalog(_real_data()))
-    assert [tab['tab'] for tab in nav['tabs']] == ['Overview', 'STT', 'LLM', 'TTS', 'S2S', 'VAD', 'Add Yours']
+    assert [tab['tab'] for tab in nav['tabs']] == [
+        'Overview',
+        'STT',
+        'LLM',
+        'TTS',
+        'S2S',
+        'VAD',
+        'Agents',
+        'Add Yours',
+    ]
 
 
 # Every icon name used anywhere in docs/, verified to exist in the Lucide set. Mintlify defaults to
@@ -570,6 +579,7 @@ LUCIDE_ICONS = {
     'activity',
     'audio-waveform',
     'book-open',
+    'bot',
     'brain',
     'clock',
     'git-pull-request',
