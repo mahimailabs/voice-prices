@@ -1,7 +1,7 @@
 name: Price a vendor
 description: Track pricing one vendor for one modality. One issue per vendor per modality.
 title: "price(modality): Vendor Name"
-labels: ["enhancement"]
+labels: ["good first issue"]
 body:
   - type: markdown
     attributes:
