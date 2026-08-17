@@ -330,6 +330,7 @@ def detect_modality(flat: dict[str, float], ref: tuple[str, str] | None = None) 
 def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, daily: bool) -> ModelRow:
     """Collect every candidate column value for one model. Column choice happens per page."""
     audio_kseconds = flat.get('input_audio_kseconds')
+    agent_kminutes = flat.get('agent_kminutes')
     kchars = flat.get('input_kchars')
     context = model.get('context_window')
     prices = model.get('prices')
@@ -348,8 +349,14 @@ def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, dail
     if has_voices:
         markers.append('voices')
 
+    per_min: float | None = None
+    if audio_kseconds is not None:
+        per_min = audio_kseconds * 60 / 1000
+    elif agent_kminutes is not None:
+        per_min = agent_kminutes / 1000
+
     values: dict[str, float | int | None] = {
-        'per_min': audio_kseconds * 60 / 1000 if audio_kseconds is not None else None,
+        'per_min': per_min,
         'per_mchars': kchars * 1000 if kchars is not None else None,
         'context_window': context if isinstance(context, int) else None,
     }

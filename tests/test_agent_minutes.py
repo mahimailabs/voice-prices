@@ -11,7 +11,10 @@ nor output. Attributing it to a direction would invent a split the vendor never 
 
 from __future__ import annotations
 
+import json
+import pathlib
 from decimal import Decimal
+from typing import Any, cast
 
 import pytest
 
@@ -97,3 +100,32 @@ def test_vapi_round_trip_through_the_catalog():
 )
 def test_vapi_scales_linearly(minutes: Decimal, expected: Decimal):
     assert calc_price(Usage(agent_minutes=minutes), model_ref='vapi-platform').total_price == expected
+
+
+# ---- docs rendering ----------------------------------------------------------
+#
+# An agent row carries no audio-second and no character rate, so before this was fixed it got
+# `per_min = None`, which `_split_token_priced` reads as "billed per audio token". The row was
+# pushed out of the main table and the Agents landing page rendered "No models priced yet" while
+# simultaneously reporting one model. The docs build succeeded and every other test passed,
+# because nothing asserted what the page actually said.
+
+
+def test_agent_row_gets_a_per_minute_value():
+    """The primary column for the Agents tab must be populated from `agent_kminutes`."""
+    from prices.build_docs import build_catalog
+    from prices.utils import package_dir
+
+    data = cast('list[dict[str, Any]]', json.loads((package_dir / 'data.json').read_text()))
+    rows = build_catalog(data)['agent'][0]['models']
+    assert rows, 'no agent models in the catalog'
+    assert rows[0]['values']['per_min'] == 0.05
+
+
+def test_agent_landing_page_lists_the_model():
+    """Guards the whole chain: value populated, row classified as main, table rendered."""
+    page = (pathlib.Path(__file__).resolve().parents[1] / 'docs' / 'agent' / 'all-models.mdx').read_text()
+    assert 'No models priced yet' not in page
+    assert '`vapi-platform`' in page
+    assert '$0.05' in page
+    assert 'bill audio as tokens' not in page, 'agent rows must not be classified as token-priced'
