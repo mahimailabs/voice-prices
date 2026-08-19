@@ -5613,10 +5613,6 @@
           },
           {
             "api_flavor": "chat",
-            "provider_id": "boson"
-          },
-          {
-            "api_flavor": "chat",
             "provider_id": "deepseek"
           },
           {
@@ -5711,6 +5707,19 @@
         ],
         "usage": {
           "input_tokens": 687
+        }
+      },
+      {
+        "extractors": [
+          {
+            "api_flavor": "chat",
+            "provider_id": "boson"
+          }
+        ],
+        "usage": {
+          "cache_audio_read_tokens": 682,
+          "input_tokens": 687,
+          "output_tokens": 240
         }
       }
     ],
