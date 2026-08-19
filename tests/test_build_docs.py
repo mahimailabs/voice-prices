@@ -360,7 +360,7 @@ def test_s2s_is_exactly_the_bidirectional_realtime_models():
     found = {(entry['id'], model['id']) for entry in catalog['s2s'] for model in entry['models']}
     assert found == {
         ('aws', 'amazon.nova-sonic-v1:0'),
-        ('boson', 'boson-higgs-realtime'),
+        ('boson', 'higgs-realtime'),
         ('google', 'gemini-live-2.5-flash-preview'),
         ('openai', 'gpt-4o-mini-realtime-preview'),
         ('openai', 'gpt-4o-realtime-preview'),
