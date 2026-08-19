@@ -150,7 +150,8 @@
           "s2s/all-models",
           "s2s/aws",
           "s2s/google",
-          "s2s/openai"
+          "s2s/openai",
+          "s2s/openrouter"
         ]
       },
       {

@@ -10509,6 +10509,19 @@ providers: list[Provider] = [
                 ),
             ),
             ModelInfo(
+                id='openai/gpt-audio',
+                match=ClauseEquals(equals='openai/gpt-audio'),
+                price_comments="OpenRouter publishes per token, not per 1M. Feed values: prompt 0.0000025, completion 0.00001, audio 0.000032, audio_output 0.000064. Converted: 0.0000025 * 1,000,000 = 2.5 input_mtok; 0.00001 * 1,000,000 = 10 output_mtok; 0.000032 * 1,000,000 = 32 input_audio_mtok; 0.000064 * 1,000,000 = 64 output_audio_mtok. These match OpenAI's own published gpt-audio audio rates, consistent with OpenRouter's stated no-markup passthrough. OpenRouter adds approximately 5.5% on credit purchases; that fee is deliberately not folded into these list rates.",
+                pricing_source_url='https://openrouter.ai/openai/gpt-audio',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(
+                    input_mtok=Decimal('2.5'),
+                    output_mtok=Decimal('10'),
+                    input_audio_mtok=Decimal('32'),
+                    output_audio_mtok=Decimal('64'),
+                ),
+            ),
+            ModelInfo(
                 id='openai/gpt-oss-120b',
                 match=ClauseOr(
                     or_=[ClauseEquals(equals='openai/gpt-oss-120b'), ClauseEquals(equals='openai/gpt-oss-120b:exacto')]
