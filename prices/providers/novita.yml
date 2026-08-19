@@ -4,6 +4,15 @@ id: novita
 pricing_urls:
   - https://novita.ai/pricing
 api_pattern: 'https://api\.novita\.ai'
+# Explicit `equals` clauses only, never a prefix: Novita's LLM ids are generic upstream names
+# (google/gemma-2-9b-it, mistralai/mistral-7b-instruct) shared with several other providers in
+# this catalog, so a broad clause here would silently steal their routing. Only the ids unique
+# to Novita are listed, which is what lets `calc_price(model_ref=...)` work without provider_id.
+model_match:
+  or:
+    - equals: fish-audio-text-to-speech
+    - equals: minimax-speech-2.6-hd
+    - equals: minimax-speech-2.6-turbo
 provider_match:
   contains: novita
 models:
@@ -179,6 +188,12 @@ models:
     pricing_source_url: https://novita.ai/pricing
     price_comments: >-
       Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars.
+      Version caveat: novita.ai/pricing lists this row as speech-2.6, but Novita's API
+      docs, sitemap and model library carry only speech-2.8 variants and every 2.6 doc
+      URL 404s. The rate above is what the pricing page publishes today; whether the 2.6
+      endpoint is still callable could not be confirmed, and no 2.8 rate is published to
+      substitute. Recorded as-published rather than remapped onto a 2.8 id, which would
+      pair a rate with a model it was never quoted for.
     prices:
       input_kchars: 0.1
 
@@ -192,6 +207,12 @@ models:
     pricing_source_url: https://novita.ai/pricing
     price_comments: >-
       Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars.
+      Version caveat: novita.ai/pricing lists this row as speech-2.6, but Novita's API
+      docs, sitemap and model library carry only speech-2.8 variants and every 2.6 doc
+      URL 404s. The rate above is what the pricing page publishes today; whether the 2.6
+      endpoint is still callable could not be confirmed, and no 2.8 rate is published to
+      substitute. Recorded as-published rather than remapped onto a 2.8 id, which would
+      pair a rate with a model it was never quoted for.
     prices:
       input_kchars: 0.06
   - id: mistralai/mistral-7b-instruct

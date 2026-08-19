@@ -6523,6 +6523,13 @@ providers: list[Provider] = [
         name='Novita',
         api_pattern='https://api\\.novita\\.ai',
         pricing_urls=['https://novita.ai/pricing'],
+        model_match=ClauseOr(
+            or_=[
+                ClauseEquals(equals='fish-audio-text-to-speech'),
+                ClauseEquals(equals='minimax-speech-2.6-hd'),
+                ClauseEquals(equals='minimax-speech-2.6-turbo'),
+            ]
+        ),
         provider_match=ClauseContains(contains='novita'),
         staleness_threshold_days=60,
         models=[
@@ -6651,7 +6658,7 @@ providers: list[Provider] = [
                 match=ClauseEquals(equals='minimax-speech-2.6-hd'),
                 name='MiniMax speech-2.6-hd',
                 description="Novita's MiniMax speech-2.6-hd text-to-speech endpoint.",
-                price_comments='Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars.',
+                price_comments="Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars. Version caveat: novita.ai/pricing lists this row as speech-2.6, but Novita's API docs, sitemap and model library carry only speech-2.8 variants and every 2.6 doc URL 404s. The rate above is what the pricing page publishes today; whether the 2.6 endpoint is still callable could not be confirmed, and no 2.8 rate is published to substitute. Recorded as-published rather than remapped onto a 2.8 id, which would pair a rate with a model it was never quoted for.",
                 pricing_source_url='https://novita.ai/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
                 prices=ModelPrice(input_kchars=Decimal('0.1')),
@@ -6661,7 +6668,7 @@ providers: list[Provider] = [
                 match=ClauseEquals(equals='minimax-speech-2.6-turbo'),
                 name='MiniMax speech-2.6-turbo',
                 description="Novita's MiniMax speech-2.6-turbo text-to-speech endpoint.",
-                price_comments='Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars.',
+                price_comments="Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars. Version caveat: novita.ai/pricing lists this row as speech-2.6, but Novita's API docs, sitemap and model library carry only speech-2.8 variants and every 2.6 doc URL 404s. The rate above is what the pricing page publishes today; whether the 2.6 endpoint is still callable could not be confirmed, and no 2.8 rate is published to substitute. Recorded as-published rather than remapped onto a 2.8 id, which would pair a rate with a model it was never quoted for.",
                 pricing_source_url='https://novita.ai/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
                 prices=ModelPrice(input_kchars=Decimal('0.06')),

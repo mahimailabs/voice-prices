@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**39 providers, 1,229 priced models.** 48 STT, 1,104 LLM, 69 TTS, 6 S2S, 2 VAD.
+**40 providers, 1,230 priced models.** 48 STT, 1,104 LLM, 69 TTS, 6 S2S, 2 VAD, 1 Agents.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -116,6 +116,7 @@ Every provider in the catalog, and which categories it prices:
 | [Perplexity](prices/providers/perplexity.yml) | 8 | LLM |
 | [Telnyx](prices/providers/telnyx.yml) | 14 | STT, LLM, TTS |
 | [Together AI](prices/providers/together.yml) | 72 | LLM |
+| [Vapi](prices/providers/vapi.yml) | 1 | Agents |
 | [X AI](prices/providers/x_ai.yml) | 12 | LLM |
 
 [comment]: <> (providers-end)
