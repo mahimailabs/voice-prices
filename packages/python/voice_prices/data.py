@@ -7628,7 +7628,7 @@ providers: list[Provider] = [
         id='openrouter',
         name='OpenRouter',
         api_pattern='https://(api\\.)?openrouter\\.ai',
-        pricing_urls=['https://openrouter.ai/models', 'https://developers.openai.com/api/docs/models'],
+        pricing_urls=['https://openrouter.ai/models'],
         extractors=[
             UsageExtractor(
                 root='usage',
@@ -10511,27 +10511,14 @@ providers: list[Provider] = [
             ModelInfo(
                 id='openai/gpt-audio',
                 match=ClauseEquals(equals='openai/gpt-audio'),
-                price_comments='Text: $2.50 input / $10.00 output per 1M tokens, as published. Audio: $32.00 input / $64.00 output per 1M tokens, as published; 32.00 * 1 = 32.00 and 64.00 * 1 = 64.00. OpenRouter adds approximately 5.5% to credit purchases; that fee is not included in these list rates.',
-                pricing_source_url='https://developers.openai.com/api/docs/models/gpt-audio',
+                price_comments="OpenRouter publishes per token, not per 1M. Feed values: prompt 0.0000025, completion 0.00001, audio 0.000032, audio_output 0.000064. Converted: 0.0000025 * 1,000,000 = 2.5 input_mtok; 0.00001 * 1,000,000 = 10 output_mtok; 0.000032 * 1,000,000 = 32 input_audio_mtok; 0.000064 * 1,000,000 = 64 output_audio_mtok. These match OpenAI's own published gpt-audio audio rates, consistent with OpenRouter's stated no-markup passthrough. OpenRouter adds approximately 5.5% on credit purchases; that fee is deliberately not folded into these list rates.",
+                pricing_source_url='https://openrouter.ai/openai/gpt-audio',
                 provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
                 prices=ModelPrice(
                     input_mtok=Decimal('2.5'),
                     output_mtok=Decimal('10'),
                     input_audio_mtok=Decimal('32'),
                     output_audio_mtok=Decimal('64'),
-                ),
-            ),
-            ModelInfo(
-                id='openai/gpt-audio-mini',
-                match=ClauseEquals(equals='openai/gpt-audio-mini'),
-                price_comments='Text and audio: $0.60 input / $2.40 output per 1M tokens, as published; 0.60 * 1 = 0.60 and 2.40 * 1 = 2.40. OpenRouter adds approximately 5.5% to credit purchases; that fee is not included in these list rates.',
-                pricing_source_url='https://developers.openai.com/api/docs/models/gpt-audio-mini',
-                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
-                prices=ModelPrice(
-                    input_mtok=Decimal('0.6'),
-                    output_mtok=Decimal('2.4'),
-                    input_audio_mtok=Decimal('0.6'),
-                    output_audio_mtok=Decimal('2.4'),
                 ),
             ),
             ModelInfo(
