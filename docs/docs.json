@@ -148,10 +148,21 @@
         "icon": "audio-waveform",
         "pages": [
           "s2s/all-models",
-          "s2s/aws",
-          "s2s/google",
-          "s2s/openai",
-          "s2s/openrouter"
+          {
+            "group": "Direct vendors",
+            "pages": [
+              "s2s/aws",
+              "s2s/boson",
+              "s2s/google",
+              "s2s/openai"
+            ]
+          },
+          {
+            "group": "Gateways",
+            "pages": [
+              "s2s/openrouter"
+            ]
+          }
         ]
       },
       {

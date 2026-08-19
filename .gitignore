@@ -28,3 +28,4 @@ docs/marketing/
 
 # Playwright MCP scratch artifacts
 .playwright-mcp/
+.gstack/

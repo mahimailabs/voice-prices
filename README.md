@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**40 providers, 1,228 priced models.** 48 STT, 1,104 LLM, 66 TTS, 7 S2S, 2 VAD, 1 Agents.
+**41 providers, 1,229 priced models.** 48 STT, 1,104 LLM, 66 TTS, 8 S2S, 2 VAD, 1 Agents.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -84,6 +84,7 @@ Every provider in the catalog, and which categories it prices:
 | [Avian](prices/providers/avian.yml) | 4 | LLM |
 | [AWS Bedrock](prices/providers/aws.yml) | 70 | LLM, S2S |
 | [Microsoft Azure](prices/providers/azure.yml) | 18 | LLM |
+| [Boson AI](prices/providers/boson.yml) | 1 | S2S |
 | [Cartesia](prices/providers/cartesia.yml) | 1 | TTS |
 | [Cerebras](prices/providers/cerebras.yml) | 4 | LLM |
 | [Cohere](prices/providers/cohere.yml) | 6 | LLM |

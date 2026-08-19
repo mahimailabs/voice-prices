@@ -1428,6 +1428,53 @@ providers: list[Provider] = [
         ],
     ),
     Provider(
+        id='boson',
+        name='Boson AI',
+        api_pattern='https://api\\.boson\\.ai',
+        pricing_urls=['https://www.boson.ai/pricing'],
+        model_match=ClauseStartsWith(starts_with='higgs-'),
+        provider_match=ClauseContains(contains='boson'),
+        extractors=[
+            UsageExtractor(
+                root='usage',
+                mappings=[
+                    UsageExtractorMapping(path='prompt_tokens', dest='input_tokens', required=True),
+                    UsageExtractorMapping(
+                        path=['prompt_tokens_details', 'cached_tokens'], dest='cache_audio_read_tokens', required=False
+                    ),
+                    UsageExtractorMapping(
+                        path=['prompt_tokens_details', 'audio_tokens'], dest='input_audio_tokens', required=False
+                    ),
+                    UsageExtractorMapping(
+                        path=['completion_tokens_details', 'audio_tokens'], dest='output_audio_tokens', required=False
+                    ),
+                    UsageExtractorMapping(path='completion_tokens', dest='output_tokens', required=True),
+                ],
+                api_flavor='chat',
+                model_path='model',
+            )
+        ],
+        staleness_threshold_days=60,
+        models=[
+            ModelInfo(
+                id='higgs-realtime',
+                match=ClauseEquals(equals='higgs-realtime'),
+                name='Higgs Realtime',
+                description="Boson AI's realtime speech-to-speech model for conversational agents. Boson publishes one blended token rate per direction rather than separate audio and text rates, so the same figure is recorded for both.",
+                price_comments="Source page lists Input tokens $0.75 / 1M, Cached input tokens $0.25 / 1M and Output tokens $4.50 / 1M. Those rates are modality-blended: the page publishes no separate audio-token line, so the same figure is recorded for the text and audio fields rather than leaving either unpriced.\nThe blended rates do apply to audio, which the page's own per-minute estimates confirm. It quotes $0.0023/min audio input and $0.014/min audio output. 0.0023 / 0.75 * 1e6 = 3,067 tokens/min = 51.1 tokens/sec, and 0.014 / 4.50 * 1e6 = 3,111 tokens/min = 51.9 tokens/sec. Both meters land on the same ~51 tokens/sec, which only holds if $0.75 and $4.50 are the rates applied to audio tokens.\nTranscription input at $0.0025 / minute is deliberately excluded: it is a separate per-minute meter, not an S2S audio-token rate.",
+                pricing_source_url='https://www.boson.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                prices=ModelPrice(
+                    input_mtok=Decimal('0.75'),
+                    output_mtok=Decimal('4.5'),
+                    input_audio_mtok=Decimal('0.75'),
+                    cache_audio_read_mtok=Decimal('0.25'),
+                    output_audio_mtok=Decimal('4.5'),
+                ),
+            )
+        ],
+    ),
+    Provider(
         id='cartesia',
         name='Cartesia',
         api_pattern='https://api\\.cartesia\\.ai',
