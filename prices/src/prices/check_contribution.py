@@ -235,7 +235,12 @@ def check_model(
         if parsed.scheme != 'https':
             fail(f'`pricing_source_url` is not https: {url}')
         host = parsed.netloc.lower().removeprefix('www.')
-        if host in AGGREGATOR_HOSTS:
+        # An aggregator citation is banned because a rate copied FROM one is not evidence about
+        # the vendor it describes. That reasoning does not apply when the aggregator IS the vendor
+        # being priced: openrouter.yml holds what OpenRouter charges, and openrouter.ai is the only
+        # page that publishes it. Without this exemption such a provider can never cite a correct
+        # source, which pushes contributors into misattributing the rate to somebody else's page.
+        if host in AGGREGATOR_HOSTS and host not in pricing_hosts:
             fail(
                 f'`pricing_source_url` points at the aggregator {host}. '
                 'An aggregator is a cross-check, not a source. Cite the vendor.'
