@@ -391,3 +391,24 @@ def test_unverified_row_is_exempt_from_the_screenshot(repo: Path, monkeypatch: p
     _run('commit', '-qam', 'imported', cwd=repo)
     monkeypatch.setenv('PR_BODY', 'no image here')
     assert check_contribution() == 0
+
+
+# ---- the aggregator is sometimes the vendor ----------------------------------
+
+
+def test_aggregator_may_cite_itself_when_it_is_the_provider():
+    """openrouter.yml prices what OpenRouter charges, and openrouter.ai is the only page that
+    publishes it. Banning the citation there forces the rate to be misattributed elsewhere."""
+    m = model(pricing_source_url='https://openrouter.ai/openai/gpt-audio')
+    assert messages(m, hosts={'openrouter.ai'}) == []
+
+
+def test_aggregator_citation_still_banned_for_a_different_vendor():
+    """The rule that matters: acme's rate may not be sourced from OpenRouter."""
+    msgs = messages(model(pricing_source_url='https://openrouter.ai/acme/acme-1'))
+    assert any('aggregator' in msg for msg in msgs)
+
+
+def test_huggingface_may_cite_itself():
+    m = model(pricing_source_url='https://huggingface.co/pricing')
+    assert messages(m, hosts={'huggingface.co'}) == []

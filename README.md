@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**41 providers, 1,228 priced models.** 48 STT, 1,104 LLM, 66 TTS, 7 S2S, 2 VAD, 1 Agents.
+**41 providers, 1,229 priced models.** 48 STT, 1,104 LLM, 66 TTS, 8 S2S, 2 VAD, 1 Agents.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -112,7 +112,7 @@ Every provider in the catalog, and which categories it prices:
 | [MoonshotAi](prices/providers/moonshotai.yml) | 9 | LLM |
 | [Novita](prices/providers/novita.yml) | 34 | LLM |
 | [OpenAI](prices/providers/openai.yml) | 73 | STT, LLM, TTS, S2S |
-| [OpenRouter](prices/providers/openrouter.yml) | 461 | LLM |
+| [OpenRouter](prices/providers/openrouter.yml) | 462 | LLM, S2S |
 | [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) | 15 | LLM |
 | [Perplexity](prices/providers/perplexity.yml) | 8 | LLM |
 | [Telnyx](prices/providers/telnyx.yml) | 14 | STT, LLM, TTS |

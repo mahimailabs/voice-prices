@@ -361,6 +361,7 @@ def test_s2s_is_exactly_the_bidirectional_realtime_models():
     assert found == {
         ('aws', 'amazon.nova-sonic-v1:0'),
         ('boson', 'higgs-realtime'),
+        ('openrouter', 'openai/gpt-audio'),
         ('google', 'gemini-live-2.5-flash-preview'),
         ('openai', 'gpt-4o-mini-realtime-preview'),
         ('openai', 'gpt-4o-realtime-preview'),
@@ -555,8 +556,16 @@ def test_category_tab_groups_a_large_sidebar_and_leaves_a_small_one_flat():
     groups = [str(cast('dict[str, Any]', page)['group']) for page in pages if isinstance(page, dict)]
     assert groups == ['Direct vendors', 'Gateways', 'HuggingFace Inference']
 
+    # S2S crossed MIN_PROVIDERS_FOR_GROUPS once Boson and OpenRouter landed, so it groups now too.
     s2s = category_tab('s2s', catalog['s2s'])
-    assert all(isinstance(page, str) for page in cast('list[Any]', s2s['pages']))  # only 3 vendors: no group headings
+    s2s_groups = [
+        str(cast('dict[str, Any]', page)['group']) for page in cast('list[Any]', s2s['pages']) if isinstance(page, dict)
+    ]
+    assert s2s_groups == ['Direct vendors', 'Gateways']
+
+    # VAD is the small one now: one provider, so no group headings.
+    vad = category_tab('vad', catalog['vad'])
+    assert all(isinstance(page, str) for page in cast('list[Any]', vad['pages']))
 
 
 def test_build_navigation_has_the_seven_tabs_in_order():
