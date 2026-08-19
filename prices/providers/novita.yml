@@ -188,12 +188,12 @@ models:
     pricing_source_url: https://novita.ai/pricing
     price_comments: >-
       Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars.
-      Version caveat: novita.ai/pricing lists this row as speech-2.6, but Novita's API
-      docs, sitemap and model library carry only speech-2.8 variants and every 2.6 doc
-      URL 404s. The rate above is what the pricing page publishes today; whether the 2.6
-      endpoint is still callable could not be confirmed, and no 2.8 rate is published to
-      substitute. Recorded as-published rather than remapped onto a 2.8 id, which would
-      pair a rate with a model it was never quoted for.
+      Version note: the Audio tab of novita.ai/pricing lists this row under the
+      lowercase API-style name with mode "T2A / T2A Async", and separately lists
+      "MiniMax Speech 2.8 HD/Turbo Sync/Async Text-to-Speech" at the identical rate.
+      Novita's API docs carry only 2.8 pages, so 2.6 reads as the legacy name kept
+      priced alongside its replacement. Both generations cost the same, so this row is
+      correct either way; the 2.8 variants are simply not in this catalog yet.
     prices:
       input_kchars: 0.1
 
@@ -207,12 +207,12 @@ models:
     pricing_source_url: https://novita.ai/pricing
     price_comments: >-
       Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars.
-      Version caveat: novita.ai/pricing lists this row as speech-2.6, but Novita's API
-      docs, sitemap and model library carry only speech-2.8 variants and every 2.6 doc
-      URL 404s. The rate above is what the pricing page publishes today; whether the 2.6
-      endpoint is still callable could not be confirmed, and no 2.8 rate is published to
-      substitute. Recorded as-published rather than remapped onto a 2.8 id, which would
-      pair a rate with a model it was never quoted for.
+      Version note: the Audio tab of novita.ai/pricing lists this row under the
+      lowercase API-style name with mode "T2A / T2A Async", and separately lists
+      "MiniMax Speech 2.8 HD/Turbo Sync/Async Text-to-Speech" at the identical rate.
+      Novita's API docs carry only 2.8 pages, so 2.6 reads as the legacy name kept
+      priced alongside its replacement. Both generations cost the same, so this row is
+      correct either way; the 2.8 variants are simply not in this catalog yet.
     prices:
       input_kchars: 0.06
   - id: mistralai/mistral-7b-instruct
