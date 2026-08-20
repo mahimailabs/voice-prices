@@ -78,7 +78,7 @@ models:
       Novita's Fish Audio text-to-speech endpoint.
     match:
       equals: fish-audio-text-to-speech
-    prices_checked: 2026-08-16
+    prices_checked: 2026-08-20
     pricing_source_url: https://novita.ai/pricing
     price_comments: >-
       Source rate $15.00 per 1M characters. 15.00 / 1000 = 0.015 input_kchars.
@@ -184,7 +184,7 @@ models:
       Novita's MiniMax speech-2.6-hd text-to-speech endpoint.
     match:
       equals: minimax-speech-2.6-hd
-    prices_checked: 2026-08-16
+    prices_checked: 2026-08-20
     pricing_source_url: https://novita.ai/pricing
     price_comments: >-
       Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars.
@@ -203,7 +203,7 @@ models:
       Novita's MiniMax speech-2.6-turbo text-to-speech endpoint.
     match:
       equals: minimax-speech-2.6-turbo
-    prices_checked: 2026-08-16
+    prices_checked: 2026-08-20
     pricing_source_url: https://novita.ai/pricing
     price_comments: >-
       Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars.
