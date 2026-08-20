@@ -199,7 +199,19 @@ test_cases: list[tuple[str, str, str]] = [
     ),
     pytest.param('bedrock', 'meta.llama3-1-70b-instruct-v1:0', snapshot(('aws', 'meta.llama3-1-70b-instruct-v1:0'))),
     ('google-vertex-search', 'gemini-2.5-flash', snapshot(('google', 'gemini-2.5-flash'))),
-    pytest.param('deepgram', 'nova-3-general', None, marks=mark_xfail_todo),
+    # Deepgram's domain variants are aliases of a tier, priced at the tier rate. They are
+    # matched by explicit `equals` clauses: `starts_with: nova-3` would swallow nova-3-batch
+    # and nova-3-multilingual, which the build refuses, and the models-sorted-by-id
+    # invariant makes it impossible to order the specific entries ahead of the general one.
+    ('deepgram', 'nova-3-general', snapshot(('deepgram', 'nova-3'))),
+    ('deepgram', 'nova-3-medical', snapshot(('deepgram', 'nova-3'))),
+    ('deepgram', 'nova-2-phonecall', snapshot(('deepgram', 'nova-2'))),
+    ('deepgram', 'nova-2-drivethru', snapshot(('deepgram', 'nova-2'))),
+    ('deepgram', 'flux-general-en', snapshot(('deepgram', 'flux-general'))),
+    # The specific entries must keep winning over the general one they sit next to.
+    ('deepgram', 'nova-3-batch', snapshot(('deepgram', 'nova-3-batch'))),
+    ('deepgram', 'nova-3-multilingual', snapshot(('deepgram', 'nova-3-multilingual'))),
+    ('deepgram', 'nova-2-batch', snapshot(('deepgram', 'nova-2-batch'))),
     ('gemini', 'gemini-1.5-flash-latest', snapshot(('google', 'gemini-1.5-flash'))),
     ('groq', 'openai/gpt-oss-20b', snapshot(('groq', 'openai/gpt-oss-20b'))),
     ('openai', 'o1-2024-12-17', snapshot(('openai', 'o1'))),

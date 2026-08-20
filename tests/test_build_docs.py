@@ -508,11 +508,14 @@ def test_voice_pages_carry_a_source_badge():
 
 
 def test_token_priced_voice_models_render_in_their_own_table():
+    # TTS rather than STT: every STT model in the catalog now carries a per-second rate, so
+    # gpt-4o-mini-tts is the last remaining voice model priced only in audio tokens. OpenAI
+    # publishes no per-character figure for it, not even an estimate, so it cannot be given one.
     catalog = build_catalog(_real_data())
-    entry = next(e for e in catalog['stt'] if e['id'] == 'openai')
-    page = render_provider_page('stt', entry)
+    entry = next(e for e in catalog['tts'] if e['id'] == 'openai')
+    page = render_provider_page('tts', entry)
     assert '## Billed per audio token' in page
-    assert 'gpt-4o-transcribe' in page
+    assert 'gpt-4o-mini-tts' in page
 
 
 def test_llm_index_summarises_by_vendor_rather_than_listing_every_model():
@@ -533,7 +536,35 @@ def test_index_page_lists_every_model_for_small_categories():
     # every model gets a row, minus the token-priced ones which are called out separately
     token_priced = sum(1 for e in catalog['stt'] for m in e['models'] if m['values']['per_min'] is None)
     assert page.count('\n| [') == total - token_priced
-    assert 'bill audio as tokens' in page
+    # No STT model is token-priced any more, so the callout must be absent rather than empty.
+    assert token_priced == 0
+    assert 'bill audio as tokens' not in page
+
+    # The TTS index still has one (gpt-4o-mini-tts), so the callout must still render there.
+    tts_page = render_index_page('tts', catalog['tts'], build_comparison(data)['tts'])
+    assert 'bill audio as tokens' in tts_page
+
+
+def test_estimated_rates_are_marked_and_footnoted():
+    """A vendor's own estimate must not print like a billed rate.
+
+    gpt-4o-transcribe bills per token; its $0.006/minute comes from a column OpenAI heads
+    "Estimated cost". whisper-1 shows the same $0.006/minute as its actual billed meter. The
+    two sit adjacent in the same column, so the marker is the only thing separating them.
+    """
+    catalog = build_catalog(_real_data())
+    entry = next(e for e in catalog['stt'] if e['id'] == 'openai')
+    page = render_provider_page('stt', entry)
+
+    rows = {row['id']: row for row in entry['models']}
+    assert 'estimated' in rows['gpt-4o-transcribe']['markers']
+    assert 'estimated' in rows['gpt-4o-mini-transcribe']['markers']
+    # Billed meters, including one at the identical rate, stay unmarked.
+    assert 'estimated' not in rows['whisper-1']['markers']
+    assert 'estimated' not in rows['gpt-transcribe']['markers']
+
+    assert '`gpt-4o-transcribe` <sup>estimated</sup>' in page
+    assert "the vendor's own published estimate" in page
 
 
 def test_comparison_section_renders_on_voice_index_pages():

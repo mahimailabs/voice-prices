@@ -215,6 +215,8 @@ Run `make build` then `make test`. Smoke-check routing in a REPL: `calc_price(Us
 Commit the YAML plus the regenerated `prices/data*.json`, the schema files, and `packages/python/voice_prices/data.py`. In the PR body, give the pricing URL you verified against, the date you verified it, and any quirks: voice tiers, streaming or language splits, non-standard billing units, deprecated models you excluded.
 
 **Attach a screenshot of the pricing page showing the rates you added.** CI requires one on any PR that adds a hand-read rate. It is a low bar on purpose: it does not prove the conversion is right, it proves someone loaded the page. Rates written by an importer are exempt, because no human read a page for those.
+
+Upload the file: drag it into the PR body so it lands on `github.com/user-attachments`. An image linked from anywhere else does not count, because linking someone else's URL costs nothing and proves nothing about whether you opened the page.
 </Step>
 </Steps>
 

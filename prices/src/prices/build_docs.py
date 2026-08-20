@@ -338,6 +338,13 @@ def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, dail
 
     provenance = model.get('provenance')
     api_backed = isinstance(provenance, dict) and bool(cast('dict[str, Any]', provenance).get('api_backed'))
+    # A rate the vendor publishes as its own estimate rather than the meter it bills on. Without a
+    # marker the docs would print it in the same column, same format, as a billed rate, which is
+    # the misreading `provenance.estimated_fields` exists to prevent.
+    raw_estimated = cast('dict[str, Any]', provenance).get('estimated_fields') if isinstance(provenance, dict) else None
+    estimated_fields: set[str] = (
+        {str(name) for name in cast('list[object]', raw_estimated)} if isinstance(raw_estimated, list) else set()
+    )
 
     markers: list[str] = []
     if api_backed:
@@ -350,10 +357,18 @@ def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, dail
         markers.append('voices')
 
     per_min: float | None = None
+    per_min_estimated = False
     if audio_kseconds is not None:
         per_min = audio_kseconds * 60 / 1000
+        per_min_estimated = 'input_audio_kseconds' in estimated_fields
     elif agent_kminutes is not None:
         per_min = agent_kminutes / 1000
+        per_min_estimated = 'agent_kminutes' in estimated_fields
+
+    # Only mark it when the estimate is a number this page actually displays. A model whose
+    # estimated field is not rendered here would otherwise carry a footnote pointing at nothing.
+    if per_min_estimated or (kchars is not None and 'input_kchars' in estimated_fields):
+        markers.append('estimated')
 
     values: dict[str, float | int | None] = {
         'per_min': per_min,
@@ -628,8 +643,12 @@ def _markers_footnote(rows: list[ModelRow]) -> str:
         'tiered': '`tiered` the rate changes above a token threshold. The base rate is shown.',
         'daily': '`daily` the rate changes with the time of day. The standard rate is shown.',
         'voices': '`voices` some voice classes cost a multiple of the base rate.',
+        'estimated': "`estimated` this rate is the vendor's own published estimate, not the meter it "
+        'bills on. It will not reconcile against an invoice: the model is billed in another unit '
+        '(usually tokens) and the figure here is the vendor restating that in this one. Useful for '
+        'comparison and capacity planning, not for billing.',
     }
-    lines = [notes[marker] for marker in ('api', 'tiered', 'daily', 'voices') if marker in seen]
+    lines = [notes[marker] for marker in ('api', 'tiered', 'daily', 'voices', 'estimated') if marker in seen]
     return '\n'.join(f'- {line}' for line in lines)
 
 
