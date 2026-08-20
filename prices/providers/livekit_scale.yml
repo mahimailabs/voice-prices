@@ -11,6 +11,8 @@ price_comments: >-
   are listed here; LLM models (identical across all tiers) and flat-priced voice models fall back
   to the livekit provider via fallback_model_providers. Same conversions and source as the
   livekit provider.
+pricing_tier: Scale
+
 models:
   - id: cartesia/ink-2
     name: Ink 2

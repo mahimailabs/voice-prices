@@ -249,7 +249,23 @@ Your provider-level `model_match` clause does not cover the model ID the user pa
 The validator enforces alphabetical sorting of the `models` list by `id`. The error message tells you exactly which entry to move and where.
 </Accordion>
 <Accordion title="My provider bills in credits, tokens, or minutes">
-Pick a default subscription tier (usually pay-as-you-go or Creator) and convert to the native priced field. Document the tier and the conversion formula in `price_comments` on each model so consumers on other tiers can derive their own rate.
+Convert to the native priced field and document the conversion in `price_comments`, so consumers on other tiers can derive their own rate. Which tier to convert from is answered below.
+</Accordion>
+<Accordion title="My provider has several pricing tiers. Which one?">
+**The cheapest tier a new account can reach with no spend commitment.** Usually "Pay As You Go" or "On-Demand". Name it in the provider's `pricing_tier` field, worded as the vendor words it, so a reader can find the same words on the pricing page and check the number against their own invoice.
+
+Where a vendor sells no such tier, take the cheapest paid plan and say so: Cartesia's Pro at $4/month, ai-coustics' Startup, because neither sells single units. Where a vendor publishes one price with no plans to choose between, write the literal `Single published rate`.
+
+Never take a committed or negotiated tier. Deepgram's Growth is about 12.5% cheaper but costs $4,000/year to enter, so a catalog quoting it would understate every self-serve user's bill.
+
+CI fails a PR that adds or reprices a model on a provider with no `pricing_tier`.
+</Accordion>
+<Accordion title="The vendor is running a promotion. List price or discounted price?">
+**The discounted price**, with the list price recorded in `price_comments`.
+
+Deepgram currently renders `Current price $0.0048/min` beside `Regular price $0.0077/min`. The catalog answers "what would I pay today", so it carries $0.0048. Taking the list price would be wrong for every user for the entire promotional period, and the freshness check catches the expiry as drift.
+
+This is the single most common error in voice pricing. At least two other public pricing datasets publish Deepgram Nova-3 at the regular price, overcharging it by 60%, and this catalog did too until it was traced back to a two-price cell.
 </Accordion>
 <Accordion title="voice_multipliers are not supported for STT">
 Setting `voice_multipliers` on a model priced by `input_audio_kseconds` fails validation by design. If your provider charges different rates by language, ship separate model entries with distinct IDs, the way Deepgram does with `nova-3` and `nova-3-multilingual`.

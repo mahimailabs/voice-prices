@@ -182,13 +182,18 @@ def _run(*args: str, cwd: Path) -> None:
     subprocess.run(['git', *args], cwd=cwd, check=True, capture_output=True)
 
 
-def _provider_yaml(rate: str, *, checked: str, url: str = 'https://acme.example/pricing') -> str:
+def _provider_yaml(
+    rate: str,
+    *,
+    checked: str,
+    url: str = 'https://acme.example/pricing',
+    tier: str | None = 'Pay As You Go',
+) -> str:
     return (
         'name: Acme\n'
         'id: acme\n'
         'pricing_urls:\n'
-        '  - https://acme.example/pricing\n'
-        'models:\n'
+        '  - https://acme.example/pricing\n' + (f'pricing_tier: {tier}\n' if tier is not None else '') + 'models:\n'
         '  - id: acme-1\n'
         f'    prices_checked: {checked}\n'
         f'    pricing_source_url: {url}\n'
@@ -448,3 +453,48 @@ def test_aggregator_citation_still_banned_for_a_different_vendor():
 def test_huggingface_may_cite_itself():
     m = model(pricing_source_url='https://huggingface.co/pricing')
     assert messages(m, hosts={'huggingface.co'}) == []
+
+
+def test_priced_model_requires_the_provider_to_name_its_tier(
+    repo: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+):
+    """A rate is meaningless without the plan it came from.
+
+    Most vendors publish several prices for the same model. Deepgram quotes Pay As You Go and
+    Growth; AssemblyAI quotes pay-as-you-go and Custom; Cartesia sells four subscription tiers.
+    A catalog that mixes them is not comparable with itself, and a consumer cannot tell whether
+    a rate matches the plan they are actually on.
+    """
+    (repo / 'prices/providers/acme.yml').write_text(_provider_yaml('0.2', checked=str(TODAY), tier=None))
+    _run('commit', '-qam', 'reprice without a tier', cwd=repo)
+    monkeypatch.setenv('PR_BODY', 'proof: https://github.com/user-attachments/assets/x.png')
+    assert check_contribution() == 1
+    assert 'pricing_tier' in capsys.readouterr().out
+
+
+def test_naming_the_tier_satisfies_the_check(repo: Path, monkeypatch: pytest.MonkeyPatch):
+    (repo / 'prices/providers/acme.yml').write_text(_provider_yaml('0.2', checked=str(TODAY), tier='Pay As You Go'))
+    _run('commit', '-qam', 'reprice', cwd=repo)
+    monkeypatch.setenv('PR_BODY', 'proof: https://github.com/user-attachments/assets/x.png')
+    assert check_contribution() == 0
+
+
+def test_single_published_rate_is_an_accepted_tier(repo: Path, monkeypatch: pytest.MonkeyPatch):
+    """Vendors with one price still make a claim, rather than leaving the field off."""
+    (repo / 'prices/providers/acme.yml').write_text(
+        _provider_yaml('0.2', checked=str(TODAY), tier='Single published rate')
+    )
+    _run('commit', '-qam', 'reprice', cwd=repo)
+    monkeypatch.setenv('PR_BODY', 'proof: https://github.com/user-attachments/assets/x.png')
+    assert check_contribution() == 0
+
+
+def test_unpriced_model_does_not_need_a_tier(repo: Path, capsys: pytest.CaptureFixture[str]):
+    """A row with no rate makes no claim about a plan, so demanding one is noise."""
+    (repo / 'prices/providers/acme.yml').write_text(
+        'name: Acme\nid: acme\npricing_urls:\n  - https://acme.example/pricing\n'
+        'models:\n  - id: acme-1\n    prices: {}\n'
+    )
+    _run('commit', '-qam', 'unprice it', cwd=repo)
+    assert check_contribution() == 0
+    assert 'pricing_tier' not in capsys.readouterr().out

@@ -515,6 +515,19 @@ class Provider:
     should re-verify against `pricing_source_url`. Metadata only; voice-prices itself does not warn or
     fail on stale entries.
     """
+    pricing_tier: str | None = None
+    """The vendor plan every rate from this provider is taken from, named as the vendor names it.
+
+    Most vendors publish several prices for the same model: pay-as-you-go, one or more committed
+    plans, and an enterprise rate. This catalog takes the cheapest tier a new account can reach
+    with no spend commitment, and names it here so a consumer can tell whether the rate matches
+    the plan they are actually on.
+
+    Verbatim from the vendor (`Pay As You Go`, `On-Demand`, `Standard`), not a normalised enum,
+    so a reader can find the same words on the pricing page. The literal `Single published rate`
+    means the vendor publishes one price with no plan to choose from; `None` means no one has
+    recorded it yet, which is not the same claim.
+    """
     models: list[ModelInfo] = dataclasses.field(default_factory=list)
     """List of models supported by this provider"""
 

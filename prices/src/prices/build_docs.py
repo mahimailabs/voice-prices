@@ -238,6 +238,7 @@ class ProviderEntry(TypedDict):
     id: str
     name: str
     models: list[ModelRow]
+    pricing_tier: str | None
 
 
 Catalog = dict[Modality, list[ProviderEntry]]
@@ -454,7 +455,14 @@ def build_catalog(data: list[dict[str, Any]]) -> Catalog:
         for category, rows in by_category.items():
             if rows:
                 rows.sort(key=lambda r: r['id'])
-                catalog[category].append({'id': provider_id, 'name': provider_name, 'models': rows})
+                catalog[category].append(
+                    {
+                        'id': provider_id,
+                        'name': provider_name,
+                        'models': rows,
+                        'pricing_tier': provider.get('pricing_tier'),
+                    }
+                )
 
     return catalog
 
@@ -728,6 +736,17 @@ def render_provider_page(category: Modality, entry: ProviderEntry) -> str:
         GENERATED_NOTICE,
         f'{meta.unit} Source of truth: [`prices/providers/{entry["id"]}.yml`]({PROVIDER_YAML_URL}/{entry["id"]}.yml).',
     ]
+
+    if tier := entry.get('pricing_tier'):
+        parts.append(
+            f'**Plan:** {tier}. '
+            + (
+                'This vendor publishes one price with no plans to choose between.'
+                if tier == 'Single published rate'
+                else 'Rates below are that plan. A committed or negotiated plan will be cheaper, '
+                'so check yours before budgeting from these.'
+            )
+        )
 
     if main_rows:
         parts.append(render_rows(category, main_rows, active_columns(main_rows, CATEGORY_COLUMNS[category])))

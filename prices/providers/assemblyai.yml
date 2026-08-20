@@ -12,6 +12,8 @@ model_match:
 provider_match:
   contains: assemblyai
 
+pricing_tier: Pay as you go
+
 models:
   - id: universal-2
     name: Universal-2

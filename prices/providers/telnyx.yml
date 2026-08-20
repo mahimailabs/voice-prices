@@ -27,6 +27,8 @@ price_comments: >-
   per-character pricing on the pricing pages as of 2026-07-17. They can be
   added in a follow-up once Telnyx publishes per-unit rates.
 
+pricing_tier: Pay as you go
+
 models:
   - id: anthropic-claude-haiku-4.5
     match:

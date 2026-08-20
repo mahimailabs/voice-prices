@@ -558,6 +558,12 @@
           "title": "Staleness Threshold Days",
           "type": "integer"
         },
+        "pricing_tier": {
+          "maxLength": 100,
+          "type": "string",
+          "description": "The vendor plan every rate in this file is taken from, named as the vendor names it.\n\nMost vendors publish several prices for the same model: a pay-as-you-go rate, one or more\ncommitted plans, and an enterprise rate you have to ask for. A catalog that mixes them is\nnot comparable with itself, so this project takes ONE tier per provider, the cheapest a new\naccount can reach with no spend commitment, and records which one here.\n\nVerbatim from the vendor: `Pay As You Go`, `On-Demand`, `Standard`. Not a normalised enum,\nbecause the value exists so a reader can find the same words on the pricing page and\nconfirm the number against their own invoice. A rate the reader cannot locate is a rate\nthey will not trust.\n\nUse the literal ``Single published rate`` when the vendor publishes one price with no plan\nstructure to choose from, as ElevenLabs does. That is a positive claim and is not the same\nas leaving the field absent, which means nobody has looked yet. ``check_contribution``\nrequires this on any provider whose models are added or repriced, so the distinction stays\nhonest: a rate lands with its tier named, or it does not land.",
+          "title": "Pricing Tier"
+        },
         "models": {
           "description": "List of models supported by this provider",
           "items": {

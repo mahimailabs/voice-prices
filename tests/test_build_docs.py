@@ -472,7 +472,12 @@ def test_render_provider_page_has_frontmatter_and_the_do_not_edit_notice():
 def test_frontmatter_escapes_quotes_in_contributor_supplied_values():
     # A provider `name` comes straight from YAML someone else wrote. One unescaped quote would make
     # the frontmatter invalid and fail the whole docs build, not just that page.
-    entry: ProviderEntry = {'id': 'q', 'name': 'A "quoted" vendor', 'models': [_row(per_min=0.01)]}
+    entry: ProviderEntry = {
+        'id': 'q',
+        'name': 'A "quoted" vendor',
+        'models': [_row(per_min=0.01)],
+        'pricing_tier': None,
+    }
     page = render_provider_page('stt', entry)
     assert 'sidebarTitle: "A \\"quoted\\" vendor"' in page
 

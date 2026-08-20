@@ -16,6 +16,8 @@ price_comments: >-
   (x1000/60); TTS $/1M chars to input_kchars (/1000); LLM $/1M tokens map 1:1. Realtime bundled
   models and LiveKit Cloud platform per-minute rates are out of scope. Source: LiveKit
   get_pricing_info; regenerate with make livekit-get.
+pricing_tier: Build/Ship
+
 models:
   - id: assemblyai/u3-rt-pro
     name: Universal-3 Pro Streaming
