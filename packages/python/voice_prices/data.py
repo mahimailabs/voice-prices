@@ -1807,6 +1807,23 @@ providers: list[Provider] = [
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.108333')),
             ),
             ModelInfo(
+                id='nova',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='nova'),
+                        ClauseEquals(equals='nova-general'),
+                        ClauseEquals(equals='nova-medical'),
+                        ClauseEquals(equals='nova-meeting'),
+                        ClauseEquals(equals='nova-phonecall'),
+                    ]
+                ),
+                name='Nova-1 (legacy, unpriced)',
+                description='Deepgram\'s first Nova generation, listed under "Legacy Models" in their model docs and still callable. Resolves so a caller learns the model exists; carries no rate because Deepgram publishes none.',
+                price_comments='Deliberately unpriced. Deepgram\'s pricing FAQ names the legacy rates it still honours, "Nova-2 streaming at $0.35/hour, Enhanced at $0.99/hour, and Base at $0.87/hour", and Nova-1 is absent from that list and from every rate table. The PriceToken registry does not carry it either. Resolving-but-unpriced is deliberate: a LookupError says "this model does not exist", which is false, while a guessed rate would be worse. Empty prices say what is true, that the model is real and its rate is not published. Add a rate only from a Deepgram page or invoice that states one.',
+                provenance=Provenance(source='seed'),
+                prices=ModelPrice(),
+            ),
+            ModelInfo(
                 id='nova-2',
                 match=ClauseOr(
                     or_=[
@@ -1886,6 +1903,23 @@ providers: list[Provider] = [
                 pricing_source_url='https://deepgram.com/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.086667')),
+            ),
+            ModelInfo(
+                id='whisper',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='whisper'),
+                        ClauseEquals(equals='whisper-tiny'),
+                        ClauseEquals(equals='whisper-base'),
+                        ClauseEquals(equals='whisper-small'),
+                        ClauseEquals(equals='whisper-medium'),
+                    ]
+                ),
+                name='Whisper tiny/base/small/medium (Deepgram-hosted, unpriced)',
+                description='The smaller Deepgram-hosted Whisper sizes. Callable as `?model=whisper-SIZE`, with bare `whisper` aliasing whisper-medium. Resolve here unpriced; only Whisper Large has a published rate, and it is a separate row.',
+                price_comments='Deliberately unpriced. Deepgram\'s Pre-Recorded table carries one Whisper row, "Whisper Large" at $0.0048/minute, while their model docs document five sizes. Nothing states that the smaller sizes bill at the Large rate, and hosted-model pricing usually tracks model size, so inheriting it would be a guess in the expensive direction. See `whisper-large` for the one size Deepgram does price.',
+                provenance=Provenance(source='seed'),
+                prices=ModelPrice(),
             ),
             ModelInfo(
                 id='whisper-large',
