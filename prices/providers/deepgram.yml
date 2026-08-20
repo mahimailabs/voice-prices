@@ -44,6 +44,72 @@ models:
     prices:
       input_kchars: 0.030
 
+  - id: base
+    name: Base (legacy)
+    description: >-
+      Deepgram's first-generation STT tier, still available for existing deployments.
+      Documented as `base or base-general` plus a set of domain variants, all at one
+      tier rate. Superseded by Nova-3; priced here so historical usage can be costed.
+    match:
+      # Deepgram's model listing gives both the bare domain name (`phonecall`) and the
+      # prefixed form (`base-phonecall`) for this tier, so both are listed. Explicit
+      # `equals` rather than a prefix, for the reasons on the nova-2 entry.
+      or:
+        - equals: base
+        - equals: base-general
+        - equals: base-conversationalai
+        - equals: base-finance
+        - equals: base-meeting
+        - equals: base-phonecall
+        - equals: base-video
+        - equals: base-voicemail
+        - equals: conversationalai
+        - equals: finance
+        - equals: meeting
+        - equals: phonecall
+        - equals: video
+        - equals: voicemail
+    prices_checked: 2026-08-20
+    pricing_source_url: https://deepgram.com/pricing
+    price_comments: >-
+      Source rate $0.87/hour, published by Deepgram in the pricing-page FAQ: "These remain
+      available at unchanged rates for existing deployments: Nova-2 streaming at $0.35/hour,
+      Enhanced at $0.99/hour, and Base at $0.87/hour."
+      Converted to $/k seconds: 0.87 / 3600 * 1000 = 0.2416666 recurring, stored as 0.241667.
+      One tier rate covers every domain variant; the FAQ prices the tier and the main rate
+      tables do not list Base at all. No streaming/prerecorded split is published for this
+      tier, so unlike nova-3 there is no `-batch` row.
+      The bare domain ids (`phonecall`, `meeting`) are deliberately NOT added to the
+      provider-level `model_match`: they are too generic to claim for Deepgram from a bare
+      model_ref. They resolve when `provider_id='deepgram'` is supplied, which is how a
+      voice runtime names them.
+    prices:
+      input_audio_kseconds: 0.241667
+
+  - id: enhanced
+    name: Enhanced (legacy)
+    description: >-
+      Deepgram's second-generation STT tier, between Base and Nova. Documented as
+      `enhanced or enhanced-general` plus domain variants, all at one tier rate.
+      Still available for existing deployments; superseded by Nova-3.
+    match:
+      or:
+        - equals: enhanced
+        - equals: enhanced-general
+        - equals: enhanced-finance
+        - equals: enhanced-meeting
+        - equals: enhanced-phonecall
+    prices_checked: 2026-08-20
+    pricing_source_url: https://deepgram.com/pricing
+    price_comments: >-
+      Source rate $0.99/hour, from the same pricing-page FAQ answer that publishes the Base
+      and Nova-2 legacy rates. Converted to $/k seconds: 0.99 / 3600 * 1000 = 0.275 exactly.
+      Worth noting this legacy tier costs more than every current model: Nova-3 monolingual
+      streaming is $0.29/hour and prerecorded $0.26/hour. Enhanced is priced where it was
+      when it was current, which is why Deepgram recommends new projects start on Nova-3.
+    prices:
+      input_audio_kseconds: 0.275
+
   - id: flux-general
     name: Flux (streaming)
     description: >-
@@ -228,3 +294,29 @@ models:
       $0.0052 under Pre-Recorded.
     prices:
       input_audio_kseconds: 0.086667
+
+  - id: whisper-large
+    name: Whisper Large (Deepgram-hosted)
+    description: >-
+      OpenAI Whisper Large hosted by Deepgram, prerecorded only. Called as
+      `?model=whisper-large` on the Deepgram API, so it is a Deepgram-billed model rather
+      than an OpenAI one. Concurrency is capped separately (5 streams on Pay As You Go).
+    match:
+      equals: whisper-large
+    prices_checked: 2026-08-20
+    pricing_source_url: https://deepgram.com/pricing
+    price_comments: >-
+      Source rate $0.0048/minute, the "Whisper Large" row of the Pre-Recorded table,
+      Pay As You Go. Converted to $/k seconds: 0.0048 * 1000 / 60 = 0.08 exactly.
+      Unusually, the Growth plan rate is also $0.0048: Deepgram discounts its own models on
+      Growth but not this one.
+      Only Whisper Large is priced. Deepgram's model listing also documents whisper-tiny,
+      whisper-base, whisper-small and whisper-medium (and `whisper` as an alias for
+      whisper-medium), but the pricing page carries a rate for Large alone. Those four are
+      deliberately absent rather than aliased to this rate, which would publish a number
+      Deepgram has not put against them.
+      Not added to the provider `model_match`: `whisper-` is already claimed there by
+      OpenAI, so a bare `whisper-large` would be ambiguous between two vendors who both
+      host it. Resolve it with `provider_id='deepgram'`.
+    prices:
+      input_audio_kseconds: 0.08

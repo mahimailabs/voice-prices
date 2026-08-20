@@ -3,6 +3,9 @@ name: Groq
 id: groq
 pricing_urls:
   - https://groq.com/pricing/
+  # groq.com/pricing renders a marketing shell; the per-model rates live in the docs, which
+  # is where the audio rates below were read.
+  - https://console.groq.com/docs/models
 api_pattern: 'https://api\.groq\.com'
 
 # https://github.com/groq/groq-python/blob/v0.31.0/src/groq/types/completion_usage.py
@@ -15,6 +18,39 @@ extractors:
         dest: output_tokens
 
 models:
+  - id: canopylabs/orpheus-arabic-saudi
+    name: Orpheus V1 Arabic (Saudi)
+    description: >-
+      Canopy Labs Orpheus text-to-speech, Saudi Arabic, served on Groq. Billed per
+      character of input text.
+    match:
+      equals: canopylabs/orpheus-arabic-saudi
+    prices_checked: 2026-08-20
+    pricing_source_url: https://console.groq.com/docs/models
+    price_comments: >-
+      Source rate $40.00 per 1M characters. Converted to $/k characters:
+      40.00 / 1000 = 0.04 exactly.
+      Nearly double the English model at $22.00 per 1M, which is Groq's own split, not a
+      conversion artefact.
+    prices:
+      input_kchars: 0.04
+
+  - id: canopylabs/orpheus-v1-english
+    name: Orpheus V1 English
+    description: >-
+      Canopy Labs Orpheus text-to-speech, English, served on Groq. Billed per character
+      of input text. Groq's first text-to-speech entry in this catalog.
+    match:
+      equals: canopylabs/orpheus-v1-english
+    prices_checked: 2026-08-20
+    pricing_source_url: https://console.groq.com/docs/models
+    price_comments: >-
+      Source rate $22.00 per 1M characters. Converted to $/k characters:
+      22.00 / 1000 = 0.022 exactly.
+      For scale, that sits between Deepgram Aura-1 ($15/1M) and Aura-2 ($30/1M).
+    prices:
+      input_kchars: 0.022
+
   - id: deepseek-r1-distill-llama-70b
     name: DeepSeek R1 Distill Llama 70B
     context_window: 131072
@@ -275,3 +311,21 @@ models:
       0.00185 * 1000 / 60 ~= 0.030833.
     prices:
       input_audio_kseconds: 0.030833
+
+  - id: whisper-large-v3-turbo
+    name: Whisper Large v3 Turbo
+    description: >-
+      Groq-hosted OpenAI Whisper Large v3 Turbo speech-to-text. Faster and substantially
+      cheaper than whisper-large-v3, and the variant most production agents run. Billed per
+      second of audio; 10-second per-request minimum, as for the non-turbo model.
+    match:
+      equals: whisper-large-v3-turbo
+    prices_checked: 2026-08-20
+    pricing_source_url: https://console.groq.com/docs/models
+    price_comments: >-
+      Source rate $0.04/hour. Converted to $/k seconds:
+      0.04 / 3600 * 1000 = 0.0111111 recurring, stored as 0.011111.
+      That is 64% below whisper-large-v3 at $0.111/hour, and the cheapest STT rate in this
+      catalog by a wide margin.
+    prices:
+      input_audio_kseconds: 0.011111
