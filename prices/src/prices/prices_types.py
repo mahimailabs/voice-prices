@@ -184,6 +184,7 @@ UsageField = Literal[
     'audio_output_seconds',
     'audio_input_seconds',
     'agent_minutes',
+    'telephony_minutes',
 ]
 
 
@@ -476,6 +477,26 @@ class ModelPrice(_Model):
     Deliberately not comparable with the component rates elsewhere in this catalog:
     what the bundle contains is the platform's choice and is rarely disclosed, so the
     number answers "what does a minute cost me here", not "what does the speech cost".
+    """
+
+    telephony_kminutes: DollarPrice | None = None
+    """price in USD per 1,000 connected call minutes, carrying voice over the phone network.
+
+    The line an agent on a phone number pays on top of everything else. A carrier bills for
+    the call leg itself: it transcribes nothing, generates nothing, and is charged whether or
+    not the agent says a word. Distinct from `agent_kminutes` for exactly that reason. A
+    bundled agent minute already contains speech-to-text, the model and text-to-speech; adding
+    a carrier minute to it is a sum, not a substitution, and reusing one field for both would
+    silently double-count the same minute.
+
+    Rate depends on the direction of the call and the number type, and the two do not move
+    together: Twilio charges more to RECEIVE on toll-free ($0.0220/min) than to place the call
+    ($0.0140/min), and the reverse on local. Both live in the model id
+    (`us-tollfree-inbound`), the way this catalog already splits streaming from batch, so one
+    row means one rate and a lookup either resolves exactly or fails.
+
+    Rates are per country. The id carries an ISO country prefix so a second country is an
+    added row rather than a schema change.
     """
 
     voice_multipliers: VoiceMultipliers | None = None
