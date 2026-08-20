@@ -70,6 +70,9 @@ PRICE_BANDS: dict[str, tuple[Decimal, Decimal]] = {
     'cache_audio_read_mtok': (Decimal('0.001'), Decimal('500')),
     'requests_kcount': (Decimal('0.001'), Decimal('10000')),
     'agent_kminutes': (Decimal('0.1'), Decimal('10000')),
+    # Carrier minutes. US local inbound is 8.5 per 1k minutes; the band spans a cheap SIP
+    # leg through an expensive international mobile termination.
+    'telephony_kminutes': (Decimal('0.05'), Decimal('20000')),
 }
 
 # Fields whose value is a unit conversion away from what the vendor publishes, so a
@@ -83,6 +86,7 @@ CONVERTED_FIELDS = frozenset(
         'output_kchars',
         'requests_kcount',
         'agent_kminutes',
+        'telephony_kminutes',
     }
 )
 

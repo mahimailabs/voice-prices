@@ -183,6 +183,14 @@
         ]
       },
       {
+        "tab": "Telephony",
+        "icon": "phone",
+        "pages": [
+          "telephony/all-models",
+          "telephony/twilio"
+        ]
+      },
+      {
         "tab": "Add Yours",
         "icon": "git-pull-request",
         "pages": [

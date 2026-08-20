@@ -604,7 +604,7 @@ def test_category_tab_groups_a_large_sidebar_and_leaves_a_small_one_flat():
     assert all(isinstance(page, str) for page in cast('list[Any]', vad['pages']))
 
 
-def test_build_navigation_has_the_seven_tabs_in_order():
+def test_build_navigation_has_the_eight_tabs_in_order():
     nav = build_navigation(build_catalog(_real_data()))
     assert [tab['tab'] for tab in nav['tabs']] == [
         'Overview',
@@ -614,6 +614,7 @@ def test_build_navigation_has_the_seven_tabs_in_order():
         'S2S',
         'VAD',
         'Agents',
+        'Telephony',
         'Add Yours',
     ]
 
@@ -630,6 +631,7 @@ LUCIDE_ICONS = {
     'clock',
     'git-pull-request',
     'mic',
+    'phone',
     'rss',
     'volume-2',
 }

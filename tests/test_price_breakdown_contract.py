@@ -41,6 +41,10 @@ _PRICED_FIELD_MAP: dict[str, tuple[str, str | None]] = {
     # Bundled voice-agent session time. Multiplier-exempt and direction-exempt: a bundled
     # minute is not attributable to input or output, so it sums into total alongside requests.
     'agent_kminutes': ('agent_kminutes', None),
+    # Connected call minutes on the phone network. Direction-exempt for the same reason, and
+    # deliberately separate from agent_kminutes: a phone call on a bundled platform pays both,
+    # so one field for the two would double-count the same minute.
+    'telephony_kminutes': ('telephony_kminutes', None),
 }
 
 # Fields on ModelPrice that are NOT priced (and thus should not appear in the map).
