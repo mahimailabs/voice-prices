@@ -28,3 +28,52 @@ models:
       0.0025 * 1000 / 60 ~= 0.041667.
     prices:
       input_audio_kseconds: 0.041667
+
+  - id: universal-streaming-english
+    name: Universal-Streaming English
+    description: >-
+      AssemblyAI's realtime English-only speech-to-text, the cost-effective streaming tier.
+      Passed as `speech_model: "universal-streaming-english"` when opening the streaming
+      WebSocket. This is what a realtime voice agent runs, as opposed to the async
+      `universal-2` tier at the same rate.
+    match:
+      equals: universal-streaming-english
+    prices_checked: 2026-08-20
+    pricing_source_url: https://www.assemblyai.com/pricing
+    price_comments: >-
+      Source rate $0.15/hour, listed on the pricing page under Streaming-Speech-to-Text API
+      as "Universal-Streaming: High-quality realtime model for English only transcription".
+      Converted to $/k seconds: 0.15 / 3600 * 1000 = 0.0416666 recurring, stored as 0.041667.
+      Base rate only; add-on features are priced separately and are not modelled here.
+      Same figure as the async universal-2 tier, arrived at independently: AssemblyAI prices
+      both at $0.15/hour.
+    prices:
+      input_audio_kseconds: 0.041667
+
+  - id: universal-streaming-multilingual
+    name: Universal-Streaming Multilingual
+    description: >-
+      AssemblyAI's realtime multilingual speech-to-text (English, Spanish, German, French,
+      Portuguese, Italian). Passed as
+      `speech_model: "universal-streaming-multilingual"`. Same rate as the English tier.
+    match:
+      equals: universal-streaming-multilingual
+    prices_checked: 2026-08-20
+    pricing_source_url: https://www.assemblyai.com/pricing
+    price_comments: >-
+      Source rate $0.15/hour, listed on the pricing page under Streaming-Speech-to-Text API
+      as "Universal-Streaming Multilingual: Multilingual transcription at the speed and cost
+      of Universal-Streaming". Converted to $/k seconds:
+      0.15 / 3600 * 1000 = 0.0416666 recurring, stored as 0.041667.
+      Unlike most vendors, AssemblyAI charges no multilingual premium here: Deepgram, by
+      contrast, charges about 20% more for Nova-3 multilingual than monolingual.
+    prices:
+      input_audio_kseconds: 0.041667
+
+  # Deliberately absent: universal-3-5-pro. AssemblyAI uses that single id for two tiers at
+  # two different rates, $0.21/hour async (`speech_models`) and $0.45/hour streaming
+  # (`speech_model`). One catalog entry cannot carry both, and the id alone does not say
+  # which endpoint a caller used, so either rate would be a coin flip on more than half of
+  # lookups. Deepgram's split is expressible because the catalog invents a `-batch` suffix;
+  # here the vendor genuinely ships one id. Needs a decision about how the schema represents
+  # endpoint-dependent pricing before it can be added honestly.
