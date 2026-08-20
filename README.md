@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**41 providers, 1,234 priced models.** 53 STT, 1,104 LLM, 66 TTS, 8 S2S, 2 VAD, 1 Agents.
+**41 providers, 1,233 priced models.** 52 STT, 1,104 LLM, 66 TTS, 8 S2S, 2 VAD, 1 Agents.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -88,7 +88,7 @@ Every provider in the catalog, and which categories it prices:
 | [Cartesia](prices/providers/cartesia.yml) | 1 | TTS |
 | [Cerebras](prices/providers/cerebras.yml) | 4 | LLM |
 | [Cohere](prices/providers/cohere.yml) | 6 | LLM |
-| [Deepgram](prices/providers/deepgram.yml) | 10 | STT, TTS |
+| [Deepgram](prices/providers/deepgram.yml) | 9 | STT, TTS |
 | [Deepseek](prices/providers/deepseek.yml) | 4 | LLM |
 | [ElevenLabs](prices/providers/elevenlabs.yml) | 5 | TTS |
 | [Fireworks](prices/providers/fireworks.yml) | 13 | LLM |
