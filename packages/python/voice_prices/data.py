@@ -1713,9 +1713,9 @@ providers: list[Provider] = [
             ),
             ModelInfo(
                 id='flux-general',
-                match=ClauseEquals(equals='flux-general'),
+                match=ClauseOr(or_=[ClauseEquals(equals='flux-general'), ClauseEquals(equals='flux-general-en')]),
                 name='Flux (streaming)',
-                description='Deepgram Flux conversational speech recognition for real-time voice agents, with built-in turn detection and interruption handling. English. Use `flux-general` for streaming, `flux-general-batch` for prerecorded.',
+                description="Deepgram Flux conversational speech recognition for real-time voice agents, with built-in turn detection and interruption handling. English. Use `flux-general` for streaming, `flux-general-batch` for prerecorded. `flux-general-en` is the id Deepgram's own docs give for English Flux, so a caller passing what the API accepts resolves here.",
                 price_comments='Source rate $0.0065/minute (Pay As You Go streaming). Converted to $/k seconds: 0.0065 * 1000 / 60 ~= 0.108333.',
                 pricing_source_url='https://deepgram.com/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 5, 29)),
@@ -1733,13 +1733,28 @@ providers: list[Provider] = [
             ),
             ModelInfo(
                 id='nova-2',
-                match=ClauseEquals(equals='nova-2'),
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='nova-2'),
+                        ClauseEquals(equals='nova-2-general'),
+                        ClauseEquals(equals='nova-2-atc'),
+                        ClauseEquals(equals='nova-2-automotive'),
+                        ClauseEquals(equals='nova-2-conversationalai'),
+                        ClauseEquals(equals='nova-2-drivethru'),
+                        ClauseEquals(equals='nova-2-finance'),
+                        ClauseEquals(equals='nova-2-medical'),
+                        ClauseEquals(equals='nova-2-meeting'),
+                        ClauseEquals(equals='nova-2-phonecall'),
+                        ClauseEquals(equals='nova-2-video'),
+                        ClauseEquals(equals='nova-2-voicemail'),
+                    ]
+                ),
                 name='Nova-2 (streaming)',
-                description='Deepgram Nova-2 streaming STT, English / monolingual. Previous-generation model. Use `nova-2` for streaming, `nova-2-batch` for prerecorded.',
-                price_comments="Source rate $0.0059/minute (streaming). Converted to $/k seconds: 0.0059 * 1000 / 60 ~= 0.098333. Nova-2 is a legacy model: Deepgram no longer lists its per-minute rate in the public pricing table (the FAQ states older models remain available), so this rate is from independent sources tracking Deepgram's published Nova-2 pricing. Verify before relying on it.",
+                description='Deepgram Nova-2 streaming STT, English / monolingual. Previous-generation model. Use `nova-2` for streaming, `nova-2-batch` for prerecorded. The domain variants (`nova-2-phonecall`, `nova-2-medical` and the rest) are the same tier at the same rate, so they all resolve here.',
+                price_comments='Source rate $0.35/hour, published by Deepgram in the pricing-page FAQ: "These remain available at unchanged rates for existing deployments: Nova-2 streaming at $0.35/hour, Enhanced at $0.99/hour, and Base at $0.87/hour." Converted to $/k seconds: 0.35 / 3600 * 1000 = 0.0972222 recurring, stored as 0.097222. This replaces 0.098333, which came from third-party trackers quoting $0.0059/minute while this row carried a "verify before relying on it" note. Deepgram\'s own figure works out to $0.0058333/minute, so the old rate was about 1.1% high. Nova-2 is still absent from the main rate tables; the FAQ is now the vendor\'s published source for it.',
                 pricing_source_url='https://deepgram.com/pricing',
-                provenance=Provenance(last_verified=datetime.date(2026, 5, 29)),
-                prices=ModelPrice(input_audio_kseconds=Decimal('0.098333')),
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.097222')),
             ),
             ModelInfo(
                 id='nova-2-batch',
@@ -1753,9 +1768,15 @@ providers: list[Provider] = [
             ),
             ModelInfo(
                 id='nova-3',
-                match=ClauseEquals(equals='nova-3'),
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='nova-3'),
+                        ClauseEquals(equals='nova-3-general'),
+                        ClauseEquals(equals='nova-3-medical'),
+                    ]
+                ),
                 name='Nova-3 (monolingual streaming)',
-                description="Deepgram Nova-3 streaming STT, English / monolingual rate. Real-time transcription model. Use `nova-3` for streaming, `nova-3-batch` for prerecorded. Use `nova-3-multilingual` (or `-batch` variant) for non-English or mixed-language workloads at Deepgram's higher multilingual rate.",
+                description="Deepgram Nova-3 streaming STT, English / monolingual rate. Real-time transcription model. Use `nova-3` for streaming, `nova-3-batch` for prerecorded. Use `nova-3-multilingual` (or `-batch` variant) for non-English or mixed-language workloads at Deepgram's higher multilingual rate. `nova-3-general` is Deepgram's own alias for `nova-3`; `nova-3-medical` is the English-only medical variant of the same tier, so both resolve here.",
                 price_comments='Source rate $0.0048/minute. Converted to $/k seconds: 0.0048 * 1000 / 60 = 0.08 exactly.',
                 pricing_source_url='https://deepgram.com/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 5, 28)),

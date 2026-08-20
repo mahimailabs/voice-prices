@@ -50,8 +50,15 @@ models:
       Deepgram Flux conversational speech recognition for real-time voice agents,
       with built-in turn detection and interruption handling. English. Use
       `flux-general` for streaming, `flux-general-batch` for prerecorded.
+      `flux-general-en` is the id Deepgram's own docs give for English Flux, so a caller
+      passing what the API accepts resolves here.
     match:
-      equals: flux-general
+      # Deepgram's model listing names English Flux `flux-general-en`; the bare
+      # `flux-general` is kept because the catalog has published it since 2026-05.
+      # `flux-general-multi` is a different rate ($0.0078/min) and is not priced yet.
+      or:
+        - equals: flux-general
+        - equals: flux-general-en
     prices_checked: 2026-05-29
     pricing_source_url: https://deepgram.com/pricing
     price_comments: >-
@@ -80,18 +87,45 @@ models:
     description: >-
       Deepgram Nova-2 streaming STT, English / monolingual. Previous-generation
       model. Use `nova-2` for streaming, `nova-2-batch` for prerecorded.
+      The domain variants (`nova-2-phonecall`, `nova-2-medical` and the rest) are the
+      same tier at the same rate, so they all resolve here.
     match:
-      equals: nova-2
-    prices_checked: 2026-05-29
+      # Deepgram documents `nova-2 or nova-2-general` as one model option, and lists the
+      # domain variants underneath the same Nova-2 tier. The pricing page prices the tier,
+      # never the variant, so every id below bills identically.
+      #
+      # These are `equals` clauses rather than `starts_with: nova-2` on purpose. A prefix
+      # match would swallow `nova-2-batch`, which the build refuses outright (a model's
+      # matcher may not match another model's id), and the models-sorted-by-id invariant
+      # makes it impossible to order the specific entry ahead of the general one anyway.
+      # Listing ids also fails loudly on a variant Deepgram adds later, instead of quietly
+      # pricing an unknown model at a guessed rate.
+      or:
+        - equals: nova-2
+        - equals: nova-2-general
+        - equals: nova-2-atc
+        - equals: nova-2-automotive
+        - equals: nova-2-conversationalai
+        - equals: nova-2-drivethru
+        - equals: nova-2-finance
+        - equals: nova-2-medical
+        - equals: nova-2-meeting
+        - equals: nova-2-phonecall
+        - equals: nova-2-video
+        - equals: nova-2-voicemail
+    prices_checked: 2026-08-20
     pricing_source_url: https://deepgram.com/pricing
     price_comments: >-
-      Source rate $0.0059/minute (streaming). Converted to $/k seconds:
-      0.0059 * 1000 / 60 ~= 0.098333. Nova-2 is a legacy model: Deepgram no longer
-      lists its per-minute rate in the public pricing table (the FAQ states older
-      models remain available), so this rate is from independent sources tracking
-      Deepgram's published Nova-2 pricing. Verify before relying on it.
+      Source rate $0.35/hour, published by Deepgram in the pricing-page FAQ: "These remain
+      available at unchanged rates for existing deployments: Nova-2 streaming at $0.35/hour,
+      Enhanced at $0.99/hour, and Base at $0.87/hour."
+      Converted to $/k seconds: 0.35 / 3600 * 1000 = 0.0972222 recurring, stored as 0.097222.
+      This replaces 0.098333, which came from third-party trackers quoting $0.0059/minute
+      while this row carried a "verify before relying on it" note. Deepgram's own figure
+      works out to $0.0058333/minute, so the old rate was about 1.1% high. Nova-2 is still
+      absent from the main rate tables; the FAQ is now the vendor's published source for it.
     prices:
-      input_audio_kseconds: 0.098333
+      input_audio_kseconds: 0.097222
 
   - id: nova-2-batch
     name: Nova-2 (batch)
@@ -116,8 +150,17 @@ models:
       transcription model. Use `nova-3` for streaming, `nova-3-batch` for
       prerecorded. Use `nova-3-multilingual` (or `-batch` variant) for non-English
       or mixed-language workloads at Deepgram's higher multilingual rate.
+      `nova-3-general` is Deepgram's own alias for `nova-3`; `nova-3-medical` is the
+      English-only medical variant of the same tier, so both resolve here.
     match:
-      equals: nova-3
+      # Deepgram documents the option as "nova-3 or nova-3-general", and lists
+      # nova-3-medical (English only, so monolingual) under the same tier. Explicit
+      # `equals` clauses rather than `starts_with: nova-3`, which would swallow
+      # nova-3-batch and nova-3-multilingual and fail the build.
+      or:
+        - equals: nova-3
+        - equals: nova-3-general
+        - equals: nova-3-medical
     prices_checked: 2026-05-28
     pricing_source_url: https://deepgram.com/pricing
     price_comments: >-
