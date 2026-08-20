@@ -53,7 +53,7 @@ def test_select_real_catalog_staleness_boundary():
     # Far in the future, every voice entry is stale; all=True ignores staleness.
     future = select_stale(date(2030, 1, 1))
     every = select_stale(date(2020, 1, 1), all=True)
-    assert len(future) == len(every) == 32
+    assert len(future) == len(every) == 38
     providers = {w.provider_id for w in every}
     assert providers == {
         'ai_coustics',
@@ -134,14 +134,15 @@ def test_parse_extractions_from_claude_output():
 
 
 def test_classify_match_handles_truncated_stored_values():
-    # Flux stored 0.108333 vs $0.0065/min, and nova-3-batch stored 0.12833 vs $0.0077/min:
-    # tolerance comparison must treat both as MATCH (no spurious DRIFT from rounding).
+    # Flux stored 0.108333 vs $0.0065/min, and nova-3-batch stored 0.071667 vs $0.0043/min:
+    # both are recurring decimals rounded at storage, and the tolerance comparison must treat
+    # them as MATCH rather than reporting spurious DRIFT.
     flux = item('flux-general', rate='0.108333')
     ex = good_extraction(0.0065, 'per minute', quote='Flux $0.0065 per minute', row='flux-general')
     assert classify(flux, render_with(ex.evidence_quote), ex).category is Category.MATCH
 
-    batch = item('nova-3-batch', rate='0.12833')
-    ex2 = good_extraction(0.0077, 'per minute', quote='Nova-3 batch $0.0077 per minute', row='nova-3-batch')
+    batch = item('nova-3-batch', rate='0.071667')
+    ex2 = good_extraction(0.0043, 'per minute', quote='Nova-3 batch $0.0043 per minute', row='nova-3-batch')
     assert classify(batch, render_with(ex2.evidence_quote), ex2).category is Category.MATCH
 
 

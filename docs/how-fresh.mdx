@@ -32,6 +32,25 @@ The provider tables on this site show three of the four (`verified`, `imported`,
 
 Status and confidence are computed at load time against today's date. A shipped snapshot therefore decays with wall-clock age: a `verified` price drops to `stale` (and `high` to `medium`) once it passes the threshold, with nobody editing the data. `staleness_threshold_days` is set per provider and defaults to 60.
 
+## Estimated rates
+
+Status answers *is this rate current*. It does not answer *is this rate the meter*, and those are different questions. A rate can be verified this morning against the vendor's own page and still not be what they charge you.
+
+Some vendors publish two numbers for one model in two units, and bill on only one of them. OpenAI prices `gpt-4o-transcribe` per token, and also prints `$0.006 / minute` in a column it heads **Estimated cost**, derived from an assumed speech density it does not publish. Both numbers are on the page. Only the token rate is on the invoice.
+
+Where the catalog carries such a number, `provenance.estimated_fields` names the fields it applies to, and the provider tables mark the row <sup>`estimated`</sup>:
+
+| | |
+| --- | --- |
+| No marker | The rate is the vendor's billing meter. It reconciles against an invoice. |
+| <sup>`estimated`</sup> | The rate is the vendor's own approximation of a bill charged in another unit. Use it to compare vendors and plan capacity, not to reconcile a bill. |
+
+The flag is per field, not per model, because the split is per field: on `gpt-4o-transcribe` the token rates are billed and only `input_audio_kseconds` is estimated.
+
+Worth seeing side by side on the [OpenAI STT page](/stt/openai): `whisper-1` and `gpt-4o-transcribe` both read `$0.006` per minute. For `whisper-1` that is the meter and the conversion is exact. For `gpt-4o-transcribe` it is an estimate of a per-token bill. Same number, different standing, and the marker is the only thing that says so.
+
+Calling a model with usage it has no rate for is a third case again, and the library reports it: `PriceCalculation.unpriced_usage` names any `Usage` field that found no meter, so a `total_price` of zero can be told apart from a free call.
+
 ## How LLM rates are checked
 
 LLM rates are cross-checked against four external aggregators: Helicone, OpenRouter, LiteLLM, and Simon Willison's llm-prices. That pipeline is a local tool a maintainer runs (`make get-update-price-discrepancies`); each discrepancy is then resolved by hand.

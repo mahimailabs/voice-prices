@@ -74,13 +74,13 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**41 providers, 1,229 priced models.** 48 STT, 1,104 LLM, 66 TTS, 8 S2S, 2 VAD, 1 Agents.
+**41 providers, 1,233 priced models.** 52 STT, 1,104 LLM, 66 TTS, 8 S2S, 2 VAD, 1 Agents.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
 | [ai-coustics](prices/providers/ai_coustics.yml) | 2 | VAD |
 | [Anthropic](prices/providers/anthropic.yml) | 18 | LLM |
-| [AssemblyAI](prices/providers/assemblyai.yml) | 1 | STT |
+| [AssemblyAI](prices/providers/assemblyai.yml) | 3 | STT |
 | [Avian](prices/providers/avian.yml) | 4 | LLM |
 | [AWS Bedrock](prices/providers/aws.yml) | 70 | LLM, S2S |
 | [Microsoft Azure](prices/providers/azure.yml) | 18 | LLM |
@@ -88,7 +88,7 @@ Every provider in the catalog, and which categories it prices:
 | [Cartesia](prices/providers/cartesia.yml) | 1 | TTS |
 | [Cerebras](prices/providers/cerebras.yml) | 4 | LLM |
 | [Cohere](prices/providers/cohere.yml) | 6 | LLM |
-| [Deepgram](prices/providers/deepgram.yml) | 10 | STT, TTS |
+| [Deepgram](prices/providers/deepgram.yml) | 9 | STT, TTS |
 | [Deepseek](prices/providers/deepseek.yml) | 4 | LLM |
 | [ElevenLabs](prices/providers/elevenlabs.yml) | 5 | TTS |
 | [Fireworks](prices/providers/fireworks.yml) | 13 | LLM |
@@ -111,7 +111,7 @@ Every provider in the catalog, and which categories it prices:
 | [Mistral](prices/providers/mistral.yml) | 18 | LLM |
 | [MoonshotAi](prices/providers/moonshotai.yml) | 9 | LLM |
 | [Novita](prices/providers/novita.yml) | 34 | LLM |
-| [OpenAI](prices/providers/openai.yml) | 73 | STT, LLM, TTS, S2S |
+| [OpenAI](prices/providers/openai.yml) | 76 | STT, LLM, TTS, S2S |
 | [OpenRouter](prices/providers/openrouter.yml) | 462 | LLM, S2S |
 | [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) | 15 | LLM |
 | [Perplexity](prices/providers/perplexity.yml) | 8 | LLM |

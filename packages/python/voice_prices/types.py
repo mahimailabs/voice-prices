@@ -188,6 +188,23 @@ class PriceCalculation:
     provider: Provider = dataclasses.field(repr=False)
     model_price: ModelPrice
     auto_update_timestamp: datetime | None
+    unpriced_usage: tuple[str, ...] = ()
+    """`Usage` field names the caller supplied that no rate on this model could price.
+
+    Empty for the overwhelming majority of calls. When it is not empty, `total_price` is an
+    undercount, and a zero `total_price` means "this model has no meter for what you
+    measured", not "this call was free".
+
+    That distinction has no other signal. A model can resolve, carry prices, and still
+    return `Decimal('0')` when the caller measures in a unit the vendor does not bill in:
+    OpenAI prices its audio models per token, a voice runtime measures seconds and
+    characters, and nothing bridges the two. The result is a successful calculation with
+    every breakdown field at zero, indistinguishable downstream from a genuinely zero-cost
+    call. Read this field before trusting a zero.
+
+    Names are `Usage` field names (`audio_input_seconds`), not `ModelPrice` rate names
+    (`input_audio_kseconds`), because the caller supplied the former. Order is stable.
+    """
 
     def __repr__(self) -> str:
         return (
@@ -200,7 +217,8 @@ class PriceCalculation:
             f'model={self.model.summary()}, '
             f'provider={self.provider.summary()}, '
             f'model_price=ModelPrice({self.model_price}), '
-            f'auto_update_timestamp={self.auto_update_timestamp!r})'
+            f'auto_update_timestamp={self.auto_update_timestamp!r}, '
+            f'unpriced_usage={self.unpriced_usage!r})'
         )
 
     def freshness(self, *, today: date | None = None) -> Freshness:
@@ -768,6 +786,21 @@ class Provenance:
     """The exact price string an agent quoted from the vendor page, recorded on a consensus run."""
     source_rate: SourceRate | None = None
     """The observed rate in the vendor's own unit, for audit."""
+    estimated_fields: list[str] | None = None
+    """Priced fields whose value is the vendor's own published estimate, not the meter they bill on.
+
+    Absent (the normal case) means every rate on the model is a billing rate. When present, a rate
+    named here will not reconcile against an invoice: it is the vendor's own approximation, usually
+    of a per-token bill restated per minute or per character.
+
+    OpenAI's `gpt-4o-transcribe` is the case this was added for. It bills per token and also
+    prints "$0.006 / minute" under a column headed *Estimated cost*, derived from an assumed
+    speech density. Both numbers are published; only one is charged.
+
+    Per-field rather than per-model, because the split is per-field: the token rates on that model
+    are billed and only `input_audio_kseconds` is estimated. Callers that must match an invoice
+    should prefer a field not named here; callers doing capacity planning can use either.
+    """
 
 
 @dataclass
@@ -841,6 +874,7 @@ class ModelInfo:
             provider=provider,
             model_price=model_price,
             auto_update_timestamp=auto_update_timestamp,
+            unpriced_usage=price['unpriced_usage'],
         )
 
     def summary(self) -> str:
@@ -853,6 +887,36 @@ class CalcPrice(TypedDict):
     total_price: Decimal
     breakdown: PriceBreakdown
     applied_voice_multiplier: Decimal | None
+    unpriced_usage: tuple[str, ...]
+
+
+# For each `Usage` field, the `ModelPrice` rates that can pay for it, in the order the
+# bucket logic in `ModelPrice.calc_price` actually falls back through. A field counts as
+# unpriced only when EVERY rate in its chain is absent.
+#
+# Walking the chain is the whole point. "The matching rate is None" would be wrong: a model
+# with no `cache_read_mtok` still prices `cache_read_tokens`, at `input_mtok`, because the
+# bucket logic leaves those tokens inside the text-input remainder rather than dropping
+# them. 250 models in the catalog have no cache rate; flagging all of them would make this
+# field noise, and a noisy warning is a warning nobody reads.
+#
+# The token chains assume the caller follows the API convention these fields come from,
+# where `input_tokens` is the total (audio and cached tokens included) and `output_tokens`
+# likewise. A caller that reports audio tokens *outside* the totals gets a conservative
+# answer: the audio rate covers the field, so nothing is reported.
+_UNPRICED_RATE_CHAINS: dict[str, tuple[str, ...]] = {
+    'input_tokens': ('input_mtok',),
+    'cache_read_tokens': ('cache_read_mtok', 'input_mtok'),
+    'cache_write_tokens': ('cache_write_mtok', 'input_mtok'),
+    'input_audio_tokens': ('input_audio_mtok', 'input_mtok'),
+    'cache_audio_read_tokens': ('cache_audio_read_mtok', 'cache_read_mtok', 'input_mtok'),
+    'output_tokens': ('output_mtok',),
+    'output_audio_tokens': ('output_audio_mtok', 'output_mtok'),
+    'characters': ('input_kchars',),
+    'audio_input_seconds': ('input_audio_kseconds',),
+    'audio_output_seconds': ('output_audio_kseconds',),
+    'agent_minutes': ('agent_kminutes',),
+}
 
 
 @dataclass
@@ -1042,6 +1106,27 @@ class ModelPrice:
         if self.requests_kcount is not None:
             breakdown.requests = self.requests_kcount / Decimal(1000)
 
+        # Usage the caller supplied that no rate here could pay for. Computed from the same
+        # values the branches above consumed, so it cannot drift from what was actually priced.
+        supplied: dict[str, Decimal | int] = {
+            'input_tokens': total_input_tokens,
+            'cache_read_tokens': cache_read_tokens,
+            'cache_write_tokens': cache_write_tokens,
+            'input_audio_tokens': input_audio_tokens,
+            'cache_audio_read_tokens': cache_audio_read_tokens,
+            'output_tokens': usage.output_tokens or 0,
+            'output_audio_tokens': output_audio_tokens,
+            'characters': characters,
+            'audio_input_seconds': audio_input_seconds,
+            'audio_output_seconds': audio_output_seconds,
+            'agent_minutes': agent_minutes,
+        }
+        unpriced_usage = tuple(
+            field
+            for field, chain in _UNPRICED_RATE_CHAINS.items()
+            if supplied.get(field) and all(getattr(self, rate, None) is None for rate in chain)
+        )
+
         # Assemble input/output/total from the breakdown so the invariant holds by construction
         input_price = (
             breakdown.input_tokens
@@ -1067,6 +1152,7 @@ class ModelPrice:
             'total_price': total_price,
             'breakdown': breakdown,
             'applied_voice_multiplier': applied_voice_multiplier,
+            'unpriced_usage': unpriced_usage,
         }
 
     def __str__(self) -> str:

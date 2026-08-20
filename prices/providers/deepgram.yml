@@ -48,50 +48,78 @@ models:
     name: Flux (streaming)
     description: >-
       Deepgram Flux conversational speech recognition for real-time voice agents,
-      with built-in turn detection and interruption handling. English. Use
-      `flux-general` for streaming, `flux-general-batch` for prerecorded.
+      with built-in turn detection and interruption handling. English.
+      Streaming only: Flux runs on `wss://api.deepgram.com/v2/listen` and has no
+      prerecorded endpoint, so there is no batch rate for it.
+      `flux-general-en` is the id Deepgram's own docs give for English Flux, so a caller
+      passing what the API accepts resolves here.
     match:
-      equals: flux-general
-    prices_checked: 2026-05-29
+      # Deepgram's model listing names English Flux `flux-general-en`; the bare
+      # `flux-general` is kept because the catalog has published it since 2026-05.
+      # `flux-general-multi` is a different rate ($0.0078/min) and is not priced yet.
+      or:
+        - equals: flux-general
+        - equals: flux-general-en
+    prices_checked: 2026-08-20
     pricing_source_url: https://deepgram.com/pricing
     price_comments: >-
-      Source rate $0.0065/minute (Pay As You Go streaming). Converted to $/k seconds:
-      0.0065 * 1000 / 60 ~= 0.108333.
+      Source rate $0.0065/minute, the "Current price" for Flux English under Streaming,
+      Pay As You Go. Converted to $/k seconds: 0.0065 * 1000 / 60 ~= 0.108333.
+      Read the CURRENT price, not the "Regular price" $0.0077/minute printed beside it.
+      Deepgram is running a limited-time streaming promotion and each streaming cell shows
+      both numbers; $0.0065 is what is charged today. The FAQ agrees: "Flux ... runs
+      $0.39/hour monolingual", which is $0.0065/minute.
+      There is deliberately no `flux-general-batch`. One existed until 2026-08-20 holding
+      $0.0077/minute, which was the regular streaming price misread as a prerecorded rate.
+      Deepgram's Pre-Recorded table lists only Nova-3 Monolingual, Nova-3 Multilingual,
+      Whisper Large and Custom; Flux has never been on it.
     prices:
       input_audio_kseconds: 0.108333
-
-  - id: flux-general-batch
-    name: Flux (batch)
-    description: >-
-      Deepgram Flux prerecorded / batch transcription, English. Flux is primarily a
-      real-time model; this is the prerecorded rate.
-    match:
-      equals: flux-general-batch
-    prices_checked: 2026-05-29
-    pricing_source_url: https://deepgram.com/pricing
-    price_comments: >-
-      Source rate $0.0077/minute (Pay As You Go prerecorded). Converted to $/k seconds:
-      0.0077 * 1000 / 60 ~= 0.128333.
-    prices:
-      input_audio_kseconds: 0.128333
 
   - id: nova-2
     name: Nova-2 (streaming)
     description: >-
       Deepgram Nova-2 streaming STT, English / monolingual. Previous-generation
       model. Use `nova-2` for streaming, `nova-2-batch` for prerecorded.
+      The domain variants (`nova-2-phonecall`, `nova-2-medical` and the rest) are the
+      same tier at the same rate, so they all resolve here.
     match:
-      equals: nova-2
-    prices_checked: 2026-05-29
+      # Deepgram documents `nova-2 or nova-2-general` as one model option, and lists the
+      # domain variants underneath the same Nova-2 tier. The pricing page prices the tier,
+      # never the variant, so every id below bills identically.
+      #
+      # These are `equals` clauses rather than `starts_with: nova-2` on purpose. A prefix
+      # match would swallow `nova-2-batch`, which the build refuses outright (a model's
+      # matcher may not match another model's id), and the models-sorted-by-id invariant
+      # makes it impossible to order the specific entry ahead of the general one anyway.
+      # Listing ids also fails loudly on a variant Deepgram adds later, instead of quietly
+      # pricing an unknown model at a guessed rate.
+      or:
+        - equals: nova-2
+        - equals: nova-2-general
+        - equals: nova-2-atc
+        - equals: nova-2-automotive
+        - equals: nova-2-conversationalai
+        - equals: nova-2-drivethru
+        - equals: nova-2-finance
+        - equals: nova-2-medical
+        - equals: nova-2-meeting
+        - equals: nova-2-phonecall
+        - equals: nova-2-video
+        - equals: nova-2-voicemail
+    prices_checked: 2026-08-20
     pricing_source_url: https://deepgram.com/pricing
     price_comments: >-
-      Source rate $0.0059/minute (streaming). Converted to $/k seconds:
-      0.0059 * 1000 / 60 ~= 0.098333. Nova-2 is a legacy model: Deepgram no longer
-      lists its per-minute rate in the public pricing table (the FAQ states older
-      models remain available), so this rate is from independent sources tracking
-      Deepgram's published Nova-2 pricing. Verify before relying on it.
+      Source rate $0.35/hour, published by Deepgram in the pricing-page FAQ: "These remain
+      available at unchanged rates for existing deployments: Nova-2 streaming at $0.35/hour,
+      Enhanced at $0.99/hour, and Base at $0.87/hour."
+      Converted to $/k seconds: 0.35 / 3600 * 1000 = 0.0972222 recurring, stored as 0.097222.
+      This replaces 0.098333, which came from third-party trackers quoting $0.0059/minute
+      while this row carried a "verify before relying on it" note. Deepgram's own figure
+      works out to $0.0058333/minute, so the old rate was about 1.1% high. Nova-2 is still
+      absent from the main rate tables; the FAQ is now the vendor's published source for it.
     prices:
-      input_audio_kseconds: 0.098333
+      input_audio_kseconds: 0.097222
 
   - id: nova-2-batch
     name: Nova-2 (batch)
@@ -106,6 +134,13 @@ models:
       0.0043 * 1000 / 60 ~= 0.071667. Nova-2 is a legacy model no longer listed in
       Deepgram's public pricing table; rate from independent sources. Verify before
       relying on it.
+      Unresolved as of 2026-08-20: this is the only Deepgram row still with no vendor
+      source. The pricing FAQ publishes Nova-2 STREAMING ($0.35/hour) but says nothing
+      about prerecorded. Note that $0.0043/minute is also exactly Nova-3 Monolingual's
+      prerecorded rate, so this figure may have been taken from the Nova-3 row rather than
+      a Nova-2 one, the same way the nova-3-batch and flux-general-batch rates were taken
+      from the wrong column. It is left unchanged because there is no evidence either way,
+      and replacing one unsourced number with another would not be an improvement.
     prices:
       input_audio_kseconds: 0.071667
 
@@ -116,8 +151,17 @@ models:
       transcription model. Use `nova-3` for streaming, `nova-3-batch` for
       prerecorded. Use `nova-3-multilingual` (or `-batch` variant) for non-English
       or mixed-language workloads at Deepgram's higher multilingual rate.
+      `nova-3-general` is Deepgram's own alias for `nova-3`; `nova-3-medical` is the
+      English-only medical variant of the same tier, so both resolve here.
     match:
-      equals: nova-3
+      # Deepgram documents the option as "nova-3 or nova-3-general", and lists
+      # nova-3-medical (English only, so monolingual) under the same tier. Explicit
+      # `equals` clauses rather than `starts_with: nova-3`, which would swallow
+      # nova-3-batch and nova-3-multilingual and fail the build.
+      or:
+        - equals: nova-3
+        - equals: nova-3-general
+        - equals: nova-3-medical
     prices_checked: 2026-05-28
     pricing_source_url: https://deepgram.com/pricing
     price_comments: >-
@@ -130,16 +174,26 @@ models:
     name: Nova-3 (monolingual batch)
     description: >-
       Deepgram Nova-3 prerecorded / batch STT, English / monolingual rate.
-      Higher per-minute than streaming.
+      Cheaper per-minute than streaming, as prerecorded is throughout Deepgram's catalog.
     match:
       equals: nova-3-batch
-    prices_checked: 2026-05-28
+    prices_checked: 2026-08-20
     pricing_source_url: https://deepgram.com/pricing
     price_comments: >-
-      Source rate $0.0077/minute. Converted to $/k seconds:
-      0.0077 * 1000 / 60 ~= 0.12833.
+      Source rate $0.0043/minute, Nova-3 Monolingual under the Pre-Recorded tab,
+      Pay As You Go. Converted to $/k seconds: 0.0043 * 1000 / 60 = 0.0716666 recurring,
+      stored as 0.071667.
+      Corrected on 2026-08-20 from 0.12833. That value was $0.0077/minute, which is the
+      "Regular price" shown beside the discounted "Current price" in the STREAMING table,
+      not a prerecorded rate at all. Deepgram runs a limited-time streaming promotion and
+      renders both numbers in one cell, next to a separate Streaming / Pre-Recorded toggle;
+      the second number was read as the prerecorded price. The archived pricing page from
+      2026-05-31, the day this row was written, already showed $0.0043 under Pre-Recorded,
+      so the rate was wrong when recorded rather than having drifted since.
+      The tell was that batch cost 60% more than streaming ($0.0077 against $0.0048), which
+      is backwards; `test_batch_rates` now asserts the ordering.
     prices:
-      input_audio_kseconds: 0.12833
+      input_audio_kseconds: 0.071667
 
   - id: nova-3-multilingual
     name: Nova-3 (multilingual streaming)
@@ -162,10 +216,15 @@ models:
       Deepgram Nova-3 prerecorded / batch STT, multilingual rate.
     match:
       equals: nova-3-multilingual-batch
-    prices_checked: 2026-05-28
+    prices_checked: 2026-08-20
     pricing_source_url: https://deepgram.com/pricing
     price_comments: >-
-      Source rate $0.0092/minute. Converted to $/k seconds:
-      0.0092 * 1000 / 60 ~= 0.15333.
+      Source rate $0.0052/minute, Nova-3 Multilingual under the Pre-Recorded tab,
+      Pay As You Go. Converted to $/k seconds: 0.0052 * 1000 / 60 = 0.0866666 recurring,
+      stored as 0.086667.
+      Corrected on 2026-08-20 from 0.15333, which was $0.0092/minute: the "Regular price"
+      of the STREAMING row, not a prerecorded rate. Same misreading as `nova-3-batch`, and
+      the same evidence against it, the archived page from 2026-05-31 already showing
+      $0.0052 under Pre-Recorded.
     prices:
-      input_audio_kseconds: 0.15333
+      input_audio_kseconds: 0.086667

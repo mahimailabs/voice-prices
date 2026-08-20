@@ -1,7 +1,7 @@
 ---
 title: "OpenAI STT pricing"
 sidebarTitle: "OpenAI"
-description: "3 STT model(s) from OpenAI, with the rate and where it came from."
+description: "6 STT model(s) from OpenAI, with the rate and where it came from."
 mode: "wide"
 ---
 
@@ -11,15 +11,13 @@ Priced from `input_audio_kseconds`, US dollars per 1,000 seconds of input audio,
 
 | Model | Name | $ / min | Source | Last verified |
 | --- | --- | ---: | ---: | ---: |
+| `gpt-4o-mini-transcribe` <sup>estimated</sup> | GPT-4o mini Transcribe | $0.003 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
+| `gpt-4o-transcribe` <sup>estimated</sup> | GPT-4o Transcribe | $0.006 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
+| `gpt-live-transcribe` | GPT Live Transcribe | $0.01699998 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
+| `gpt-realtime-whisper` | GPT-Realtime-Whisper | $0.01699998 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
+| `gpt-transcribe` | GPT Transcribe | $0.0045 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
 | `whisper-1` | Whisper | $0.006 | <Badge color="green" size="sm">verified</Badge> | 2026-05-29 |
 
-## Billed per audio token
-
-These models bill audio as tokens rather than by the second, so they are not comparable to the table above.
-
-| Model | Name | Audio in $ / Mtok | Text in $ / Mtok | Text out $ / Mtok | Source | Last verified |
-| --- | --- | ---: | ---: | ---: | ---: | ---: |
-| `gpt-4o-mini-transcribe` | gpt-4o-mini-transcribe | $3 | $1.25 | $5 | <Badge color="gray" size="sm">seed</Badge> | - |
-| `gpt-4o-transcribe` | gpt-4o-transcribe | $6 | $2.5 | $10 | <Badge color="gray" size="sm">seed</Badge> | - |
+- `estimated` this rate is the vendor's own published estimate, not the meter it bills on. It will not reconcile against an invoice: the model is billed in another unit (usually tokens) and the figure here is the vendor restating that in this one. Useful for comparison and capacity planning, not for billing.
 
 What `verified`, `imported`, and `seed` mean is on [How Fresh?](/how-fresh). A rate that looks wrong is worth [reporting](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml).
