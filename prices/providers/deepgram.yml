@@ -15,6 +15,8 @@ model_match:
 provider_match:
   contains: deepgram
 
+pricing_tier: Pay As You Go
+
 models:
   - id: aura-1
     name: Aura

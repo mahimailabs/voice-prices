@@ -35,6 +35,8 @@ price_comments: >-
 
   LiveKit Inference resells these TTS models; those entries are LiveKit's rates, not Inworld's.
 
+pricing_tier: On-Demand
+
 models:
   - id: inworld-tts-1.5-max
     name: Realtime TTS 1.5 Max

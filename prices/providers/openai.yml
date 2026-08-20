@@ -51,6 +51,8 @@ extractors:
       - path: prompt_tokens
         dest: input_tokens
 
+pricing_tier: Standard
+
 models:
   - id: ada
     match:

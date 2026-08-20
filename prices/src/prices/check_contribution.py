@@ -335,14 +335,35 @@ def check_contribution() -> int:
         pricing_hosts = {urlparse(str(u)).netloc.lower().removeprefix('www.') for u in urls} - {''}
 
         before = _models(base_version(path, base_ref))
+        priced_change = False
         for model_id, model in _models(head).items():
             was = before.get(model_id)
             if was is not None and was.get('prices') == model.get('prices'):
                 continue  # unchanged price: not this PR's claim to defend
             checked_models += 1
             findings.extend(check_model(provider_id, model, pricing_hosts=pricing_hosts, today=today))
-            if _priced_fields(model) and not is_api_backed(model) and not declares_unverified(model):
-                hand_read.append(f'{provider_id}/{model_id}')
+            if _priced_fields(model):
+                priced_change = True
+                if not is_api_backed(model) and not declares_unverified(model):
+                    hand_read.append(f'{provider_id}/{model_id}')
+
+        # A rate is not comparable with the rest of the catalog unless you know which plan it came
+        # from. Most vendors publish several for the same model: Deepgram quotes Pay As You Go and
+        # Growth, Cartesia sells four subscription tiers, AssemblyAI has pay-as-you-go and Custom.
+        # Mixing them silently makes the catalog incomparable with itself, and leaves a consumer
+        # unable to tell whether a row matches the plan they are actually on. Provider-level,
+        # because the policy is one tier per provider; an unpriced row claims nothing and is exempt.
+        if priced_change and not str(head.get('pricing_tier') or '').strip():
+            findings.append(
+                Finding(
+                    provider_id,
+                    '<provider>',
+                    'no `pricing_tier` on the provider. Name the vendor plan these rates come from, '
+                    'worded as the vendor words it (`Pay As You Go`, `On-Demand`, `Standard`), or '
+                    '`Single published rate` if the vendor has no plans to choose between. '
+                    'This project prices the cheapest tier a new account can reach with no commitment.',
+                )
+            )
 
     if not checked_models:
         print('no added or repriced models in this branch')

@@ -74,6 +74,25 @@ class Provider(_Model):
     voice-prices itself does not warn or fail on stale entries; this is metadata for consumers like VoiceGateway
     to drive their own freshness UX. Default 60.
     """
+    pricing_tier: NameField | None = None
+    """The vendor plan every rate in this file is taken from, named as the vendor names it.
+
+    Most vendors publish several prices for the same model: a pay-as-you-go rate, one or more
+    committed plans, and an enterprise rate you have to ask for. A catalog that mixes them is
+    not comparable with itself, so this project takes ONE tier per provider, the cheapest a new
+    account can reach with no spend commitment, and records which one here.
+
+    Verbatim from the vendor: `Pay As You Go`, `On-Demand`, `Standard`. Not a normalised enum,
+    because the value exists so a reader can find the same words on the pricing page and
+    confirm the number against their own invoice. A rate the reader cannot locate is a rate
+    they will not trust.
+
+    Use the literal ``Single published rate`` when the vendor publishes one price with no plan
+    structure to choose from, as ElevenLabs does. That is a positive claim and is not the same
+    as leaving the field absent, which means nobody has looked yet. ``check_contribution``
+    requires this on any provider whose models are added or repriced, so the distinction stays
+    honest: a rate lands with its tier named, or it does not land.
+    """
     models: list[ModelInfo]
     """List of models supported by this provider"""
 

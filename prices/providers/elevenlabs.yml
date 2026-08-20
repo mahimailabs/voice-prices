@@ -19,6 +19,8 @@ price_comments: >-
   Turbo models are $0.05/kchar (0.5 credits/character) and Multilingual v2 is
   $0.10/kchar (1 credit/character). See https://elevenlabs.io/pricing/api.
 
+pricing_tier: Single published rate
+
 models:
   - id: eleven_flash_v2
     name: Eleven Flash v2

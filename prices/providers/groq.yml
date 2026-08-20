@@ -17,6 +17,8 @@ extractors:
       - path: completion_tokens
         dest: output_tokens
 
+pricing_tier: On-Demand
+
 models:
   - id: canopylabs/orpheus-arabic-saudi
     name: Orpheus V1 Arabic (Saudi)

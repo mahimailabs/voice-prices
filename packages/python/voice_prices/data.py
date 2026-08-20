@@ -17,6 +17,7 @@ providers: list[Provider] = [
         model_match=ClauseContains(contains='quail'),
         provider_match=ClauseContains(contains='coustics'),
         staleness_threshold_days=60,
+        pricing_tier='Startup',
         models=[
             ModelInfo(
                 id='quail-vad-2.0-xxs-16khz',
@@ -446,6 +447,7 @@ providers: list[Provider] = [
         model_match=ClauseStartsWith(starts_with='universal-'),
         provider_match=ClauseContains(contains='assemblyai'),
         staleness_threshold_days=60,
+        pricing_tier='Pay as you go',
         models=[
             ModelInfo(
                 id='universal-2',
@@ -1523,6 +1525,7 @@ providers: list[Provider] = [
         model_match=ClauseStartsWith(starts_with='sonic'),
         provider_match=ClauseContains(contains='cartesia'),
         staleness_threshold_days=60,
+        pricing_tier='Pro',
         models=[
             ModelInfo(
                 id='sonic-3',
@@ -1732,6 +1735,7 @@ providers: list[Provider] = [
         ),
         provider_match=ClauseContains(contains='deepgram'),
         staleness_threshold_days=60,
+        pricing_tier='Pay As You Go',
         models=[
             ModelInfo(
                 id='aura-1',
@@ -2048,6 +2052,7 @@ providers: list[Provider] = [
         model_match=ClauseStartsWith(starts_with='eleven_'),
         provider_match=ClauseContains(contains='elevenlabs'),
         staleness_threshold_days=60,
+        pricing_tier='Single published rate',
         models=[
             ModelInfo(
                 id='eleven_flash_v2',
@@ -2881,6 +2886,7 @@ providers: list[Provider] = [
             )
         ],
         staleness_threshold_days=60,
+        pricing_tier='On-Demand',
         models=[
             ModelInfo(
                 id='canopylabs/orpheus-arabic-saudi',
@@ -5410,6 +5416,7 @@ providers: list[Provider] = [
         ),
         provider_match=ClauseContains(contains='inworld'),
         staleness_threshold_days=60,
+        pricing_tier='On-Demand',
         models=[
             ModelInfo(
                 id='inworld-tts-1.5-max',
@@ -5461,6 +5468,7 @@ providers: list[Provider] = [
         price_comments='LiveKit Inference is a gateway that resells STT, TTS, and LLM models under a single API key, at its own per-model rates (distinct from buying direct from each vendor). These are the Build/Ship tier prices, which LiveKit publishes identically for both plans; Scale-tier discounts live in the livekit-scale provider. Resolution is by explicit provider_id (VoiceGateway passes provider_id=livekit); model_match is intentionally omitted so a bare model ref still resolves to the direct vendor. Conversions: STT $/min to input_audio_kseconds (x1000/60); TTS $/1M chars to input_kchars (/1000); LLM $/1M tokens map 1:1. Realtime bundled models and LiveKit Cloud platform per-minute rates are out of scope. Source: LiveKit get_pricing_info; regenerate with make livekit-get.',
         provider_match=ClauseContains(contains='livekit'),
         staleness_threshold_days=60,
+        pricing_tier='Build/Ship',
         models=[
             ModelInfo(
                 id='assemblyai/u3-rt-pro',
@@ -6134,6 +6142,7 @@ providers: list[Provider] = [
         price_comments='Scale-tier prices for LiveKit Inference. Only models whose Scale rate differs from Build/Ship are listed here; LLM models (identical across all tiers) and flat-priced voice models fall back to the livekit provider via fallback_model_providers. Same conversions and source as the livekit provider.',
         fallback_model_providers=['livekit'],
         staleness_threshold_days=60,
+        pricing_tier='Scale',
         models=[
             ModelInfo(
                 id='cartesia/ink-2',
@@ -6987,6 +6996,7 @@ providers: list[Provider] = [
             ),
         ],
         staleness_threshold_days=60,
+        pricing_tier='Standard',
         models=[
             ModelInfo(
                 id='ada',
@@ -11901,6 +11911,7 @@ providers: list[Provider] = [
         model_match=ClauseContains(contains='telnyx'),
         provider_match=ClauseContains(contains='telnyx'),
         staleness_threshold_days=60,
+        pricing_tier='Pay as you go',
         models=[
             ModelInfo(
                 id='anthropic-claude-haiku-4.5',
@@ -12444,6 +12455,7 @@ providers: list[Provider] = [
         model_match=ClauseStartsWith(starts_with='vapi'),
         provider_match=ClauseContains(contains='vapi'),
         staleness_threshold_days=60,
+        pricing_tier='Build',
         models=[
             ModelInfo(
                 id='vapi-platform',
