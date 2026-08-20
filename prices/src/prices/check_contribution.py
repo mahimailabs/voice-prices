@@ -36,9 +36,21 @@ import yaml
 PROVIDERS_DIR = Path('prices/providers')
 
 # A screenshot is the one piece of evidence a generated rate cannot fabricate cheaply: it
-# means someone loaded the vendor's page. Markdown image, HTML tag, or a GitHub upload URL.
+# means someone loaded the vendor's page and uploaded what they saw.
+#
+# Deliberately restricted to GitHub's own attachment hosts, which is where a file dragged
+# into the PR body lands. It used to accept any `![](...)` or `<img `, and that was not a
+# guard at all: review bots append their block to the pull request *description*, and
+# Greptile's block carries `<img>` badges pointing at its own CDN ("Fix All in Claude
+# Code"). Every PR it reviewed therefore satisfied the evidence requirement automatically,
+# with nobody having opened a vendor pricing page. See `test_review_bot_badges_are_not_a_screenshot`.
+#
+# Pointing at an image on some other host is also not evidence: it costs nothing, and the
+# file need not be yours or even exist. Uploading forces the contributor to have the image.
+_ATTACHMENT_HOST = r'(?:https://github\.com/user-attachments/|https://user-images\.githubusercontent\.com/)'
 _IMAGE_RE = re.compile(
-    r'!\[[^\]]*\]\([^)]+\)|<img\s|https://github\.com/user-attachments/|https://user-images\.githubusercontent\.com/',
+    # markdown embed, HTML tag, or a bare attachment URL, each pinned to an upload host
+    rf'!\[[^\]]*\]\(\s*{_ATTACHMENT_HOST}|<img\s[^>]*src\s*=\s*["\']?{_ATTACHMENT_HOST}|{_ATTACHMENT_HOST}',
     re.IGNORECASE,
 )
 

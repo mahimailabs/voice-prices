@@ -310,10 +310,14 @@ def test_new_provider_file_is_all_new_models(repo: Path, capsys: pytest.CaptureF
 @pytest.mark.parametrize(
     'body',
     [
-        '![pricing page](https://example.com/shot.png)',
-        'here it is <img src="x.png">',
+        # What dragging a file into the PR body actually produces.
+        '![pricing page](https://github.com/user-attachments/assets/abc-123)',
+        '<img src="https://github.com/user-attachments/assets/abc-123">',
         'https://github.com/user-attachments/assets/abc-123',
         'https://user-images.githubusercontent.com/1/2.png',
+        '![shot](https://user-images.githubusercontent.com/1/2.png)',
+        # An attachment URL means a file was uploaded to this PR, whatever wraps it.
+        '[a link](https://github.com/user-attachments/assets/abc)',
     ],
 )
 def test_screenshot_detected(body: str):
@@ -327,10 +331,42 @@ def test_screenshot_detected(body: str):
         'I checked the pricing page, trust me',
         'see https://acme.example/pricing',
         '[a link](https://example.com/shot.png)',  # a link is not an embedded image
+        # An image hosted anywhere else is not evidence that a human loaded a vendor page.
+        # It costs nothing to point at someone else's URL, and the file need not exist.
+        '![pricing page](https://example.com/shot.png)',
+        'here it is <img src="x.png">',
     ],
 )
 def test_screenshot_not_detected(body: str):
     assert not has_screenshot(body)
+
+
+def test_review_bot_badges_are_not_a_screenshot():
+    """The hole this check had until 2026-08-20.
+
+    Greptile appends its review block to the pull request *description*, not just to a
+    comment, and that block carries `<img>` badges pointing at its own CDN. Any `<img` tag
+    used to satisfy `has_screenshot`, so every PR the bot reviewed cleared the evidence
+    requirement automatically, with no human having opened a vendor pricing page.
+
+    A guard a bot can satisfy on the contributor's behalf is not a guard.
+    """
+    greptile_block = (
+        '<!-- greptile_comment -->\n'
+        '## Greptile Overview\n'
+        'Looks good.\n'
+        '<a href="https://app.greptile.com/x"><img alt="Fix All in Claude Code" '
+        'src="https://greptile-static-assets.s3.amazonaws.com/badges/claude-code.svg"></a>\n'
+        '<a href="https://app.greptile.com/y"><img alt="Fix All in Codex" '
+        'src="https://greptile-static-assets.s3.amazonaws.com/badges/codex.svg"></a>\n'
+        '<!-- /greptile_comment -->'
+    )
+    assert not has_screenshot(greptile_block)
+
+    # A real attachment alongside the bot block still counts.
+    assert has_screenshot(
+        f'![deepgram pricing](https://github.com/user-attachments/assets/abc-123)\n\n{greptile_block}'
+    )
 
 
 def test_api_backed_detection():
