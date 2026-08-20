@@ -29,6 +29,54 @@ models:
     prices:
       input_audio_kseconds: 0.041667
 
+  - id: universal-3-5-pro
+    name: Universal-3.5 Pro (async)
+    description: >-
+      AssemblyAI's highest-accuracy model on the async / pre-recorded endpoint, passed as
+      `speech_models: ["universal-3-5-pro"]`. 18 languages with native code switching.
+      The SAME id on the streaming endpoint costs more than twice as much; that rate is
+      `universal-3-5-pro-streaming` here.
+    match:
+      equals: universal-3-5-pro
+    prices_checked: 2026-08-20
+    pricing_source_url: https://www.assemblyai.com/pricing
+    price_comments: >-
+      Source rate $0.21/hour, "Universal-3.5 Pro" under the Pre-recorded Speech-to-Text API
+      tab. Converted to $/k seconds: 0.21 / 3600 * 1000 = 0.0583333 recurring, stored as
+      0.058333.
+      AssemblyAI ships ONE id for two tiers at two rates: $0.21/hour async and $0.45/hour
+      streaming. The id alone does not say which endpoint the caller used, so this catalog
+      splits them, taking the bare id for async and inventing a `-streaming` suffix for the
+      other. That mirrors what it already does for Deepgram, where `nova-3-batch` is a
+      catalog id Deepgram does not ship either.
+      The bare id resolving to the cheaper async rate is a deliberate choice, not a default:
+      it matches the parameter name AssemblyAI documents for the async API (`speech_models`),
+      and a realtime caller has to name the endpoint they are on anyway.
+    prices:
+      input_audio_kseconds: 0.058333
+
+  - id: universal-3-5-pro-streaming
+    name: Universal-3.5 Pro Realtime (streaming)
+    description: >-
+      AssemblyAI's highest-accuracy realtime model, passed as
+      `speech_model: "universal-3-5-pro"` when opening the streaming WebSocket. Built-in
+      context carryover and conversation memory, self-correcting speaker labels.
+      NOT an id AssemblyAI accepts: it is a catalog id that disambiguates the streaming
+      rate from the async one, which share the id `universal-3-5-pro` at the vendor.
+    match:
+      equals: universal-3-5-pro-streaming
+    prices_checked: 2026-08-20
+    pricing_source_url: https://www.assemblyai.com/pricing
+    price_comments: >-
+      Source rate $0.45/hour, "Universal-3.5 Pro Realtime" under the Streaming
+      Speech-to-Text API tab, which is not the page default and needs a click to reach.
+      Converted to $/k seconds: 0.45 / 3600 * 1000 = 0.125 exactly.
+      Three times the cost of the Universal-Streaming tier ($0.15/hour) and more than double
+      the same model on the async endpoint ($0.21/hour). Reading the async tab and assuming
+      the rate carries over to streaming understates a realtime agent's bill by 2.1x.
+    prices:
+      input_audio_kseconds: 0.125
+
   - id: universal-streaming-english
     name: Universal-Streaming English
     description: >-

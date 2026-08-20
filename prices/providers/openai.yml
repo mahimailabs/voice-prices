@@ -435,7 +435,10 @@ models:
   - id: gpt-4o-mini-transcribe
     name: GPT-4o mini Transcribe
     match:
-      equals: gpt-4o-mini-transcribe
+      # The dated snapshot bills at the base model's rate; OpenAI publishes no separate row.
+      or:
+        - equals: gpt-4o-mini-transcribe
+        - equals: gpt-4o-mini-transcribe-2025-12-15
     prices_checked: 2026-08-20
     pricing_source_url: https://platform.openai.com/docs/pricing
     price_comments: >-
@@ -899,6 +902,30 @@ models:
       cache_audio_read_mtok: 0.3
       output_mtok: 2.4
       output_audio_mtok: 20
+
+  - id: gpt-realtime-translate
+    name: GPT-Realtime-Translate
+    description: >-
+      Streaming speech-to-speech translation for live multilingual audio. Takes source audio
+      and returns translated audio plus transcript deltas while the source is still arriving.
+      Runs on a dedicated realtime translation endpoint. Billed by audio duration, not tokens.
+    match:
+      equals: gpt-realtime-translate
+    prices_checked: 2026-08-20
+    pricing_source_url: https://platform.openai.com/docs/models/gpt-realtime-translate
+    price_comments: >-
+      Source rate $0.034 per minute, listed on the model page as "Realtime audio duration /
+      Per minute". Converted to $/k seconds: 0.034 * 1000 / 60 = 0.5666666 recurring, stored
+      as 0.566667. The page states it outright: "priced by audio duration rather than text
+      tokens." No token rate is published.
+      Caveat: this model outputs audio as well as taking it in, yet only one duration meter
+      is published, so which direction it measures is not stated. Recorded against
+      input_audio_kseconds because OpenAI uses the identical metric name on
+      gpt-live-transcribe and gpt-realtime-whisper, where audio is input only and the meter
+      can therefore only mean input duration. If OpenAI clarifies that it meters both
+      directions, revisit this rather than silently doubling it.
+    prices:
+      input_audio_kseconds: 0.566667
 
   - id: gpt-realtime-whisper
     name: GPT-Realtime-Whisper
