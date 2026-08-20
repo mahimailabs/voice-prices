@@ -7454,6 +7454,16 @@ providers: list[Provider] = [
                 prices=ModelPrice(input_mtok=Decimal('30'), output_mtok=Decimal('180')),
             ),
             ModelInfo(
+                id='gpt-live-transcribe',
+                match=ClauseEquals(equals='gpt-live-transcribe'),
+                name='GPT Live Transcribe',
+                description='Low-latency streaming speech-to-text for realtime transcript deltas from live audio. Billed by audio duration, not tokens.',
+                price_comments='Source rate $0.017 per minute, listed on the model page as "Realtime audio duration / Per minute". Converted to $/k seconds: 0.017 * 1000 / 60 = 0.2833333 recurring, stored rounded to six decimal places as 0.283333, matching the other per-minute conversions in this catalog. A one-hour call prices $1.0199988 against $1.02 billed. This is the billed meter, not a derived estimate. The pricing table publishes "-" in both the input and output token columns for this model, and the section is headed "Prices per 1M tokens unless noted", so the per-minute figure is what is noted. Contrast gpt-4o-transcribe, which publishes token rates AND a per-minute figure; there the tokens are the bill and the minute is OpenAI\'s own estimate. Audio is input only, so the whole rate belongs to input_audio_kseconds.',
+                pricing_source_url='https://platform.openai.com/docs/models/gpt-live-transcribe',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.283333')),
+            ),
+            ModelInfo(
                 id='gpt-realtime',
                 match=ClauseOr(
                     or_=[ClauseEquals(equals='gpt-realtime'), ClauseEquals(equals='gpt-realtime-2025-08-28')]
@@ -7480,6 +7490,26 @@ providers: list[Provider] = [
                     cache_audio_read_mtok=Decimal('0.3'),
                     output_audio_mtok=Decimal('20'),
                 ),
+            ),
+            ModelInfo(
+                id='gpt-realtime-whisper',
+                match=ClauseEquals(equals='gpt-realtime-whisper'),
+                name='GPT-Realtime-Whisper',
+                description='Streaming speech-to-text for low-latency transcript deltas from live audio. Billed by audio duration, not tokens.',
+                price_comments='Source rate $0.017 per minute, listed on the model page as "Realtime audio duration / Per minute". Converted to $/k seconds: 0.017 * 1000 / 60 = 0.2833333 recurring, stored rounded to six decimal places as 0.283333, as for gpt-live-transcribe. The model page states outright: "GPT-Realtime-Whisper is priced by audio duration rather than text tokens." No token rate is published, so there is no second meter and nothing here is an estimate. Audio is input only. Same rate as gpt-live-transcribe; the two are separate model ids, so both are listed.',
+                pricing_source_url='https://platform.openai.com/docs/models/gpt-realtime-whisper',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.283333')),
+            ),
+            ModelInfo(
+                id='gpt-transcribe',
+                match=ClauseEquals(equals='gpt-transcribe'),
+                name='GPT Transcribe',
+                description='High-accuracy speech-to-text for completed audio files, streamed file transcripts, and committed turns in Realtime sessions. Billed by audio duration, not tokens.',
+                price_comments='Source rate $0.0045 per minute, listed on the model page as "Transcription audio duration / Per minute". Converted to $/k seconds: 0.0045 * 1000 / 60 = 0.075 exactly. This is the billed meter. The pricing table publishes "-" in both token columns for this model, under a section headed "Prices per 1M tokens unless noted", so the per-minute figure is the noted exception rather than an estimate derived from tokens. Audio is input only, so the whole rate belongs to input_audio_kseconds. Note this is a different model from gpt-4o-transcribe ($0.006/min estimated, billed per token) and roughly a third cheaper.',
+                pricing_source_url='https://platform.openai.com/docs/models/gpt-transcribe',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.075')),
             ),
             ModelInfo(
                 id='moderation',
