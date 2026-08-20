@@ -47,10 +47,11 @@ PROVIDERS_DIR = Path('prices/providers')
 #
 # Pointing at an image on some other host is also not evidence: it costs nothing, and the
 # file need not be yours or even exist. Uploading forces the contributor to have the image.
-_ATTACHMENT_HOST = r'(?:https://github\.com/user-attachments/|https://user-images\.githubusercontent\.com/)'
+# The markdown around the URL is not checked, only the host. An attachment URL exists only
+# because someone uploaded a file to this pull request, so it is evidence however it is
+# wrapped: `![x](url)`, `<img src=url>`, a plain link, or the bare URL all mean the same thing.
 _IMAGE_RE = re.compile(
-    # markdown embed, HTML tag, or a bare attachment URL, each pinned to an upload host
-    rf'!\[[^\]]*\]\(\s*{_ATTACHMENT_HOST}|<img\s[^>]*src\s*=\s*["\']?{_ATTACHMENT_HOST}|{_ATTACHMENT_HOST}',
+    r'https://github\.com/user-attachments/|https://user-images\.githubusercontent\.com/',
     re.IGNORECASE,
 )
 
