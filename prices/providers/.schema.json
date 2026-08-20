@@ -532,6 +532,14 @@
         "source_rate": {
           "$ref": "#/$defs/SourceRate",
           "description": "The observed rate in the vendor's own unit, for audit."
+        },
+        "estimated_fields": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Priced fields whose value is the vendor's own published *estimate*, not the meter they bill on.\n\nAbsent (the normal case) means every rate on the model is a billing rate.\n\nThis exists because a vendor can publish two numbers for the same model in two different\nunits, and only one of them is the invoice. OpenAI prices `gpt-4o-transcribe` per token and\nalso prints \"$0.006 / minute\" in a column headed *Estimated cost*, derived from an assumed\nspeech density. Both numbers are real and published; only the token rate is charged. Storing\nthe per-minute figure without saying so would let a consumer bill from it and quietly disagree\nwith the invoice, which is the same class of error as the silent zero it was added to fix.\n\nPer-field rather than a whole-row boolean, because the distinction is per-field: on\n`gpt-4o-transcribe` the token rates are billed and only `input_audio_kseconds` is estimated.\nA row-level flag would misdescribe both halves.",
+          "title": "Estimated Fields"
         }
       },
       "title": "Provenance",

@@ -249,6 +249,37 @@ class Provenance(_Model):
     (the freshness bot writes this only when a verifier agent ran alongside the extractor)."""
     source_rate: SourceRate | None = None
     """The observed rate in the vendor's own unit, for audit."""
+    estimated_fields: list[str] | None = None
+    """Priced fields whose value is the vendor's own published *estimate*, not the meter they bill on.
+
+    Absent (the normal case) means every rate on the model is a billing rate.
+
+    This exists because a vendor can publish two numbers for the same model in two different
+    units, and only one of them is the invoice. OpenAI prices `gpt-4o-transcribe` per token and
+    also prints "$0.006 / minute" in a column headed *Estimated cost*, derived from an assumed
+    speech density. Both numbers are real and published; only the token rate is charged. Storing
+    the per-minute figure without saying so would let a consumer bill from it and quietly disagree
+    with the invoice, which is the same class of error as the silent zero it was added to fix.
+
+    Per-field rather than a whole-row boolean, because the distinction is per-field: on
+    `gpt-4o-transcribe` the token rates are billed and only `input_audio_kseconds` is estimated.
+    A row-level flag would misdescribe both halves.
+    """
+
+    @field_validator('estimated_fields', mode='after')
+    @classmethod
+    def validate_estimated_fields(cls, fields: list[str] | None) -> list[str] | None:
+        """Names must be real priced fields, so a typo cannot silently claim nothing."""
+        if fields is None:
+            return None
+        if not fields:
+            raise ValueError('`estimated_fields` must be omitted rather than empty')
+        known = set(ModelPrice.model_fields)
+        if unknown := sorted(set(fields) - known):
+            raise ValueError(f'`estimated_fields` names fields that do not exist on ModelPrice: {unknown}')
+        if len(set(fields)) != len(fields):
+            raise ValueError('`estimated_fields` contains duplicates')
+        return fields
 
 
 class ModelInfo(_Model):
@@ -304,6 +335,28 @@ class ModelInfo(_Model):
         if prices_checked is not None and info.data.get('price_discrepancies'):
             raise ValueError('`price_discrepancies` should be removed when `prices_checked` is set')
         return prices_checked
+
+    @model_validator(mode='after')
+    def validate_estimated_fields_are_priced(self) -> ModelInfo:
+        """A field cannot be flagged as an estimate unless this model actually carries it.
+
+        Without this, deleting a rate and leaving the flag behind turns the provenance into a
+        claim about a price that is not there, which is worse than no claim at all.
+        """
+        named = (self.provenance.estimated_fields if self.provenance else None) or []
+        if not named:
+            return self
+        price_sets = self.prices if isinstance(self.prices, list) else [self.prices]
+        priced: set[str] = set()
+        for entry in price_sets:
+            model_price = entry.prices if isinstance(entry, ConditionalPrice) else entry
+            priced |= {name for name in ModelPrice.model_fields if getattr(model_price, name, None) is not None}
+        if missing := sorted(set(named) - priced):
+            raise ValueError(
+                f'`provenance.estimated_fields` names {missing}, which this model does not price. '
+                'Remove the name, or add the rate it refers to.'
+            )
+        return self
 
     @field_validator('prices', mode='after')
     @classmethod

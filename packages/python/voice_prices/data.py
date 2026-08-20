@@ -7157,7 +7157,18 @@ providers: list[Provider] = [
             ModelInfo(
                 id='gpt-4o-mini-transcribe',
                 match=ClauseEquals(equals='gpt-4o-mini-transcribe'),
-                prices=ModelPrice(input_mtok=Decimal('1.25'), output_mtok=Decimal('5'), input_audio_mtok=Decimal('3')),
+                name='GPT-4o mini Transcribe',
+                price_comments='Token rates are the bill: $1.25/1M text input, $3/1M audio input, $5/1M output. input_audio_kseconds is NOT a billing rate. OpenAI prints $0.003/minute for this model in a column headed "Estimated cost", derived from an assumed speech density, alongside the token rates that are actually charged. Converted to $/k seconds: 0.003 * 1000 / 60 = 0.05 exactly. It is recorded because a voice runtime measures seconds and would otherwise get a silent $0 here, and flagged in provenance.estimated_fields because a caller reconciling against an OpenAI invoice must use the token rates instead. The two meters will not agree: which one is closer depends on how fast the speaker talks, and OpenAI does not publish the tokens-per-minute assumption behind the estimate.',
+                pricing_source_url='https://platform.openai.com/docs/pricing',
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 8, 20), estimated_fields=['input_audio_kseconds']
+                ),
+                prices=ModelPrice(
+                    input_mtok=Decimal('1.25'),
+                    output_mtok=Decimal('5'),
+                    input_audio_mtok=Decimal('3'),
+                    input_audio_kseconds=Decimal('0.05'),
+                ),
             ),
             ModelInfo(
                 id='gpt-4o-mini-tts',
@@ -7196,7 +7207,18 @@ providers: list[Provider] = [
                 match=ClauseOr(
                     or_=[ClauseEquals(equals='gpt-4o-transcribe'), ClauseEquals(equals='gpt-4o-transcribe-diarize')]
                 ),
-                prices=ModelPrice(input_mtok=Decimal('2.5'), output_mtok=Decimal('10'), input_audio_mtok=Decimal('6')),
+                name='GPT-4o Transcribe',
+                price_comments='Token rates are the bill: $2.50/1M text input, $6/1M audio input, $10/1M output. input_audio_kseconds is NOT a billing rate. OpenAI prints $0.006/minute for this model in a column headed "Estimated cost", derived from an assumed speech density, alongside the token rates that are actually charged. Converted to $/k seconds: 0.006 * 1000 / 60 = 0.1 exactly. It is recorded because a voice runtime measures seconds and would otherwise get a silent $0 here, and flagged in provenance.estimated_fields because a caller reconciling against an OpenAI invoice must use the token rates instead. Note the collision with whisper-1, which carries the same 0.1 for a different reason: there $0.006/minute is the billed meter and the value is exact, so whisper-1 has no estimated_fields entry. Identical numbers, different standing. gpt-4o-transcribe-diarize shares this row; the pricing page lists no separate rate.',
+                pricing_source_url='https://platform.openai.com/docs/pricing',
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 8, 20), estimated_fields=['input_audio_kseconds']
+                ),
+                prices=ModelPrice(
+                    input_mtok=Decimal('2.5'),
+                    output_mtok=Decimal('10'),
+                    input_audio_mtok=Decimal('6'),
+                    input_audio_kseconds=Decimal('0.1'),
+                ),
             ),
             ModelInfo(
                 id='gpt-4o:extended',

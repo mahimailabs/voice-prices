@@ -124,12 +124,28 @@ def test_order_is_stable_and_follows_the_chain_table():
 
 
 def test_surfaces_on_the_public_calc_price():
-    """The field has to reach the caller, not just the internal dict."""
+    """The field has to reach the caller, not just the internal dict.
+
+    gpt-4o-mini-tts is the last catalog model priced only in audio tokens: OpenAI publishes no
+    per-character figure for it, not even an estimate, so a TTS runtime measuring characters
+    still gets a silent zero and this is the only thing that says so.
+    """
+    calculation = calc_price(Usage(characters=1000), model_ref='gpt-4o-mini-tts', provider_id='openai')
+    assert calculation.total_price == 0
+    assert calculation.unpriced_usage == ('characters',)
+    assert 'unpriced_usage' in repr(calculation)
+
+
+def test_quiet_once_a_seconds_rate_exists():
+    """gpt-4o-transcribe used to bill at zero for seconds. It now carries an estimated rate."""
     calculation = calc_price(
         Usage(audio_input_seconds=Decimal(60)), model_ref='gpt-4o-transcribe', provider_id='openai'
     )
-    assert calculation.unpriced_usage == ('audio_input_seconds',)
-    assert 'unpriced_usage' in repr(calculation)
+    assert calculation.total_price == Decimal('0.006')
+    assert calculation.unpriced_usage == ()
+    # ...but the rate is the vendor's estimate, not the meter, and provenance says so.
+    assert calculation.model.provenance is not None
+    assert calculation.model.provenance.estimated_fields == ['input_audio_kseconds']
 
 
 def test_real_catalog_model_priced_in_its_own_unit_is_quiet():

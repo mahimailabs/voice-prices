@@ -786,6 +786,21 @@ class Provenance:
     """The exact price string an agent quoted from the vendor page, recorded on a consensus run."""
     source_rate: SourceRate | None = None
     """The observed rate in the vendor's own unit, for audit."""
+    estimated_fields: list[str] | None = None
+    """Priced fields whose value is the vendor's own published estimate, not the meter they bill on.
+
+    Absent (the normal case) means every rate on the model is a billing rate. When present, a rate
+    named here will not reconcile against an invoice: it is the vendor's own approximation, usually
+    of a per-token bill restated per minute or per character.
+
+    OpenAI's `gpt-4o-transcribe` is the case this was added for. It bills per token and also
+    prints "$0.006 / minute" under a column headed *Estimated cost*, derived from an assumed
+    speech density. Both numbers are published; only one is charged.
+
+    Per-field rather than per-model, because the split is per-field: the token rates on that model
+    are billed and only `input_audio_kseconds` is estimated. Callers that must match an invoice
+    should prefer a field not named here; callers doing capacity planning can use either.
+    """
 
 
 @dataclass
