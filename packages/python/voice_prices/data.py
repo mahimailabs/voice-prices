@@ -6658,7 +6658,7 @@ providers: list[Provider] = [
                 description="Novita's Fish Audio text-to-speech endpoint.",
                 price_comments='Source rate $15.00 per 1M characters. 15.00 / 1000 = 0.015 input_kchars.',
                 pricing_source_url='https://novita.ai/pricing',
-                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
                 prices=ModelPrice(input_kchars=Decimal('0.015')),
             ),
             ModelInfo(
@@ -6738,7 +6738,7 @@ providers: list[Provider] = [
                 description="Novita's MiniMax speech-2.6-hd text-to-speech endpoint.",
                 price_comments='Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars. Version note: the Audio tab of novita.ai/pricing lists this row under the lowercase API-style name with mode "T2A / T2A Async", and separately lists "MiniMax Speech 2.8 HD/Turbo Sync/Async Text-to-Speech" at the identical rate. Novita\'s API docs carry only 2.8 pages, so 2.6 reads as the legacy name kept priced alongside its replacement. Both generations cost the same, so this row is correct either way; the 2.8 variants are simply not in this catalog yet.',
                 pricing_source_url='https://novita.ai/pricing',
-                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
                 prices=ModelPrice(input_kchars=Decimal('0.1')),
             ),
             ModelInfo(
@@ -6748,7 +6748,7 @@ providers: list[Provider] = [
                 description="Novita's MiniMax speech-2.6-turbo text-to-speech endpoint.",
                 price_comments='Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars. Version note: the Audio tab of novita.ai/pricing lists this row under the lowercase API-style name with mode "T2A / T2A Async", and separately lists "MiniMax Speech 2.8 HD/Turbo Sync/Async Text-to-Speech" at the identical rate. Novita\'s API docs carry only 2.8 pages, so 2.6 reads as the legacy name kept priced alongside its replacement. Both generations cost the same, so this row is correct either way; the 2.8 variants are simply not in this catalog yet.',
                 pricing_source_url='https://novita.ai/pricing',
-                provenance=Provenance(last_verified=datetime.date(2026, 8, 16)),
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
                 prices=ModelPrice(input_kchars=Decimal('0.06')),
             ),
             ModelInfo(
