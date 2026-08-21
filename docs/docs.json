@@ -49,6 +49,7 @@
             "pages": [
               "stt/assemblyai",
               "stt/deepgram",
+              "stt/elevenlabs",
               "stt/groq",
               "stt/inworld",
               "stt/openai",

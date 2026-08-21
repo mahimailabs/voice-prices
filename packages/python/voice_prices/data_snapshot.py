@@ -28,6 +28,17 @@ def _bundled_snapshot() -> DataSnapshot:
 
 
 def set_custom_snapshot(snapshot: DataSnapshot | None):
+    """Install a snapshot for every later price lookup in this process, or reset with None.
+
+    Process-wide by design: `get_snapshot` reads this module global, so one call changes what
+    every subsequent `calc_price` sees. `UpdatePrices` calls it from a background daemon thread,
+    which means a process that has started an updater can return a different price for two
+    identical calls, and a test that has not reset can see downloaded data instead of the
+    snapshot bundled with the installed version.
+
+    `set_custom_snapshot(None)` is the supported reset and restores the bundled data. Prefer
+    `with UpdatePrices():`, whose `stop()` resets for you after joining the thread.
+    """
     global _custom_snapshot
     _custom_snapshot = snapshot
 
