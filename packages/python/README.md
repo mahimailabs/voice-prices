@@ -15,6 +15,14 @@
 </div>
 <br/>
 
+> **⚠️ Reference only, and unofficial.** Voice Prices is a community-maintained catalog. It is not
+> published by, affiliated with, or endorsed by any vendor listed here. Rates are read off public
+> pricing pages by hand, vendors change them without notice, and your own rate may differ with your
+> plan, region, commitment or negotiated terms.
+>
+> Confirm a rate against the vendor's own pricing page before you bill, quote or budget against it.
+> Provided as-is with no warranty, under the [LICENSE](https://github.com/mahimailabs/voice-prices/blob/main/LICENSE).
+
 ## Installation
 
 ```bash
@@ -31,9 +39,9 @@ uv add "voice-prices[cli]"
 
 (or `pip install "voice-prices[cli]"`)
 
-## Warning: these prices will not be 100% accurate
+## Warning: these prices are a reference, not a bill
 
-See [the project README](https://github.com/mahimailabs/voice-prices?tab=readme-ov-file#warning) for more information.
+See [the project README](https://github.com/mahimailabs/voice-prices?tab=readme-ov-file#warning) for the full warning.
 
 ## Usage
 

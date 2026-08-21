@@ -8,6 +8,7 @@ from .collapse import collapse
 from .detect_deprecated import detect_deprecated
 from .freshness.run import freshness_check
 from .inject_providers import inject_providers
+from .livekit_coverage import livekit_coverage
 from .livekit_gen import livekit_gen
 from .package_data import package_data
 from .price_discrepancies import check_for_price_discrepancies, update_price_discrepancies
@@ -46,6 +47,7 @@ def main():
         build_docs,
         freshness_check,
         livekit_gen,
+        livekit_coverage,
     )
     if len(sys.argv) == 2:
         command = sys.argv[1]

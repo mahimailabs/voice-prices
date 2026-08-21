@@ -1,0 +1,618 @@
+{
+  "source_url": "https://github.com/livekit/agents/tree/main/livekit-plugins",
+  "checked": "2026-08-21",
+  "plugins": [
+    {
+      "package": "livekit-blockguard",
+      "vendor": "LiveKit BlockGuard",
+      "kind": "local",
+      "note": "LiveKit guardrails, no third-party inference bill."
+    },
+    {
+      "package": "livekit-durable",
+      "vendor": "LiveKit Durable",
+      "kind": "local",
+      "note": "Durable execution for agent sessions, not an inference vendor."
+    },
+    {
+      "package": "livekit-plugins-anam",
+      "vendor": "Anam",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-anthropic",
+      "vendor": "Anthropic",
+      "kind": "inference",
+      "provides": [
+        "llm"
+      ],
+      "provider_id": "anthropic"
+    },
+    {
+      "package": "livekit-plugins-assemblyai",
+      "vendor": "AssemblyAI",
+      "kind": "inference",
+      "provides": [
+        "stt"
+      ],
+      "provider_id": "assemblyai"
+    },
+    {
+      "package": "livekit-plugins-asyncai",
+      "vendor": "Async AI",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-avatario",
+      "vendor": "Avatario",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-avatartalk",
+      "vendor": "AvatarTalk",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-aws",
+      "vendor": "AWS",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts",
+        "llm"
+      ],
+      "provider_id": "aws"
+    },
+    {
+      "package": "livekit-plugins-azure",
+      "vendor": "Azure",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "azure"
+    },
+    {
+      "package": "livekit-plugins-baseten",
+      "vendor": "Baseten",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts",
+        "llm"
+      ],
+      "status": "unpriceable_unit",
+      "note": "GPU-seconds of compute, which no per-token, per-character or per-second field expresses."
+    },
+    {
+      "package": "livekit-plugins-bey",
+      "vendor": "Beyond Presence",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-bithuman",
+      "vendor": "BitHuman",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-bland",
+      "vendor": "Bland",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-browser",
+      "vendor": "Browser tool",
+      "kind": "local",
+      "note": "Browser tool for the agent, not an inference vendor."
+    },
+    {
+      "package": "livekit-plugins-cambai",
+      "vendor": "Camb.ai",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "no_public_rate",
+      "note": "Credit-based, and the credits-per-character ratio is not published."
+    },
+    {
+      "package": "livekit-plugins-cartesia",
+      "vendor": "Cartesia",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "cartesia"
+    },
+    {
+      "package": "livekit-plugins-cerebras",
+      "vendor": "Cerebras",
+      "kind": "inference",
+      "provides": [
+        "llm"
+      ],
+      "provider_id": "cerebras"
+    },
+    {
+      "package": "livekit-plugins-clova",
+      "vendor": "LINE Clova",
+      "kind": "inference",
+      "provides": [
+        "stt"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-deepgram",
+      "vendor": "Deepgram",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "deepgram"
+    },
+    {
+      "package": "livekit-plugins-did",
+      "vendor": "D-ID",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-elevenlabs",
+      "vendor": "ElevenLabs",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "elevenlabs"
+    },
+    {
+      "package": "livekit-plugins-fal",
+      "vendor": "fal",
+      "kind": "inference",
+      "provides": [
+        "stt"
+      ],
+      "status": "unpriceable_unit",
+      "note": "GPU-seconds of compute, which no per-token, per-character or per-second field expresses."
+    },
+    {
+      "package": "livekit-plugins-fireworksai",
+      "vendor": "Fireworks AI",
+      "kind": "inference",
+      "provides": [
+        "stt"
+      ],
+      "provider_id": "fireworks"
+    },
+    {
+      "package": "livekit-plugins-fishaudio",
+      "vendor": "Fish Audio",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-gladia",
+      "vendor": "Gladia",
+      "kind": "inference",
+      "provides": [
+        "stt"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-gnani",
+      "vendor": "Gnani",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-google",
+      "vendor": "Google Cloud",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts",
+        "llm"
+      ],
+      "provider_id": "google"
+    },
+    {
+      "package": "livekit-plugins-gradium",
+      "vendor": "Gradium",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts",
+        "llm"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-groq",
+      "vendor": "Groq",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts",
+        "llm"
+      ],
+      "provider_id": "groq"
+    },
+    {
+      "package": "livekit-plugins-hamming",
+      "vendor": "Hamming",
+      "kind": "tooling",
+      "note": "Exports call-review payloads for evaluation; not an inference vendor."
+    },
+    {
+      "package": "livekit-plugins-hedra",
+      "vendor": "Hedra",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-hume",
+      "vendor": "Hume",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "provider_id": "hume"
+    },
+    {
+      "package": "livekit-plugins-inworld",
+      "vendor": "Inworld",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "inworld"
+    },
+    {
+      "package": "livekit-plugins-keyframe",
+      "vendor": "Keyframe Labs",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-krisp",
+      "vendor": "Krisp",
+      "kind": "tooling",
+      "note": "Noise reduction, bundled with LiveKit Cloud rather than metered per unit."
+    },
+    {
+      "package": "livekit-plugins-langchain",
+      "vendor": "LangChain / LangGraph",
+      "kind": "local",
+      "note": "Adapter for a framework; the underlying LLM is billed by its own vendor."
+    },
+    {
+      "package": "livekit-plugins-lemonslice",
+      "vendor": "LemonSlice",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-liveavatar",
+      "vendor": "LiveAvatar",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-lmnt",
+      "vendor": "LMNT",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "provider_id": "lmnt"
+    },
+    {
+      "package": "livekit-plugins-minimal",
+      "vendor": "Plugin template",
+      "kind": "local",
+      "note": "Template for writing a plugin, not a vendor."
+    },
+    {
+      "package": "livekit-plugins-minimax",
+      "vendor": "MiniMax",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "not_investigated",
+      "note": "The package description reads 'services from AWS'; that is a copy-paste error upstream, the plugin is MiniMax."
+    },
+    {
+      "package": "livekit-plugins-mistralai",
+      "vendor": "Mistral AI",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts",
+        "llm"
+      ],
+      "provider_id": "mistral"
+    },
+    {
+      "package": "livekit-plugins-murf",
+      "vendor": "Murf",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-neuphonic",
+      "vendor": "Neuphonic",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "no_public_rate",
+      "note": "The pricing page 404s."
+    },
+    {
+      "package": "livekit-plugins-nltk",
+      "vendor": "NLTK",
+      "kind": "local",
+      "note": "Local text processing."
+    },
+    {
+      "package": "livekit-plugins-nvidia",
+      "vendor": "NVIDIA",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "status": "unpriceable_unit",
+      "note": "GPU-seconds of compute, which no per-token, per-character or per-second field expresses."
+    },
+    {
+      "package": "livekit-plugins-openai",
+      "vendor": "OpenAI",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts",
+        "llm"
+      ],
+      "provider_id": "openai"
+    },
+    {
+      "package": "livekit-plugins-perplexity",
+      "vendor": "Perplexity",
+      "kind": "inference",
+      "provides": [
+        "llm"
+      ],
+      "provider_id": "perplexity"
+    },
+    {
+      "package": "livekit-plugins-phonic",
+      "vendor": "Phonic",
+      "kind": "inference",
+      "provides": [
+        "realtime"
+      ],
+      "status": "no_public_rate",
+      "note": "The pricing page renders empty."
+    },
+    {
+      "package": "livekit-plugins-protoface",
+      "vendor": "Protoface",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-resemble",
+      "vendor": "Resemble AI",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "no_public_rate",
+      "note": "Publishes rates for Detect, Intelligence and Identity, but never for speech synthesis."
+    },
+    {
+      "package": "livekit-plugins-respeecher",
+      "vendor": "Respeecher",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-rime",
+      "vendor": "Rime",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "provider_id": "rime"
+    },
+    {
+      "package": "livekit-plugins-rtzr",
+      "vendor": "RTZR",
+      "kind": "inference",
+      "provides": [
+        "stt"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-runway",
+      "vendor": "Runway",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-sarvam",
+      "vendor": "Sarvam AI",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts",
+        "llm"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-silero",
+      "vendor": "Silero",
+      "kind": "local",
+      "note": "Local VAD model, runs in-process."
+    },
+    {
+      "package": "livekit-plugins-simli",
+      "vendor": "Simli",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-simplismart",
+      "vendor": "SimpliSmart",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "status": "unpriceable_unit",
+      "note": "GPU-seconds of compute, which no per-token, per-character or per-second field expresses."
+    },
+    {
+      "package": "livekit-plugins-slng",
+      "vendor": "SLNG",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-smallestai",
+      "vendor": "Smallest AI",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-soniox",
+      "vendor": "Soniox",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "soniox"
+    },
+    {
+      "package": "livekit-plugins-spatius",
+      "vendor": "Spatius",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-speechify",
+      "vendor": "Speechify",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-speechmatics",
+      "vendor": "Speechmatics",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "speechmatics"
+    },
+    {
+      "package": "livekit-plugins-spitch",
+      "vendor": "Spitch",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-tavus",
+      "vendor": "Tavus",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-telnyx",
+      "vendor": "Telnyx",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "telnyx"
+    },
+    {
+      "package": "livekit-plugins-trugen",
+      "vendor": "TruGen",
+      "kind": "avatar"
+    },
+    {
+      "package": "livekit-plugins-turn-detector",
+      "vendor": "Turn detector",
+      "kind": "local",
+      "note": "Local end-of-utterance model, runs in-process."
+    },
+    {
+      "package": "livekit-plugins-ultravox",
+      "vendor": "Ultravox",
+      "kind": "inference",
+      "provides": [
+        "realtime"
+      ],
+      "provider_id": "ultravox"
+    },
+    {
+      "package": "livekit-plugins-upliftai",
+      "vendor": "Uplift AI",
+      "kind": "inference",
+      "provides": [
+        "tts"
+      ],
+      "status": "not_investigated"
+    },
+    {
+      "package": "livekit-plugins-xai",
+      "vendor": "xAI",
+      "kind": "inference",
+      "provides": [
+        "stt",
+        "tts"
+      ],
+      "provider_id": "x-ai"
+    }
+  ]
+}
