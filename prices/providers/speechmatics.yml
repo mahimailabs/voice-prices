@@ -61,34 +61,23 @@ models:
       input_audio_kseconds: 0.111111
 
   - id: standard
-    name: Standard (real-time)
+    name: Standard
     description: >-
-      Faster, lower-cost operating point, streaming. Priced identically to `standard-batch`.
+      Faster, lower-cost operating point. Covers both `standard` (streaming) and
+      `standard-batch` (pre-recorded), which Speechmatics prices identically.
     match:
-      equals: standard
+      or:
+        - equals: standard
+        - equals: standard-batch
     prices_checked: 2026-08-21
     pricing_source_url: https://www.speechmatics.com/pricing
     price_comments: >-
       Source rate $0.24/hour, the "Real-time Standard" row, Pro plan. Converted to $/k seconds:
       0.24 / 3600 * 1000 = 0.0666666 recurring, stored as 0.066667.
-      Speechmatics charges the same $0.24 for Batch Standard, so this is one of the few places
-      in this catalog where batch and streaming genuinely cost the same. Both rows are kept so
-      a caller naming either resolves.
-    prices:
-      input_audio_kseconds: 0.066667
-
-  - id: standard-batch
-    name: Standard (batch)
-    description: >-
-      Faster, lower-cost operating point, pre-recorded. Same rate as streaming.
-    match:
-      equals: standard-batch
-    prices_checked: 2026-08-21
-    pricing_source_url: https://www.speechmatics.com/pricing
-    price_comments: >-
-      Source rate $0.24/hour, the "Batch Standard" row, Pro plan. Converted to $/k seconds:
-      0.24 / 3600 * 1000 = 0.0666666 recurring, stored as 0.066667.
-      Identical to the real-time Standard rate. Not a copy-paste: Speechmatics publishes the
-      same $0.24 in both columns, unlike Enhanced which differs.
+      One row covers both modes because Speechmatics charges the same $0.24 for Batch Standard,
+      which is unusual: Enhanced costs $0.43 streaming against $0.40 batch. `standard-batch`
+      resolves here rather than to a row of its own, which is `make collapse` doing its job
+      (it merges models whose prices are identical). Do not read the single row as batch and
+      streaming being the same product; they are the same PRICE.
     prices:
       input_audio_kseconds: 0.066667

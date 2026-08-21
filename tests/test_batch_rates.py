@@ -59,9 +59,11 @@ def test_batch_is_cheaper_than_streaming(provider_id: str, streaming_id: str, ba
     undiscounted "Regular price" out of the streaming table. That is exactly how
     nova-3-batch came to hold $0.0077 against a streaming rate of $0.0048.
 
-    Equal is allowed, and does occur: Speechmatics publishes $0.24/hour for both Batch
-    Standard and Real-time Standard. Strictly-cheaper would reject that correct pair while
-    catching nothing extra, since the defect this guards against makes batch *dearer*.
+    Equal is allowed. In practice `make collapse` merges any pair whose prices are exactly
+    identical into one row with both ids, so an equal pair rarely survives to be checked
+    (Speechmatics' Standard is one such merge). The `<=` is there so that bypassing collapse
+    cannot turn a correct equal pair into a failure: the defect this guards against makes
+    batch *dearer*, so equality catches nothing extra either way.
 
     If a vendor ever genuinely charges more for batch, update this with the evidence rather
     than deleting it.
