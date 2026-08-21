@@ -169,7 +169,13 @@ class Provider(_Model):
         self.models[:] = [model for model in self.models if not model.removed]
 
     def exclude_free(self):
-        self.models[:] = [model for model in self.models if not model.is_free()]
+        """Drop models the provider gives away, for the slim dataset.
+
+        Keyed on the explicit `free` flag, NOT on "every rate is None". Those are different
+        states: an unpriced row is one nobody has entered a rate for, and dropping it made the
+        slim dataset raise LookupError where the full one returned zero, for the same ref.
+        """
+        self.models[:] = [model for model in self.models if not model.free]
 
 
 UsageField = Literal[
@@ -342,6 +348,25 @@ class ModelInfo(_Model):
     See `Provenance`. (`data_slim` keeps only `source` + `last_verified`.)"""
     collapse: bool = Field(default=True, exclude=True)
     """Flag indicating whether this price should be collapsed into other prices."""
+    free: bool = False
+    """The provider charges nothing for this model, so an empty `prices` block is the true rate.
+
+    Exists because "free" and "nobody has entered a rate" were previously the same bytes: both
+    are a ModelPrice with every field None, and the only hint was a `:free` suffix in the id,
+    which is a naming convention rather than data. A consumer holding a zero could not tell
+    whether to report it as priced or to refuse it, and those want opposite handling.
+
+    Set it only where the provider says so. Leave it False when a rate simply has not been
+    found: that is what `provenance.source: seed` plus a non-empty `unpriced_usage` on the
+    calculation are for. `deepgram/nova` is real and callable with no published rate; OpenAI's
+    moderation endpoints are free of charge. Only the second is `free`.
+
+    Drives two things. `Provider.exclude_free` uses it, so the slim dataset drops genuinely
+    free models and KEEPS unpriced ones (it previously dropped both, which made data.json and
+    data_slim.json answer the same lookup differently). And `calc_price` reports an empty
+    `unpriced_usage` for a free model, so a zero from one is not confused with a zero from a
+    missing rate.
+    """
     deprecated: bool | None = None
     """Flag indicating this model is deprecated by the provider but still functional."""
     removed: bool = Field(default=False, exclude=True)
@@ -356,6 +381,21 @@ class ModelInfo(_Model):
         if prices_checked is not None and info.data.get('price_discrepancies'):
             raise ValueError('`price_discrepancies` should be removed when `prices_checked` is set')
         return prices_checked
+
+    @model_validator(mode='after')
+    def validate_free_models_carry_no_rate(self) -> ModelInfo:
+        """`free` and a rate are contradictory claims, and the data must not hold both."""
+        if not self.free:
+            return self
+        price_sets = self.prices if isinstance(self.prices, list) else [self.prices]
+        for entry in price_sets:
+            model_price = entry.prices if isinstance(entry, ConditionalPrice) else entry
+            if not model_price.is_free():
+                raise ValueError(
+                    f'`{self.id}` sets `free: true` but also carries a rate. A free model has an empty '
+                    '`prices` block; if the provider charges for it, remove `free`.'
+                )
+        return self
 
     @model_validator(mode='after')
     def validate_estimated_fields_are_priced(self) -> ModelInfo:

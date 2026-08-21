@@ -47,6 +47,7 @@ models:
       output_mtok: 0.12
 
   - id: devstral-small:free
+    free: true
     name: Devstral Small (free)
     description: >-
       Devstral-Small-2505 is a 24B parameter agentic LLM fine-tuned from Mistral-Small-3.1, jointly developed by Mistral AI
@@ -175,6 +176,7 @@ models:
       output_mtok: 0.15
 
   - id: mistral-nemo:free
+    free: true
     name: Mistral Nemo (free)
     description: >-
       A 12B parameter model with a 128k token context length built by Mistral in collaboration with NVIDIA.
@@ -214,6 +216,7 @@ models:
       output_mtok: 0.08
 
   - id: mistral-small-24b-instruct-2501:free
+    free: true
     name: Mistral Small 3 (free)
     description: >-
       Mistral Small 3 is a 24B-parameter language model optimized for low-latency performance across common AI tasks. Released

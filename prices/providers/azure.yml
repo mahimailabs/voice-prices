@@ -110,6 +110,7 @@ models:
       input_mtok: 2
 
   - id: mai-ds-r1:free
+    free: true
     name: MAI DS R1 (free)
     description: >-
       MAI-DS-R1 is a post-trained variant of DeepSeek-R1 developed by the Microsoft AI team to improve the model's responsiveness
@@ -258,6 +259,7 @@ models:
       output_mtok: 0.35
 
   - id: phi-4-reasoning-plus:free
+    free: true
     name: Phi 4 Reasoning Plus (free)
     description: >-
       Phi-4-reasoning-plus is an enhanced 14B parameter model from Microsoft, fine-tuned from Phi-4 with additional reinforcement
@@ -269,6 +271,7 @@ models:
     prices: {}
 
   - id: phi-4-reasoning:free
+    free: true
     name: Phi 4 Reasoning (free)
     description: >-
       Phi-4-reasoning is a 14B parameter dense decoder-only transformer developed by Microsoft, fine-tuned from Phi-4 to enhance

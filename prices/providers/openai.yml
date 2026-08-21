@@ -972,6 +972,7 @@ models:
 
   - id: moderation
     description: All OpenAI moderation models and endpoints are free of charge
+    free: true
     match:
       contains: moderation
     prices: {}
