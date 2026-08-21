@@ -84,7 +84,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**48 providers, 1,291 priced models.** 73 STT, 1,104 LLM, 87 TTS, 8 S2S, 2 VAD, 2 Agents, 15 Telephony.
+**48 providers, 1,295 priced models.** 75 STT, 1,104 LLM, 88 TTS, 8 S2S, 2 VAD, 3 Agents, 15 Telephony.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -135,7 +135,7 @@ Every provider in the catalog, and which categories it prices:
 | [Twilio](prices/providers/twilio.yml) | 8 | Telephony |
 | [Ultravox](prices/providers/ultravox.yml) | 1 | Agents |
 | [Vapi](prices/providers/vapi.yml) | 1 | Agents |
-| [X AI](prices/providers/x_ai.yml) | 12 | LLM |
+| [X AI](prices/providers/x_ai.yml) | 16 | STT, LLM, TTS, Agents |
 
 [comment]: <> (providers-end)
 

@@ -194,7 +194,8 @@
       "provides": [
         "stt"
       ],
-      "provider_id": "fireworks"
+      "status": "no_public_rate",
+      "note": "Fireworks moved model rates off the pricing page into its docs, and neither the pricing page nor the docs pricing page carries an audio or transcription rate. Only tokens, training and GPU-seconds are published."
     },
     {
       "package": "livekit-plugins-fishaudio",
@@ -348,7 +349,8 @@
         "tts",
         "llm"
       ],
-      "provider_id": "mistral"
+      "status": "no_public_rate",
+      "note": "The pricing page says speech models are billed per minute but renders no Voxtral rate in readable text, and the docs pricing URL redirects back to it. Needs a human to read the rendered table."
     },
     {
       "package": "livekit-plugins-murf",
