@@ -54,6 +54,7 @@
               "stt/cartesia",
               "stt/deepgram",
               "stt/elevenlabs",
+              "stt/gladia",
               "stt/google",
               "stt/groq",
               "stt/inworld",

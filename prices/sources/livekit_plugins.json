@@ -204,7 +204,8 @@
       "provides": [
         "tts"
       ],
-      "status": "not_investigated"
+      "status": "not_investigated",
+      "note": "fish.audio/pricing renders no rates, only a funding announcement."
     },
     {
       "package": "livekit-plugins-gladia",
@@ -213,7 +214,7 @@
       "provides": [
         "stt"
       ],
-      "status": "not_investigated"
+      "provider_id": "gladia"
     },
     {
       "package": "livekit-plugins-gnani",
@@ -359,7 +360,8 @@
       "provides": [
         "tts"
       ],
-      "status": "not_investigated"
+      "status": "not_investigated",
+      "note": "murf.ai/api/pricing renders empty headless (66 chars); the main pricing page shows only studio subscription plans. Needs a real browser."
     },
     {
       "package": "livekit-plugins-neuphonic",
@@ -474,7 +476,8 @@
         "tts",
         "llm"
       ],
-      "status": "not_investigated"
+      "status": "not_investigated",
+      "note": "No dollar amounts in the rendered pricing page; Sarvam may quote in INR, which would need an FX basis this catalog does not have."
     },
     {
       "package": "livekit-plugins-silero",
@@ -516,7 +519,8 @@
         "stt",
         "tts"
       ],
-      "status": "not_investigated"
+      "status": "no_public_rate",
+      "note": "Publishes only approximate per-minute figures for a whole voice-agent stack (~$0.009/min STT, ~$0.09/min TTS), tildes included, with no per-character or per-second rate for the TTS and STT APIs the plugin actually calls."
     },
     {
       "package": "livekit-plugins-soniox",
@@ -540,7 +544,8 @@
       "provides": [
         "tts"
       ],
-      "status": "not_investigated"
+      "status": "not_investigated",
+      "note": "speechify.com/api/pricing renders empty headless (46 chars). Needs a real browser."
     },
     {
       "package": "livekit-plugins-speechmatics",
@@ -604,7 +609,8 @@
       "provides": [
         "tts"
       ],
-      "status": "not_investigated"
+      "status": "not_investigated",
+      "note": "No dollar amounts in the rendered pricing page."
     },
     {
       "package": "livekit-plugins-xai",
