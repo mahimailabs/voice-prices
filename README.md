@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**42 providers, 1,258 priced models.** 59 STT, 1,104 LLM, 69 TTS, 8 S2S, 2 VAD, 1 Agents, 15 Telephony.
+**42 providers, 1,261 priced models.** 59 STT, 1,104 LLM, 72 TTS, 8 S2S, 2 VAD, 1 Agents, 15 Telephony.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -110,7 +110,7 @@ Every provider in the catalog, and which categories it prices:
 | [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 37 | STT, TTS, Telephony |
 | [Mistral](prices/providers/mistral.yml) | 18 | LLM |
 | [MoonshotAi](prices/providers/moonshotai.yml) | 9 | LLM |
-| [Novita](prices/providers/novita.yml) | 34 | LLM |
+| [Novita](prices/providers/novita.yml) | 37 | LLM, TTS |
 | [OpenAI](prices/providers/openai.yml) | 77 | STT, LLM, TTS, S2S |
 | [OpenRouter](prices/providers/openrouter.yml) | 462 | LLM, S2S |
 | [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) | 15 | LLM |

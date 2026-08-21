@@ -4,6 +4,22 @@ id: novita
 pricing_urls:
   - https://novita.ai/pricing
 api_pattern: 'https://api\.novita\.ai'
+# Explicit `equals` clauses only, never a prefix: Novita's LLM ids are generic upstream names
+# (google/gemma-2-9b-it, mistralai/mistral-7b-instruct) shared with several other providers in
+# this catalog, so a broad clause here would silently steal their routing. Only the ids unique
+# to Novita are listed, which is what lets `calc_price(model_ref=...)` work without provider_id.
+model_match:
+  or:
+    - equals: fish-audio-text-to-speech
+    - equals: minimax-speech-2.6-hd
+    - equals: minimax-speech-2.6-turbo
+provider_match:
+  contains: novita
+# Verbatim from Novita's pricing page, which splits by product rather than by plan:
+# Serverless Endpoints bills per unit, Dedicated Endpoints bills per GPU-hour. The audio
+# rates below are the Serverless ones, and there is no plan structure within that tab.
+pricing_tier: Serverless Endpoints
+
 models:
   - id: Sao10K/L3-8B-Stheno-v3.2
     match:
@@ -60,6 +76,19 @@ models:
     prices:
       input_mtok: 0.89
       output_mtok: 0.89
+
+  - id: fish-audio-text-to-speech
+    name: Fish Audio Text to Speech
+    description: >-
+      Novita's Fish Audio text-to-speech endpoint.
+    match:
+      equals: fish-audio-text-to-speech
+    prices_checked: 2026-08-20
+    pricing_source_url: https://novita.ai/pricing
+    price_comments: >-
+      Source rate $15.00 per 1M characters. 15.00 / 1000 = 0.015 input_kchars.
+    prices:
+      input_kchars: 0.015
 
   - id: google/gemma-2-9b-it
     match:
@@ -154,6 +183,43 @@ models:
       input_mtok: 0.62
       output_mtok: 0.62
 
+  - id: minimax-speech-2.6-hd
+    name: MiniMax speech-2.6-hd
+    description: >-
+      Novita's MiniMax speech-2.6-hd text-to-speech endpoint.
+    match:
+      equals: minimax-speech-2.6-hd
+    prices_checked: 2026-08-20
+    pricing_source_url: https://novita.ai/pricing
+    price_comments: >-
+      Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars.
+      Version note: the Audio tab of novita.ai/pricing lists this row under the
+      lowercase API-style name with mode "T2A / T2A Async", and separately lists
+      "MiniMax Speech 2.8 HD/Turbo Sync/Async Text-to-Speech" at the identical rate.
+      Novita's API docs carry only 2.8 pages, so 2.6 reads as the legacy name kept
+      priced alongside its replacement. Both generations cost the same, so this row is
+      correct either way; the 2.8 variants are simply not in this catalog yet.
+    prices:
+      input_kchars: 0.1
+
+  - id: minimax-speech-2.6-turbo
+    name: MiniMax speech-2.6-turbo
+    description: >-
+      Novita's MiniMax speech-2.6-turbo text-to-speech endpoint.
+    match:
+      equals: minimax-speech-2.6-turbo
+    prices_checked: 2026-08-20
+    pricing_source_url: https://novita.ai/pricing
+    price_comments: >-
+      Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars.
+      Version note: the Audio tab of novita.ai/pricing lists this row under the
+      lowercase API-style name with mode "T2A / T2A Async", and separately lists
+      "MiniMax Speech 2.8 HD/Turbo Sync/Async Text-to-Speech" at the identical rate.
+      Novita's API docs carry only 2.8 pages, so 2.6 reads as the legacy name kept
+      priced alongside its replacement. Both generations cost the same, so this row is
+      correct either way; the 2.8 variants are simply not in this catalog yet.
+    prices:
+      input_kchars: 0.06
   - id: mistralai/mistral-7b-instruct
     match:
       equals: mistralai/mistral-7b-instruct

@@ -6799,7 +6799,16 @@ providers: list[Provider] = [
         name='Novita',
         api_pattern='https://api\\.novita\\.ai',
         pricing_urls=['https://novita.ai/pricing'],
+        model_match=ClauseOr(
+            or_=[
+                ClauseEquals(equals='fish-audio-text-to-speech'),
+                ClauseEquals(equals='minimax-speech-2.6-hd'),
+                ClauseEquals(equals='minimax-speech-2.6-turbo'),
+            ]
+        ),
+        provider_match=ClauseContains(contains='novita'),
         staleness_threshold_days=60,
+        pricing_tier='Serverless Endpoints',
         models=[
             ModelInfo(
                 id='Sao10K/L3-8B-Stheno-v3.2',
@@ -6840,6 +6849,16 @@ providers: list[Provider] = [
                 id='deepseek/deepseek_v3',
                 match=ClauseEquals(equals='deepseek/deepseek_v3'),
                 prices=ModelPrice(input_mtok=Decimal('0.89'), output_mtok=Decimal('0.89')),
+            ),
+            ModelInfo(
+                id='fish-audio-text-to-speech',
+                match=ClauseEquals(equals='fish-audio-text-to-speech'),
+                name='Fish Audio Text to Speech',
+                description="Novita's Fish Audio text-to-speech endpoint.",
+                price_comments='Source rate $15.00 per 1M characters. 15.00 / 1000 = 0.015 input_kchars.',
+                pricing_source_url='https://novita.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_kchars=Decimal('0.015')),
             ),
             ModelInfo(
                 id='google/gemma-2-9b-it',
@@ -6910,6 +6929,26 @@ providers: list[Provider] = [
                 id='microsoft/wizardlm-2-8x22b',
                 match=ClauseEquals(equals='microsoft/wizardlm-2-8x22b'),
                 prices=ModelPrice(input_mtok=Decimal('0.62'), output_mtok=Decimal('0.62')),
+            ),
+            ModelInfo(
+                id='minimax-speech-2.6-hd',
+                match=ClauseEquals(equals='minimax-speech-2.6-hd'),
+                name='MiniMax speech-2.6-hd',
+                description="Novita's MiniMax speech-2.6-hd text-to-speech endpoint.",
+                price_comments='Source rate $100.00 per 1M characters. 100.00 / 1000 = 0.1 input_kchars. Version note: the Audio tab of novita.ai/pricing lists this row under the lowercase API-style name with mode "T2A / T2A Async", and separately lists "MiniMax Speech 2.8 HD/Turbo Sync/Async Text-to-Speech" at the identical rate. Novita\'s API docs carry only 2.8 pages, so 2.6 reads as the legacy name kept priced alongside its replacement. Both generations cost the same, so this row is correct either way; the 2.8 variants are simply not in this catalog yet.',
+                pricing_source_url='https://novita.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_kchars=Decimal('0.1')),
+            ),
+            ModelInfo(
+                id='minimax-speech-2.6-turbo',
+                match=ClauseEquals(equals='minimax-speech-2.6-turbo'),
+                name='MiniMax speech-2.6-turbo',
+                description="Novita's MiniMax speech-2.6-turbo text-to-speech endpoint.",
+                price_comments='Source rate $60.00 per 1M characters. 60.00 / 1000 = 0.06 input_kchars. Version note: the Audio tab of novita.ai/pricing lists this row under the lowercase API-style name with mode "T2A / T2A Async", and separately lists "MiniMax Speech 2.8 HD/Turbo Sync/Async Text-to-Speech" at the identical rate. Novita\'s API docs carry only 2.8 pages, so 2.6 reads as the legacy name kept priced alongside its replacement. Both generations cost the same, so this row is correct either way; the 2.8 variants are simply not in this catalog yet.',
+                pricing_source_url='https://novita.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_kchars=Decimal('0.06')),
             ),
             ModelInfo(
                 id='mistralai/mistral-7b-instruct',
