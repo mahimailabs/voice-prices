@@ -7,7 +7,9 @@ pricing_urls:
 api_pattern: 'https://api\.elevenlabs\.io'
 
 model_match:
-  starts_with: eleven_
+  or:
+    - starts_with: eleven_
+    - starts_with: scribe_
 
 provider_match:
   contains: elevenlabs
@@ -52,6 +54,26 @@ models:
       $0.05/kchar via the ElevenLabs API (Flash/Turbo, 0.5 credits/character).
     prices:
       input_kchars: 0.05
+
+  - id: eleven_multilingual_v1
+    name: Eleven Multilingual v1 (legacy, unpriced)
+    description: >-
+      First-generation multilingual text-to-speech. Still listed in ElevenLabs' model docs and
+      still callable; resolves so a caller learns it exists, but carries no rate because the
+      pricing page no longer lists it.
+    match:
+      equals: eleven_multilingual_v1
+    price_comments: >-
+      Deliberately unpriced. The Model pricing table lists v3, v3 Conversational, v2
+      Multilingual, Scribe v2 and Scribe v2 Realtime, and no v1 row. ElevenLabs bills TTS per
+      character at a per-model rate, so inheriting v2's $0.10/1k would be a guess about a model
+      they chose to stop pricing publicly.
+      `eleven_monolingual_v1` is deliberately absent entirely rather than added alongside this:
+      it does not appear in ElevenLabs' current model list at all, so a row for it would assert
+      a model that may no longer exist.
+    provenance:
+      source: seed
+    prices: {}
 
   - id: eleven_multilingual_v2
     name: Eleven Multilingual v2
@@ -123,3 +145,55 @@ models:
       assumed speaking rate, not a second meter, and is not recorded.
     prices:
       input_kchars: 0.1
+
+  - id: scribe_v1
+    name: Scribe v1 (legacy, unpriced)
+    description: >-
+      First-generation ElevenLabs speech-to-text. Accepted by the LiveKit plugin, which types
+      model_id as Literal["scribe_v1", "scribe_v2", "scribe_v2_realtime"], but no longer priced
+      on the pricing page.
+    match:
+      equals: scribe_v1
+    price_comments: >-
+      Deliberately unpriced. The pricing page carries Scribe v2 and Scribe v2 Realtime only.
+      Callable, so it resolves rather than raising, but no rate is published for it.
+    provenance:
+      source: seed
+    prices: {}
+
+  - id: scribe_v2
+    name: Scribe v2
+    description: >-
+      ElevenLabs speech-to-text for pre-recorded audio. 90+ languages, keyterm prompting,
+      word-level timestamps. Passed as `model_id: "scribe_v2"`.
+    match:
+      equals: scribe_v2
+    prices_checked: 2026-08-21
+    pricing_source_url: https://elevenlabs.io/pricing/api
+    price_comments: >-
+      Source rate $0.22 per hour, the Scribe v2 card in the Model pricing section, labelled
+      "Price per hour". Converted to $/k seconds: 0.22 / 3600 * 1000 = 0.0611111 recurring,
+      stored as 0.061111.
+      Excludes the surcharges ElevenLabs documents on the transcription API: entity detection
+      or redaction adds 30%, speaker-role detection adds 10%. Those are per-request options
+      rather than a rate, so the number here is the base transcription cost.
+    prices:
+      input_audio_kseconds: 0.061111
+
+  - id: scribe_v2_realtime
+    name: Scribe v2 Realtime
+    description: >-
+      ElevenLabs streaming speech-to-text, roughly 150ms latency. The variant a realtime voice
+      agent runs. Passed as `model_id: "scribe_v2_realtime"`.
+    match:
+      equals: scribe_v2_realtime
+    prices_checked: 2026-08-21
+    pricing_source_url: https://elevenlabs.io/pricing/api
+    price_comments: >-
+      Source rate $0.39 per hour, the Scribe v2 Realtime card, labelled "Price per hour".
+      Converted to $/k seconds: 0.39 / 3600 * 1000 = 0.1083333 recurring, stored as 0.108333.
+      77% above the pre-recorded Scribe v2, which is a steeper realtime premium than most of
+      this catalog: Deepgram charges about 12% more for streaming Nova-3 than prerecorded.
+      Same surcharge exclusions as scribe_v2.
+    prices:
+      input_audio_kseconds: 0.108333
