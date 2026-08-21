@@ -5440,6 +5440,34 @@ providers: list[Provider] = [
         ],
     ),
     Provider(
+        id='hume',
+        name='Hume',
+        api_pattern='https://api\\.hume\\.ai',
+        pricing_urls=['https://www.hume.ai/pricing'],
+        price_comments='Text-to-speech billed per character, as overage on a monthly plan; Hume sells no pay-as-you-go tier. Rate is per plan, not per model, so OCTAVE 1 and 2 share one row. DELIBERATELY NOT PRICED: EVI, Hume\'s speech-to-speech voice interface. Its per-minute figures are printed in parentheses on the "Monthly EVI usage included" row ($0.07/min at Starter and Creator, $0.06 Pro, $0.05 Scale, $0.04 Business), while the row actually labelled "Additional EVI 3 cost (Usage-based)" is blank below Pro. Those parenthesised numbers match the usage-based row where both exist, which suggests they are the per-minute rate, but they sit on an inclusion row and Hume does not say so. That is an inference, not a published rate, so EVI stays unpriced until someone can confirm it against an invoice or a support answer. EVI 4 MINI has no separate figure at all.',
+        provider_match=ClauseContains(contains='hume'),
+        staleness_threshold_days=60,
+        pricing_tier='Creator',
+        models=[
+            ModelInfo(
+                id='octave',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='octave'),
+                        ClauseEquals(equals='octave-1'),
+                        ClauseEquals(equals='octave-2'),
+                    ]
+                ),
+                name='Octave',
+                description='Hume\'s text-to-speech model, exposed by the LiveKit plugin as Octave with `model_version` "1" or "2". Both versions bill at the same rate, so one row covers them.',
+                price_comments='Source rate $0.15 per 1,000 characters, the "Additional characters cost (Usage-based)" row at the Creator plan ($7/month). Stored directly: input_kchars is already per 1,000 characters, so no conversion. Creator is the cheapest plan quoting a per-character rate. Free and Starter bundle characters (10,000 and 30,000) and leave that row blank, so neither can be the priced tier. Cheaper overage exists further up: Pro $0.12, Scale $0.10, Business $0.05, all larger commitments. At $0.15/1k this is the most expensive text-to-speech rate in the catalog, half again above Eleven v3 and Deepgram Aura-2 at $0.10 and $0.03.',
+                pricing_source_url='https://www.hume.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 21)),
+                prices=ModelPrice(input_kchars=Decimal('0.15')),
+            )
+        ],
+    ),
+    Provider(
         id='inworld',
         name='Inworld',
         api_pattern='https://api\\.inworld\\.ai',
@@ -12845,6 +12873,29 @@ providers: list[Provider] = [
                 provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
                 prices=ModelPrice(telephony_kminutes=Decimal('14')),
             ),
+        ],
+    ),
+    Provider(
+        id='ultravox',
+        name='Ultravox',
+        api_pattern='https://api\\.ultravox\\.ai',
+        pricing_urls=['https://ultravox.ai/pricing'],
+        price_comments='A speech-to-speech voice agent billed by connected call minute, so it carries `agent_kminutes` rather than component rates: one number covers understanding the caller, the model and speaking back. Priced per plan, not per model, so every fixie-ai/ultravox* variant shares one row. Not modelled: the 30 free minutes on Pay As You Go, nor telephony, which Ultravox does not include. A phone call also pays a carrier; see the [telephony] providers.',
+        model_match=ClauseStartsWith(starts_with='fixie-ai/ultravox'),
+        provider_match=ClauseContains(contains='ultravox'),
+        staleness_threshold_days=60,
+        pricing_tier='Pay as You go',
+        models=[
+            ModelInfo(
+                id='fixie-ai/ultravox',
+                match=ClauseStartsWith(starts_with='fixie-ai/ultravox'),
+                name='Ultravox',
+                description='Ultravox realtime speech-to-speech, billed per minute of call. Covers every published variant: the base model, ultravox-llama3.3-70b, and the gemma3-27b and qwen3-32b previews, which the pricing page does not price separately.',
+                price_comments='Source rate $0.05 per minute on the Pay As You Go plan, stated twice on the page: "First 30 minutes free, $0.05/min after that" at the top, and "$0.05 per minute after" in the plan card. Converted to $/k minutes: 0.05 * 1000 = 50 exactly. Pay As You Go is $0/month with no commitment, so it is the tier this catalog takes. Pro at $100/month removes concurrency caps but the page states no cheaper per-minute rate for it. For scale, Vapi\'s platform fee is $0.05/minute too, but that excludes the model and speech, which are passed through at cost. Ultravox\'s $0.05 includes them.',
+                pricing_source_url='https://ultravox.ai/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 21)),
+                prices=ModelPrice(agent_kminutes=Decimal('50')),
+            )
         ],
     ),
     Provider(
