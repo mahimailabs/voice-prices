@@ -46,6 +46,13 @@ MODALITY_OVERRIDES: dict[tuple[str, str], Modality] = {
     ('openai', 'gpt-4o-transcribe'): 'stt',
     ('openai', 'gpt-4o-mini-transcribe'): 'stt',
     ('openai', 'gpt-4o-mini-tts'): 'tts',
+    # Soniox bills every modality by token, so its priced fields say nothing about what the
+    # model does. STT carries audio-in + text-out and would otherwise read as an LLM; TTS
+    # carries text-in + audio-out and would read as one too, since s2s requires audio in BOTH
+    # directions and neither of these has that.
+    ('soniox', 'stt-async'): 'stt',
+    ('soniox', 'stt-rt'): 'stt',
+    ('soniox', 'tts-rt'): 'tts',
     ('ai_coustics', 'quail-vad-2.0-xxs-16khz'): 'vad',
     ('ai_coustics', 'quail-vf-vad-2.0-s-16khz'): 'vad',
 }

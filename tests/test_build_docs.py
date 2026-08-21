@@ -133,6 +133,9 @@ def test_modality_overrides_are_exactly_these():
         ('openai', 'gpt-4o-transcribe'): 'stt',
         ('openai', 'gpt-4o-mini-transcribe'): 'stt',
         ('openai', 'gpt-4o-mini-tts'): 'tts',
+        ('soniox', 'stt-async'): 'stt',
+        ('soniox', 'stt-rt'): 'stt',
+        ('soniox', 'tts-rt'): 'tts',
         ('ai_coustics', 'quail-vad-2.0-xxs-16khz'): 'vad',
         ('ai_coustics', 'quail-vf-vad-2.0-s-16khz'): 'vad',
     }
@@ -541,11 +544,15 @@ def test_index_page_lists_every_model_for_small_categories():
     # every model gets a row, minus the token-priced ones which are called out separately
     token_priced = sum(1 for e in catalog['stt'] for m in e['models'] if m['values']['per_min'] is None)
     assert page.count('\n| [') == total - token_priced
-    # No STT model is token-priced any more, so the callout must be absent rather than empty.
-    assert token_priced == 0
-    assert 'bill audio as tokens' not in page
 
-    # The TTS index still has one (gpt-4o-mini-tts), so the callout must still render there.
+    # STT has token-priced rows again: Soniox bills transcription by token rather than by
+    # audio-second, so they cannot share a column with the per-minute rates and are called out
+    # separately. (Between #107 and Soniox landing this was briefly zero, and this assertion
+    # said so; the callout is data-driven, not a permanent fixture either way.)
+    assert token_priced > 0
+    assert 'bill audio as tokens' in page
+
+    # TTS likewise: gpt-4o-mini-tts and Soniox's tts-rt.
     tts_page = render_index_page('tts', catalog['tts'], build_comparison(data)['tts'])
     assert 'bill audio as tokens' in tts_page
 
