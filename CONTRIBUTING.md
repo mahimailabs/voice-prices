@@ -372,6 +372,19 @@ Setting `voice_multipliers` on a model whose only priced field is `input_audio_k
 
 Tiered character pricing isn't supported in v0.1. If your provider tiers per-character pricing by volume, document the rate at the default tier and note the tiering in `price_comments` until tiered character pricing is added.
 
+### (Both) My change alters what an existing model_ref answers
+
+Add a line to `CHANGELOG.md` under **Behaviour changes**, not just **Added**.
+
+Adding a provider or a model cannot surprise anyone. Changing a matcher's shape, repricing a
+row, or moving a ref between raising and returning a value all change what an existing caller
+gets, and on the `>=0.x,<1` pin most consumers carry, that arrives silently on a dependency
+bump. A consumer reported exactly this: `deepgram/nova-general` went from `LookupError` to a
+zero between two releases and they found out from their own metering, not from us.
+
+Say which refs changed and in which direction. "Deepgram matchers rewritten" is not auditable;
+"`nova-2-phonecall` now resolves to the `nova-2` rate, previously LookupError" is.
+
 ### (Both) "Models are not sorted by ID"
 
 The validator enforces alphabetical sorting of the `models:` list by the `id:` field. Reorder the entries and try again. The error message tells you exactly which entry to move and where.

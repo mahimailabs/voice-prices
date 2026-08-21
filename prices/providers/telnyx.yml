@@ -314,6 +314,7 @@ models:
 
   - id: us-tollfree-outbound
     name: US toll-free (outbound)
+    free: true
     description: >-
       Calls placed to a US toll-free number. Free of charge on Telnyx, which is why this row
       carries no rate.

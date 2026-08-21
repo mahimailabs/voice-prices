@@ -44,6 +44,7 @@ models:
       output_mtok: 1.2
 
   - id: "agentica-org/deepcoder-14b-preview:free"
+    free: true
     match:
       equals: "agentica-org/deepcoder-14b-preview:free"
     prices: {}
@@ -143,6 +144,7 @@ models:
       output_mtok: 3.4
 
   - id: "allenai/molmo-7b-d:free"
+    free: true
     match:
       equals: "allenai/molmo-7b-d:free"
     prices: {}
@@ -423,11 +425,13 @@ models:
       output_mtok: 0.75
 
   - id: "arliai/qwq-32b-arliai-rpr-v1:free"
+    free: true
     match:
       equals: "arliai/qwq-32b-arliai-rpr-v1:free"
     prices: {}
 
   - id: "bytedance-research/ui-tars-72b:free"
+    free: true
     match:
       equals: "bytedance-research/ui-tars-72b:free"
     prices: {}
@@ -607,11 +611,13 @@ models:
       output_mtok: 0.5
 
   - id: "cognitivecomputations/dolphin3.0-mistral-24b:free"
+    free: true
     match:
       equals: "cognitivecomputations/dolphin3.0-mistral-24b:free"
     prices: {}
 
   - id: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free"
+    free: true
     match:
       equals: "cognitivecomputations/dolphin3.0-r1-mistral-24b:free"
     prices: {}
@@ -730,12 +736,14 @@ models:
       output_mtok: 0.15
 
   - id: deepcoder-14b-preview:free
+    free: true
     name: Deepcoder 14B Preview (free)
     match:
       equals: deepcoder-14b-preview:free
     prices: {}
 
   - id: deephermes-3-llama-3-8b-preview:free
+    free: true
     name: DeepHermes 3 Llama 3 8B Preview (free)
     match:
       equals: deephermes-3-llama-3-8b-preview:free
@@ -758,12 +766,14 @@ models:
       output_mtok: 0.88
 
   - id: deepseek-chat-v3-0324:free
+    free: true
     name: DeepSeek V3 0324 (free)
     match:
       equals: deepseek-chat-v3-0324:free
     prices: {}
 
   - id: deepseek-chat:free
+    free: true
     name: DeepSeek V3 (free)
     match:
       equals: deepseek-chat:free
@@ -802,12 +812,14 @@ models:
       output_mtok: 0.1
 
   - id: deepseek-r1-0528-qwen3-8b:free
+    free: true
     name: Deepseek R1 0528 Qwen3 8B (free)
     match:
       equals: deepseek-r1-0528-qwen3-8b:free
     prices: {}
 
   - id: deepseek-r1-0528:free
+    free: true
     name: R1 0528 (free)
     match:
       equals: deepseek-r1-0528:free
@@ -822,6 +834,7 @@ models:
       output_mtok: 0.4
 
   - id: deepseek-r1-distill-llama-70b:free
+    free: true
     name: R1 Distill Llama 70B (free)
     match:
       equals: deepseek-r1-distill-llama-70b:free
@@ -852,6 +865,7 @@ models:
       output_mtok: 0.15
 
   - id: deepseek-r1-distill-qwen-14b:free
+    free: true
     name: R1 Distill Qwen 14B (free)
     match:
       equals: deepseek-r1-distill-qwen-14b:free
@@ -866,6 +880,7 @@ models:
       output_mtok: 0.18
 
   - id: deepseek-r1-distill-qwen-32b:free
+    free: true
     name: R1 Distill Qwen 32B (free)
     match:
       equals: deepseek-r1-distill-qwen-32b:free
@@ -880,18 +895,21 @@ models:
       output_mtok: 0.2
 
   - id: deepseek-r1:free
+    free: true
     name: R1 (free)
     match:
       equals: deepseek-r1:free
     prices: {}
 
   - id: deepseek-r1t-chimera:free
+    free: true
     name: DeepSeek R1T Chimera (free)
     match:
       equals: deepseek-r1t-chimera:free
     prices: {}
 
   - id: deepseek-v3-base:free
+    free: true
     name: DeepSeek V3 Base (free)
     match:
       equals: deepseek-v3-base:free
@@ -922,6 +940,7 @@ models:
       output_mtok: 1.1
 
   - id: "deepseek/deepseek-chat-v3-0324:free"
+    free: true
     match:
       equals: "deepseek/deepseek-chat-v3-0324:free"
     prices: {}
@@ -937,6 +956,7 @@ models:
     prices_checked: 2025-10-30
 
   - id: "deepseek/deepseek-chat:free"
+    free: true
     match:
       equals: "deepseek/deepseek-chat:free"
     prices: {}
@@ -956,6 +976,7 @@ models:
       output_mtok: 0.4
 
   - id: "deepseek/deepseek-r1-distill-llama-70b:free"
+    free: true
     match:
       equals: "deepseek/deepseek-r1-distill-llama-70b:free"
     prices: {}
@@ -982,6 +1003,7 @@ models:
       output_mtok: 0.15
 
   - id: "deepseek/deepseek-r1-distill-qwen-14b:free"
+    free: true
     match:
       equals: "deepseek/deepseek-r1-distill-qwen-14b:free"
     prices: {}
@@ -994,21 +1016,25 @@ models:
       output_mtok: 0.18
 
   - id: "deepseek/deepseek-r1-distill-qwen-32b:free"
+    free: true
     match:
       equals: "deepseek/deepseek-r1-distill-qwen-32b:free"
     prices: {}
 
   - id: "deepseek/deepseek-r1-zero:free"
+    free: true
     match:
       equals: "deepseek/deepseek-r1-zero:free"
     prices: {}
 
   - id: "deepseek/deepseek-r1:free"
+    free: true
     match:
       equals: "deepseek/deepseek-r1:free"
     prices: {}
 
   - id: "deepseek/deepseek-v3-base:free"
+    free: true
     match:
       equals: "deepseek/deepseek-v3-base:free"
     prices: {}
@@ -1042,6 +1068,7 @@ models:
       output_mtok: 0.12
 
   - id: devstral-small:free
+    free: true
     name: Devstral Small (free)
     match:
       equals: devstral-small:free
@@ -1064,12 +1091,14 @@ models:
       output_mtok: 0.9
 
   - id: dolphin3.0-mistral-24b:free
+    free: true
     name: Dolphin3.0 Mistral 24B (free)
     match:
       equals: dolphin3.0-mistral-24b:free
     prices: {}
 
   - id: dolphin3.0-r1-mistral-24b:free
+    free: true
     name: Dolphin3.0 R1 Mistral 24B (free)
     match:
       equals: dolphin3.0-r1-mistral-24b:free
@@ -1128,6 +1157,7 @@ models:
       output_mtok: 1.2
 
   - id: "featherless/qwerky-72b:free"
+    free: true
     match:
       equals: "featherless/qwerky-72b:free"
     prices: {}
@@ -1151,6 +1181,7 @@ models:
       output_mtok: 0.4
 
   - id: gemini-2.0-flash-exp:free
+    free: true
     name: Gemini 2.0 Flash Experimental (free)
     match:
       equals: gemini-2.0-flash-exp:free
@@ -1283,6 +1314,7 @@ models:
       output_mtok: 0.2
 
   - id: gemma-2-9b-it:free
+    free: true
     name: Gemma 2 9B (free)
     match:
       equals: gemma-2-9b-it:free
@@ -1297,6 +1329,7 @@ models:
       output_mtok: 0.1
 
   - id: gemma-3-12b-it:free
+    free: true
     name: Gemma 3 12B (free)
     match:
       equals: gemma-3-12b-it:free
@@ -1311,6 +1344,7 @@ models:
       output_mtok: 0.2
 
   - id: gemma-3-27b-it:free
+    free: true
     name: Gemma 3 27B (free)
     match:
       equals: gemma-3-27b-it:free
@@ -1325,12 +1359,14 @@ models:
       output_mtok: 0.04
 
   - id: gemma-3-4b-it:free
+    free: true
     name: Gemma 3 4B (free)
     match:
       equals: gemma-3-4b-it:free
     prices: {}
 
   - id: gemma-3n-e4b-it:free
+    free: true
     name: Gemma 3n 4B (free)
     match:
       equals: gemma-3n-e4b-it:free
@@ -1345,6 +1381,7 @@ models:
       output_mtok: 0.24
 
   - id: glm-4-32b:free
+    free: true
     name: GLM 4 32B (free)
     match:
       equals: glm-4-32b:free
@@ -1359,6 +1396,7 @@ models:
       output_mtok: 0.24
 
   - id: glm-z1-32b:free
+    free: true
     name: GLM Z1 32B (free)
     match:
       equals: glm-z1-32b:free
@@ -1388,6 +1426,7 @@ models:
       output_mtok: 0.4
 
   - id: "google/gemini-2.0-flash-exp:free"
+    free: true
     match:
       equals: "google/gemini-2.0-flash-exp:free"
     prices: {}
@@ -1400,11 +1439,13 @@ models:
       output_mtok: 0.3
 
   - id: "google/gemini-2.0-flash-thinking-exp-1219:free"
+    free: true
     match:
       equals: "google/gemini-2.0-flash-thinking-exp-1219:free"
     prices: {}
 
   - id: "google/gemini-2.0-flash-thinking-exp:free"
+    free: true
     match:
       equals: "google/gemini-2.0-flash-thinking-exp:free"
     prices: {}
@@ -1462,6 +1503,7 @@ models:
       output_mtok: 3.5
 
   - id: "google/gemini-2.5-pro-exp-03-25:free"
+    free: true
     match:
       equals: "google/gemini-2.5-pro-exp-03-25:free"
     prices: {}
@@ -1523,6 +1565,7 @@ models:
       output_mtok: 0.07
 
   - id: "google/gemma-2-9b-it:free"
+    free: true
     match:
       equals: "google/gemma-2-9b-it:free"
     prices: {}
@@ -1535,11 +1578,13 @@ models:
       output_mtok: 0.1
 
   - id: "google/gemma-3-12b-it:free"
+    free: true
     match:
       equals: "google/gemma-3-12b-it:free"
     prices: {}
 
   - id: "google/gemma-3-1b-it:free"
+    free: true
     match:
       equals: "google/gemma-3-1b-it:free"
     prices: {}
@@ -1552,6 +1597,7 @@ models:
       output_mtok: 0.2
 
   - id: "google/gemma-3-27b-it:free"
+    free: true
     match:
       equals: "google/gemma-3-27b-it:free"
     prices: {}
@@ -1564,11 +1610,13 @@ models:
       output_mtok: 0.04
 
   - id: "google/gemma-3-4b-it:free"
+    free: true
     match:
       equals: "google/gemma-3-4b-it:free"
     prices: {}
 
   - id: "google/learnlm-1.5-pro-experimental:free"
+    free: true
     match:
       equals: "google/learnlm-1.5-pro-experimental:free"
     prices: {}
@@ -1838,6 +1886,7 @@ models:
       output_mtok: 0.3
 
   - id: "huggingfaceh4/zephyr-7b-beta:free"
+    free: true
     match:
       equals: "huggingfaceh4/zephyr-7b-beta:free"
     prices: {}
@@ -1880,12 +1929,14 @@ models:
       output_mtok: 10
 
   - id: internvl3-14b:free
+    free: true
     name: InternVL3 14B (free)
     match:
       equals: internvl3-14b:free
     prices: {}
 
   - id: internvl3-2b:free
+    free: true
     name: InternVL3 2B (free)
     match:
       equals: internvl3-2b:free
@@ -1915,12 +1966,14 @@ models:
       output_mtok: 0.5
 
   - id: kimi-dev-72b:free
+    free: true
     name: Kimi Dev 72b (free)
     match:
       equals: kimi-dev-72b:free
     prices: {}
 
   - id: kimi-vl-a3b-thinking:free
+    free: true
     name: Kimi VL A3B Thinking (free)
     match:
       equals: kimi-vl-a3b-thinking:free
@@ -2075,6 +2128,7 @@ models:
       output_mtok: 0.029
 
   - id: llama-3.1-8b-instruct:free
+    free: true
     name: Llama 3.1 8B Instruct (free)
     match:
       equals: llama-3.1-8b-instruct:free
@@ -2113,6 +2167,7 @@ models:
       output_mtok: 1.8
 
   - id: llama-3.1-nemotron-ultra-253b-v1:free
+    free: true
     name: Llama 3.1 Nemotron Ultra 253B v1 (free)
     match:
       equals: llama-3.1-nemotron-ultra-253b-v1:free
@@ -2143,6 +2198,7 @@ models:
       output_mtok: 0.049
 
   - id: llama-3.2-11b-vision-instruct:free
+    free: true
     name: Llama 3.2 11B Vision Instruct (free)
     match:
       equals: llama-3.2-11b-vision-instruct:free
@@ -2157,6 +2213,7 @@ models:
       output_mtok: 0.01
 
   - id: llama-3.2-1b-instruct:free
+    free: true
     name: Llama 3.2 1B Instruct (free)
     match:
       equals: llama-3.2-1b-instruct:free
@@ -2171,6 +2228,7 @@ models:
       output_mtok: 0.02
 
   - id: llama-3.2-3b-instruct:free
+    free: true
     name: Llama 3.2 3B Instruct (free)
     match:
       equals: llama-3.2-3b-instruct:free
@@ -2193,12 +2251,14 @@ models:
       output_mtok: 0.24
 
   - id: llama-3.3-70b-instruct:free
+    free: true
     name: Llama 3.3 70B Instruct (free)
     match:
       equals: llama-3.3-70b-instruct:free
     prices: {}
 
   - id: llama-3.3-8b-instruct:free
+    free: true
     name: Llama 3.3 8B Instruct (free)
     match:
       equals: llama-3.3-8b-instruct:free
@@ -2213,6 +2273,7 @@ models:
       output_mtok: 0.4
 
   - id: llama-3.3-nemotron-super-49b-v1:free
+    free: true
     name: Llama 3.3 Nemotron Super 49B v1 (free)
     match:
       equals: llama-3.3-nemotron-super-49b-v1:free
@@ -2227,6 +2288,7 @@ models:
       output_mtok: 0.6
 
   - id: llama-4-maverick:free
+    free: true
     name: Llama 4 Maverick (free)
     match:
       equals: llama-4-maverick:free
@@ -2241,6 +2303,7 @@ models:
       output_mtok: 0.3
 
   - id: llama-4-scout:free
+    free: true
     name: Llama 4 Scout (free)
     match:
       equals: llama-4-scout:free
@@ -2337,6 +2400,7 @@ models:
       output_mtok: 3
 
   - id: mai-ds-r1:free
+    free: true
     name: MAI DS R1 (free)
     match:
       equals: mai-ds-r1:free
@@ -2400,6 +2464,7 @@ models:
       output_mtok: 0.8
 
   - id: "meta-llama/llama-3.1-405b:free"
+    free: true
     match:
       equals: "meta-llama/llama-3.1-405b:free"
     prices: {}
@@ -2419,6 +2484,7 @@ models:
       output_mtok: 0.03
 
   - id: "meta-llama/llama-3.1-8b-instruct:free"
+    free: true
     match:
       equals: "meta-llama/llama-3.1-8b-instruct:free"
     prices: {}
@@ -2431,6 +2497,7 @@ models:
       output_mtok: 0.049
 
   - id: "meta-llama/llama-3.2-11b-vision-instruct:free"
+    free: true
     match:
       equals: "meta-llama/llama-3.2-11b-vision-instruct:free"
     prices: {}
@@ -2443,6 +2510,7 @@ models:
       output_mtok: 0.01
 
   - id: "meta-llama/llama-3.2-1b-instruct:free"
+    free: true
     match:
       equals: "meta-llama/llama-3.2-1b-instruct:free"
     prices: {}
@@ -2455,6 +2523,7 @@ models:
       output_mtok: 0.025
 
   - id: "meta-llama/llama-3.2-3b-instruct:free"
+    free: true
     match:
       equals: "meta-llama/llama-3.2-3b-instruct:free"
     prices: {}
@@ -2474,6 +2543,7 @@ models:
       output_mtok: 0.25
 
   - id: "meta-llama/llama-3.3-70b-instruct:free"
+    free: true
     match:
       equals: "meta-llama/llama-3.3-70b-instruct:free"
     prices: {}
@@ -2486,6 +2556,7 @@ models:
       output_mtok: 0.85
 
   - id: "meta-llama/llama-4-maverick:free"
+    free: true
     match:
       equals: "meta-llama/llama-4-maverick:free"
     prices: {}
@@ -2498,6 +2569,7 @@ models:
       output_mtok: 0.3
 
   - id: "meta-llama/llama-4-scout:free"
+    free: true
     match:
       equals: "meta-llama/llama-4-scout:free"
     prices: {}
@@ -2647,6 +2719,7 @@ models:
       output_mtok: 0.2
 
   - id: mistral-7b-instruct:free
+    free: true
     name: Mistral 7B Instruct (free)
     match:
       equals: mistral-7b-instruct:free
@@ -2688,6 +2761,7 @@ models:
       output_mtok: 0.019
 
   - id: mistral-nemo:free
+    free: true
     name: Mistral Nemo (free)
     match:
       equals: mistral-nemo:free
@@ -2718,6 +2792,7 @@ models:
       output_mtok: 0.09
 
   - id: mistral-small-24b-instruct-2501:free
+    free: true
     name: Mistral Small 3 (free)
     match:
       equals: mistral-small-24b-instruct-2501:free
@@ -2732,12 +2807,14 @@ models:
       output_mtok: 0.15
 
   - id: mistral-small-3.1-24b-instruct:free
+    free: true
     name: Mistral Small 3.1 24B (free)
     match:
       equals: mistral-small-3.1-24b-instruct:free
     prices: {}
 
   - id: mistral-small-3.2-24b-instruct:free
+    free: true
     name: Mistral Small 3.2 24B (free)
     match:
       equals: mistral-small-3.2-24b-instruct:free
@@ -2810,6 +2887,7 @@ models:
       output_mtok: 0.2
 
   - id: "mistralai/mistral-7b-instruct:free"
+    free: true
     match:
       equals: "mistralai/mistral-7b-instruct:free"
     prices: {}
@@ -2839,6 +2917,7 @@ models:
       output_mtok: 0.08
 
   - id: "mistralai/mistral-nemo:free"
+    free: true
     match:
       equals: "mistralai/mistral-nemo:free"
     prices: {}
@@ -2865,6 +2944,7 @@ models:
       output_mtok: 0.14
 
   - id: "mistralai/mistral-small-24b-instruct-2501:free"
+    free: true
     match:
       equals: "mistralai/mistral-small-24b-instruct-2501:free"
     prices: {}
@@ -2877,6 +2957,7 @@ models:
       output_mtok: 0.3
 
   - id: "mistralai/mistral-small-3.1-24b-instruct:free"
+    free: true
     match:
       equals: "mistralai/mistral-small-3.1-24b-instruct:free"
     prices: {}
@@ -2965,11 +3046,13 @@ models:
       output_mtok: 3.00
 
   - id: "moonshotai/kimi-vl-a3b-thinking:free"
+    free: true
     match:
       equals: "moonshotai/kimi-vl-a3b-thinking:free"
     prices: {}
 
   - id: "moonshotai/moonlight-16b-a3b-instruct:free"
+    free: true
     match:
       equals: "moonshotai/moonlight-16b-a3b-instruct:free"
     prices: {}
@@ -3051,6 +3134,7 @@ models:
       output_mtok: 0.6
 
   - id: "nousresearch/deephermes-3-llama-3-8b-preview:free"
+    free: true
     match:
       equals: "nousresearch/deephermes-3-llama-3-8b-preview:free"
     prices: {}
@@ -3122,21 +3206,25 @@ models:
       output_mtok: 0.3
 
   - id: "nvidia/llama-3.1-nemotron-70b-instruct:free"
+    free: true
     match:
       equals: "nvidia/llama-3.1-nemotron-70b-instruct:free"
     prices: {}
 
   - id: "nvidia/llama-3.1-nemotron-nano-8b-v1:free"
+    free: true
     match:
       equals: "nvidia/llama-3.1-nemotron-nano-8b-v1:free"
     prices: {}
 
   - id: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"
+    free: true
     match:
       equals: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"
     prices: {}
 
   - id: "nvidia/llama-3.3-nemotron-super-49b-v1:free"
+    free: true
     match:
       equals: "nvidia/llama-3.3-nemotron-super-49b-v1:free"
     prices: {}
@@ -3212,11 +3300,13 @@ models:
       output_mtok: 4.4
 
   - id: "open-r1/olympiccoder-32b:free"
+    free: true
     match:
       equals: "open-r1/olympiccoder-32b:free"
     prices: {}
 
   - id: "open-r1/olympiccoder-7b:free"
+    free: true
     match:
       equals: "open-r1/olympiccoder-7b:free"
     prices: {}
@@ -3481,6 +3571,7 @@ models:
     prices_checked: 2025-11-29
 
   - id: "openai/gpt-oss-20b:free"
+    free: true
     match:
       equals: "openai/gpt-oss-20b:free"
     prices: {}
@@ -3695,12 +3786,14 @@ models:
       output_mtok: 0.35
 
   - id: phi-4-reasoning-plus:free
+    free: true
     name: Phi 4 Reasoning Plus (free)
     match:
       equals: phi-4-reasoning-plus:free
     prices: {}
 
   - id: phi-4-reasoning:free
+    free: true
     name: Phi 4 Reasoning (free)
     match:
       equals: phi-4-reasoning:free
@@ -3746,6 +3839,7 @@ models:
       output_mtok: 0.39
 
   - id: qwen-2.5-72b-instruct:free
+    free: true
     name: Qwen2.5 72B Instruct (free)
     match:
       equals: qwen-2.5-72b-instruct:free
@@ -3768,6 +3862,7 @@ models:
       output_mtok: 0.15
 
   - id: qwen-2.5-coder-32b-instruct:free
+    free: true
     name: Qwen2.5 Coder 32B Instruct (free)
     match:
       equals: qwen-2.5-coder-32b-instruct:free
@@ -3839,6 +3934,7 @@ models:
       output_mtok: 0.39
 
   - id: "qwen/qwen-2.5-72b-instruct:free"
+    free: true
     match:
       equals: "qwen/qwen-2.5-72b-instruct:free"
     prices: {}
@@ -3851,6 +3947,7 @@ models:
       output_mtok: 0.1
 
   - id: "qwen/qwen-2.5-7b-instruct:free"
+    free: true
     match:
       equals: "qwen/qwen-2.5-7b-instruct:free"
     prices: {}
@@ -3863,6 +3960,7 @@ models:
       output_mtok: 0.15
 
   - id: "qwen/qwen-2.5-coder-32b-instruct:free"
+    free: true
     match:
       equals: "qwen/qwen-2.5-coder-32b-instruct:free"
     prices: {}
@@ -3882,6 +3980,7 @@ models:
       output_mtok: 0.2
 
   - id: "qwen/qwen-2.5-vl-7b-instruct:free"
+    free: true
     match:
       equals: "qwen/qwen-2.5-vl-7b-instruct:free"
     prices: {}
@@ -3936,11 +4035,13 @@ models:
       output_mtok: 0.9
 
   - id: "qwen/qwen2.5-vl-32b-instruct:free"
+    free: true
     match:
       equals: "qwen/qwen2.5-vl-32b-instruct:free"
     prices: {}
 
   - id: "qwen/qwen2.5-vl-3b-instruct:free"
+    free: true
     match:
       equals: "qwen/qwen2.5-vl-3b-instruct:free"
     prices: {}
@@ -3953,6 +4054,7 @@ models:
       output_mtok: 0.7
 
   - id: "qwen/qwen2.5-vl-72b-instruct:free"
+    free: true
     match:
       equals: "qwen/qwen2.5-vl-72b-instruct:free"
     prices: {}
@@ -3982,11 +4084,13 @@ models:
       output_mtok: 0.2
 
   - id: "qwen/qwq-32b-preview:free"
+    free: true
     match:
       equals: "qwen/qwq-32b-preview:free"
     prices: {}
 
   - id: "qwen/qwq-32b:free"
+    free: true
     match:
       equals: "qwen/qwq-32b:free"
     prices: {}
@@ -4000,6 +4104,7 @@ models:
       output_mtok: 0.9
 
   - id: qwen2.5-vl-32b-instruct:free
+    free: true
     name: Qwen2.5 VL 32B Instruct (free)
     match:
       equals: qwen2.5-vl-32b-instruct:free
@@ -4014,6 +4119,7 @@ models:
       output_mtok: 0.75
 
   - id: qwen2.5-vl-72b-instruct:free
+    free: true
     name: Qwen2.5 VL 72B Instruct (free)
     match:
       equals: qwen2.5-vl-72b-instruct:free
@@ -4028,6 +4134,7 @@ models:
       output_mtok: 0.24
 
   - id: qwen3-14b:free
+    free: true
     name: Qwen3 14B (free)
     match:
       equals: qwen3-14b:free
@@ -4042,6 +4149,7 @@ models:
       output_mtok: 0.6
 
   - id: qwen3-235b-a22b:free
+    free: true
     name: Qwen3 235B A22B (free)
     match:
       equals: qwen3-235b-a22b:free
@@ -4056,6 +4164,7 @@ models:
       output_mtok: 0.29
 
   - id: qwen3-30b-a3b:free
+    free: true
     name: Qwen3 30B A3B (free)
     match:
       equals: qwen3-30b-a3b:free
@@ -4070,6 +4179,7 @@ models:
       output_mtok: 0.3
 
   - id: qwen3-32b:free
+    free: true
     name: Qwen3 32B (free)
     match:
       equals: qwen3-32b:free
@@ -4084,6 +4194,7 @@ models:
       output_mtok: 0.138
 
   - id: qwen3-8b:free
+    free: true
     name: Qwen3 8B (free)
     match:
       equals: qwen3-8b:free
@@ -4098,6 +4209,7 @@ models:
       output_mtok: 2.4
 
   - id: qwerky-72b:free
+    free: true
     name: Qwerky 72B (free)
     match:
       equals: qwerky-72b:free
@@ -4112,6 +4224,7 @@ models:
       output_mtok: 0.2
 
   - id: qwq-32b-arliai-rpr-v1:free
+    free: true
     name: QwQ 32B RpR v1 (free)
     match:
       equals: qwq-32b-arliai-rpr-v1:free
@@ -4126,6 +4239,7 @@ models:
       output_mtok: 0.2
 
   - id: qwq-32b:free
+    free: true
     name: QwQ 32B (free)
     match:
       equals: qwq-32b:free
@@ -4147,12 +4261,14 @@ models:
       output_mtok: 4.5
 
   - id: reka-flash-3:free
+    free: true
     name: Flash 3 (free)
     match:
       equals: reka-flash-3:free
     prices: {}
 
   - id: "rekaai/reka-flash-3:free"
+    free: true
     match:
       equals: "rekaai/reka-flash-3:free"
     prices: {}
@@ -4209,6 +4325,7 @@ models:
       output_mtok: 0.8
 
   - id: sarvam-m:free
+    free: true
     name: Sarvam-M (free)
     match:
       equals: sarvam-m:free
@@ -4229,11 +4346,13 @@ models:
       output_mtok: 0.18
 
   - id: "shisa-ai/shisa-v2-llama3.3-70b:free"
+    free: true
     match:
       equals: "shisa-ai/shisa-v2-llama3.3-70b:free"
     prices: {}
 
   - id: shisa-v2-llama3.3-70b:free
+    free: true
     name: Shisa V2 Llama 3.3 70B  (free)
     match:
       equals: shisa-v2-llama3.3-70b:free
@@ -4295,6 +4414,7 @@ models:
       output_mtok: 0.8
 
   - id: "sophosympatheia/rogue-rose-103b-v0.2:free"
+    free: true
     match:
       equals: "sophosympatheia/rogue-rose-103b-v0.2:free"
     prices: {}
@@ -4351,11 +4471,13 @@ models:
       output_mtok: 0.5
 
   - id: "thudm/glm-4-32b:free"
+    free: true
     match:
       equals: "thudm/glm-4-32b:free"
     prices: {}
 
   - id: "thudm/glm-z1-32b:free"
+    free: true
     match:
       equals: "thudm/glm-z1-32b:free"
     prices: {}
@@ -4476,6 +4598,7 @@ models:
             price: 1.0
 
   - id: "x-ai/grok-4.1-fast:free"
+    free: true
     match:
       equals: "x-ai/grok-4.1-fast:free"
     context_window: 2000000
