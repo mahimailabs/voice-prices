@@ -218,6 +218,10 @@ Commit the YAML plus the regenerated `prices/data*.json`, the schema files, and 
 
 **Attach a screenshot of the pricing page showing the rates you added.** CI requires one on any PR that adds a hand-read rate. It is a low bar on purpose: it does not prove the conversion is right, it proves someone loaded the page. Rates written by an importer are exempt, because no human read a page for those.
 
+<Warning>
+Attach it when you open the PR, not after. CI reads the PR body out of the event payload that triggered it, and `pull_request` does not fire on a body edit. So adding the screenshot to a PR that already failed changes nothing on its own, and re-running the job replays the same stale payload. Push a commit to re-trigger, or open the PR with the screenshot already in it.
+</Warning>
+
 Upload the file: drag it into the PR body so it lands on `github.com/user-attachments`. An image linked from anywhere else does not count, because linking someone else's URL costs nothing and proves nothing about whether you opened the page.
 </Step>
 </Steps>
