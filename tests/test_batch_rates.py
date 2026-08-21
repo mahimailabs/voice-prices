@@ -59,12 +59,16 @@ def test_batch_is_cheaper_than_streaming(provider_id: str, streaming_id: str, ba
     undiscounted "Regular price" out of the streaming table. That is exactly how
     nova-3-batch came to hold $0.0077 against a streaming rate of $0.0048.
 
+    Equal is allowed, and does occur: Speechmatics publishes $0.24/hour for both Batch
+    Standard and Real-time Standard. Strictly-cheaper would reject that correct pair while
+    catching nothing extra, since the defect this guards against makes batch *dearer*.
+
     If a vendor ever genuinely charges more for batch, update this with the evidence rather
     than deleting it.
     """
     streaming = rate(provider_id, streaming_id)
     batch = rate(provider_id, batch_id)
-    assert batch < streaming, (
+    assert batch <= streaming, (
         f'{provider_id}/{batch_id} costs ${batch}/hour, more than streaming '
         f'{streaming_id} at ${streaming}/hour. Check it is not the undiscounted streaming rate.'
     )

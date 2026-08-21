@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=.schema.json
+name: Rime
+id: rime
+pricing_urls:
+  - https://rime.ai/pricing
+
+api_pattern: 'https://users\.rime\.ai'
+
+provider_match:
+  contains: rime
+
+# No model_match: `mist` and `coda` are ordinary words and claiming them for Rime from a bare
+# model_ref would misroute other vendors. Resolve with provider_id='rime', which is how the
+# LiveKit plugin addresses it.
+
+price_comments: >-
+  Text-to-speech billed per character of input text. Two models at two rates, which the plan
+  card obscures by advertising only the cheaper one as "STARTING AT $0.03".
+  Not modelled: Enterprise, which is volume pricing quoted per customer.
+
+pricing_tier: Starter
+
+models:
+  - id: coda
+    name: Coda
+    description: >-
+      Rime's expressive model, for the most natural delivery. Selected with
+      `modelId: coda`. Slower than Mist and two thirds more expensive.
+    match:
+      equals: coda
+    prices_checked: 2026-08-21
+    pricing_source_url: https://rime.ai/pricing
+    price_comments: >-
+      Source rate $0.05 per 1,000 characters, from the model comparison table on the pricing
+      page. Stored directly: input_kchars is already per 1,000 characters, so no conversion.
+      Rime's own FAQ states both rates in one sentence and is the clearest source: "Starter
+      begins at $0.03 per 1,000 characters (about a minute of audio): $0.03 for Mist and $0.05
+      for Coda."
+      The plan card says "STARTING AT $0.03 / 1K CHARACTERS", which is the Mist rate, not this
+      one. Reading the card alone underprices Coda by 40%.
+    prices:
+      input_kchars: 0.05
+
+  - id: mist
+    name: Mist
+    description: >-
+      Rime's low-latency model, the one a realtime voice agent runs. Covers every Mist
+      version: `mist`, `mistv2` and `mistv3` all bill at the same rate.
+    match:
+      or:
+        - equals: mist
+        - equals: mistv2
+        - equals: mistv3
+    prices_checked: 2026-08-21
+    pricing_source_url: https://rime.ai/pricing
+    price_comments: >-
+      Source rate $0.03 per 1,000 characters, from the model comparison table and confirmed by
+      the FAQ: "$0.03 for Mist and $0.05 for Coda". Stored directly, no conversion.
+      Rime prices by model rather than by version, so mistv2 and mistv3 resolve here too.
+      Not priced: `arcana`, which the LiveKit plugin warns is deprecated and which the pricing
+      page does not list.
+    prices:
+      input_kchars: 0.03

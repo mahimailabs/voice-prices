@@ -1,0 +1,94 @@
+# yaml-language-server: $schema=.schema.json
+name: Speechmatics
+id: speechmatics
+pricing_urls:
+  - https://www.speechmatics.com/pricing
+
+api_pattern: 'https://[^/]*\.speechmatics\.com'
+
+provider_match:
+  contains: speechmatics
+
+# No model_match: Speechmatics names its models by `operating_point`, and `standard` and
+# `enhanced` are far too generic to claim from a bare model_ref. Resolve with
+# provider_id='speechmatics'.
+
+price_comments: >-
+  Speech-to-text billed per hour of audio. Models are selected with the `operating_point`
+  request parameter rather than a model name, so the ids here are those values. The LiveKit
+  plugin defaults to `enhanced`.
+  Batch and real-time are separate rates, so they are separate rows following this catalog's
+  `-batch` convention. Note that Standard costs the same either way while Enhanced does not.
+  Not modelled: the 20% discount over 500 hours a month, Enterprise (Custom), and the
+  Speech-to-Text bolt-ons.
+  Not priced: "Batch Melia 1" at $0.129/hour. It is on the rate table but Speechmatics does not
+  document an `operating_point` value for it, and inventing an id would create a row nothing
+  can address.
+
+pricing_tier: Pro
+
+models:
+  - id: enhanced
+    name: Enhanced (real-time)
+    description: >-
+      Highest-accuracy operating point, streaming. The LiveKit plugin's default. Use
+      `enhanced-batch` for pre-recorded audio.
+    match:
+      equals: enhanced
+    prices_checked: 2026-08-21
+    pricing_source_url: https://www.speechmatics.com/pricing
+    price_comments: >-
+      Source rate $0.43/hour, the "Real-time Enhanced" row of the Speech-to-Text models table,
+      Pro plan. Converted to $/k seconds: 0.43 / 3600 * 1000 = 0.1194444 recurring, stored as
+      0.119444.
+      The dearest row Speechmatics publishes, and 79% above Standard for the same audio.
+    prices:
+      input_audio_kseconds: 0.119444
+
+  - id: enhanced-batch
+    name: Enhanced (batch)
+    description: >-
+      Highest-accuracy operating point, pre-recorded. Slightly cheaper than streaming.
+    match:
+      equals: enhanced-batch
+    prices_checked: 2026-08-21
+    pricing_source_url: https://www.speechmatics.com/pricing
+    price_comments: >-
+      Source rate $0.40/hour, the "Batch Enhanced" row, Pro plan. Converted to $/k seconds:
+      0.40 / 3600 * 1000 = 0.1111111 recurring, stored as 0.111111.
+      7% below the real-time rate. Standard, by contrast, is priced identically in both modes.
+    prices:
+      input_audio_kseconds: 0.111111
+
+  - id: standard
+    name: Standard (real-time)
+    description: >-
+      Faster, lower-cost operating point, streaming. Priced identically to `standard-batch`.
+    match:
+      equals: standard
+    prices_checked: 2026-08-21
+    pricing_source_url: https://www.speechmatics.com/pricing
+    price_comments: >-
+      Source rate $0.24/hour, the "Real-time Standard" row, Pro plan. Converted to $/k seconds:
+      0.24 / 3600 * 1000 = 0.0666666 recurring, stored as 0.066667.
+      Speechmatics charges the same $0.24 for Batch Standard, so this is one of the few places
+      in this catalog where batch and streaming genuinely cost the same. Both rows are kept so
+      a caller naming either resolves.
+    prices:
+      input_audio_kseconds: 0.066667
+
+  - id: standard-batch
+    name: Standard (batch)
+    description: >-
+      Faster, lower-cost operating point, pre-recorded. Same rate as streaming.
+    match:
+      equals: standard-batch
+    prices_checked: 2026-08-21
+    pricing_source_url: https://www.speechmatics.com/pricing
+    price_comments: >-
+      Source rate $0.24/hour, the "Batch Standard" row, Pro plan. Converted to $/k seconds:
+      0.24 / 3600 * 1000 = 0.0666666 recurring, stored as 0.066667.
+      Identical to the real-time Standard rate. Not a copy-paste: Speechmatics publishes the
+      same $0.24 in both columns, unlike Enhanced which differs.
+    prices:
+      input_audio_kseconds: 0.066667
