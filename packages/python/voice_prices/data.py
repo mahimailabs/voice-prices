@@ -6513,6 +6513,28 @@ providers: list[Provider] = [
         ],
     ),
     Provider(
+        id='lmnt',
+        name='LMNT',
+        api_pattern='https://api\\.lmnt\\.com',
+        pricing_urls=['https://www.lmnt.com/pricing'],
+        price_comments='Text-to-speech billed per character, but only as overage on a monthly plan: LMNT sells no pay-as-you-go tier. Every plan bundles characters and then charges per 1,000 beyond them. Rate is per PLAN, not per model, so Blizzard and Aurora cost the same and share one row. Cheaper overage exists further up: Pro at $49/month charges $0.045 and Premium at $199/month charges $0.035. Those are commitments, so this catalog takes the entry plan. Not modelled: the bundled character allowance on each plan, nor the monthly fee itself. A cost estimate from the rate below alone is the marginal cost past the allowance, not a bill.',
+        provider_match=ClauseContains(contains='lmnt'),
+        staleness_threshold_days=60,
+        pricing_tier='Indie',
+        models=[
+            ModelInfo(
+                id='blizzard',
+                match=ClauseOr(or_=[ClauseEquals(equals='blizzard'), ClauseEquals(equals='aurora')]),
+                name='Blizzard / Aurora',
+                description="LMNT's text-to-speech models. Blizzard is the LiveKit plugin's default and the conversational model; Aurora is the earlier one. Priced identically, so one row matches both, which is also what `make collapse` would produce from two.",
+                price_comments='Source rate $0.05 per 1,000 characters, the Indie plan\'s overage ("200K characters included, $0.05 per 1K characters after"). Stored directly: input_kchars is already per 1,000 characters, so no conversion. Indie is $10/month and is the cheapest plan quoting a per-character rate. Free includes 15K characters and publishes no overage rate at all, so it cannot be the priced tier. Same $0.05/1k as ElevenLabs Flash and Turbo, and half of Eleven v3.',
+                pricing_source_url='https://www.lmnt.com/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 21)),
+                prices=ModelPrice(input_kchars=Decimal('0.05')),
+            )
+        ],
+    ),
+    Provider(
         id='mistral',
         name='Mistral',
         api_pattern='https://api\\.mistral\\.ai',

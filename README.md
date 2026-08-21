@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**45 providers, 1,271 priced models.** 66 STT, 1,104 LLM, 75 TTS, 8 S2S, 2 VAD, 1 Agents, 15 Telephony.
+**46 providers, 1,272 priced models.** 66 STT, 1,104 LLM, 76 TTS, 8 S2S, 2 VAD, 1 Agents, 15 Telephony.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -108,6 +108,7 @@ Every provider in the catalog, and which categories it prices:
 | [Inworld](prices/providers/inworld.yml) | 4 | STT, TTS |
 | [LiveKit Inference](prices/providers/livekit.yml) | 81 | STT, LLM, TTS, Telephony |
 | [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 37 | STT, TTS, Telephony |
+| [LMNT](prices/providers/lmnt.yml) | 1 | TTS |
 | [Mistral](prices/providers/mistral.yml) | 18 | LLM |
 | [MoonshotAi](prices/providers/moonshotai.yml) | 9 | LLM |
 | [Novita](prices/providers/novita.yml) | 37 | LLM, TTS |
