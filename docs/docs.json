@@ -133,6 +133,7 @@
               "tts/deepgram",
               "tts/elevenlabs",
               "tts/groq",
+              "tts/hume",
               "tts/inworld",
               "tts/lmnt",
               "tts/novita",
@@ -186,6 +187,7 @@
         "icon": "bot",
         "pages": [
           "agent/all-models",
+          "agent/ultravox",
           "agent/vapi"
         ]
       },

@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**46 providers, 1,272 priced models.** 66 STT, 1,104 LLM, 76 TTS, 8 S2S, 2 VAD, 1 Agents, 15 Telephony.
+**48 providers, 1,274 priced models.** 66 STT, 1,104 LLM, 77 TTS, 8 S2S, 2 VAD, 2 Agents, 15 Telephony.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -105,6 +105,7 @@ Every provider in the catalog, and which categories it prices:
 | [HuggingFace (publicai)](prices/providers/huggingface_publicai.yml) | 8 | LLM |
 | [HuggingFace (sambanova)](prices/providers/huggingface_sambanova.yml) | 8 | LLM |
 | [HuggingFace (together)](prices/providers/huggingface_together.yml) | 23 | LLM |
+| [Hume](prices/providers/hume.yml) | 1 | TTS |
 | [Inworld](prices/providers/inworld.yml) | 4 | STT, TTS |
 | [LiveKit Inference](prices/providers/livekit.yml) | 81 | STT, LLM, TTS, Telephony |
 | [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 37 | STT, TTS, Telephony |
@@ -122,6 +123,7 @@ Every provider in the catalog, and which categories it prices:
 | [Telnyx](prices/providers/telnyx.yml) | 17 | STT, LLM, TTS, Telephony |
 | [Together AI](prices/providers/together.yml) | 72 | LLM |
 | [Twilio](prices/providers/twilio.yml) | 8 | Telephony |
+| [Ultravox](prices/providers/ultravox.yml) | 1 | Agents |
 | [Vapi](prices/providers/vapi.yml) | 1 | Agents |
 | [X AI](prices/providers/x_ai.yml) | 12 | LLM |
 

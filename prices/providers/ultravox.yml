@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=.schema.json
+name: Ultravox
+id: ultravox
+pricing_urls:
+  - https://ultravox.ai/pricing
+
+api_pattern: 'https://api\.ultravox\.ai'
+
+model_match:
+  starts_with: fixie-ai/ultravox
+
+provider_match:
+  contains: ultravox
+
+price_comments: >-
+  A speech-to-speech voice agent billed by connected call minute, so it carries
+  `agent_kminutes` rather than component rates: one number covers understanding the caller,
+  the model and speaking back.
+  Priced per plan, not per model, so every fixie-ai/ultravox* variant shares one row.
+  Not modelled: the 30 free minutes on Pay As You Go, nor telephony, which Ultravox does not
+  include. A phone call also pays a carrier; see the [telephony] providers.
+
+pricing_tier: Pay as You go
+
+models:
+  - id: fixie-ai/ultravox
+    name: Ultravox
+    description: >-
+      Ultravox realtime speech-to-speech, billed per minute of call. Covers every published
+      variant: the base model, ultravox-llama3.3-70b, and the gemma3-27b and qwen3-32b
+      previews, which the pricing page does not price separately.
+    match:
+      starts_with: fixie-ai/ultravox
+    prices_checked: 2026-08-21
+    pricing_source_url: https://ultravox.ai/pricing
+    price_comments: >-
+      Source rate $0.05 per minute on the Pay As You Go plan, stated twice on the page: "First
+      30 minutes free, $0.05/min after that" at the top, and "$0.05 per minute after" in the
+      plan card. Converted to $/k minutes: 0.05 * 1000 = 50 exactly.
+      Pay As You Go is $0/month with no commitment, so it is the tier this catalog takes. Pro
+      at $100/month removes concurrency caps but the page states no cheaper per-minute rate
+      for it.
+      For scale, Vapi's platform fee is $0.05/minute too, but that excludes the model and
+      speech, which are passed through at cost. Ultravox's $0.05 includes them.
+    prices:
+      agent_kminutes: 50

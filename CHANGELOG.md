@@ -21,6 +21,9 @@ file only carries what a consumer needs to act on.
   is a real zero rather than a missing rate.
 - Providers: Rime, Speechmatics, Soniox, LMNT, Ultravox, Hume, ElevenLabs Scribe (speech-to-text
   from a vendor previously only priced for text-to-speech).
+- Ultravox is priced with `agent_kminutes`: one per-minute number covering understanding the
+  caller, the model and speaking back. Worth contrasting with Vapi's identical-looking
+  $0.05/minute, which EXCLUDES the model and speech.
 
 ### Behaviour changes
 
