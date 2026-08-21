@@ -29,10 +29,10 @@ REPO_URL = 'https://github.com/mahimailabs/voice-prices'
 ADD_PROVIDER_URL = f'{REPO_URL}/issues/new?template=add-provider.yml'
 PROVIDER_YAML_URL = f'{REPO_URL}/blob/main/prices/providers'
 
-Modality = Literal['stt', 'llm', 'tts', 's2s', 'vad', 'agent']
+Modality = Literal['stt', 'llm', 'tts', 's2s', 'vad', 'agent', 'telephony']
 
 #: Tab order on the docs site. Voice first, deliberately: this is a voice pricing project.
-CATEGORIES: tuple[Modality, ...] = ('stt', 'llm', 'tts', 's2s', 'vad', 'agent')
+CATEGORIES: tuple[Modality, ...] = ('stt', 'llm', 'tts', 's2s', 'vad', 'agent', 'telephony')
 
 # Fields on a price block that are not per-unit rates and must not be treated as one.
 _NON_RATE_FIELDS = {'voice_multipliers'}
@@ -75,6 +75,7 @@ CATEGORY_COLUMNS: dict[Modality, tuple[Column, ...]] = {
     'tts': (Column('$ / 1M chars', 'per_mchars', 'usd'),),
     'vad': (Column('$ / min', 'per_min', 'usd'),),
     'agent': (Column('$ / min', 'per_min', 'usd'),),
+    'telephony': (Column('$ / min', 'per_min', 'usd'),),
     'llm': (
         Column('Input $ / Mtok', 'input_mtok', 'usd'),
         Column('Output $ / Mtok', 'output_mtok', 'usd'),
@@ -164,6 +165,20 @@ CATEGORY_META: dict[Modality, CategoryMeta] = {
         'several platforms exclude the model or telephony and bill those at cost on top. Read '
         '`price_comments` on each row for what the number actually covers before comparing anything.',
     ),
+    'telephony': CategoryMeta(
+        title='Telephony pricing',
+        tab='Telephony',
+        icon='phone',
+        unit='Priced from `telephony_kminutes`, US dollars per 1,000 connected call minutes, and '
+        'shown per minute. This is the carrier leg: what it costs to put the call on the phone '
+        'network, before anything transcribes or generates a word.',
+        note='**This is a line you pay on top, not instead.** An agent on a phone number pays a '
+        'carrier for the minutes AND pays for speech-to-text, the model and text-to-speech, or for '
+        'a bundled [agent](/agent/all-models) minute that contains them. Direction and number type '
+        'are both in the model id because both change the rate, and not in the same direction: '
+        'receiving on toll-free costs more than dialling out, while local is the other way round. '
+        'Rates are per country; the id carries the country.',
+    ),
     'vad': CategoryMeta(
         title='Voice activity detection pricing',
         tab='VAD',
@@ -238,6 +253,7 @@ class ProviderEntry(TypedDict):
     id: str
     name: str
     models: list[ModelRow]
+    pricing_tier: str | None
 
 
 Catalog = dict[Modality, list[ProviderEntry]]
@@ -312,8 +328,13 @@ def detect_modality(flat: dict[str, float], ref: tuple[str, str] | None = None) 
     """
     if ref is not None and ref in MODALITY_OVERRIDES:
         return MODALITY_OVERRIDES[ref]
-    # Checked before everything else: a bundled agent minute is the whole price of the call, so a
-    # platform that also lists a component rate must still be filed as an agent, not as its parts.
+    # Checked before everything else: a carrier minute is a different product from anything the
+    # rest of this function classifies. It transcribes nothing and generates nothing, so a row
+    # carrying it belongs on the telephony page whatever else it happens to price.
+    if 'telephony_kminutes' in flat:
+        return 'telephony'
+    # Then agents: a bundled agent minute is the whole price of the call, so a platform that also
+    # lists a component rate must still be filed as an agent, not as its parts.
     if 'agent_kminutes' in flat:
         return 'agent'
     if 'input_audio_mtok' in flat and 'output_audio_mtok' in flat:
@@ -331,6 +352,7 @@ def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, dail
     """Collect every candidate column value for one model. Column choice happens per page."""
     audio_kseconds = flat.get('input_audio_kseconds')
     agent_kminutes = flat.get('agent_kminutes')
+    telephony_kminutes = flat.get('telephony_kminutes')
     kchars = flat.get('input_kchars')
     context = model.get('context_window')
     prices = model.get('prices')
@@ -364,6 +386,9 @@ def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, dail
     elif agent_kminutes is not None:
         per_min = agent_kminutes / 1000
         per_min_estimated = 'agent_kminutes' in estimated_fields
+    elif telephony_kminutes is not None:
+        per_min = telephony_kminutes / 1000
+        per_min_estimated = 'telephony_kminutes' in estimated_fields
 
     # Only mark it when the estimate is a number this page actually displays. A model whose
     # estimated field is not rendered here would otherwise carry a footnote pointing at nothing.
@@ -454,7 +479,14 @@ def build_catalog(data: list[dict[str, Any]]) -> Catalog:
         for category, rows in by_category.items():
             if rows:
                 rows.sort(key=lambda r: r['id'])
-                catalog[category].append({'id': provider_id, 'name': provider_name, 'models': rows})
+                catalog[category].append(
+                    {
+                        'id': provider_id,
+                        'name': provider_name,
+                        'models': rows,
+                        'pricing_tier': provider.get('pricing_tier'),
+                    }
+                )
 
     return catalog
 
@@ -643,10 +675,10 @@ def _markers_footnote(rows: list[ModelRow]) -> str:
         'tiered': '`tiered` the rate changes above a token threshold. The base rate is shown.',
         'daily': '`daily` the rate changes with the time of day. The standard rate is shown.',
         'voices': '`voices` some voice classes cost a multiple of the base rate.',
-        'estimated': "`estimated` this rate is the vendor's own published estimate, not the meter it "
-        'bills on. It will not reconcile against an invoice: the model is billed in another unit '
-        '(usually tokens) and the figure here is the vendor restating that in this one. Useful for '
-        'comparison and capacity planning, not for billing.',
+        'estimated': '`estimated` this rate is not the meter the vendor bills on, so it will not '
+        'reconcile against an invoice. Either the model is billed in another unit and this figure '
+        'is the vendor restating it, or the vendor publishes only a floor ("starting at") or a '
+        'range. Useful for comparison and capacity planning, not for billing.',
     }
     lines = [notes[marker] for marker in ('api', 'tiered', 'daily', 'voices', 'estimated') if marker in seen]
     return '\n'.join(f'- {line}' for line in lines)
@@ -729,6 +761,17 @@ def render_provider_page(category: Modality, entry: ProviderEntry) -> str:
         f'{meta.unit} Source of truth: [`prices/providers/{entry["id"]}.yml`]({PROVIDER_YAML_URL}/{entry["id"]}.yml).',
     ]
 
+    if tier := entry.get('pricing_tier'):
+        parts.append(
+            f'**Plan:** {tier}. '
+            + (
+                'This vendor publishes one price with no plans to choose between.'
+                if tier == 'Single published rate'
+                else 'Rates below are that plan. A committed or negotiated plan will be cheaper, '
+                'so check yours before budgeting from these.'
+            )
+        )
+
     if main_rows:
         parts.append(render_rows(category, main_rows, active_columns(main_rows, CATEGORY_COLUMNS[category])))
     if token_rows:
@@ -758,6 +801,7 @@ def render_comparison(category: Modality, rows: list[ComparisonRow]) -> str:
         'vad': '$ / min',
         's2s': '$ / Mtok',
         'agent': '$ / min',
+        'telephony': '$ / min',
     }[category]
     headers = ['Model', 'Name', f'Direct ({unit})', f'LiveKit ({unit})', f'Scale ({unit})', 'vs direct']
     body = [

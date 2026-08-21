@@ -43,7 +43,7 @@ Where the catalog carries such a number, `provenance.estimated_fields` names the
 | | |
 | --- | --- |
 | No marker | The rate is the vendor's billing meter. It reconciles against an invoice. |
-| <sup>`estimated`</sup> | The rate is the vendor's own approximation of a bill charged in another unit. Use it to compare vendors and plan capacity, not to reconcile a bill. |
+| <sup>`estimated`</sup> | The rate is not the billing meter. Either the vendor's approximation of a bill charged in another unit, or a floor they published instead of a rate. Use it to compare vendors and plan capacity, not to reconcile a bill. |
 
 The flag is per field, not per model, because the split is per field: on `gpt-4o-transcribe` the token rates are billed and only `input_audio_kseconds` is estimated.
 

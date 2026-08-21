@@ -150,6 +150,14 @@ class PriceBreakdown:
     so it sums into total_price alongside `requests`.
     """
 
+    telephony_kminutes: Decimal = Decimal(0)
+    """USD for connected call minutes on the phone network.
+
+    Charged by the carrier for the call leg itself, on top of whatever the agent spends on
+    speech and the model. Sums into total_price alongside `requests` and `agent_kminutes`:
+    a carrier minute is not attributable to input or output.
+    """
+
     requests: Decimal = Decimal(0)
 
     def sum(self) -> Decimal:
@@ -168,6 +176,7 @@ class PriceBreakdown:
             + self.voice_class_input_adjustment
             + self.voice_class_output_adjustment
             + self.agent_kminutes
+            + self.telephony_kminutes
             + self.requests
         )
 
@@ -435,6 +444,14 @@ class Usage:
     and round at the end.
     """
 
+    telephony_minutes: Decimal | None = None
+    """Connected call minutes carried over the phone network.
+
+    The carrier leg, billed whether or not the agent speaks. Independent of
+    `agent_minutes`: a call on a bundled platform accrues both, one for the platform and
+    one for the carrier. Decimal-typed because carriers bill per second and round at the end.
+    """
+
     voice_class: str | None = None
     """Voice class identifier used for this call (matches a key in
     `ModelPrice.voice_multipliers` for the resolved provider+model).
@@ -475,6 +492,7 @@ class Usage:
             audio_output_seconds=_add_decimal(self.audio_output_seconds, other.audio_output_seconds),
             audio_input_seconds=_add_decimal(self.audio_input_seconds, other.audio_input_seconds),
             agent_minutes=_add_decimal(self.agent_minutes, other.agent_minutes),
+            telephony_minutes=_add_decimal(self.telephony_minutes, other.telephony_minutes),
             voice_class=_coalesce_str(self.voice_class, other.voice_class),
         )
 
@@ -514,6 +532,19 @@ class Provider:
     """Recommended maximum age (in days) for `prices_checked` on this provider's models before consumers
     should re-verify against `pricing_source_url`. Metadata only; voice-prices itself does not warn or
     fail on stale entries.
+    """
+    pricing_tier: str | None = None
+    """The vendor plan every rate from this provider is taken from, named as the vendor names it.
+
+    Most vendors publish several prices for the same model: pay-as-you-go, one or more committed
+    plans, and an enterprise rate. This catalog takes the cheapest tier a new account can reach
+    with no spend commitment, and names it here so a consumer can tell whether the rate matches
+    the plan they are actually on.
+
+    Verbatim from the vendor (`Pay As You Go`, `On-Demand`, `Standard`), not a normalised enum,
+    so a reader can find the same words on the pricing page. The literal `Single published rate`
+    means the vendor publishes one price with no plan to choose from; `None` means no one has
+    recorded it yet, which is not the same claim.
     """
     models: list[ModelInfo] = dataclasses.field(default_factory=list)
     """List of models supported by this provider"""
@@ -572,6 +603,7 @@ UsageField = Literal[
     'audio_output_seconds',
     'audio_input_seconds',
     'agent_minutes',
+    'telephony_minutes',
 ]
 
 
@@ -790,8 +822,9 @@ class Provenance:
     """Priced fields whose value is the vendor's own published estimate, not the meter they bill on.
 
     Absent (the normal case) means every rate on the model is a billing rate. When present, a rate
-    named here will not reconcile against an invoice: it is the vendor's own approximation, usually
-    of a per-token bill restated per minute or per character.
+    named here will not reconcile against an invoice: either it is a per-token bill restated per
+    minute or per character, or it is a floor the vendor published instead of a rate ("starting
+    at $0.005 per minute"), which bounds the invoice from below rather than stating it.
 
     OpenAI's `gpt-4o-transcribe` is the case this was added for. It bills per token and also
     prints "$0.006 / minute" under a column headed *Estimated cost*, derived from an assumed
@@ -916,6 +949,7 @@ _UNPRICED_RATE_CHAINS: dict[str, tuple[str, ...]] = {
     'audio_input_seconds': ('input_audio_kseconds',),
     'audio_output_seconds': ('output_audio_kseconds',),
     'agent_minutes': ('agent_kminutes',),
+    'telephony_minutes': ('telephony_kminutes',),
 }
 
 
@@ -959,6 +993,14 @@ class ModelPrice:
     ModelPrice puts direction before modality (input_audio_kseconds); Usage puts
     modality before direction (audio_input_seconds). Intentional; mirrors the
     existing output_audio_kseconds / audio_output_seconds pair.
+    """
+
+    telephony_kminutes: Decimal | None = None
+    """USD per 1,000 connected call minutes on the phone network.
+
+    Separate from `agent_kminutes` on purpose: a bundled agent minute already contains
+    speech-to-text, the model and text-to-speech, while a carrier minute is the call leg
+    itself. A phone call on a bundled platform pays both.
     """
 
     agent_kminutes: Decimal | None = None
@@ -1056,30 +1098,20 @@ class ModelPrice:
             self.output_audio_mtok, usage.output_audio_tokens, total_input_tokens
         )
 
-        # TTS + STT contributions: per-1000 character and per-1000 audio-second pricing.
-        # Read defensively so AbstractUsage implementations predating these fields
-        # (e.g. user-defined dataclasses) continue to work without modification.
-        # All three branches use the explicit `Decimal(0) if raw is None else Decimal(raw)`
-        # form so the int-to-Decimal coercion contract is visible at the call site
-        # (see test_int_audio_*_seconds_prices_correctly).
-        characters = getattr(usage, 'characters', None) or 0
-        if self.input_kchars is not None and characters > 0:
-            breakdown.input_kchars = self.input_kchars * Decimal(characters) / Decimal(1000)
+        # Per-1000-unit contributions: characters (TTS), audio seconds in both directions (STT),
+        # bundled agent minutes, and carrier minutes. Five meters, one shape, so they go through
+        # `_read_quantity` / `_per_thousand` rather than five near-identical branches.
+        characters = _read_quantity(usage, 'characters')
+        audio_output_seconds = _read_quantity(usage, 'audio_output_seconds')
+        audio_input_seconds = _read_quantity(usage, 'audio_input_seconds')
+        agent_minutes = _read_quantity(usage, 'agent_minutes')
+        telephony_minutes = _read_quantity(usage, 'telephony_minutes')
 
-        raw_output_seconds = getattr(usage, 'audio_output_seconds', None)
-        audio_output_seconds = Decimal(0) if raw_output_seconds is None else Decimal(raw_output_seconds)
-        if self.output_audio_kseconds is not None and audio_output_seconds > 0:
-            breakdown.output_audio_kseconds = self.output_audio_kseconds * audio_output_seconds / Decimal(1000)
-
-        raw_input_seconds = getattr(usage, 'audio_input_seconds', None)
-        audio_input_seconds = Decimal(0) if raw_input_seconds is None else Decimal(raw_input_seconds)
-        if self.input_audio_kseconds is not None and audio_input_seconds > 0:
-            breakdown.input_audio_kseconds = self.input_audio_kseconds * audio_input_seconds / Decimal(1000)
-
-        raw_agent_minutes = getattr(usage, 'agent_minutes', None)
-        agent_minutes = Decimal(0) if raw_agent_minutes is None else Decimal(raw_agent_minutes)
-        if self.agent_kminutes is not None and agent_minutes > 0:
-            breakdown.agent_kminutes = self.agent_kminutes * agent_minutes / Decimal(1000)
+        breakdown.input_kchars = _per_thousand(self.input_kchars, characters)
+        breakdown.output_audio_kseconds = _per_thousand(self.output_audio_kseconds, audio_output_seconds)
+        breakdown.input_audio_kseconds = _per_thousand(self.input_audio_kseconds, audio_input_seconds)
+        breakdown.agent_kminutes = _per_thousand(self.agent_kminutes, agent_minutes)
+        breakdown.telephony_kminutes = _per_thousand(self.telephony_kminutes, telephony_minutes)
 
         # Voice multiplier resolution and per-direction adjustment
         applied_voice_multiplier: Decimal | None = None
@@ -1120,6 +1152,7 @@ class ModelPrice:
             'audio_input_seconds': audio_input_seconds,
             'audio_output_seconds': audio_output_seconds,
             'agent_minutes': agent_minutes,
+            'telephony_minutes': telephony_minutes,
         }
         unpriced_usage = tuple(
             field
@@ -1144,7 +1177,9 @@ class ModelPrice:
             + breakdown.output_audio_kseconds
             + breakdown.voice_class_output_adjustment
         )
-        total_price = input_price + output_price + breakdown.requests + breakdown.agent_kminutes
+        total_price = (
+            input_price + output_price + breakdown.requests + breakdown.agent_kminutes + breakdown.telephony_kminutes
+        )
 
         return {
             'input_price': input_price,
@@ -1170,6 +1205,29 @@ class ModelPrice:
                         parts.append(f'${value}/{name} MTok')
 
         return ', '.join(parts)
+
+
+def _read_quantity(usage: AbstractUsage, field: str) -> Decimal:
+    """A usage quantity as a Decimal, or zero when absent.
+
+    Read with getattr so an `AbstractUsage` implementation predating a field (a user-defined
+    dataclass, say) keeps working instead of raising. The explicit Decimal() coercion is the
+    contract that lets callers pass a plain int for a Decimal-typed field, which several do
+    (see test_int_audio_*_seconds_prices_correctly).
+    """
+    raw = getattr(usage, field, None)
+    return Decimal(0) if raw is None else Decimal(raw)
+
+
+def _per_thousand(rate: Decimal | None, quantity: Decimal) -> Decimal:
+    """USD for `quantity` units at `rate` per 1,000 of them.
+
+    Zero when the model has no such rate, which is what makes a missing meter a silent zero;
+    `PriceCalculation.unpriced_usage` is what tells the caller that happened.
+    """
+    if rate is None or quantity <= 0:
+        return Decimal(0)
+    return rate * quantity / Decimal(1000)
 
 
 def calc_mtok_price(

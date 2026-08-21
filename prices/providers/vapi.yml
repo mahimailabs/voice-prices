@@ -20,6 +20,8 @@ price_comments: >-
   bringing their own keys. That asymmetry is the reason `agent_kminutes` exists as its own field
   rather than being folded in with the component rates.
 
+pricing_tier: Build
+
 models:
   - id: vapi-platform
     name: Vapi platform

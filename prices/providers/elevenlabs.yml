@@ -19,6 +19,8 @@ price_comments: >-
   Turbo models are $0.05/kchar (0.5 credits/character) and Multilingual v2 is
   $0.10/kchar (1 credit/character). See https://elevenlabs.io/pricing/api.
 
+pricing_tier: Single published rate
+
 models:
   - id: eleven_flash_v2
     name: Eleven Flash v2
@@ -95,3 +97,29 @@ models:
       $0.05/kchar via the ElevenLabs API (Flash/Turbo, 0.5 credits/character).
     prices:
       input_kchars: 0.05
+
+  - id: eleven_v3
+    name: Eleven v3
+    description: >-
+      ElevenLabs' current flagship, human-like and expressive speech across 70+ languages.
+      Priced with Multilingual v2 rather than the cheaper Flash/Turbo tiers.
+    match:
+      # `equals`, not `starts_with: eleven_v3`. The pricing page carries a separate
+      # "v3 Conversational" row at HALF this rate ($0.05/1k), so a prefix match would hand
+      # any future `eleven_v3_*` id the more expensive number.
+      equals: eleven_v3
+    prices_checked: 2026-08-20
+    pricing_source_url: https://elevenlabs.io/pricing/api
+    price_comments: >-
+      $0.10 per 1,000 characters via the ElevenLabs API, the "v3" row of the Text to Speech
+      API table (1 credit/character, as for Multilingual v2). Stored directly: input_kchars
+      is already per 1,000 characters, so no conversion. The rate is identical across every
+      plan column from Free through Business, so there is no tier to choose.
+      Same rate as eleven_multilingual_v2 and double the Flash/Turbo tiers at $0.05.
+      Not priced here: the "v3 Conversational" row at $0.05/1k characters. It is half the
+      cost and appears to be a distinct product rather than a plan discount, but the models
+      docs list no separate model id for it, so there is nothing to key a row on yet.
+      The page also quotes "~$0.10/minute" beside the rate; that is an approximation from an
+      assumed speaking rate, not a second meter, and is not recorded.
+    prices:
+      input_kchars: 0.1

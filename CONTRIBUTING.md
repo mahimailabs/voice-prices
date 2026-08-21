@@ -378,7 +378,17 @@ The validator enforces alphabetical sorting of the `models:` list by the `id:` f
 
 ### (Both) My provider bills in credits / tokens / minutes, not the native unit
 
-Pick a default subscription tier (usually the "pay as you go" or "Creator" tier) and convert the unit cost to the native priced field. Document the chosen tier and conversion formula in `price_comments` on each model so consumers on other tiers can derive their own rate.
+**Take the cheapest tier a new account can reach with no spend commitment**, and name it in the provider's `pricing_tier` field. That is usually "Pay As You Go" or "On-Demand". Where a vendor has no such tier, take the cheapest paid plan and say so (Cartesia's Pro at $4/month, ai-coustics' Startup, because neither sells single units). Where a vendor publishes one price with no plans to choose between, write the literal `Single published rate`.
+
+Word it as the vendor words it. The value exists so a reader can find the same words on the pricing page and check the number against their own invoice; a normalised enum would break that.
+
+Never take a committed or negotiated tier. Deepgram's Growth is 12.5% cheaper but costs $4,000/year to enter, and a catalog quoting it would understate every self-serve user's bill.
+
+`check_contribution` fails a PR that adds or reprices a model on a provider with no `pricing_tier`.
+
+Then convert the unit cost to the native priced field, and document the conversion in `price_comments` so consumers on other tiers can derive their own rate.
+
+**Promotional prices:** take the discounted price, and record the list price in `price_comments`. Deepgram currently renders `Current price $0.0048/min` beside `Regular price $0.0077/min`; the catalog answers "what would I pay today", so it carries $0.0048. Taking the list price would be wrong for every user for the whole promo. The freshness check catches the expiry as drift. Reading the wrong column here is the single most common error in this domain: at least two other public pricing datasets publish Deepgram Nova-3 at the regular price, overcharging it by 60%.
 
 - TTS example: ElevenLabs Creator tier costs `$22/month for 100,000 credits` (`$0.00022 per credit`). Turbo v2.5 burns `0.5 credits per character`, so its `input_kchars` value is `$0.00022 * 0.5 * 1000 = $0.11`. The `price_comments` block on the entry calls this out explicitly.
 - STT example: a provider quoting `$0.006 per minute` of audio converts to `input_audio_kseconds = 0.006 * 1000 / 60 = 0.1`. Record the source per-minute rate in `price_comments`.

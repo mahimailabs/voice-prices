@@ -31,6 +31,8 @@ price_comments: >-
   is listed here; the enhancement line (Quail, Quail Voice Focus, Rook) and Tyto
   share the same meter.
 
+pricing_tier: Startup
+
 models:
   - id: quail-vad-2.0-xxs-16khz
     name: Quail VAD 2.0

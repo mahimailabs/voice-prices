@@ -74,6 +74,25 @@ class Provider(_Model):
     voice-prices itself does not warn or fail on stale entries; this is metadata for consumers like VoiceGateway
     to drive their own freshness UX. Default 60.
     """
+    pricing_tier: NameField | None = None
+    """The vendor plan every rate in this file is taken from, named as the vendor names it.
+
+    Most vendors publish several prices for the same model: a pay-as-you-go rate, one or more
+    committed plans, and an enterprise rate you have to ask for. A catalog that mixes them is
+    not comparable with itself, so this project takes ONE tier per provider, the cheapest a new
+    account can reach with no spend commitment, and records which one here.
+
+    Verbatim from the vendor: `Pay As You Go`, `On-Demand`, `Standard`. Not a normalised enum,
+    because the value exists so a reader can find the same words on the pricing page and
+    confirm the number against their own invoice. A rate the reader cannot locate is a rate
+    they will not trust.
+
+    Use the literal ``Single published rate`` when the vendor publishes one price with no plan
+    structure to choose from, as ElevenLabs does. That is a positive claim and is not the same
+    as leaving the field absent, which means nobody has looked yet. ``check_contribution``
+    requires this on any provider whose models are added or repriced, so the distinction stays
+    honest: a rate lands with its tier named, or it does not land.
+    """
     models: list[ModelInfo]
     """List of models supported by this provider"""
 
@@ -165,6 +184,7 @@ UsageField = Literal[
     'audio_output_seconds',
     'audio_input_seconds',
     'agent_minutes',
+    'telephony_minutes',
 ]
 
 
@@ -254,8 +274,9 @@ class Provenance(_Model):
 
     Absent (the normal case) means every rate on the model is a billing rate.
 
-    This exists because a vendor can publish two numbers for the same model in two different
-    units, and only one of them is the invoice. OpenAI prices `gpt-4o-transcribe` per token and
+    Two shapes land here. A vendor publishes the same model in two units and bills on only one
+    of them, or a vendor publishes a floor rather than a rate ("starting at $0.005 per minute")
+    so the number is a lower bound on the invoice rather than the invoice. OpenAI prices `gpt-4o-transcribe` per token and
     also prints "$0.006 / minute" in a column headed *Estimated cost*, derived from an assumed
     speech density. Both numbers are real and published; only the token rate is charged. Storing
     the per-minute figure without saying so would let a consumer bill from it and quietly disagree
@@ -457,6 +478,26 @@ class ModelPrice(_Model):
     Deliberately not comparable with the component rates elsewhere in this catalog:
     what the bundle contains is the platform's choice and is rarely disclosed, so the
     number answers "what does a minute cost me here", not "what does the speech cost".
+    """
+
+    telephony_kminutes: DollarPrice | None = None
+    """price in USD per 1,000 connected call minutes, carrying voice over the phone network.
+
+    The line an agent on a phone number pays on top of everything else. A carrier bills for
+    the call leg itself: it transcribes nothing, generates nothing, and is charged whether or
+    not the agent says a word. Distinct from `agent_kminutes` for exactly that reason. A
+    bundled agent minute already contains speech-to-text, the model and text-to-speech; adding
+    a carrier minute to it is a sum, not a substitution, and reusing one field for both would
+    silently double-count the same minute.
+
+    Rate depends on the direction of the call and the number type, and the two do not move
+    together: Twilio charges more to RECEIVE on toll-free ($0.0220/min) than to place the call
+    ($0.0140/min), and the reverse on local. Both live in the model id
+    (`us-tollfree-inbound`), the way this catalog already splits streaming from batch, so one
+    row means one rate and a lookup either resolves exactly or fails.
+
+    Rates are per country. The id carries an ISO country prefix so a second country is an
+    added row rather than a schema change.
     """
 
     voice_multipliers: VoiceMultipliers | None = None

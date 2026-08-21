@@ -1,7 +1,7 @@
 ---
 title: "Deepgram STT pricing"
 sidebarTitle: "Deepgram"
-description: "7 STT model(s) from Deepgram, with the rate and where it came from."
+description: "10 STT model(s) from Deepgram, with the rate and where it came from."
 mode: "wide"
 ---
 
@@ -9,8 +9,12 @@ mode: "wide"
 
 Priced from `input_audio_kseconds`, US dollars per 1,000 seconds of input audio, and shown converted to a per-minute rate for comparison. Vendors quote in whatever unit they prefer (per minute, per second, per hour), so the figure here is a conversion, not a quote. Source of truth: [`prices/providers/deepgram.yml`](https://github.com/mahimailabs/voice-prices/blob/main/prices/providers/deepgram.yml).
 
+**Plan:** Pay As You Go. Rates below are that plan. A committed or negotiated plan will be cheaper, so check yours before budgeting from these.
+
 | Model | Name | $ / min | Source | Last verified |
 | --- | --- | ---: | ---: | ---: |
+| `base` | Base (legacy) | $0.01450002 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
+| `enhanced` | Enhanced (legacy) | $0.0165 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
 | `flux-general` | Flux (streaming) | $0.00649998 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
 | `nova-2` | Nova-2 (streaming) | $0.00583332 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
 | `nova-2-batch` | Nova-2 (batch) | $0.00430002 | <Badge color="green" size="sm">verified</Badge> | 2026-05-29 |
@@ -18,5 +22,6 @@ Priced from `input_audio_kseconds`, US dollars per 1,000 seconds of input audio,
 | `nova-3-batch` | Nova-3 (monolingual batch) | $0.00430002 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
 | `nova-3-multilingual` | Nova-3 (multilingual streaming) | $0.0058002 | <Badge color="green" size="sm">verified</Badge> | 2026-05-28 |
 | `nova-3-multilingual-batch` | Nova-3 (multilingual batch) | $0.00520002 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
+| `whisper-large` | Whisper Large (Deepgram-hosted) | $0.0048 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
 
 What `verified`, `imported`, and `seed` mean is on [How Fresh?](/how-fresh). A rate that looks wrong is worth [reporting](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml).

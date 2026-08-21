@@ -4,6 +4,7 @@ id: telnyx
 pricing_urls:
   - https://telnyx.com/pricing/text-to-speech
   - https://telnyx.com/pricing/speech-to-text
+  - https://telnyx.com/pricing/elastic-sip
 
 api_pattern: 'https://api\.telnyx\.com'
 
@@ -27,6 +28,8 @@ price_comments: >-
   per-character pricing on the pricing pages as of 2026-07-17. They can be
   added in a follow-up once Telnyx publishes per-unit rates.
 
+pricing_tier: Pay as you go
+
 models:
   - id: anthropic-claude-haiku-4.5
     match:
@@ -41,6 +44,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: gpt-4.1
     match:
       equals: gpt-4.1
@@ -54,6 +58,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: gpt-4o
     match:
       equals: gpt-4o
@@ -67,6 +72,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: gpt-5
     match:
       or:
@@ -82,6 +88,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: gpt-5.2
     match:
       equals: gpt-5.2
@@ -95,6 +102,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: gpt-5.4
     match:
       equals: gpt-5.4
@@ -108,6 +116,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: gpt-5.6-luna
     match:
       equals: gpt-5.6-luna
@@ -121,6 +130,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: gpt-5.6-sol
     match:
       equals: gpt-5.6-sol
@@ -134,6 +144,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: natural
     name: Telnyx Natural TTS
     description: >-
@@ -149,6 +160,7 @@ models:
       input_kchars: 0.003
     provenance:
       api_backed: true
+
   - id: natural-hd
     name: Telnyx NaturalHD TTS
     description: >-
@@ -164,6 +176,7 @@ models:
       input_kchars: 0.048
     provenance:
       api_backed: true
+
   - id: openai-gpt-5.4-mini
     match:
       equals: openai-gpt-5.4-mini
@@ -177,6 +190,7 @@ models:
     provenance:
       source: imported
       api_backed: true
+
   - id: qwen3tts
     name: Telnyx Qwen3TTS
     description: >-
@@ -193,6 +207,7 @@ models:
       input_kchars: 0.032
     provenance:
       api_backed: true
+
   - id: telnyx-stt
     name: Telnyx STT
     description: >-
@@ -210,6 +225,7 @@ models:
       input_audio_kseconds: 0.25
     provenance:
       api_backed: true
+
   - id: ultra
     name: Telnyx Ultra TTS
     description: >-
@@ -226,3 +242,94 @@ models:
       input_kchars: 0.032
     provenance:
       api_backed: true
+
+  - id: us-local-inbound
+    name: US local (inbound)
+    description: >-
+      Calls received on a Telnyx US local number, over Elastic SIP Trunking.
+      Telnyx publishes a floor for this, not a rate. See price_comments.
+    match:
+      equals: us-local-inbound
+    prices_checked: 2026-08-20
+    pricing_source_url: https://telnyx.com/pricing/elastic-sip
+    price_comments: >-
+      Published as "Starting at $0.0032 per minute", Receive inbound calls / Local calls,
+      Pay as you go, United States. Converted to $/k minutes: 0.0032 * 1000 = 3.2 exactly.
+      This is a FLOOR, not a rate. Telnyx prices inbound by the calling number and destination
+      and publishes only the minimum, so the invoice is this or higher and by an amount they do
+      not state. Flagged in provenance.estimated_fields for that reason: comparing it against a
+      vendor that publishes an exact rate understates Telnyx by an unknown margin.
+      The exact per-destination rates are in the global price sheet Telnyx offers as a download,
+      which is not modelled here.
+    provenance:
+      estimated_fields:
+        - telephony_kminutes
+    prices:
+      telephony_kminutes: 3.2
+
+  - id: us-local-outbound
+    name: US local (outbound)
+    description: >-
+      Calls placed to a US local number over Elastic SIP Trunking.
+      Telnyx publishes a floor for this, not a rate. See price_comments.
+    match:
+      equals: us-local-outbound
+    prices_checked: 2026-08-20
+    pricing_source_url: https://telnyx.com/pricing/elastic-sip
+    price_comments: >-
+      Published as "Starting at $0.005 per minute", Make outbound calls / Local calls,
+      Pay as you go, United States. Converted to $/k minutes: 0.005 * 1000 = 5 exactly.
+      A FLOOR, not a rate: outbound cost varies by destination and Telnyx publishes only the
+      minimum. Flagged in provenance.estimated_fields.
+      Telnyx also lists call-per-second thresholds that change outbound pricing, which are not
+      modelled.
+    provenance:
+      estimated_fields:
+        - telephony_kminutes
+    prices:
+      telephony_kminutes: 5
+
+  - id: us-tollfree-inbound
+    name: US toll-free (inbound)
+    description: >-
+      Calls received on a Telnyx US toll-free number.
+      Telnyx publishes a floor for this, not a rate. See price_comments.
+    match:
+      equals: us-tollfree-inbound
+    prices_checked: 2026-08-20
+    pricing_source_url: https://telnyx.com/pricing/elastic-sip
+    price_comments: >-
+      Published as "Starting at $0.015 per minute", Receive inbound calls / Toll-free calls,
+      Pay as you go, United States. Converted to $/k minutes: 0.015 * 1000 = 15 exactly.
+      A FLOOR, and Telnyx footnotes this row specifically: "Toll-free has different rates based
+      on the calling number." So the spread here is explicitly acknowledged by the vendor and
+      the published number is the best case. Flagged in provenance.estimated_fields.
+      Telnyx also sells unlimited concurrent inbound via channels at $8 to $12 per month per
+      channel, which is a subscription rather than a per-minute rate and is not modelled.
+    provenance:
+      estimated_fields:
+        - telephony_kminutes
+    prices:
+      telephony_kminutes: 15
+
+  - id: us-tollfree-outbound
+    name: US toll-free (outbound)
+    description: >-
+      Calls placed to a US toll-free number. Free of charge on Telnyx, which is why this row
+      carries no rate.
+    match:
+      equals: us-tollfree-outbound
+    prices_checked: 2026-08-20
+    pricing_source_url: https://telnyx.com/pricing/elastic-sip
+    price_comments: >-
+      Published as "Free", Make outbound calls / Toll-free calls, Pay as you go, United States.
+      Stored as 0, which is a real published rate rather than an unpriced row: Telnyx does not
+      charge for dialling out to a toll-free number. Twilio charges $0.0140/minute for the same
+      leg, so this is the largest single gap between the two carriers in this catalog.
+      Not flagged as a floor, unlike the other three Telnyx rows: "Free" carries no "starting
+      at" hedge.
+      Expressed as empty prices, the convention this catalog already uses for a free model
+      (see openai/moderation). One consequence worth knowing: a free row and an unpriced row
+      are indistinguishable in the data, so `unpriced_usage` will name telephony_minutes here
+      even though the zero is real. The `description` is what separates the two today.
+    prices: {}

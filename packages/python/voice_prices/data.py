@@ -17,6 +17,7 @@ providers: list[Provider] = [
         model_match=ClauseContains(contains='quail'),
         provider_match=ClauseContains(contains='coustics'),
         staleness_threshold_days=60,
+        pricing_tier='Startup',
         models=[
             ModelInfo(
                 id='quail-vad-2.0-xxs-16khz',
@@ -446,6 +447,7 @@ providers: list[Provider] = [
         model_match=ClauseStartsWith(starts_with='universal-'),
         provider_match=ClauseContains(contains='assemblyai'),
         staleness_threshold_days=60,
+        pricing_tier='Pay as you go',
         models=[
             ModelInfo(
                 id='universal-2',
@@ -456,6 +458,26 @@ providers: list[Provider] = [
                 pricing_source_url='https://www.assemblyai.com/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 5, 29)),
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.041667')),
+            ),
+            ModelInfo(
+                id='universal-3-5-pro',
+                match=ClauseEquals(equals='universal-3-5-pro'),
+                name='Universal-3.5 Pro (async)',
+                description='AssemblyAI\'s highest-accuracy model on the async / pre-recorded endpoint, passed as `speech_models: ["universal-3-5-pro"]`. 18 languages with native code switching. The SAME id on the streaming endpoint costs more than twice as much; that rate is `universal-3-5-pro-streaming` here.',
+                price_comments='Source rate $0.21/hour, "Universal-3.5 Pro" under the Pre-recorded Speech-to-Text API tab. Converted to $/k seconds: 0.21 / 3600 * 1000 = 0.0583333 recurring, stored as 0.058333. AssemblyAI ships ONE id for two tiers at two rates: $0.21/hour async and $0.45/hour streaming. The id alone does not say which endpoint the caller used, so this catalog splits them, taking the bare id for async and inventing a `-streaming` suffix for the other. That mirrors what it already does for Deepgram, where `nova-3-batch` is a catalog id Deepgram does not ship either. The bare id resolving to the cheaper async rate is a deliberate choice, not a default: it matches the parameter name AssemblyAI documents for the async API (`speech_models`), and a realtime caller has to name the endpoint they are on anyway.',
+                pricing_source_url='https://www.assemblyai.com/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.058333')),
+            ),
+            ModelInfo(
+                id='universal-3-5-pro-streaming',
+                match=ClauseEquals(equals='universal-3-5-pro-streaming'),
+                name='Universal-3.5 Pro Realtime (streaming)',
+                description='AssemblyAI\'s highest-accuracy realtime model, passed as `speech_model: "universal-3-5-pro"` when opening the streaming WebSocket. Built-in context carryover and conversation memory, self-correcting speaker labels. NOT an id AssemblyAI accepts: it is a catalog id that disambiguates the streaming rate from the async one, which share the id `universal-3-5-pro` at the vendor.',
+                price_comments='Source rate $0.45/hour, "Universal-3.5 Pro Realtime" under the Streaming Speech-to-Text API tab, which is not the page default and needs a click to reach. Converted to $/k seconds: 0.45 / 3600 * 1000 = 0.125 exactly. Three times the cost of the Universal-Streaming tier ($0.15/hour) and more than double the same model on the async endpoint ($0.21/hour). Reading the async tab and assuming the rate carries over to streaming understates a realtime agent\'s bill by 2.1x.',
+                pricing_source_url='https://www.assemblyai.com/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.125')),
             ),
             ModelInfo(
                 id='universal-streaming-english',
@@ -1503,6 +1525,7 @@ providers: list[Provider] = [
         model_match=ClauseStartsWith(starts_with='sonic'),
         provider_match=ClauseContains(contains='cartesia'),
         staleness_threshold_days=60,
+        pricing_tier='Pro',
         models=[
             ModelInfo(
                 id='sonic-3',
@@ -1712,6 +1735,7 @@ providers: list[Provider] = [
         ),
         provider_match=ClauseContains(contains='deepgram'),
         staleness_threshold_days=60,
+        pricing_tier='Pay As You Go',
         models=[
             ModelInfo(
                 id='aura-1',
@@ -1732,6 +1756,51 @@ providers: list[Provider] = [
                 prices=ModelPrice(input_kchars=Decimal('0.03')),
             ),
             ModelInfo(
+                id='base',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='base'),
+                        ClauseEquals(equals='base-general'),
+                        ClauseEquals(equals='base-conversationalai'),
+                        ClauseEquals(equals='base-finance'),
+                        ClauseEquals(equals='base-meeting'),
+                        ClauseEquals(equals='base-phonecall'),
+                        ClauseEquals(equals='base-video'),
+                        ClauseEquals(equals='base-voicemail'),
+                        ClauseEquals(equals='conversationalai'),
+                        ClauseEquals(equals='finance'),
+                        ClauseEquals(equals='meeting'),
+                        ClauseEquals(equals='phonecall'),
+                        ClauseEquals(equals='video'),
+                        ClauseEquals(equals='voicemail'),
+                    ]
+                ),
+                name='Base (legacy)',
+                description="Deepgram's first-generation STT tier, still available for existing deployments. Documented as `base or base-general` plus a set of domain variants, all at one tier rate. Superseded by Nova-3; priced here so historical usage can be costed.",
+                price_comments='Source rate $0.87/hour, published by Deepgram in the pricing-page FAQ: "These remain available at unchanged rates for existing deployments: Nova-2 streaming at $0.35/hour, Enhanced at $0.99/hour, and Base at $0.87/hour." Converted to $/k seconds: 0.87 / 3600 * 1000 = 0.2416666 recurring, stored as 0.241667. One tier rate covers every domain variant; the FAQ prices the tier and the main rate tables do not list Base at all. No streaming/prerecorded split is published for this tier, so unlike nova-3 there is no `-batch` row. The bare domain ids (`phonecall`, `meeting`) are deliberately NOT added to the provider-level `model_match`: they are too generic to claim for Deepgram from a bare model_ref. They resolve when `provider_id=\'deepgram\'` is supplied, which is how a voice runtime names them.',
+                pricing_source_url='https://deepgram.com/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.241667')),
+            ),
+            ModelInfo(
+                id='enhanced',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='enhanced'),
+                        ClauseEquals(equals='enhanced-general'),
+                        ClauseEquals(equals='enhanced-finance'),
+                        ClauseEquals(equals='enhanced-meeting'),
+                        ClauseEquals(equals='enhanced-phonecall'),
+                    ]
+                ),
+                name='Enhanced (legacy)',
+                description="Deepgram's second-generation STT tier, between Base and Nova. Documented as `enhanced or enhanced-general` plus domain variants, all at one tier rate. Still available for existing deployments; superseded by Nova-3.",
+                price_comments='Source rate $0.99/hour, from the same pricing-page FAQ answer that publishes the Base and Nova-2 legacy rates. Converted to $/k seconds: 0.99 / 3600 * 1000 = 0.275 exactly. Worth noting this legacy tier costs more than every current model: Nova-3 monolingual streaming is $0.29/hour and prerecorded $0.26/hour. Enhanced is priced where it was when it was current, which is why Deepgram recommends new projects start on Nova-3.',
+                pricing_source_url='https://deepgram.com/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.275')),
+            ),
+            ModelInfo(
                 id='flux-general',
                 match=ClauseOr(or_=[ClauseEquals(equals='flux-general'), ClauseEquals(equals='flux-general-en')]),
                 name='Flux (streaming)',
@@ -1740,6 +1809,23 @@ providers: list[Provider] = [
                 pricing_source_url='https://deepgram.com/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.108333')),
+            ),
+            ModelInfo(
+                id='nova',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='nova'),
+                        ClauseEquals(equals='nova-general'),
+                        ClauseEquals(equals='nova-medical'),
+                        ClauseEquals(equals='nova-meeting'),
+                        ClauseEquals(equals='nova-phonecall'),
+                    ]
+                ),
+                name='Nova-1 (legacy, unpriced)',
+                description='Deepgram\'s first Nova generation, listed under "Legacy Models" in their model docs and still callable. Resolves so a caller learns the model exists; carries no rate because Deepgram publishes none.',
+                price_comments='Deliberately unpriced. Deepgram\'s pricing FAQ names the legacy rates it still honours, "Nova-2 streaming at $0.35/hour, Enhanced at $0.99/hour, and Base at $0.87/hour", and Nova-1 is absent from that list and from every rate table. The PriceToken registry does not carry it either. Resolving-but-unpriced is deliberate: a LookupError says "this model does not exist", which is false, while a guessed rate would be worse. Empty prices say what is true, that the model is real and its rate is not published. Add a rate only from a Deepgram page or invoice that states one.',
+                provenance=Provenance(source='seed'),
+                prices=ModelPrice(),
             ),
             ModelInfo(
                 id='nova-2',
@@ -1821,6 +1907,33 @@ providers: list[Provider] = [
                 pricing_source_url='https://deepgram.com/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.086667')),
+            ),
+            ModelInfo(
+                id='whisper',
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='whisper'),
+                        ClauseEquals(equals='whisper-tiny'),
+                        ClauseEquals(equals='whisper-base'),
+                        ClauseEquals(equals='whisper-small'),
+                        ClauseEquals(equals='whisper-medium'),
+                    ]
+                ),
+                name='Whisper tiny/base/small/medium (Deepgram-hosted, unpriced)',
+                description='The smaller Deepgram-hosted Whisper sizes. Callable as `?model=whisper-SIZE`, with bare `whisper` aliasing whisper-medium. Resolve here unpriced; only Whisper Large has a published rate, and it is a separate row.',
+                price_comments='Deliberately unpriced. Deepgram\'s Pre-Recorded table carries one Whisper row, "Whisper Large" at $0.0048/minute, while their model docs document five sizes. Nothing states that the smaller sizes bill at the Large rate, and hosted-model pricing usually tracks model size, so inheriting it would be a guess in the expensive direction. See `whisper-large` for the one size Deepgram does price.',
+                provenance=Provenance(source='seed'),
+                prices=ModelPrice(),
+            ),
+            ModelInfo(
+                id='whisper-large',
+                match=ClauseEquals(equals='whisper-large'),
+                name='Whisper Large (Deepgram-hosted)',
+                description='OpenAI Whisper Large hosted by Deepgram, prerecorded only. Called as `?model=whisper-large` on the Deepgram API, so it is a Deepgram-billed model rather than an OpenAI one. Concurrency is capped separately (5 streams on Pay As You Go).',
+                price_comments="Source rate $0.0048/minute, the \"Whisper Large\" row of the Pre-Recorded table, Pay As You Go. Converted to $/k seconds: 0.0048 * 1000 / 60 = 0.08 exactly. Unusually, the Growth plan rate is also $0.0048: Deepgram discounts its own models on Growth but not this one. Only Whisper Large is priced. Deepgram's model listing also documents whisper-tiny, whisper-base, whisper-small and whisper-medium (and `whisper` as an alias for whisper-medium), but the pricing page carries a rate for Large alone. Those four are deliberately absent rather than aliased to this rate, which would publish a number Deepgram has not put against them. Not added to the provider `model_match`: `whisper-` is already claimed there by OpenAI, so a bare `whisper-large` would be ambiguous between two vendors who both host it. Resolve it with `provider_id='deepgram'`.",
+                pricing_source_url='https://deepgram.com/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.08')),
             ),
         ],
     ),
@@ -1939,6 +2052,7 @@ providers: list[Provider] = [
         model_match=ClauseStartsWith(starts_with='eleven_'),
         provider_match=ClauseContains(contains='elevenlabs'),
         staleness_threshold_days=60,
+        pricing_tier='Single published rate',
         models=[
             ModelInfo(
                 id='eleven_flash_v2',
@@ -1989,6 +2103,16 @@ providers: list[Provider] = [
                 pricing_source_url='https://elevenlabs.io/pricing/api',
                 provenance=Provenance(last_verified=datetime.date(2026, 6, 6)),
                 prices=ModelPrice(input_kchars=Decimal('0.05')),
+            ),
+            ModelInfo(
+                id='eleven_v3',
+                match=ClauseEquals(equals='eleven_v3'),
+                name='Eleven v3',
+                description="ElevenLabs' current flagship, human-like and expressive speech across 70+ languages. Priced with Multilingual v2 rather than the cheaper Flash/Turbo tiers.",
+                price_comments='$0.10 per 1,000 characters via the ElevenLabs API, the "v3" row of the Text to Speech API table (1 credit/character, as for Multilingual v2). Stored directly: input_kchars is already per 1,000 characters, so no conversion. The rate is identical across every plan column from Free through Business, so there is no tier to choose. Same rate as eleven_multilingual_v2 and double the Flash/Turbo tiers at $0.05. Not priced here: the "v3 Conversational" row at $0.05/1k characters. It is half the cost and appears to be a distinct product rather than a plan discount, but the models docs list no separate model id for it, so there is nothing to key a row on yet. The page also quotes "~$0.10/minute" beside the rate; that is an approximation from an assumed speaking rate, not a second meter, and is not recorded.',
+                pricing_source_url='https://elevenlabs.io/pricing/api',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_kchars=Decimal('0.1')),
             ),
         ],
     ),
@@ -2749,7 +2873,7 @@ providers: list[Provider] = [
         id='groq',
         name='Groq',
         api_pattern='https://api\\.groq\\.com',
-        pricing_urls=['https://groq.com/pricing/'],
+        pricing_urls=['https://groq.com/pricing/', 'https://console.groq.com/docs/models'],
         extractors=[
             UsageExtractor(
                 root='usage',
@@ -2762,7 +2886,28 @@ providers: list[Provider] = [
             )
         ],
         staleness_threshold_days=60,
+        pricing_tier='On-Demand',
         models=[
+            ModelInfo(
+                id='canopylabs/orpheus-arabic-saudi',
+                match=ClauseEquals(equals='canopylabs/orpheus-arabic-saudi'),
+                name='Orpheus V1 Arabic (Saudi)',
+                description='Canopy Labs Orpheus text-to-speech, Saudi Arabic, served on Groq. Billed per character of input text.',
+                price_comments="Source rate $40.00 per 1M characters. Converted to $/k characters: 40.00 / 1000 = 0.04 exactly. Nearly double the English model at $22.00 per 1M, which is Groq's own split, not a conversion artefact.",
+                pricing_source_url='https://console.groq.com/docs/models',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_kchars=Decimal('0.04')),
+            ),
+            ModelInfo(
+                id='canopylabs/orpheus-v1-english',
+                match=ClauseEquals(equals='canopylabs/orpheus-v1-english'),
+                name='Orpheus V1 English',
+                description="Canopy Labs Orpheus text-to-speech, English, served on Groq. Billed per character of input text. Groq's first text-to-speech entry in this catalog.",
+                price_comments='Source rate $22.00 per 1M characters. Converted to $/k characters: 22.00 / 1000 = 0.022 exactly. For scale, that sits between Deepgram Aura-1 ($15/1M) and Aura-2 ($30/1M).',
+                pricing_source_url='https://console.groq.com/docs/models',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_kchars=Decimal('0.022')),
+            ),
             ModelInfo(
                 id='deepseek-r1-distill-llama-70b',
                 match=ClauseEquals(equals='deepseek-r1-distill-llama-70b'),
@@ -2959,6 +3104,16 @@ providers: list[Provider] = [
                 pricing_source_url='https://groq.com/pricing/',
                 provenance=Provenance(last_verified=datetime.date(2026, 5, 29)),
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.030833')),
+            ),
+            ModelInfo(
+                id='whisper-large-v3-turbo',
+                match=ClauseEquals(equals='whisper-large-v3-turbo'),
+                name='Whisper Large v3 Turbo',
+                description='Groq-hosted OpenAI Whisper Large v3 Turbo speech-to-text. Faster and substantially cheaper than whisper-large-v3, and the variant most production agents run. Billed per second of audio; 10-second per-request minimum, as for the non-turbo model.',
+                price_comments='Source rate $0.04/hour. Converted to $/k seconds: 0.04 / 3600 * 1000 = 0.0111111 recurring, stored as 0.011111. That is 64% below whisper-large-v3 at $0.111/hour, and the cheapest STT rate in this catalog by a wide margin.',
+                pricing_source_url='https://console.groq.com/docs/models',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.011111')),
             ),
         ],
     ),
@@ -5261,6 +5416,7 @@ providers: list[Provider] = [
         ),
         provider_match=ClauseContains(contains='inworld'),
         staleness_threshold_days=60,
+        pricing_tier='On-Demand',
         models=[
             ModelInfo(
                 id='inworld-tts-1.5-max',
@@ -5312,6 +5468,7 @@ providers: list[Provider] = [
         price_comments='LiveKit Inference is a gateway that resells STT, TTS, and LLM models under a single API key, at its own per-model rates (distinct from buying direct from each vendor). These are the Build/Ship tier prices, which LiveKit publishes identically for both plans; Scale-tier discounts live in the livekit-scale provider. Resolution is by explicit provider_id (VoiceGateway passes provider_id=livekit); model_match is intentionally omitted so a bare model ref still resolves to the direct vendor. Conversions: STT $/min to input_audio_kseconds (x1000/60); TTS $/1M chars to input_kchars (/1000); LLM $/1M tokens map 1:1. Realtime bundled models and LiveKit Cloud platform per-minute rates are out of scope. Source: LiveKit get_pricing_info; regenerate with make livekit-get.',
         provider_match=ClauseContains(contains='livekit'),
         staleness_threshold_days=60,
+        pricing_tier='Build/Ship',
         models=[
             ModelInfo(
                 id='assemblyai/u3-rt-pro',
@@ -5904,6 +6061,16 @@ providers: list[Provider] = [
                 prices=ModelPrice(input_kchars=Decimal('0.03')),
             ),
             ModelInfo(
+                id='sip-thirdparty',
+                match=ClauseEquals(equals='sip-thirdparty'),
+                name='Third-party SIP minutes',
+                description='Minutes carried over a SIP trunk you bring yourself, rather than a LiveKit phone number. The cheapest way to put a LiveKit agent on the phone network.',
+                price_comments='Source rate $0.004/minute on the Ship plan, from the Telephony table: "Third-party SIP minutes ... 5,000 minutes included (then $0.004 per min)". Converted to $/k minutes: 0.004 * 1000 = 4 exactly. Scale pays $0.003/minute and is the one telephony meter that differs by tier, so it is listed in the livekit-scale provider. The included allowance (1,000 minutes on Build, 5,000 on Ship) is not modelled; this is the overage rate.',
+                pricing_source_url='https://livekit.io/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('4')),
+            ),
+            ModelInfo(
                 id='speechmatics/enhanced',
                 match=ClauseEquals(equals='speechmatics/enhanced'),
                 name='Speechmatics Enhanced',
@@ -5918,6 +6085,26 @@ providers: list[Provider] = [
                 pricing_source_url='https://livekit.io/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 6, 4)),
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.083333')),
+            ),
+            ModelInfo(
+                id='us-local-inbound',
+                match=ClauseEquals(equals='us-local-inbound'),
+                name='US local (inbound)',
+                description='Calls received on a LiveKit-provided US local number.',
+                price_comments='Source rate $0.01/minute, from the Telephony table: "US local inbound minutes ... 100 minutes included (then $0.01 per min)". Converted to $/k minutes: 0.01 * 1000 = 10 exactly. Identical on Ship and Scale, so there is no livekit-scale row; a Scale lookup falls back to this one. Excludes the $1.00/month per number rental, which is recurring rather than per-minute. LiveKit is a reseller here: 18% above Twilio\'s own $0.0085 for the same leg.',
+                pricing_source_url='https://livekit.io/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('10')),
+            ),
+            ModelInfo(
+                id='us-tollfree-inbound',
+                match=ClauseEquals(equals='us-tollfree-inbound'),
+                name='US toll-free (inbound)',
+                description='Calls received on a LiveKit-provided US toll-free number.',
+                price_comments='Source rate $0.02/minute, from the Telephony table: "US toll-free inbound minutes ... $0.02 per minute". Converted to $/k minutes: 0.02 * 1000 = 20 exactly. Identical on Ship and Scale. Excludes the $2.00/month per number rental. Not offered on the Build plan at all. Below Twilio\'s own $0.0220 for the same leg, which is the reverse of the local row.',
+                pricing_source_url='https://livekit.io/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('20')),
             ),
             ModelInfo(
                 id='xai/grok-4-1-fast-non-reasoning',
@@ -5985,6 +6172,7 @@ providers: list[Provider] = [
         price_comments='Scale-tier prices for LiveKit Inference. Only models whose Scale rate differs from Build/Ship are listed here; LLM models (identical across all tiers) and flat-priced voice models fall back to the livekit provider via fallback_model_providers. Same conversions and source as the livekit provider.',
         fallback_model_providers=['livekit'],
         staleness_threshold_days=60,
+        pricing_tier='Scale',
         models=[
             ModelInfo(
                 id='cartesia/ink-2',
@@ -6273,6 +6461,16 @@ providers: list[Provider] = [
                 pricing_source_url='https://livekit.io/pricing',
                 provenance=Provenance(last_verified=datetime.date(2026, 6, 4)),
                 prices=ModelPrice(input_kchars=Decimal('0.02')),
+            ),
+            ModelInfo(
+                id='sip-thirdparty',
+                match=ClauseEquals(equals='sip-thirdparty'),
+                name='Third-party SIP minutes',
+                description='Minutes carried over a SIP trunk you bring yourself, at the Scale rate.',
+                price_comments='Source rate $0.003/minute on Scale, from the Telephony table: "Third-party SIP minutes ... 50,000 minutes included (then $0.003 per min)". Converted to $/k minutes: 0.003 * 1000 = 3 exactly. The only telephony meter that differs by tier: US local and toll-free inbound are the same $0.01 and $0.02 on Ship and Scale, so they are not repeated here and fall back to livekit.',
+                pricing_source_url='https://livekit.io/pricing',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('3')),
             ),
         ],
     ),
@@ -6610,6 +6808,7 @@ providers: list[Provider] = [
         ),
         provider_match=ClauseContains(contains='novita'),
         staleness_threshold_days=60,
+        pricing_tier='Serverless Endpoints',
         models=[
             ModelInfo(
                 id='Sao10K/L3-8B-Stheno-v3.2',
@@ -6876,6 +7075,7 @@ providers: list[Provider] = [
             ),
         ],
         staleness_threshold_days=60,
+        pricing_tier='Standard',
         models=[
             ModelInfo(
                 id='ada',
@@ -7184,7 +7384,12 @@ providers: list[Provider] = [
             ),
             ModelInfo(
                 id='gpt-4o-mini-transcribe',
-                match=ClauseEquals(equals='gpt-4o-mini-transcribe'),
+                match=ClauseOr(
+                    or_=[
+                        ClauseEquals(equals='gpt-4o-mini-transcribe'),
+                        ClauseEquals(equals='gpt-4o-mini-transcribe-2025-12-15'),
+                    ]
+                ),
                 name='GPT-4o mini Transcribe',
                 price_comments='Token rates are the bill: $1.25/1M text input, $3/1M audio input, $5/1M output. input_audio_kseconds is NOT a billing rate. OpenAI prints $0.003/minute for this model in a column headed "Estimated cost", derived from an assumed speech density, alongside the token rates that are actually charged. Converted to $/k seconds: 0.003 * 1000 / 60 = 0.05 exactly. It is recorded because a voice runtime measures seconds and would otherwise get a silent $0 here, and flagged in provenance.estimated_fields because a caller reconciling against an OpenAI invoice must use the token rates instead. The two meters will not agree: which one is closer depends on how fast the speaker talks, and OpenAI does not publish the tokens-per-minute assumption behind the estimate.',
                 pricing_source_url='https://platform.openai.com/docs/pricing',
@@ -7581,6 +7786,16 @@ providers: list[Provider] = [
                     cache_audio_read_mtok=Decimal('0.3'),
                     output_audio_mtok=Decimal('20'),
                 ),
+            ),
+            ModelInfo(
+                id='gpt-realtime-translate',
+                match=ClauseEquals(equals='gpt-realtime-translate'),
+                name='GPT-Realtime-Translate',
+                description='Streaming speech-to-speech translation for live multilingual audio. Takes source audio and returns translated audio plus transcript deltas while the source is still arriving. Runs on a dedicated realtime translation endpoint. Billed by audio duration, not tokens.',
+                price_comments='Source rate $0.034 per minute, listed on the model page as "Realtime audio duration / Per minute". Converted to $/k seconds: 0.034 * 1000 / 60 = 0.5666666 recurring, stored as 0.566667. The page states it outright: "priced by audio duration rather than text tokens." No token rate is published. Caveat: this model outputs audio as well as taking it in, yet only one duration meter is published, so which direction it measures is not stated. Recorded against input_audio_kseconds because OpenAI uses the identical metric name on gpt-live-transcribe and gpt-realtime-whisper, where audio is input only and the meter can therefore only mean input duration. If OpenAI clarifies that it meters both directions, revisit this rather than silently doubling it.',
+                pricing_source_url='https://platform.openai.com/docs/models/gpt-realtime-translate',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.566667')),
             ),
             ModelInfo(
                 id='gpt-realtime-whisper',
@@ -11770,11 +11985,16 @@ providers: list[Provider] = [
         id='telnyx',
         name='Telnyx',
         api_pattern='https://api\\.telnyx\\.com',
-        pricing_urls=['https://telnyx.com/pricing/text-to-speech', 'https://telnyx.com/pricing/speech-to-text'],
+        pricing_urls=[
+            'https://telnyx.com/pricing/text-to-speech',
+            'https://telnyx.com/pricing/speech-to-text',
+            'https://telnyx.com/pricing/elastic-sip',
+        ],
         price_comments='Telnyx offers STT and TTS both as standalone API calls (billed per unit) and bundled in the Conversational AI plan ($0.05/min all-in). This catalog uses the standalone per-unit rates from the public pricing pages. TTS is billed per character; STT is billed per minute.\nVoice format: `Telnyx.<Model>.<VoiceId>` (e.g. `Telnyx.NaturalHD.astra`). The livekit-plugins-telnyx TTS plugin exposes the full voice string as its `model` attribute, so model_match rules operate on the full voice string.\nModels not yet listed (KokoroTTS, Grok, Bayan, Sukhan) do not have public per-character pricing on the pricing pages as of 2026-07-17. They can be added in a follow-up once Telnyx publishes per-unit rates.',
         model_match=ClauseContains(contains='telnyx'),
         provider_match=ClauseContains(contains='telnyx'),
         staleness_threshold_days=60,
+        pricing_tier='Pay as you go',
         models=[
             ModelInfo(
                 id='anthropic-claude-haiku-4.5',
@@ -11909,6 +12129,52 @@ providers: list[Provider] = [
                 pricing_source_url='https://telnyx.com/pricing/text-to-speech',
                 provenance=Provenance(api_backed=True, last_verified=datetime.date(2026, 7, 17)),
                 prices=ModelPrice(input_kchars=Decimal('0.032')),
+            ),
+            ModelInfo(
+                id='us-local-inbound',
+                match=ClauseEquals(equals='us-local-inbound'),
+                name='US local (inbound)',
+                description='Calls received on a Telnyx US local number, over Elastic SIP Trunking. Telnyx publishes a floor for this, not a rate. See price_comments.',
+                price_comments='Published as "Starting at $0.0032 per minute", Receive inbound calls / Local calls, Pay as you go, United States. Converted to $/k minutes: 0.0032 * 1000 = 3.2 exactly. This is a FLOOR, not a rate. Telnyx prices inbound by the calling number and destination and publishes only the minimum, so the invoice is this or higher and by an amount they do not state. Flagged in provenance.estimated_fields for that reason: comparing it against a vendor that publishes an exact rate understates Telnyx by an unknown margin. The exact per-destination rates are in the global price sheet Telnyx offers as a download, which is not modelled here.',
+                pricing_source_url='https://telnyx.com/pricing/elastic-sip',
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 8, 20), estimated_fields=['telephony_kminutes']
+                ),
+                prices=ModelPrice(telephony_kminutes=Decimal('3.2')),
+            ),
+            ModelInfo(
+                id='us-local-outbound',
+                match=ClauseEquals(equals='us-local-outbound'),
+                name='US local (outbound)',
+                description='Calls placed to a US local number over Elastic SIP Trunking. Telnyx publishes a floor for this, not a rate. See price_comments.',
+                price_comments='Published as "Starting at $0.005 per minute", Make outbound calls / Local calls, Pay as you go, United States. Converted to $/k minutes: 0.005 * 1000 = 5 exactly. A FLOOR, not a rate: outbound cost varies by destination and Telnyx publishes only the minimum. Flagged in provenance.estimated_fields. Telnyx also lists call-per-second thresholds that change outbound pricing, which are not modelled.',
+                pricing_source_url='https://telnyx.com/pricing/elastic-sip',
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 8, 20), estimated_fields=['telephony_kminutes']
+                ),
+                prices=ModelPrice(telephony_kminutes=Decimal('5')),
+            ),
+            ModelInfo(
+                id='us-tollfree-inbound',
+                match=ClauseEquals(equals='us-tollfree-inbound'),
+                name='US toll-free (inbound)',
+                description='Calls received on a Telnyx US toll-free number. Telnyx publishes a floor for this, not a rate. See price_comments.',
+                price_comments='Published as "Starting at $0.015 per minute", Receive inbound calls / Toll-free calls, Pay as you go, United States. Converted to $/k minutes: 0.015 * 1000 = 15 exactly. A FLOOR, and Telnyx footnotes this row specifically: "Toll-free has different rates based on the calling number." So the spread here is explicitly acknowledged by the vendor and the published number is the best case. Flagged in provenance.estimated_fields. Telnyx also sells unlimited concurrent inbound via channels at $8 to $12 per month per channel, which is a subscription rather than a per-minute rate and is not modelled.',
+                pricing_source_url='https://telnyx.com/pricing/elastic-sip',
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 8, 20), estimated_fields=['telephony_kminutes']
+                ),
+                prices=ModelPrice(telephony_kminutes=Decimal('15')),
+            ),
+            ModelInfo(
+                id='us-tollfree-outbound',
+                match=ClauseEquals(equals='us-tollfree-outbound'),
+                name='US toll-free (outbound)',
+                description='Calls placed to a US toll-free number. Free of charge on Telnyx, which is why this row carries no rate.',
+                price_comments='Published as "Free", Make outbound calls / Toll-free calls, Pay as you go, United States. Stored as 0, which is a real published rate rather than an unpriced row: Telnyx does not charge for dialling out to a toll-free number. Twilio charges $0.0140/minute for the same leg, so this is the largest single gap between the two carriers in this catalog. Not flagged as a floor, unlike the other three Telnyx rows: "Free" carries no "starting at" hedge. Expressed as empty prices, the convention this catalog already uses for a free model (see openai/moderation). One consequence worth knowing: a free row and an unpriced row are indistinguishable in the data, so `unpriced_usage` will name telephony_minutes here even though the zero is real. The `description` is what separates the two today.',
+                pricing_source_url='https://telnyx.com/pricing/elastic-sip',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(),
             ),
         ],
     ),
@@ -12310,6 +12576,98 @@ providers: list[Provider] = [
         ],
     ),
     Provider(
+        id='twilio',
+        name='Twilio',
+        api_pattern='https://api\\.twilio\\.com',
+        pricing_urls=['https://www.twilio.com/en-us/voice/pricing/us'],
+        price_comments='Carrier pricing for the call leg, which an agent on a phone number pays on top of speech and the model. United States only for now: Twilio prices per country and per destination, so every other country is added rows rather than a schema change. Not modelled here: the monthly phone number rental (from $1.15/month for a US local number), which is a recurring fee rather than a per-unit rate and has nowhere to live in a per-minute catalog. A cost estimate built from the rates below alone omits it. Also not modelled: $0.1000 per SIP refer, and the per-country surcharges on international destinations.',
+        provider_match=ClauseContains(contains='twilio'),
+        staleness_threshold_days=60,
+        pricing_tier='Pay-as-you-go',
+        models=[
+            ModelInfo(
+                id='us-client-inbound',
+                match=ClauseEquals(equals='us-client-inbound'),
+                name='US Browser/app (inbound)',
+                description="Calls received over Twilio's browser/app (WebRTC) client rather than the phone network. No carrier leg, which is why it costs a quarter of a local call.",
+                price_comments='Source rate $0.0040/minute, the "Browser/app" row, "To receive calls" column. Converted to $/k minutes: 0.0040 * 1000 = 4 exactly.',
+                pricing_source_url='https://www.twilio.com/en-us/voice/pricing/us',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('4')),
+            ),
+            ModelInfo(
+                id='us-client-outbound',
+                match=ClauseEquals(equals='us-client-outbound'),
+                name='US Browser/app (outbound)',
+                description="Calls placed over Twilio's browser/app (WebRTC) client. Same rate as inbound.",
+                price_comments='Source rate $0.0040/minute, the "Browser/app" row, "To make calls" column. Converted to $/k minutes: 0.0040 * 1000 = 4 exactly.',
+                pricing_source_url='https://www.twilio.com/en-us/voice/pricing/us',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('4')),
+            ),
+            ModelInfo(
+                id='us-local-inbound',
+                match=ClauseEquals(equals='us-local-inbound'),
+                name='US local (inbound)',
+                description='Calls received on a US local number. The common case for an inbound voice agent.',
+                price_comments='Source rate $0.0085/minute, the "Local calls" row, "To receive calls" column. Converted to $/k minutes: 0.0085 * 1000 = 8.5 exactly. Cheaper than placing the call, which is the opposite of toll-free. Direction is priced, not incidental.',
+                pricing_source_url='https://www.twilio.com/en-us/voice/pricing/us',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('8.5')),
+            ),
+            ModelInfo(
+                id='us-local-outbound',
+                match=ClauseEquals(equals='us-local-outbound'),
+                name='US local (outbound)',
+                description='Calls placed to a US local number. The common case for an outbound voice agent.',
+                price_comments='Source rate $0.0140/minute, the "Local calls" row, "To make calls" column. Converted to $/k minutes: 0.0140 * 1000 = 14 exactly.',
+                pricing_source_url='https://www.twilio.com/en-us/voice/pricing/us',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('14')),
+            ),
+            ModelInfo(
+                id='us-sip-inbound',
+                match=ClauseEquals(equals='us-sip-inbound'),
+                name='US SIP interface (inbound)',
+                description='Calls received over a SIP trunk you bring yourself. No Twilio number involved, so you pay the interface rate rather than a carrier rate.',
+                price_comments='Source rate $0.0040/minute, the "SIP interface" row, "To receive calls" column. Converted to $/k minutes: 0.0040 * 1000 = 4 exactly. Excludes the $0.1000 per refer charge Twilio lists in the same row, which is a per-event fee rather than a per-minute one.',
+                pricing_source_url='https://www.twilio.com/en-us/voice/pricing/us',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('4')),
+            ),
+            ModelInfo(
+                id='us-sip-outbound',
+                match=ClauseEquals(equals='us-sip-outbound'),
+                name='US SIP interface (outbound)',
+                description='Calls placed over a SIP trunk you bring yourself. Same rate as inbound, and the cheapest way to carry an agent call on this provider.',
+                price_comments='Source rate $0.0040/minute, the "SIP interface" row, "To make calls" column. Converted to $/k minutes: 0.0040 * 1000 = 4 exactly.',
+                pricing_source_url='https://www.twilio.com/en-us/voice/pricing/us',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('4')),
+            ),
+            ModelInfo(
+                id='us-tollfree-inbound',
+                match=ClauseEquals(equals='us-tollfree-inbound'),
+                name='US toll-free (inbound)',
+                description='Calls received on a US toll-free number. The caller pays nothing, which is why this is the most expensive row here.',
+                price_comments='Source rate $0.0220/minute, the "Toll-free calls" row, "To receive calls" column. Converted to $/k minutes: 0.0220 * 1000 = 22 exactly. Note the inversion against local: receiving toll-free costs 57% MORE than dialling out on it, while receiving local costs 39% less than dialling out. Assuming inbound is always the cheaper direction gets this row wrong by 2.6x.',
+                pricing_source_url='https://www.twilio.com/en-us/voice/pricing/us',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('22')),
+            ),
+            ModelInfo(
+                id='us-tollfree-outbound',
+                match=ClauseEquals(equals='us-tollfree-outbound'),
+                name='US toll-free (outbound)',
+                description='Calls placed to a US toll-free number. Same rate as an outbound local call.',
+                price_comments='Source rate $0.0140/minute, the "Toll-free calls" row, "To make calls" column. Converted to $/k minutes: 0.0140 * 1000 = 14 exactly.',
+                pricing_source_url='https://www.twilio.com/en-us/voice/pricing/us',
+                provenance=Provenance(last_verified=datetime.date(2026, 8, 20)),
+                prices=ModelPrice(telephony_kminutes=Decimal('14')),
+            ),
+        ],
+    ),
+    Provider(
         id='vapi',
         name='Vapi',
         api_pattern='https://api\\.vapi\\.ai',
@@ -12318,6 +12676,7 @@ providers: list[Provider] = [
         model_match=ClauseStartsWith(starts_with='vapi'),
         provider_match=ClauseContains(contains='vapi'),
         staleness_threshold_days=60,
+        pricing_tier='Build',
         models=[
             ModelInfo(
                 id='vapi-platform',

@@ -460,6 +460,11 @@
           "description": "price in USD per 1,000 minutes of bundled voice-agent session time.\n\nSet only by platforms that sell one blended per-minute rate covering STT, LLM, TTS\nand orchestration together (Vapi, Retell, Bland, ElevenLabs Agents and similar). A\nmodel priced this way is filed under the `agent` modality.\n\nDeliberately not comparable with the component rates elsewhere in this catalog:\nwhat the bundle contains is the platform's choice and is rarely disclosed, so the\nnumber answers \"what does a minute cost me here\", not \"what does the speech cost\".",
           "title": "Agent Kminutes"
         },
+        "telephony_kminutes": {
+          "type": "number",
+          "description": "price in USD per 1,000 connected call minutes, carrying voice over the phone network.\n\nThe line an agent on a phone number pays on top of everything else. A carrier bills for\nthe call leg itself: it transcribes nothing, generates nothing, and is charged whether or\nnot the agent says a word. Distinct from `agent_kminutes` for exactly that reason. A\nbundled agent minute already contains speech-to-text, the model and text-to-speech; adding\na carrier minute to it is a sum, not a substitution, and reusing one field for both would\nsilently double-count the same minute.\n\nRate depends on the direction of the call and the number type, and the two do not move\ntogether: Twilio charges more to RECEIVE on toll-free ($0.0220/min) than to place the call\n($0.0140/min), and the reverse on local. Both live in the model id\n(`us-tollfree-inbound`), the way this catalog already splits streaming from batch, so one\nrow means one rate and a lookup either resolves exactly or fails.\n\nRates are per country. The id carries an ISO country prefix so a second country is an\nadded row rather than a schema change.",
+          "title": "Telephony Kminutes"
+        },
         "voice_multipliers": {
           "additionalProperties": {
             "type": "number"
@@ -514,7 +519,7 @@
             "type": "string"
           },
           "type": "array",
-          "description": "Priced fields whose value is the vendor's own published *estimate*, not the meter they bill on.\n\nAbsent (the normal case) means every rate on the model is a billing rate.\n\nThis exists because a vendor can publish two numbers for the same model in two different\nunits, and only one of them is the invoice. OpenAI prices `gpt-4o-transcribe` per token and\nalso prints \"$0.006 / minute\" in a column headed *Estimated cost*, derived from an assumed\nspeech density. Both numbers are real and published; only the token rate is charged. Storing\nthe per-minute figure without saying so would let a consumer bill from it and quietly disagree\nwith the invoice, which is the same class of error as the silent zero it was added to fix.\n\nPer-field rather than a whole-row boolean, because the distinction is per-field: on\n`gpt-4o-transcribe` the token rates are billed and only `input_audio_kseconds` is estimated.\nA row-level flag would misdescribe both halves.",
+          "description": "Priced fields whose value is the vendor's own published *estimate*, not the meter they bill on.\n\nAbsent (the normal case) means every rate on the model is a billing rate.\n\nTwo shapes land here. A vendor publishes the same model in two units and bills on only one\nof them, or a vendor publishes a floor rather than a rate (\"starting at $0.005 per minute\")\nso the number is a lower bound on the invoice rather than the invoice. OpenAI prices `gpt-4o-transcribe` per token and\nalso prints \"$0.006 / minute\" in a column headed *Estimated cost*, derived from an assumed\nspeech density. Both numbers are real and published; only the token rate is charged. Storing\nthe per-minute figure without saying so would let a consumer bill from it and quietly disagree\nwith the invoice, which is the same class of error as the silent zero it was added to fix.\n\nPer-field rather than a whole-row boolean, because the distinction is per-field: on\n`gpt-4o-transcribe` the token rates are billed and only `input_audio_kseconds` is estimated.\nA row-level flag would misdescribe both halves.",
           "title": "Estimated Fields"
         }
       },
@@ -641,6 +646,12 @@
           "description": "Recommended maximum age (in days) for `prices_checked` on this provider's models before consumers should\nre-verify against `pricing_source_url`.\n\nvoice-prices itself does not warn or fail on stale entries; this is metadata for consumers like VoiceGateway\nto drive their own freshness UX. Default 60.",
           "title": "Staleness Threshold Days",
           "type": "integer"
+        },
+        "pricing_tier": {
+          "maxLength": 100,
+          "type": "string",
+          "description": "The vendor plan every rate in this file is taken from, named as the vendor names it.\n\nMost vendors publish several prices for the same model: a pay-as-you-go rate, one or more\ncommitted plans, and an enterprise rate you have to ask for. A catalog that mixes them is\nnot comparable with itself, so this project takes ONE tier per provider, the cheapest a new\naccount can reach with no spend commitment, and records which one here.\n\nVerbatim from the vendor: `Pay As You Go`, `On-Demand`, `Standard`. Not a normalised enum,\nbecause the value exists so a reader can find the same words on the pricing page and\nconfirm the number against their own invoice. A rate the reader cannot locate is a rate\nthey will not trust.\n\nUse the literal ``Single published rate`` when the vendor publishes one price with no plan\nstructure to choose from, as ElevenLabs does. That is a positive claim and is not the same\nas leaving the field absent, which means nobody has looked yet. ``check_contribution``\nrequires this on any provider whose models are added or repriced, so the distinction stays\nhonest: a rate lands with its tier named, or it does not land.",
+          "title": "Pricing Tier"
         },
         "models": {
           "description": "List of models supported by this provider",
@@ -884,7 +895,8 @@
             "characters",
             "audio_output_seconds",
             "audio_input_seconds",
-            "agent_minutes"
+            "agent_minutes",
+            "telephony_minutes"
           ],
           "title": "Dest",
           "type": "string"

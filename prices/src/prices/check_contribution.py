@@ -70,6 +70,9 @@ PRICE_BANDS: dict[str, tuple[Decimal, Decimal]] = {
     'cache_audio_read_mtok': (Decimal('0.001'), Decimal('500')),
     'requests_kcount': (Decimal('0.001'), Decimal('10000')),
     'agent_kminutes': (Decimal('0.1'), Decimal('10000')),
+    # Carrier minutes. US local inbound is 8.5 per 1k minutes; the band spans a cheap SIP
+    # leg through an expensive international mobile termination.
+    'telephony_kminutes': (Decimal('0.05'), Decimal('20000')),
 }
 
 # Fields whose value is a unit conversion away from what the vendor publishes, so a
@@ -83,6 +86,7 @@ CONVERTED_FIELDS = frozenset(
         'output_kchars',
         'requests_kcount',
         'agent_kminutes',
+        'telephony_kminutes',
     }
 )
 
@@ -335,14 +339,35 @@ def check_contribution() -> int:
         pricing_hosts = {urlparse(str(u)).netloc.lower().removeprefix('www.') for u in urls} - {''}
 
         before = _models(base_version(path, base_ref))
+        priced_change = False
         for model_id, model in _models(head).items():
             was = before.get(model_id)
             if was is not None and was.get('prices') == model.get('prices'):
                 continue  # unchanged price: not this PR's claim to defend
             checked_models += 1
             findings.extend(check_model(provider_id, model, pricing_hosts=pricing_hosts, today=today))
-            if _priced_fields(model) and not is_api_backed(model) and not declares_unverified(model):
-                hand_read.append(f'{provider_id}/{model_id}')
+            if _priced_fields(model):
+                priced_change = True
+                if not is_api_backed(model) and not declares_unverified(model):
+                    hand_read.append(f'{provider_id}/{model_id}')
+
+        # A rate is not comparable with the rest of the catalog unless you know which plan it came
+        # from. Most vendors publish several for the same model: Deepgram quotes Pay As You Go and
+        # Growth, Cartesia sells four subscription tiers, AssemblyAI has pay-as-you-go and Custom.
+        # Mixing them silently makes the catalog incomparable with itself, and leaves a consumer
+        # unable to tell whether a row matches the plan they are actually on. Provider-level,
+        # because the policy is one tier per provider; an unpriced row claims nothing and is exempt.
+        if priced_change and not str(head.get('pricing_tier') or '').strip():
+            findings.append(
+                Finding(
+                    provider_id,
+                    '<provider>',
+                    'no `pricing_tier` on the provider. Name the vendor plan these rates come from, '
+                    'worded as the vendor words it (`Pay As You Go`, `On-Demand`, `Standard`), or '
+                    '`Single published rate` if the vendor has no plans to choose between. '
+                    'This project prices the cheapest tier a new account can reach with no commitment.',
+                )
+            )
 
     if not checked_models:
         print('no added or repriced models in this branch')

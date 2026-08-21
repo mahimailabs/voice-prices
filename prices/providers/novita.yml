@@ -15,6 +15,11 @@ model_match:
     - equals: minimax-speech-2.6-turbo
 provider_match:
   contains: novita
+# Verbatim from Novita's pricing page, which splits by product rather than by plan:
+# Serverless Endpoints bills per unit, Dedicated Endpoints bills per GPU-hour. The audio
+# rates below are the Serverless ones, and there is no plan structure within that tab.
+pricing_tier: Serverless Endpoints
+
 models:
   - id: Sao10K/L3-8B-Stheno-v3.2
     match:

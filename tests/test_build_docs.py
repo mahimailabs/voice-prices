@@ -472,7 +472,12 @@ def test_render_provider_page_has_frontmatter_and_the_do_not_edit_notice():
 def test_frontmatter_escapes_quotes_in_contributor_supplied_values():
     # A provider `name` comes straight from YAML someone else wrote. One unescaped quote would make
     # the frontmatter invalid and fail the whole docs build, not just that page.
-    entry: ProviderEntry = {'id': 'q', 'name': 'A "quoted" vendor', 'models': [_row(per_min=0.01)]}
+    entry: ProviderEntry = {
+        'id': 'q',
+        'name': 'A "quoted" vendor',
+        'models': [_row(per_min=0.01)],
+        'pricing_tier': None,
+    }
     page = render_provider_page('stt', entry)
     assert 'sidebarTitle: "A \\"quoted\\" vendor"' in page
 
@@ -564,7 +569,7 @@ def test_estimated_rates_are_marked_and_footnoted():
     assert 'estimated' not in rows['gpt-transcribe']['markers']
 
     assert '`gpt-4o-transcribe` <sup>estimated</sup>' in page
-    assert "the vendor's own published estimate" in page
+    assert 'not the meter the vendor bills on' in page
 
 
 def test_comparison_section_renders_on_voice_index_pages():
@@ -599,7 +604,7 @@ def test_category_tab_groups_a_large_sidebar_and_leaves_a_small_one_flat():
     assert all(isinstance(page, str) for page in cast('list[Any]', vad['pages']))
 
 
-def test_build_navigation_has_the_seven_tabs_in_order():
+def test_build_navigation_has_the_eight_tabs_in_order():
     nav = build_navigation(build_catalog(_real_data()))
     assert [tab['tab'] for tab in nav['tabs']] == [
         'Overview',
@@ -609,6 +614,7 @@ def test_build_navigation_has_the_seven_tabs_in_order():
         'S2S',
         'VAD',
         'Agents',
+        'Telephony',
         'Add Yours',
     ]
 
@@ -625,6 +631,7 @@ LUCIDE_ICONS = {
     'clock',
     'git-pull-request',
     'mic',
+    'phone',
     'rss',
     'volume-2',
 }

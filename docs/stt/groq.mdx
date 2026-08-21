@@ -1,7 +1,7 @@
 ---
 title: "Groq STT pricing"
 sidebarTitle: "Groq"
-description: "1 STT model(s) from Groq, with the rate and where it came from."
+description: "2 STT model(s) from Groq, with the rate and where it came from."
 mode: "wide"
 ---
 
@@ -9,8 +9,11 @@ mode: "wide"
 
 Priced from `input_audio_kseconds`, US dollars per 1,000 seconds of input audio, and shown converted to a per-minute rate for comparison. Vendors quote in whatever unit they prefer (per minute, per second, per hour), so the figure here is a conversion, not a quote. Source of truth: [`prices/providers/groq.yml`](https://github.com/mahimailabs/voice-prices/blob/main/prices/providers/groq.yml).
 
+**Plan:** On-Demand. Rates below are that plan. A committed or negotiated plan will be cheaper, so check yours before budgeting from these.
+
 | Model | Name | $ / min | Source | Last verified |
 | --- | --- | ---: | ---: | ---: |
 | `whisper-large-v3` | Whisper Large v3 | $0.00184998 | <Badge color="green" size="sm">verified</Badge> | 2026-05-29 |
+| `whisper-large-v3-turbo` | Whisper Large v3 Turbo | $0.00066666 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
 
 What `verified`, `imported`, and `seed` mean is on [How Fresh?](/how-fresh). A rate that looks wrong is worth [reporting](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml).

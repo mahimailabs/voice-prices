@@ -21,6 +21,8 @@ price_comments: >-
   credits, ~$0.0000299/credit), or Enterprise tiers should derive their own
   effective per-character rate by adjusting the credit cost accordingly.
 
+pricing_tier: Pro
+
 models:
   - id: sonic-3
     name: Sonic-3
