@@ -17,6 +17,16 @@
 </div>
 <br/>
 
+> [!WARNING]
+> **Reference only, and unofficial.** Voice Prices is a community-maintained catalog. It is not
+> published by, affiliated with, or endorsed by any vendor listed here. Rates are read off public
+> pricing pages by hand, vendors change them without notice, and your own rate may differ with your
+> plan, region, commitment or negotiated terms.
+>
+> Confirm a rate against the vendor's own pricing page before you bill, quote or budget against it.
+> Provided as-is with no warranty, under the [LICENSE](https://github.com/mahimailabs/voice-prices/blob/main/LICENSE).
+> See [the full warning](#warning).
+
 ## Why voice-prices
 
 A voice agent runs several meters at once (STT, an LLM, and TTS, or a single speech-to-speech model), each billed in a different unit. Route them through a gateway like [LiveKit Inference](https://livekit.io/pricing) and a fourth layer sits on top, quoted in its own units again. voice-prices is an open, dated source that puts **direct and gateway cost side by side, per model**.
