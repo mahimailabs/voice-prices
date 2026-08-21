@@ -134,6 +134,7 @@
               "tts/elevenlabs",
               "tts/groq",
               "tts/inworld",
+              "tts/lmnt",
               "tts/novita",
               "tts/openai",
               "tts/rime",

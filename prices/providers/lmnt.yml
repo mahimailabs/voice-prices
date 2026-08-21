@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=.schema.json
+name: LMNT
+id: lmnt
+pricing_urls:
+  - https://www.lmnt.com/pricing
+
+api_pattern: 'https://api\.lmnt\.com'
+
+provider_match:
+  contains: lmnt
+
+# No model_match: `blizzard` and `aurora` are ordinary words and claiming them from a bare
+# model_ref would misroute other vendors. Resolve with provider_id='lmnt'.
+
+price_comments: >-
+  Text-to-speech billed per character, but only as overage on a monthly plan: LMNT sells no
+  pay-as-you-go tier. Every plan bundles characters and then charges per 1,000 beyond them.
+  Rate is per PLAN, not per model, so Blizzard and Aurora cost the same and share one row.
+  Cheaper overage exists further up: Pro at $49/month charges $0.045 and Premium at $199/month
+  charges $0.035. Those are commitments, so this catalog takes the entry plan.
+  Not modelled: the bundled character allowance on each plan, nor the monthly fee itself. A
+  cost estimate from the rate below alone is the marginal cost past the allowance, not a bill.
+
+pricing_tier: Indie
+
+models:
+  - id: blizzard
+    name: Blizzard / Aurora
+    description: >-
+      LMNT's text-to-speech models. Blizzard is the LiveKit plugin's default and the
+      conversational model; Aurora is the earlier one. Priced identically, so one row matches
+      both, which is also what `make collapse` would produce from two.
+    match:
+      or:
+        - equals: blizzard
+        - equals: aurora
+    prices_checked: 2026-08-21
+    pricing_source_url: https://www.lmnt.com/pricing
+    price_comments: >-
+      Source rate $0.05 per 1,000 characters, the Indie plan's overage ("200K characters
+      included, $0.05 per 1K characters after"). Stored directly: input_kchars is already per
+      1,000 characters, so no conversion.
+      Indie is $10/month and is the cheapest plan quoting a per-character rate. Free includes
+      15K characters and publishes no overage rate at all, so it cannot be the priced tier.
+      Same $0.05/1k as ElevenLabs Flash and Turbo, and half of Eleven v3.
+    prices:
+      input_kchars: 0.05
