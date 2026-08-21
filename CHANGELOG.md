@@ -13,7 +13,7 @@ but it is one for anything that budgeted against the old number.
 The auto-generated release notes on each GitHub release list every merged pull request. This
 file only carries what a consumer needs to act on.
 
-## Unreleased
+## 0.8.0
 
 ### Added
 
