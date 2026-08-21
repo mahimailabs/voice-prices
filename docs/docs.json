@@ -53,6 +53,7 @@
               "stt/groq",
               "stt/inworld",
               "stt/openai",
+              "stt/speechmatics",
               "stt/telnyx"
             ]
           },
@@ -134,6 +135,7 @@
               "tts/inworld",
               "tts/novita",
               "tts/openai",
+              "tts/rime",
               "tts/telnyx"
             ]
           },
