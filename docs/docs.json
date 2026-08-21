@@ -49,8 +49,12 @@
             "group": "Direct vendors",
             "pages": [
               "stt/assemblyai",
+              "stt/aws",
+              "stt/azure",
+              "stt/cartesia",
               "stt/deepgram",
               "stt/elevenlabs",
+              "stt/google",
               "stt/groq",
               "stt/inworld",
               "stt/openai",
@@ -130,9 +134,12 @@
           {
             "group": "Direct vendors",
             "pages": [
+              "tts/aws",
+              "tts/azure",
               "tts/cartesia",
               "tts/deepgram",
               "tts/elevenlabs",
+              "tts/google",
               "tts/groq",
               "tts/hume",
               "tts/inworld",
@@ -141,6 +148,7 @@
               "tts/openai",
               "tts/rime",
               "tts/soniox",
+              "tts/speechmatics",
               "tts/telnyx"
             ]
           },

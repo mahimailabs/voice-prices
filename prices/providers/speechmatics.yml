@@ -81,3 +81,24 @@ models:
       streaming being the same product; they are the same PRICE.
     prices:
       input_audio_kseconds: 0.066667
+
+  - id: tts
+    name: Text-to-Speech
+    description: >-
+      Speechmatics' text-to-speech service. One product, one rate: the voice is chosen with a
+      `voice` parameter (`sarah`, `theo`, `megan`), not by selecting a model.
+    match:
+      equals: tts
+    prices_checked: 2026-08-21
+    pricing_source_url: https://www.speechmatics.com/pricing
+    price_comments: >-
+      Source rate $0.011 per 1,000 characters, the sole "Text-to-Speech" row of the rate table,
+      Pro plan. `input_kchars` is already $/1k characters so the figure is stored as published,
+      with no conversion. Equivalent to $11 per 1M characters.
+      Unlike the STT rows above, `tts` is not a value Speechmatics accepts anywhere: the API
+      takes a voice, not a model. It is a catalog id so the rate is addressable at all, chosen
+      over inventing a product name that does not exist. Resolve with provider_id='speechmatics'.
+      Not modelled: the Enterprise (Custom) column. The TTS API is served from
+      `preview.tts.speechmatics.com` and is labelled preview, so this rate may move.
+    prices:
+      input_kchars: 0.011
