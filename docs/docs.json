@@ -187,6 +187,9 @@
         "icon": "phone",
         "pages": [
           "telephony/all-models",
+          "telephony/livekit",
+          "telephony/livekit-scale",
+          "telephony/telnyx",
           "telephony/twilio"
         ]
       },

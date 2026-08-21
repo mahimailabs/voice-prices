@@ -74,7 +74,7 @@ Streaming and batch ship as separate rows, as do language tiers, because vendors
 | [OpenAI](/stt/openai) | `gpt-realtime-translate` | GPT-Realtime-Translate | $0.03400002 | <Badge color="green" size="sm">verified</Badge> | 2026-08-20 |
 
 - `api` the vendor publishes this rate at a machine-readable endpoint, so it is re-read and compared automatically rather than by a human reading a pricing page.
-- `estimated` this rate is the vendor's own published estimate, not the meter it bills on. It will not reconcile against an invoice: the model is billed in another unit (usually tokens) and the figure here is the vendor restating that in this one. Useful for comparison and capacity planning, not for billing.
+- `estimated` this rate is not the meter the vendor bills on, so it will not reconcile against an invoice. Either the model is billed in another unit and this figure is the vendor restating it, or the vendor publishes only a floor ("starting at") or a range. Useful for comparison and capacity planning, not for billing.
 
 ## Via LiveKit Inference
 
