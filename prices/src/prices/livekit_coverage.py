@@ -266,14 +266,15 @@ def _by_vendor(coverage: Coverage) -> str:
 
 
 def render_coverage_page(coverage: list[Coverage], checked: str) -> str:
+    # One disclaimer for the whole site, defined next to the pages that show rates.
+    from .build_docs import PRICE_DISCLAIMER
+
     inference = [c for c in coverage if c.plugin.kind in ('inference', 'unknown')]
     full = [c for c in inference if c.state == 'full']
     partial = [c for c in inference if c.state == 'partial']
     none = [c for c in inference if c.state == 'none']
 
-    slots = sum(len(c.plugin.provides) for c in inference)
-    priced_slots = sum(len(c.priced) for c in inference)
-    pct = round(100 * priced_slots / slots) if slots else 0
+    pct = round(100 * len(full) / len(inference)) if inference else 0
 
     by_status: dict[str, int] = {}
     for c in none:
@@ -294,21 +295,23 @@ def render_coverage_page(coverage: list[Coverage], checked: str) -> str:
         '---',
         '',
         f'LiveKit Agents ships **{len(coverage)} plugin packages**. **{len(inference)}** of them call a '
-        f'metered inference vendor, between them exposing **{slots} vendor-and-modality slots** '
-        f'(one plugin can do STT and TTS, and each needs its own rate). This catalog prices '
-        f'**{priced_slots} of {slots}** (**{pct}%**).',
+        f'metered inference vendor. Of those, this catalog prices **{len(full)} fully** '
+        f'(**{pct}%**), **{len(partial)} partly**, and **{len(none)} not at all**.',
         '',
-        f'By plugin: **{len(full)} fully priced**, **{len(partial)} partly**, **{len(none)} not at all**.',
-        '',
-        'Counting slots rather than plugins is deliberate. A vendor can be in this catalog for the '
-        'wrong thing: `livekit-plugins-azure` is Azure Speech, so an Azure LLM price does nothing '
-        'for it. Counting by vendor would call that covered.',
+        '"Fully" is measured against what the plugin itself calls, not against the vendor name. A '
+        'vendor can be in this catalog for the wrong thing: `livekit-plugins-azure` is Azure '
+        'Speech, so an Azure LLM price does nothing for it, and that plugin counts as unpriced. '
+        'The Priced and Missing columns below show the split per plugin.',
         '',
         'The gaps are the useful half of this page, and most are not gaps in effort. A vendor that '
         'sells credit bundles without publishing a credits-per-character ratio cannot be put in a '
         'per-unit catalog at all, however long you look at its pricing page.',
         '',
         f'Plugin list and capabilities read from [livekit/agents]({PLUGINS_URL}) on {checked}.',
+        '',
+        'Coverage here says a rate exists, not that it is right.',
+        '',
+        PRICE_DISCLAIMER,
         '',
         '## Fully priced',
         '',
@@ -424,14 +427,12 @@ def livekit_coverage() -> int:
 
     counts = {kind: sum(1 for c in coverage if c.plugin.kind == kind) for kind in KIND_ORDER}
     inference = [c for c in coverage if c.plugin.kind in ('inference', 'unknown')]
-    slots = sum(len(c.plugin.provides) for c in inference)
-    priced_slots = sum(len(c.priced) for c in inference)
-    pct = round(100 * priced_slots / slots) if slots else 0
     states = {state: sum(1 for c in inference if c.state == state) for state in ('full', 'partial', 'none')}
+    pct = round(100 * states['full'] / len(inference)) if inference else 0
 
     print(f'{len(coverage)} LiveKit plugins: ' + ', '.join(f'{n} {k}' for k, n in counts.items() if n))
-    print(f'slot coverage: {priced_slots}/{slots} ({pct}%) across {len(inference)} inference plugins')
-    print(f'  {states["full"]} fully priced, {states["partial"]} partly, {states["none"]} not at all')
+    print(f'plugin coverage: {states["full"]}/{len(inference)} fully priced ({pct}%)')
+    print(f'  {states["partial"]} partly priced, {states["none"]} not priced at all')
     for status in sorted(STATUS_LABEL):
         n = sum(1 for c in inference if c.state == 'none' and (c.plugin.status or 'not_investigated') == status)
         if n:
