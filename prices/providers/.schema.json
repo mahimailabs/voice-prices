@@ -351,6 +351,12 @@
           "title": "Collapse",
           "type": "boolean"
         },
+        "free": {
+          "default": false,
+          "description": "The provider charges nothing for this model, so an empty `prices` block is the true rate.\n\nExists because \"free\" and \"nobody has entered a rate\" were previously the same bytes: both\nare a ModelPrice with every field None, and the only hint was a `:free` suffix in the id,\nwhich is a naming convention rather than data. A consumer holding a zero could not tell\nwhether to report it as priced or to refuse it, and those want opposite handling.\n\nSet it only where the provider says so. Leave it False when a rate simply has not been\nfound: that is what `provenance.source: seed` plus a non-empty `unpriced_usage` on the\ncalculation are for. `deepgram/nova` is real and callable with no published rate; OpenAI's\nmoderation endpoints are free of charge. Only the second is `free`.\n\nDrives two things. `Provider.exclude_free` uses it, so the slim dataset drops genuinely\nfree models and KEEPS unpriced ones (it previously dropped both, which made data.json and\ndata_slim.json answer the same lookup differently). And `calc_price` reports an empty\n`unpriced_usage` for a free model, so a zero from one is not confused with a zero from a\nmissing rate.",
+          "title": "Free",
+          "type": "boolean"
+        },
         "deprecated": {
           "type": "boolean",
           "description": "Flag indicating this model is deprecated by the provider but still functional.",

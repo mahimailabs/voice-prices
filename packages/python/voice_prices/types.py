@@ -856,6 +856,14 @@ class ModelInfo:
     """Deep-link (as a string) to the row or anchor on the provider's pricing page that establishes
     this model's price. Per-model; distinct from `Provider.pricing_urls` which is provider-wide.
     """
+    free: bool = False
+    """The provider charges nothing for this model, so an empty `prices` block is the true rate.
+
+    Distinguishes "free" from "nobody has entered a rate", which are otherwise the same bytes:
+    both are a ModelPrice with every field None. When True, a zero `total_price` is correct and
+    `unpriced_usage` is empty. When False and the model carries no rate, `unpriced_usage` names
+    the fields that found no meter, and the zero should not be billed on.
+    """
     deprecated: bool | None = None
     """Flag indicating this model is deprecated by the provider but still functional."""
     provenance: Provenance | None = None
@@ -907,7 +915,10 @@ class ModelInfo:
             provider=provider,
             model_price=model_price,
             auto_update_timestamp=auto_update_timestamp,
-            unpriced_usage=price['unpriced_usage'],
+            # A free model has no gap to report: the zero IS the rate. Without this, every free
+            # model would name its usage fields as unpriced and be indistinguishable from a row
+            # nobody has entered a rate for, which is the ambiguity `free` exists to remove.
+            unpriced_usage=() if self.free else price['unpriced_usage'],
         )
 
     def summary(self) -> str:
