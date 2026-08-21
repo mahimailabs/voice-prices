@@ -74,7 +74,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**42 providers, 1,251 priced models.** 59 STT, 1,104 LLM, 69 TTS, 8 S2S, 2 VAD, 1 Agents, 8 Telephony.
+**42 providers, 1,258 priced models.** 59 STT, 1,104 LLM, 69 TTS, 8 S2S, 2 VAD, 1 Agents, 15 Telephony.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -106,8 +106,8 @@ Every provider in the catalog, and which categories it prices:
 | [HuggingFace (sambanova)](prices/providers/huggingface_sambanova.yml) | 8 | LLM |
 | [HuggingFace (together)](prices/providers/huggingface_together.yml) | 23 | LLM |
 | [Inworld](prices/providers/inworld.yml) | 4 | STT, TTS |
-| [LiveKit Inference](prices/providers/livekit.yml) | 78 | STT, LLM, TTS |
-| [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 36 | STT, TTS |
+| [LiveKit Inference](prices/providers/livekit.yml) | 81 | STT, LLM, TTS, Telephony |
+| [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 37 | STT, TTS, Telephony |
 | [Mistral](prices/providers/mistral.yml) | 18 | LLM |
 | [MoonshotAi](prices/providers/moonshotai.yml) | 9 | LLM |
 | [Novita](prices/providers/novita.yml) | 34 | LLM |
@@ -115,7 +115,7 @@ Every provider in the catalog, and which categories it prices:
 | [OpenRouter](prices/providers/openrouter.yml) | 462 | LLM, S2S |
 | [OVHcloud AI Endpoints](prices/providers/ovhcloud.yml) | 15 | LLM |
 | [Perplexity](prices/providers/perplexity.yml) | 8 | LLM |
-| [Telnyx](prices/providers/telnyx.yml) | 14 | STT, LLM, TTS |
+| [Telnyx](prices/providers/telnyx.yml) | 17 | STT, LLM, TTS, Telephony |
 | [Together AI](prices/providers/together.yml) | 72 | LLM |
 | [Twilio](prices/providers/twilio.yml) | 8 | Telephony |
 | [Vapi](prices/providers/vapi.yml) | 1 | Agents |

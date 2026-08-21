@@ -274,8 +274,9 @@ class Provenance(_Model):
 
     Absent (the normal case) means every rate on the model is a billing rate.
 
-    This exists because a vendor can publish two numbers for the same model in two different
-    units, and only one of them is the invoice. OpenAI prices `gpt-4o-transcribe` per token and
+    Two shapes land here. A vendor publishes the same model in two units and bills on only one
+    of them, or a vendor publishes a floor rather than a rate ("starting at $0.005 per minute")
+    so the number is a lower bound on the invoice rather than the invoice. OpenAI prices `gpt-4o-transcribe` per token and
     also prints "$0.006 / minute" in a column headed *Estimated cost*, derived from an assumed
     speech density. Both numbers are real and published; only the token rate is charged. Storing
     the per-minute figure without saying so would let a consumer bill from it and quietly disagree

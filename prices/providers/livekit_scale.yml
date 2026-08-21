@@ -23,6 +23,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.113333
+
   - id: cartesia/ink-2-2026-04-15
     name: Ink 2 (2026-04-15)
     match:
@@ -32,6 +33,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.113333
+
   - id: cartesia/ink-2-latest
     name: Ink 2 Latest
     match:
@@ -41,6 +43,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.113333
+
   - id: cartesia/ink-whisper
     name: Ink Whisper
     match:
@@ -50,6 +53,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.038333
+
   - id: cartesia/sonic-2
     name: Sonic 2
     match:
@@ -59,6 +63,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: cartesia/sonic-3
     name: Sonic 3
     match:
@@ -68,6 +73,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: cartesia/sonic-3-2025-10-27
     name: Sonic 3 (2025-10-27)
     match:
@@ -77,6 +83,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: cartesia/sonic-3-2026-01-12
     name: Sonic 3 (2026-01-12)
     match:
@@ -86,6 +93,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: cartesia/sonic-3-latest
     name: Sonic 3 Latest
     match:
@@ -95,6 +103,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: cartesia/sonic-3.5
     name: Sonic 3.5
     match:
@@ -104,6 +113,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: cartesia/sonic-3.5-2026-05-04
     name: Sonic 3.5 (2026-05-04)
     match:
@@ -113,6 +123,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: cartesia/sonic-latest
     name: Sonic Latest
     match:
@@ -122,6 +133,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: cartesia/sonic-turbo
     name: Sonic Turbo
     match:
@@ -131,6 +143,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.0375
+
   - id: deepgram/aura-2
     name: Aura-2
     match:
@@ -140,6 +153,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.027
+
   - id: deepgram/flux-general-en
     name: Flux
     match:
@@ -149,6 +163,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.095
+
   - id: deepgram/flux-general-multi
     name: Flux (Multilingual)
     match:
@@ -158,6 +173,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.113333
+
   - id: deepgram/nova-2
     name: Nova-2
     match:
@@ -167,6 +183,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.078333
+
   - id: deepgram/nova-2-conversationalai
     name: Nova-2 Conversational AI
     match:
@@ -176,6 +193,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.078333
+
   - id: deepgram/nova-2-medical
     name: Nova-2 Medical
     match:
@@ -185,6 +203,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.078333
+
   - id: deepgram/nova-2-phonecall
     name: Nova-2 Phone Call
     match:
@@ -194,6 +213,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.078333
+
   - id: deepgram/nova-3
     name: Nova-3 (Monolingual)
     match:
@@ -203,6 +223,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.07
+
   - id: deepgram/nova-3-medical
     name: Nova-3 Medical
     match:
@@ -212,6 +233,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.108333
+
   - id: deepgram/nova-3-multi
     name: Nova-3 (Multilingual)
     match:
@@ -221,6 +243,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_audio_kseconds: 0.083333
+
   - id: elevenlabs/eleven_flash_v2
     name: Eleven Flash v2
     match:
@@ -230,6 +253,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.06
+
   - id: elevenlabs/eleven_flash_v2_5
     name: Eleven Flash v2.5
     match:
@@ -239,6 +263,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.06
+
   - id: elevenlabs/eleven_multilingual_v2
     name: Eleven Multilingual v2
     match:
@@ -248,6 +273,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.12
+
   - id: elevenlabs/eleven_turbo_v2
     name: Eleven Turbo v2
     match:
@@ -257,6 +283,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.06
+
   - id: elevenlabs/eleven_turbo_v2_5
     name: Eleven Turbo v2.5
     match:
@@ -266,6 +293,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.06
+
   - id: elevenlabs/eleven_v3
     name: Eleven v3
     match:
@@ -275,6 +303,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.12
+
   - id: inworld/inworld-tts-1.5-max
     name: Realtime TTS 1.5 Max
     match:
@@ -284,6 +313,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.03
+
   - id: inworld/inworld-tts-1.5-mini
     name: Realtime TTS 1.5 Mini
     match:
@@ -293,6 +323,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.02
+
   - id: inworld/inworld-tts-2
     name: Realtime TTS 2.0
     match:
@@ -302,6 +333,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.03
+
   - id: rime/arcana
     name: Arcana
     match:
@@ -311,6 +343,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.03
+
   - id: rime/mist
     name: Mist
     match:
@@ -320,6 +353,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.02
+
   - id: rime/mistv2
     name: Mist v2
     match:
@@ -329,6 +363,7 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.02
+
   - id: rime/mistv3
     name: Mist v3
     match:
@@ -338,3 +373,21 @@ models:
     pricing_source_url: https://livekit.io/pricing
     prices:
       input_kchars: 0.02
+
+  - id: sip-thirdparty
+    name: Third-party SIP minutes
+    description: >-
+      Minutes carried over a SIP trunk you bring yourself, at the Scale rate.
+    match:
+      equals: sip-thirdparty
+    collapse: false
+    prices_checked: 2026-08-20
+    pricing_source_url: https://livekit.io/pricing
+    price_comments: >-
+      Source rate $0.003/minute on Scale, from the Telephony table: "Third-party SIP minutes ...
+      50,000 minutes included (then $0.003 per min)". Converted to $/k minutes:
+      0.003 * 1000 = 3 exactly.
+      The only telephony meter that differs by tier: US local and toll-free inbound are the same
+      $0.01 and $0.02 on Ship and Scale, so they are not repeated here and fall back to livekit.
+    prices:
+      telephony_kminutes: 3

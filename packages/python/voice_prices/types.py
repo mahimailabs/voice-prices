@@ -822,8 +822,9 @@ class Provenance:
     """Priced fields whose value is the vendor's own published estimate, not the meter they bill on.
 
     Absent (the normal case) means every rate on the model is a billing rate. When present, a rate
-    named here will not reconcile against an invoice: it is the vendor's own approximation, usually
-    of a per-token bill restated per minute or per character.
+    named here will not reconcile against an invoice: either it is a per-token bill restated per
+    minute or per character, or it is a floor the vendor published instead of a rate ("starting
+    at $0.005 per minute"), which bounds the invoice from below rather than stating it.
 
     OpenAI's `gpt-4o-transcribe` is the case this was added for. It bills per token and also
     prints "$0.006 / minute" under a column headed *Estimated cost*, derived from an assumed

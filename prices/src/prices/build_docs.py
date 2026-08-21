@@ -675,10 +675,10 @@ def _markers_footnote(rows: list[ModelRow]) -> str:
         'tiered': '`tiered` the rate changes above a token threshold. The base rate is shown.',
         'daily': '`daily` the rate changes with the time of day. The standard rate is shown.',
         'voices': '`voices` some voice classes cost a multiple of the base rate.',
-        'estimated': "`estimated` this rate is the vendor's own published estimate, not the meter it "
-        'bills on. It will not reconcile against an invoice: the model is billed in another unit '
-        '(usually tokens) and the figure here is the vendor restating that in this one. Useful for '
-        'comparison and capacity planning, not for billing.',
+        'estimated': '`estimated` this rate is not the meter the vendor bills on, so it will not '
+        'reconcile against an invoice. Either the model is billed in another unit and this figure '
+        'is the vendor restating it, or the vendor publishes only a floor ("starting at") or a '
+        'range. Useful for comparison and capacity planning, not for billing.',
     }
     lines = [notes[marker] for marker in ('api', 'tiered', 'daily', 'voices', 'estimated') if marker in seen]
     return '\n'.join(f'- {line}' for line in lines)

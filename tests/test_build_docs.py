@@ -569,7 +569,7 @@ def test_estimated_rates_are_marked_and_footnoted():
     assert 'estimated' not in rows['gpt-transcribe']['markers']
 
     assert '`gpt-4o-transcribe` <sup>estimated</sup>' in page
-    assert "the vendor's own published estimate" in page
+    assert 'not the meter the vendor bills on' in page
 
 
 def test_comparison_section_renders_on_voice_index_pages():
