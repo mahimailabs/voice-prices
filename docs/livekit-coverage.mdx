@@ -3,7 +3,7 @@ title: "LiveKit plugin coverage"
 description: "Which LiveKit Agents plugins have a price in this catalog, and why the rest do not."
 ---
 
-LiveKit Agents ships **74 plugin packages**. **48** of them call a metered inference vendor. Of those, this catalog prices **20 fully** (**42%**), **1 partly**, and **27 not at all**.
+LiveKit Agents ships **74 plugin packages**. **48** of them call a metered inference vendor. Of those, this catalog prices **22 fully** (**46%**), **0 partly**, and **26 not at all**.
 
 "Fully" is measured against what the plugin itself calls, not against the vendor name. A vendor can be in this catalog for the wrong thing: `livekit-plugins-azure` is Azure Speech, so an Azure LLM price does nothing for it, and that plugin counts as unpriced. The Priced and Missing columns below show the split per plugin.
 
@@ -21,7 +21,7 @@ Confirm a rate against the vendor's own pricing page before you bill, quote or b
 
 ## Fully priced
 
-20 plugins where every modality the plugin exposes has a rate here. Follow a link for the rates, the source URL, and when a human last confirmed them.
+22 plugins where every modality the plugin exposes has a rate here. Follow a link for the rates, the source URL, and when a human last confirmed them.
 
 | Plugin | Vendor | Priced for | Models |
 | --- | --- | --- | --- |
@@ -33,6 +33,7 @@ Confirm a rate against the vendor's own pricing page before you bill, quote or b
 | `livekit-plugins-cerebras` | Cerebras | [LLM](/llm/cerebras) | 4 |
 | `livekit-plugins-deepgram` | Deepgram | [STT](/stt/deepgram), [TTS](/tts/deepgram) | 12 |
 | `livekit-plugins-elevenlabs` | ElevenLabs | [STT](/stt/elevenlabs), [TTS](/tts/elevenlabs) | 8 |
+| `livekit-plugins-gladia` | Gladia | [STT](/stt/gladia) | 2 |
 | `livekit-plugins-google` | Google Cloud | [STT](/stt/google), [TTS](/tts/google), [LLM](/llm/google) | 38 |
 | `livekit-plugins-groq` | Groq | [STT](/stt/groq), [TTS](/tts/groq), [LLM](/llm/groq) | 33 |
 | `livekit-plugins-hume` | Hume | [TTS](/tts/hume) | 1 |
@@ -45,44 +46,42 @@ Confirm a rate against the vendor's own pricing page before you bill, quote or b
 | `livekit-plugins-speechmatics` | Speechmatics | [STT](/stt/speechmatics), [TTS](/tts/speechmatics) | 4 |
 | `livekit-plugins-telnyx` | Telnyx | [STT](/stt/telnyx), [TTS](/tts/telnyx) | 17 |
 | `livekit-plugins-ultravox` | Ultravox | [Realtime](/agent/ultravox) | 1 |
+| `livekit-plugins-xai` | xAI | [STT](/stt/x-ai), [TTS](/tts/x-ai) | 16 |
 
 ## Partly priced
 
-1 plugins where some of what the plugin does has a rate and some does not. These are the ones most likely to be misread as covered.
+0 plugins where some of what the plugin does has a rate and some does not. These are the ones most likely to be misread as covered.
 
-| Plugin | Vendor | Priced | Missing | Why |
-| --- | --- | --- | --- | --- |
-| `livekit-plugins-mistralai` | Mistral AI | [LLM](/llm/mistral) | STT, TTS | Not investigated yet. |
+_None._
 
 ## Not priced
 
-27 plugins with no rate here for anything they do: 4 no public per-unit rate, 19 not investigated yet, 4 bills in a unit this schema has no field for. "Not investigated yet" means exactly that: nobody has checked whether the vendor publishes a rate. Those are the tractable ones, and a [pull request](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md) closing any of them is welcome.
+26 plugins with no rate here for anything they do: 7 no public per-unit rate, 15 not investigated yet, 4 bills in a unit this schema has no field for. "Not investigated yet" means exactly that: nobody has checked whether the vendor publishes a rate. Those are the tractable ones, and a [pull request](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md) closing any of them is welcome.
 
 | Plugin | Vendor | Plugin does | Why not |
 | --- | --- | --- | --- |
-| `livekit-plugins-fireworksai` | Fireworks AI | STT | Priced here for LLM only, which is not what this plugin calls. |
-| `livekit-plugins-xai` | xAI | STT, TTS | Priced here for LLM only, which is not what this plugin calls. |
 | `livekit-plugins-cambai` | Camb.ai | TTS | No public per-unit rate. Credit-based, and the credits-per-character ratio is not published. |
+| `livekit-plugins-fireworksai` | Fireworks AI | STT | No public per-unit rate. Fireworks moved model rates off the pricing page into its docs, and neither the pricing page nor the docs pricing page carries an audio or transcription rate. Only tokens, training and GPU-seconds are published. |
+| `livekit-plugins-mistralai` | Mistral AI | STT, TTS, LLM | No public per-unit rate. The pricing page says speech models are billed per minute but renders no Voxtral rate in readable text, and the docs pricing URL redirects back to it. Needs a human to read the rendered table. |
 | `livekit-plugins-neuphonic` | Neuphonic | TTS | No public per-unit rate. The pricing page 404s. |
 | `livekit-plugins-phonic` | Phonic | Realtime | No public per-unit rate. The pricing page renders empty. |
 | `livekit-plugins-resemble` | Resemble AI | TTS | No public per-unit rate. Publishes rates for Detect, Intelligence and Identity, but never for speech synthesis. |
+| `livekit-plugins-smallestai` | Smallest AI | STT, TTS | No public per-unit rate. Publishes only approximate per-minute figures for a whole voice-agent stack (~$0.009/min STT, ~$0.09/min TTS), tildes included, with no per-character or per-second rate for the TTS and STT APIs the plugin actually calls. |
 | `livekit-plugins-asyncai` | Async AI | TTS | Not investigated yet. |
 | `livekit-plugins-bland` | Bland | TTS | Not investigated yet. |
-| `livekit-plugins-fishaudio` | Fish Audio | TTS | Not investigated yet. |
-| `livekit-plugins-gladia` | Gladia | STT | Not investigated yet. |
+| `livekit-plugins-fishaudio` | Fish Audio | TTS | Not investigated yet. fish.audio/pricing renders no rates, only a funding announcement. |
 | `livekit-plugins-gnani` | Gnani | STT, TTS | Not investigated yet. |
 | `livekit-plugins-gradium` | Gradium | STT, TTS, LLM | Not investigated yet. |
 | `livekit-plugins-clova` | LINE Clova | STT | Not investigated yet. |
 | `livekit-plugins-minimax` | MiniMax | TTS | Not investigated yet. The package description reads 'services from AWS'; that is a copy-paste error upstream, the plugin is MiniMax. |
-| `livekit-plugins-murf` | Murf | TTS | Not investigated yet. |
+| `livekit-plugins-murf` | Murf | TTS | Not investigated yet. murf.ai/api/pricing renders empty headless (66 chars); the main pricing page shows only studio subscription plans. Needs a real browser. |
 | `livekit-plugins-respeecher` | Respeecher | TTS | Not investigated yet. |
 | `livekit-plugins-rtzr` | RTZR | STT | Not investigated yet. |
-| `livekit-plugins-sarvam` | Sarvam AI | STT, TTS, LLM | Not investigated yet. |
+| `livekit-plugins-sarvam` | Sarvam AI | STT, TTS, LLM | Not investigated yet. No dollar amounts in the rendered pricing page; Sarvam may quote in INR, which would need an FX basis this catalog does not have. |
 | `livekit-plugins-slng` | SLNG | STT, TTS | Not investigated yet. |
-| `livekit-plugins-smallestai` | Smallest AI | STT, TTS | Not investigated yet. |
-| `livekit-plugins-speechify` | Speechify | TTS | Not investigated yet. |
+| `livekit-plugins-speechify` | Speechify | TTS | Not investigated yet. speechify.com/api/pricing renders empty headless (46 chars). Needs a real browser. |
 | `livekit-plugins-spitch` | Spitch | STT, TTS | Not investigated yet. |
-| `livekit-plugins-upliftai` | Uplift AI | TTS | Not investigated yet. |
+| `livekit-plugins-upliftai` | Uplift AI | TTS | Not investigated yet. No dollar amounts in the rendered pricing page. |
 | `livekit-plugins-baseten` | Baseten | STT, TTS, LLM | Bills in a unit this schema has no field for. GPU-seconds of compute, which no per-token, per-character or per-second field expresses. |
 | `livekit-plugins-fal` | fal | STT | Bills in a unit this schema has no field for. GPU-seconds of compute, which no per-token, per-character or per-second field expresses. |
 | `livekit-plugins-nvidia` | NVIDIA | STT, TTS | Bills in a unit this schema has no field for. GPU-seconds of compute, which no per-token, per-character or per-second field expresses. |

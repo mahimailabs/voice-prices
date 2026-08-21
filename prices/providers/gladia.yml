@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=.schema.json
+name: Gladia
+id: gladia
+pricing_urls:
+  - https://www.gladia.io/pricing
+
+api_pattern: 'https://api\.gladia\.io'
+
+model_match:
+  contains: solaria
+
+provider_match:
+  contains: gladia
+
+price_comments: >-
+  Speech-to-text billed per hour of audio, priced by mode rather than by model: the pricing page
+  quotes one async rate and one real-time rate with no per-model breakdown, so every model shares
+  them. The LiveKit plugin defaults to `solaria-1`.
+  Async and real-time are separate rates, so they are separate rows following this catalog's
+  `-batch` convention.
+  Not modelled: Growth, which quotes "as low as" $0.20/hour async and $0.25/hour real-time but
+  requires committing upfront ("Commit upfront to unlock savings"), and Enterprise, which is
+  Custom. This catalog prices the cheapest tier a new account can reach with no commitment,
+  which is Starter. Also not modelled: the 50 EUR in free credits.
+
+pricing_tier: Starter
+
+models:
+  - id: solaria-1
+    name: Solaria-1 (real-time)
+    description: >-
+      Gladia's transcription model over the streaming API, which is what a voice agent uses and
+      what the LiveKit plugin defaults to. Use `solaria-1-batch` for pre-recorded audio.
+    match:
+      equals: solaria-1
+    prices_checked: 2026-08-21
+    pricing_source_url: https://www.gladia.io/pricing
+    price_comments: >-
+      Source rate $0.75/hour, the "Real-time at $0.75/hr" line of the Starter plan card.
+      Converted to $/k seconds: 0.75 / 3600 * 1000 = 0.2083333 recurring, stored as 0.208333.
+      23% above the async rate for the same audio.
+    prices:
+      input_audio_kseconds: 0.208333
+
+  - id: solaria-1-batch
+    name: Solaria-1 (async)
+    description: >-
+      The same model on the async endpoint for pre-recorded audio.
+    match:
+      equals: solaria-1-batch
+    prices_checked: 2026-08-21
+    pricing_source_url: https://www.gladia.io/pricing
+    price_comments: >-
+      Source rate $0.61/hour, the "Async at $0.61/hr" line of the Starter plan card. Converted
+      to $/k seconds: 0.61 / 3600 * 1000 = 0.1694444 recurring, stored as 0.169444.
+      `solaria-1-batch` is a catalog id: async is an endpoint choice at Gladia, not a separate
+      model name, so this follows the `-batch` convention rather than inventing a product.
+    prices:
+      input_audio_kseconds: 0.169444
