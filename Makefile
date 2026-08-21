@@ -80,6 +80,10 @@ ovhcloud-get: ## get ovhcloud ai endpoints prices
 livekit-get: ## regenerate livekit + livekit-scale YAMLs from prices/sources/livekit_pricing.json
 	uv run -m prices livekit_gen
 
+.PHONY: livekit-coverage
+livekit-coverage: ## report which LiveKit Agents plugins have a price here (REFRESH=1 to re-read the plugin list)
+	uv run -m prices livekit_coverage
+
 .PHONY: feed-check
 feed-check: ## validate a provider pricing feed and diff it against the catalog (FEED=<url|path>)
 	FEED="$(FEED)" uv run -m prices feed_check

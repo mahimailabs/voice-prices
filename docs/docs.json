@@ -36,7 +36,8 @@
         "icon": "book-open",
         "pages": [
           "index",
-          "how-fresh"
+          "how-fresh",
+          "livekit-coverage"
         ]
       },
       {

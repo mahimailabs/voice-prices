@@ -949,7 +949,9 @@ def category_tab(category: Modality, entries: list[ProviderEntry]) -> dict[str, 
 
 def build_navigation(catalog: Catalog) -> dict[str, Any]:
     """The full ``navigation`` block. Generated, so the nav can never list a page that does not exist."""
-    tabs: list[dict[str, Any]] = [{'tab': 'Overview', 'icon': 'book-open', 'pages': ['index', 'how-fresh']}]
+    tabs: list[dict[str, Any]] = [
+        {'tab': 'Overview', 'icon': 'book-open', 'pages': ['index', 'how-fresh', 'livekit-coverage']}
+    ]
     tabs += [category_tab(category, catalog[category]) for category in CATEGORIES]
     tabs.append({'tab': 'Add Yours', 'icon': 'git-pull-request', 'pages': ['contribute', 'pricing-feed']})
     return {'tabs': tabs}
@@ -1094,7 +1096,13 @@ def build_docs(docs_dir: Path | None = None) -> list[Path]:
 
     # Imported here rather than at module scope: source_feed reads base_prices and detect_modality
     # from this module, so a top-level import would be circular.
+    # Same reason for the local import: livekit_coverage reads build_catalog from this module.
+    from .livekit_coverage import write_coverage_page
     from .source_feed import render_rate_grid
+
+    coverage_page = docs_dir / 'livekit-coverage.mdx'
+    if write_coverage_page(data, coverage_page)[0]:
+        written.append(coverage_page)
 
     feed_page = docs_dir / 'pricing-feed.mdx'
     if feed_page.exists() and inject_blocks(feed_page, {'rate-grid': render_rate_grid()}):

@@ -1,0 +1,105 @@
+---
+title: "LiveKit plugin coverage"
+description: "Which LiveKit Agents plugins have a price in this catalog, and why the rest do not."
+---
+
+LiveKit Agents ships **74 plugin packages**. **48** of them call a metered inference vendor, between them exposing **79 vendor-and-modality slots** (one plugin can do STT and TTS, and each needs its own rate). This catalog prices **29 of 79** (**37%**).
+
+By plugin: **15 fully priced**, **5 partly**, **28 not at all**.
+
+Counting slots rather than plugins is deliberate. A vendor can be in this catalog for the wrong thing: `livekit-plugins-azure` is Azure Speech, so an Azure LLM price does nothing for it. Counting by vendor would call that covered.
+
+The gaps are the useful half of this page, and most are not gaps in effort. A vendor that sells credit bundles without publishing a credits-per-character ratio cannot be put in a per-unit catalog at all, however long you look at its pricing page.
+
+Plugin list and capabilities read from [livekit/agents](https://github.com/livekit/agents/tree/main/livekit-plugins) on 2026-08-21.
+
+## Fully priced
+
+15 plugins where every modality the plugin exposes has a rate here. Follow a link for the rates, the source URL, and when a human last confirmed them.
+
+| Plugin | Vendor | Priced for | Models |
+| --- | --- | --- | --- |
+| `livekit-plugins-anthropic` | Anthropic | [LLM](/llm/anthropic) | 18 |
+| `livekit-plugins-assemblyai` | AssemblyAI | [STT](/stt/assemblyai) | 5 |
+| `livekit-plugins-cerebras` | Cerebras | [LLM](/llm/cerebras) | 4 |
+| `livekit-plugins-deepgram` | Deepgram | [STT](/stt/deepgram), [TTS](/tts/deepgram) | 12 |
+| `livekit-plugins-elevenlabs` | ElevenLabs | [STT](/stt/elevenlabs), [TTS](/tts/elevenlabs) | 8 |
+| `livekit-plugins-groq` | Groq | [STT](/stt/groq), [TTS](/tts/groq), [LLM](/llm/groq) | 33 |
+| `livekit-plugins-hume` | Hume | [TTS](/tts/hume) | 1 |
+| `livekit-plugins-inworld` | Inworld | [STT](/stt/inworld), [TTS](/tts/inworld) | 4 |
+| `livekit-plugins-lmnt` | LMNT | [TTS](/tts/lmnt) | 1 |
+| `livekit-plugins-openai` | OpenAI | [STT](/stt/openai), [TTS](/tts/openai), [LLM](/llm/openai) | 77 |
+| `livekit-plugins-perplexity` | Perplexity | [LLM](/llm/perplexity) | 8 |
+| `livekit-plugins-rime` | Rime | [TTS](/tts/rime) | 2 |
+| `livekit-plugins-soniox` | Soniox | [STT](/stt/soniox), [TTS](/tts/soniox) | 3 |
+| `livekit-plugins-telnyx` | Telnyx | [STT](/stt/telnyx), [TTS](/tts/telnyx) | 17 |
+| `livekit-plugins-ultravox` | Ultravox | [Realtime](/agent/ultravox) | 1 |
+
+## Partly priced
+
+5 plugins where some of what the plugin does has a rate and some does not. These are the ones most likely to be misread as covered.
+
+| Plugin | Vendor | Priced | Missing | Why |
+| --- | --- | --- | --- | --- |
+| `livekit-plugins-aws` | AWS | [LLM](/llm/aws) | STT, TTS | Not investigated yet. |
+| `livekit-plugins-cartesia` | Cartesia | [TTS](/tts/cartesia) | STT | Not investigated yet. |
+| `livekit-plugins-google` | Google Cloud | [LLM](/llm/google) | STT, TTS | Not investigated yet. |
+| `livekit-plugins-mistralai` | Mistral AI | [LLM](/llm/mistral) | STT, TTS | Not investigated yet. |
+| `livekit-plugins-speechmatics` | Speechmatics | [STT](/stt/speechmatics) | TTS | Not investigated yet. |
+
+## Not priced
+
+28 plugins with no rate here for anything they do: 4 no public per-unit rate, 20 not investigated yet, 4 bills in a unit this schema has no field for. "Not investigated yet" means exactly that: nobody has checked whether the vendor publishes a rate. Those are the tractable ones, and a [pull request](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md) closing any of them is welcome.
+
+| Plugin | Vendor | Plugin does | Why not |
+| --- | --- | --- | --- |
+| `livekit-plugins-azure` | Azure | STT, TTS | Priced here for LLM only, which is not what this plugin calls. |
+| `livekit-plugins-fireworksai` | Fireworks AI | STT | Priced here for LLM only, which is not what this plugin calls. |
+| `livekit-plugins-xai` | xAI | STT, TTS | Priced here for LLM only, which is not what this plugin calls. |
+| `livekit-plugins-cambai` | Camb.ai | TTS | No public per-unit rate. Credit-based, and the credits-per-character ratio is not published. |
+| `livekit-plugins-neuphonic` | Neuphonic | TTS | No public per-unit rate. The pricing page 404s. |
+| `livekit-plugins-phonic` | Phonic | Realtime | No public per-unit rate. The pricing page renders empty. |
+| `livekit-plugins-resemble` | Resemble AI | TTS | No public per-unit rate. Publishes rates for Detect, Intelligence and Identity, but never for speech synthesis. |
+| `livekit-plugins-asyncai` | Async AI | TTS | Not investigated yet. |
+| `livekit-plugins-bland` | Bland | TTS | Not investigated yet. |
+| `livekit-plugins-fishaudio` | Fish Audio | TTS | Not investigated yet. |
+| `livekit-plugins-gladia` | Gladia | STT | Not investigated yet. |
+| `livekit-plugins-gnani` | Gnani | STT, TTS | Not investigated yet. |
+| `livekit-plugins-gradium` | Gradium | STT, TTS, LLM | Not investigated yet. |
+| `livekit-plugins-clova` | LINE Clova | STT | Not investigated yet. |
+| `livekit-plugins-minimax` | MiniMax | TTS | Not investigated yet. The package description reads 'services from AWS'; that is a copy-paste error upstream, the plugin is MiniMax. |
+| `livekit-plugins-murf` | Murf | TTS | Not investigated yet. |
+| `livekit-plugins-respeecher` | Respeecher | TTS | Not investigated yet. |
+| `livekit-plugins-rtzr` | RTZR | STT | Not investigated yet. |
+| `livekit-plugins-sarvam` | Sarvam AI | STT, TTS, LLM | Not investigated yet. |
+| `livekit-plugins-slng` | SLNG | STT, TTS | Not investigated yet. |
+| `livekit-plugins-smallestai` | Smallest AI | STT, TTS | Not investigated yet. |
+| `livekit-plugins-speechify` | Speechify | TTS | Not investigated yet. |
+| `livekit-plugins-spitch` | Spitch | STT, TTS | Not investigated yet. |
+| `livekit-plugins-upliftai` | Uplift AI | TTS | Not investigated yet. |
+| `livekit-plugins-baseten` | Baseten | STT, TTS, LLM | Bills in a unit this schema has no field for. GPU-seconds of compute, which no per-token, per-character or per-second field expresses. |
+| `livekit-plugins-fal` | fal | STT | Bills in a unit this schema has no field for. GPU-seconds of compute, which no per-token, per-character or per-second field expresses. |
+| `livekit-plugins-nvidia` | NVIDIA | STT, TTS | Bills in a unit this schema has no field for. GPU-seconds of compute, which no per-token, per-character or per-second field expresses. |
+| `livekit-plugins-simplismart` | SimpliSmart | STT, TTS | Bills in a unit this schema has no field for. GPU-seconds of compute, which no per-token, per-character or per-second field expresses. |
+
+## Out of scope
+
+26 plugins are excluded from the counts above rather than counted as misses. They are listed so the denominator is checkable:
+
+**Avatar (16).** Video avatar rendering. This catalog prices speech, and has no field that fits a rendered video minute.
+
+`livekit-plugins-anam`, `livekit-plugins-avatario`, `livekit-plugins-avatartalk`, `livekit-plugins-bey`, `livekit-plugins-bithuman`, `livekit-plugins-did`, `livekit-plugins-hedra`, `livekit-plugins-keyframe`, `livekit-plugins-lemonslice`, `livekit-plugins-liveavatar`, `livekit-plugins-protoface`, `livekit-plugins-runway`, `livekit-plugins-simli`, `livekit-plugins-spatius`, `livekit-plugins-tavus`, `livekit-plugins-trugen`
+
+**Local (8).** Runs inside the agent process or on your own hardware. There is no per-unit vendor bill to publish.
+
+`livekit-blockguard`, `livekit-durable`, `livekit-plugins-browser`, `livekit-plugins-langchain`, `livekit-plugins-minimal`, `livekit-plugins-nltk`, `livekit-plugins-silero`, `livekit-plugins-turn-detector`
+
+**Tooling (2).** Not inference: monitoring, or bundled into the platform bill rather than metered per unit.
+
+`livekit-plugins-hamming`, `livekit-plugins-krisp`
+
+## How this page is made
+
+Generated by `make livekit-coverage` (and by `make build`, so it cannot drift) from two files: the plugin registry at `prices/sources/livekit_plugins.json`, which holds each plugin's capabilities, its classification and any skip reason, and `prices/data.json`, which holds the prices. Whether a slot counts as priced is derived from the catalog at build time and is never written down in the registry, so the two cannot disagree.
+
+`REFRESH=1 make livekit-coverage` re-reads the package list from GitHub. A plugin that appeared upstream since the last refresh is added as not investigated, which is how a new vendor becomes visible here instead of quietly widening the gap.
