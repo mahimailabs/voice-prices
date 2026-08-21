@@ -4,6 +4,8 @@ id: google
 pricing_urls:
   - https://ai.google.dev/gemini-api/docs/pricing
   - https://cloud.google.com/vertex-ai/generative-ai/pricing
+  - https://cloud.google.com/speech-to-text/pricing
+  - https://cloud.google.com/text-to-speech/pricing
   # https://cloud.google.com/vertex-ai/generative-ai/pricing#context-caching explains how caching is calculated
 api_pattern: 'https://(.*\.)?googleapis\.com'
 model_match:
@@ -13,6 +15,10 @@ provider_match:
     - contains: google
     - contains: vertex
     - contains: gemini
+
+# Cloud Speech-to-Text is tiered by monthly volume; these are the first-tier (0 to 500,000
+# minutes) rates, which is the cheapest a new account reaches with no commitment.
+pricing_tier: Pay-as-you-go
 
 # https://github.com/googleapis/nodejs-vertexai/blob/v1.10.0/src/types/content.ts#L465
 # A previous comment said:
@@ -730,3 +736,131 @@ models:
       or:
         - starts_with: gemma-3n
     prices: {}
+
+  - id: stt-standard
+    name: Cloud Speech-to-Text (Standard)
+    description: >-
+      Cloud Speech-to-Text V2 recognition on the Standard model family, which is every model a
+      voice agent would pick: latest_long, latest_short, chirp, chirp_2, chirp_3, phone_call,
+      video, default and command_and_search all bill at one rate.
+    match:
+      or:
+        - equals: stt-standard
+        - equals: latest_long
+        - equals: latest_short
+        - equals: chirp
+        - equals: chirp_2
+        - equals: chirp_3
+        - equals: phone_call
+        - equals: command_and_search
+    prices_checked: 2026-08-21
+    pricing_source_url: https://cloud.google.com/speech-to-text/pricing
+    price_comments: >-
+      Source rate $0.016/minute, the first tier of the Recognition row (sku 3099-B70F-0949),
+      covering 0 to 500,000 minutes per account per month. Converted to $/k seconds:
+      0.016 / 60 * 1000 = 0.2666666 recurring, stored as 0.266667.
+      Google prices the tier, not the model: the page states "Standard models include: default,
+      command_and_search, latest_short, latest_long, phone_call, video, chirp", so Chirp costs
+      the same as the default model. The LiveKit plugin's default is `latest_long`.
+      Not modelled: the volume tiers above 500,000 minutes ($0.01, $0.008, then $0.004/minute),
+      the legacy V1 Speech Recognition SKUs (which price data logging at $0.016 and no data
+      logging at $0.024 after 60 free minutes), and Medical models.
+      `video` is deliberately absent from the matcher: it is far too generic a token to claim.
+    prices:
+      input_audio_kseconds: 0.266667
+
+  - id: stt-standard-batch
+    name: Cloud Speech-to-Text (dynamic batch)
+    description: >-
+      The same Standard models run at a lower level of urgency via the V2 dynamic batch option.
+      A fifth of the streaming rate.
+    match:
+      equals: stt-standard-batch
+    prices_checked: 2026-08-21
+    pricing_source_url: https://cloud.google.com/speech-to-text/pricing
+    price_comments: >-
+      Source rate $0.003/minute, the Dynamic Batch Recognition row (sku 7700-6778-EF8E), flat
+      with no volume tiers. Converted to $/k seconds: 0.003 / 60 * 1000 = 0.05.
+      Dynamic batch is a request option on the V2 API rather than a separate model, so this id
+      follows the catalog's `-batch` convention instead of naming a product Google does not
+      sell. Resolve with provider_id='google'.
+    prices:
+      input_audio_kseconds: 0.05
+
+  - id: tts-chirp3-hd
+    name: "Cloud Text-to-Speech (Chirp 3: HD voices)"
+    description: >-
+      Google's current high-definition voice tier, and the one the LiveKit plugin selects for
+      non-Gemini synthesis.
+    match:
+      or:
+        - equals: tts-chirp3-hd
+        - equals: chirp3-hd
+    prices_checked: 2026-08-21
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing
+    price_comments: >-
+      Source rate $0.00003 per character ($30 per 1M), sku F977-2280-6F1B. Converted:
+      30 / 1000 = 0.03 per 1k characters.
+      Free allowance not modelled: the first 1M characters per month.
+    prices:
+      input_kchars: 0.03
+
+  - id: tts-neural2
+    name: Cloud Text-to-Speech (Neural2 and Polyglot voices)
+    description: >-
+      Neural2 voices, and the Polyglot preview voices which share their SKU and rate.
+    match:
+      or:
+        - equals: tts-neural2
+        - equals: neural2
+        - equals: polyglot
+    prices_checked: 2026-08-21
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing
+    price_comments: >-
+      Source rate $0.000016 per character ($16 per 1M), sku FEBD-04B6-769B. Converted:
+      16 / 1000 = 0.016 per 1k characters.
+      One row covers Neural2 and Polyglot because Google bills them on the same SKU, not merely
+      at the same number. Free allowance not modelled: the first 1M characters per month.
+    prices:
+      input_kchars: 0.016
+
+  - id: tts-standard
+    name: Cloud Text-to-Speech (Standard and WaveNet voices)
+    description: >-
+      The cheapest voice tiers. Standard and WaveNet share a SKU and a rate.
+    match:
+      or:
+        - equals: tts-standard
+        - equals: standard
+        - equals: wavenet
+    prices_checked: 2026-08-21
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing
+    price_comments: >-
+      Source rate $0.000004 per character ($4 per 1M), sku 9D01-5995-B545. Converted:
+      4 / 1000 = 0.004 per 1k characters.
+      One row covers Standard and WaveNet because Google bills them on the same SKU.
+      Google selects a voice tier by voice name, not by a model parameter, so the `tts-` ids
+      here are catalog ids. Resolve with provider_id='google'.
+      Not priced: the Gemini TTS models (gemini-2.5-flash-tts and friends), which bill per token
+      rather than per character and belong with the Gemini rows, and Instant custom voice
+      ($60 per 1M characters). Free allowance not modelled: the first 4M characters per month.
+    prices:
+      input_kchars: 0.004
+
+  - id: tts-studio
+    name: Cloud Text-to-Speech (Studio voices)
+    description: >-
+      Google's premium narration tier. 40x the Standard rate and the dearest voice tier it
+      publishes.
+    match:
+      or:
+        - equals: tts-studio
+        - equals: studio
+    prices_checked: 2026-08-21
+    pricing_source_url: https://cloud.google.com/text-to-speech/pricing
+    price_comments: >-
+      Source rate $0.00016 per character ($160 per 1M), sku 84AB-48C0-F9C3. Converted:
+      160 / 1000 = 0.16 per 1k characters.
+      Free allowance not modelled: the first 1M characters per month.
+    prices:
+      input_kchars: 0.16

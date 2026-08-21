@@ -3,7 +3,7 @@ title: "LiveKit plugin coverage"
 description: "Which LiveKit Agents plugins have a price in this catalog, and why the rest do not."
 ---
 
-LiveKit Agents ships **74 plugin packages**. **48** of them call a metered inference vendor. Of those, this catalog prices **15 fully** (**31%**), **5 partly**, and **28 not at all**.
+LiveKit Agents ships **74 plugin packages**. **48** of them call a metered inference vendor. Of those, this catalog prices **20 fully** (**42%**), **1 partly**, and **27 not at all**.
 
 "Fully" is measured against what the plugin itself calls, not against the vendor name. A vendor can be in this catalog for the wrong thing: `livekit-plugins-azure` is Azure Speech, so an Azure LLM price does nothing for it, and that plugin counts as unpriced. The Priced and Missing columns below show the split per plugin.
 
@@ -21,15 +21,19 @@ Confirm a rate against the vendor's own pricing page before you bill, quote or b
 
 ## Fully priced
 
-15 plugins where every modality the plugin exposes has a rate here. Follow a link for the rates, the source URL, and when a human last confirmed them.
+20 plugins where every modality the plugin exposes has a rate here. Follow a link for the rates, the source URL, and when a human last confirmed them.
 
 | Plugin | Vendor | Priced for | Models |
 | --- | --- | --- | --- |
 | `livekit-plugins-anthropic` | Anthropic | [LLM](/llm/anthropic) | 18 |
 | `livekit-plugins-assemblyai` | AssemblyAI | [STT](/stt/assemblyai) | 5 |
+| `livekit-plugins-aws` | AWS | [STT](/stt/aws), [TTS](/tts/aws), [LLM](/llm/aws) | 76 |
+| `livekit-plugins-azure` | Azure | [STT](/stt/azure), [TTS](/tts/azure) | 21 |
+| `livekit-plugins-cartesia` | Cartesia | [STT](/stt/cartesia), [TTS](/tts/cartesia) | 2 |
 | `livekit-plugins-cerebras` | Cerebras | [LLM](/llm/cerebras) | 4 |
 | `livekit-plugins-deepgram` | Deepgram | [STT](/stt/deepgram), [TTS](/tts/deepgram) | 12 |
 | `livekit-plugins-elevenlabs` | ElevenLabs | [STT](/stt/elevenlabs), [TTS](/tts/elevenlabs) | 8 |
+| `livekit-plugins-google` | Google Cloud | [STT](/stt/google), [TTS](/tts/google), [LLM](/llm/google) | 38 |
 | `livekit-plugins-groq` | Groq | [STT](/stt/groq), [TTS](/tts/groq), [LLM](/llm/groq) | 33 |
 | `livekit-plugins-hume` | Hume | [TTS](/tts/hume) | 1 |
 | `livekit-plugins-inworld` | Inworld | [STT](/stt/inworld), [TTS](/tts/inworld) | 4 |
@@ -38,28 +42,24 @@ Confirm a rate against the vendor's own pricing page before you bill, quote or b
 | `livekit-plugins-perplexity` | Perplexity | [LLM](/llm/perplexity) | 8 |
 | `livekit-plugins-rime` | Rime | [TTS](/tts/rime) | 2 |
 | `livekit-plugins-soniox` | Soniox | [STT](/stt/soniox), [TTS](/tts/soniox) | 3 |
+| `livekit-plugins-speechmatics` | Speechmatics | [STT](/stt/speechmatics), [TTS](/tts/speechmatics) | 4 |
 | `livekit-plugins-telnyx` | Telnyx | [STT](/stt/telnyx), [TTS](/tts/telnyx) | 17 |
 | `livekit-plugins-ultravox` | Ultravox | [Realtime](/agent/ultravox) | 1 |
 
 ## Partly priced
 
-5 plugins where some of what the plugin does has a rate and some does not. These are the ones most likely to be misread as covered.
+1 plugins where some of what the plugin does has a rate and some does not. These are the ones most likely to be misread as covered.
 
 | Plugin | Vendor | Priced | Missing | Why |
 | --- | --- | --- | --- | --- |
-| `livekit-plugins-aws` | AWS | [LLM](/llm/aws) | STT, TTS | Not investigated yet. |
-| `livekit-plugins-cartesia` | Cartesia | [TTS](/tts/cartesia) | STT | Not investigated yet. |
-| `livekit-plugins-google` | Google Cloud | [LLM](/llm/google) | STT, TTS | Not investigated yet. |
 | `livekit-plugins-mistralai` | Mistral AI | [LLM](/llm/mistral) | STT, TTS | Not investigated yet. |
-| `livekit-plugins-speechmatics` | Speechmatics | [STT](/stt/speechmatics) | TTS | Not investigated yet. |
 
 ## Not priced
 
-28 plugins with no rate here for anything they do: 4 no public per-unit rate, 20 not investigated yet, 4 bills in a unit this schema has no field for. "Not investigated yet" means exactly that: nobody has checked whether the vendor publishes a rate. Those are the tractable ones, and a [pull request](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md) closing any of them is welcome.
+27 plugins with no rate here for anything they do: 4 no public per-unit rate, 19 not investigated yet, 4 bills in a unit this schema has no field for. "Not investigated yet" means exactly that: nobody has checked whether the vendor publishes a rate. Those are the tractable ones, and a [pull request](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md) closing any of them is welcome.
 
 | Plugin | Vendor | Plugin does | Why not |
 | --- | --- | --- | --- |
-| `livekit-plugins-azure` | Azure | STT, TTS | Priced here for LLM only, which is not what this plugin calls. |
 | `livekit-plugins-fireworksai` | Fireworks AI | STT | Priced here for LLM only, which is not what this plugin calls. |
 | `livekit-plugins-xai` | xAI | STT, TTS | Priced here for LLM only, which is not what this plugin calls. |
 | `livekit-plugins-cambai` | Camb.ai | TTS | No public per-unit rate. Credit-based, and the credits-per-character ratio is not published. |

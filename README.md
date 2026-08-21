@@ -84,7 +84,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**48 providers, 1,274 priced models.** 66 STT, 1,104 LLM, 77 TTS, 8 S2S, 2 VAD, 2 Agents, 15 Telephony.
+**48 providers, 1,291 priced models.** 73 STT, 1,104 LLM, 87 TTS, 8 S2S, 2 VAD, 2 Agents, 15 Telephony.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -92,17 +92,17 @@ Every provider in the catalog, and which categories it prices:
 | [Anthropic](prices/providers/anthropic.yml) | 18 | LLM |
 | [AssemblyAI](prices/providers/assemblyai.yml) | 5 | STT |
 | [Avian](prices/providers/avian.yml) | 4 | LLM |
-| [AWS Bedrock](prices/providers/aws.yml) | 70 | LLM, S2S |
-| [Microsoft Azure](prices/providers/azure.yml) | 18 | LLM |
+| [AWS](prices/providers/aws.yml) | 76 | STT, LLM, TTS, S2S |
+| [Microsoft Azure](prices/providers/azure.yml) | 21 | STT, LLM, TTS |
 | [Boson AI](prices/providers/boson.yml) | 1 | S2S |
-| [Cartesia](prices/providers/cartesia.yml) | 1 | TTS |
+| [Cartesia](prices/providers/cartesia.yml) | 2 | STT, TTS |
 | [Cerebras](prices/providers/cerebras.yml) | 4 | LLM |
 | [Cohere](prices/providers/cohere.yml) | 6 | LLM |
 | [Deepgram](prices/providers/deepgram.yml) | 12 | STT, TTS |
 | [Deepseek](prices/providers/deepseek.yml) | 4 | LLM |
 | [ElevenLabs](prices/providers/elevenlabs.yml) | 8 | STT, TTS |
 | [Fireworks](prices/providers/fireworks.yml) | 13 | LLM |
-| [Google](prices/providers/google.yml) | 32 | LLM, S2S |
+| [Google](prices/providers/google.yml) | 38 | STT, LLM, TTS, S2S |
 | [Groq](prices/providers/groq.yml) | 33 | STT, LLM, TTS |
 | [HuggingFace (cerebras)](prices/providers/huggingface_cerebras.yml) | 1 | LLM |
 | [HuggingFace (fireworks-ai)](prices/providers/huggingface_fireworks-ai.yml) | 3 | LLM |
@@ -129,7 +129,7 @@ Every provider in the catalog, and which categories it prices:
 | [Perplexity](prices/providers/perplexity.yml) | 8 | LLM |
 | [Rime](prices/providers/rime.yml) | 2 | TTS |
 | [Soniox](prices/providers/soniox.yml) | 3 | STT, TTS |
-| [Speechmatics](prices/providers/speechmatics.yml) | 3 | STT |
+| [Speechmatics](prices/providers/speechmatics.yml) | 4 | STT, TTS |
 | [Telnyx](prices/providers/telnyx.yml) | 17 | STT, LLM, TTS, Telephony |
 | [Together AI](prices/providers/together.yml) | 72 | LLM |
 | [Twilio](prices/providers/twilio.yml) | 8 | Telephony |

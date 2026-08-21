@@ -1,9 +1,15 @@
 # yaml-language-server: $schema=.schema.json
-name: AWS Bedrock
+name: AWS
 id: aws
 pricing_urls:
   - https://aws.amazon.com/bedrock/pricing/
-api_pattern: 'https://bedrock-runtime\.[a-z0-9-]+\.amazonaws\.com/'
+  - https://aws.amazon.com/transcribe/pricing/
+  - https://aws.amazon.com/polly/pricing/
+api_pattern: 'https://(bedrock-runtime|transcribestreaming|transcribe|polly)\.[a-z0-9-]+\.amazonaws\.com'
+
+# Rates are US East (N. Virginia) On-Demand. AWS prices every service per region and the voice
+# rates differ across them, so a consumer outside us-east-1 should read their own region's table.
+pricing_tier: On-Demand
 provider_match:
   or:
     - contains: bedrock
@@ -506,6 +512,66 @@ models:
       input_mtok: 0.07
       output_mtok: 0.3
 
+  - id: polly-generative
+    name: Polly Generative voices
+    description: >-
+      Amazon Polly's generative voice tier, its most natural-sounding. Billed per character.
+    match:
+      equals: polly-generative
+    prices_checked: 2026-08-21
+    pricing_source_url: https://aws.amazon.com/polly/pricing/
+    price_comments: >-
+      Source rate $30 per 1M characters (`USE1-SynthesizeSpeechGenerative-Characters`,
+      $0.00003/character). `input_kchars` is $/1k characters: 30 / 1000 = 0.03.
+      The price list also carries `USE1-ai-SynthesizeSpeechGenerative-Characters` at $0.00,
+      which is not a purchasable rate and is not represented here.
+    prices:
+      input_kchars: 0.03
+  - id: polly-long-form
+    name: Polly Long-Form voices
+    description: >-
+      Voice tier tuned for long passages such as articles and training material. The dearest
+      rate Polly publishes, 25x Standard.
+    match:
+      equals: polly-long-form
+    prices_checked: 2026-08-21
+    pricing_source_url: https://aws.amazon.com/polly/pricing/
+    price_comments: >-
+      Source rate $100 per 1M characters (`USE1-SynthesizeSpeechLongForm-Characters`,
+      $0.0001/character). Converted: 100 / 1000 = 0.1 per 1k characters.
+    prices:
+      input_kchars: 0.1
+  - id: polly-neural
+    name: Polly Neural voices
+    description: >-
+      Polly's neural voice tier. What most voice agents use, and 4x the Standard rate.
+    match:
+      equals: polly-neural
+    prices_checked: 2026-08-21
+    pricing_source_url: https://aws.amazon.com/polly/pricing/
+    price_comments: >-
+      Source rate $16 per 1M characters (`USE1-SynthesizeSpeechNeural-Characters`,
+      $0.000016/character). Converted: 16 / 1000 = 0.016 per 1k characters.
+    prices:
+      input_kchars: 0.016
+  - id: polly-standard
+    name: Polly Standard voices
+    description: >-
+      Polly's original concatenative voice tier. Cheapest, and noticeably less natural than
+      the neural and generative tiers.
+    match:
+      equals: polly-standard
+    prices_checked: 2026-08-21
+    pricing_source_url: https://aws.amazon.com/polly/pricing/
+    price_comments: >-
+      Source rate $4 per 1M characters (`USE1-SynthesizeSpeech-Characters`,
+      $0.000004/character). Converted: 4 / 1000 = 0.004 per 1k characters.
+      Polly selects a voice tier by voice id, not by a model parameter, so these four ids are
+      catalog ids rather than values the API accepts. Resolve with provider_id='aws'.
+      Not modelled: the 12-month free tier (5M characters/month Standard, 1M Neural, 500k
+      Long-Form, 100k Generative), Speech Marks requests, and regions other than us-east-1.
+    prices:
+      input_kchars: 0.004
   - id: qwen.qwen3-32b-v1:0
     name: Qwen3 32B (dense)
     match:
@@ -801,3 +867,39 @@ models:
         tiers:
           - start: 200000
             price: 24.75
+  - id: transcribe
+    name: Amazon Transcribe (streaming)
+    description: >-
+      Real-time speech-to-text over the streaming API, which is what a voice agent uses.
+      Use `transcribe-batch` for pre-recorded audio.
+    match:
+      equals: transcribe
+    prices_checked: 2026-08-21
+    pricing_source_url: https://aws.amazon.com/transcribe/pricing/
+    price_comments: >-
+      Source rate $0.0001667 per second (`USE1-StreamingAudio`), equivalently $0.01/minute.
+      Converted to $/k seconds: 0.0001667 * 1000 = 0.1667.
+      Standard transcription is flat, not tiered: the price list carries a single 0-Inf band for
+      this SKU, and the pricing page's own worked example multiplies 2,000,000 minutes by a flat
+      $0.01 with no tier arithmetic. The tiered tables on that page are the add-ons (PII
+      redaction, custom language models, toxicity detection) and Call Analytics, none of which
+      are priced here.
+      Billed in one-second increments with no minimum. A two-channel conversation is billed on
+      total duration, not per channel.
+    prices:
+      input_audio_kseconds: 0.1667
+  - id: transcribe-batch
+    name: Amazon Transcribe (batch)
+    description: >-
+      Pre-recorded transcription via the batch API. 40% cheaper than streaming.
+    match:
+      equals: transcribe-batch
+    prices_checked: 2026-08-21
+    pricing_source_url: https://aws.amazon.com/transcribe/pricing/
+    price_comments: >-
+      Source rate $0.0001 per second (`USE1-TranscribeAudio`), equivalently $0.006/minute.
+      Converted to $/k seconds: 0.0001 * 1000 = 0.1.
+      Flat, for the same reason as `transcribe`. Not modelled: Transcribe Medical, Call
+      Analytics, and the add-on features, which are separately metered.
+    prices:
+      input_audio_kseconds: 0.1

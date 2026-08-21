@@ -389,7 +389,7 @@ def test_bedrock():
 
     extracted_usage = extract_usage(response_data, provider_id='aws')
     assert extracted_usage.usage == snapshot(Usage(input_tokens=406, output_tokens=53))
-    assert extracted_usage.provider.name == snapshot('AWS Bedrock')
+    assert extracted_usage.provider.name == snapshot('AWS')
     assert extracted_usage.model == snapshot(None)
 
 
