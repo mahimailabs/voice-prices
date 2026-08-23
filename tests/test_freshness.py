@@ -72,6 +72,7 @@ def test_select_real_catalog_staleness_boundary():
         'novita',
         'openai',
         'rime',
+        'recall',
         'speechmatics',
         'telnyx',
         'x-ai',
