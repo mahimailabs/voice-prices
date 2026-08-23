@@ -59,6 +59,7 @@
               "stt/groq",
               "stt/inworld",
               "stt/openai",
+              "stt/recall",
               "stt/soniox",
               "stt/speechmatics",
               "stt/telnyx",

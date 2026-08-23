@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=.schema.json
+name: Recall.ai
+id: recall
+pricing_urls:
+  - https://www.recall.ai/pricing
+
+api_pattern: 'https://api\.recall\.ai'
+
+model_match:
+  starts_with: recall-
+
+provider_match:
+  contains: recall
+
+pricing_tier: Pay As You Go
+
+models:
+  - id: recall-transcription
+    name: Built-in transcription
+    description: >-
+      Recall.ai's built-in transcription for Meeting Bot API and Desktop Recording SDK.
+      The separate recording charge is deliberately not included in this STT rate.
+    match:
+      equals: recall-transcription
+    prices_checked: 2026-08-23
+    pricing_source_url: https://www.recall.ai/pricing
+    price_comments: >-
+      Source rate $0.15/hour of built-in transcription. Converted to $/k seconds:
+      0.15 / 3600 * 1000 = 0.0416666 recurring, stored as 0.041667.
+      Recall.ai separately charges $0.50/hour for recording; that charge is not part of
+      the transcription meter and is intentionally excluded from this STT row.
+    prices:
+      input_audio_kseconds: 0.041667
