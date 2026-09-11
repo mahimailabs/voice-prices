@@ -30,7 +30,7 @@ REPO_URL = 'https://github.com/mahimailabs/voice-prices'
 #: Where a vendor asks for a row to be corrected or taken down. Also pasted verbatim into the
 #: hand-written README, PyPI README, docs/index.mdx and docs/how-fresh.mdx;
 #: tests/test_removal_contact.py fails if any copy drifts from this one.
-REMOVAL_FORM_URL = 'https://forms.gle/REPLACE-WITH-YOUR-FORM-ID'
+REMOVAL_FORM_URL = 'https://forms.gle/f2QwXAFkwdzmSgy7A'
 ADD_PROVIDER_URL = f'{REPO_URL}/issues/new?template=add-provider.yml'
 PROVIDER_YAML_URL = f'{REPO_URL}/blob/main/prices/providers'
 
