@@ -54,11 +54,14 @@ Kind = Literal['inference', 'avatar', 'local', 'tooling', 'unknown']
 #: A vendor that publishes a clear per-unit rate in INR or CNY has not failed to publish
 #: anything; this catalog is USD-only and does not convert (see docs/contribute.mdx), so the
 #: gap is ours, not theirs. Saying "no public rate" about Sarvam would simply be false.
+#: Labels are inlined into a comma-joined summary, so they must not contain a comma: one inside
+#: a label splits it into two apparent entries and the counts stop adding up.
+#: `test_status_labels_inline_cleanly` pins that.
 STATUS_LABEL: dict[str, str] = {
     'not_investigated': 'Not investigated yet',
     'no_public_rate': 'No public per-unit rate',
     'unpriceable_unit': 'Bills in a unit this schema has no field for',
-    'non_usd_currency': 'Publishes rates, but not in USD',
+    'non_usd_currency': 'Publishes rates in a non-USD currency',
 }
 
 #: Kinds that are outside what a *voice price* catalog can express, with the reason shown on the
@@ -266,6 +269,16 @@ def _why_not(coverage: Coverage) -> str:
     return STATUS_LABEL.get(plugin.status or 'not_investigated', 'Unknown') + '.'
 
 
+def _inline(label: str) -> str:
+    """A status label folded into mid-sentence prose.
+
+    Only the first character is lowered. A blanket ``.lower()`` reads fine for plain-prose
+    labels but flattens an acronym ("non-USD" -> "non-usd"), and the labels are the natural
+    place to be precise about a currency code.
+    """
+    return label[:1].lower() + label[1:]
+
+
 def _by_vendor(coverage: Coverage) -> str:
     return coverage.plugin.vendor.lower()
 
@@ -286,7 +299,7 @@ def render_coverage_page(coverage: list[Coverage], checked: str) -> str:
         key = c.plugin.status or 'not_investigated'
         by_status[key] = by_status.get(key, 0) + 1
     breakdown = ', '.join(
-        f'{count} {STATUS_LABEL[status].lower()}'
+        f'{count} {_inline(STATUS_LABEL[status])}'
         for status, count in sorted(by_status.items())
         if status in STATUS_LABEL
     )
@@ -441,7 +454,7 @@ def livekit_coverage() -> int:
     for status in sorted(STATUS_LABEL):
         n = sum(1 for c in inference if c.state == 'none' and (c.plugin.status or 'not_investigated') == status)
         if n:
-            print(f'  {n} {STATUS_LABEL[status].lower()}')
+            print(f'  {n} {_inline(STATUS_LABEL[status])}')
     print(f'{COVERAGE_PAGE.relative_to(root_dir)} {"updated" if changed else "unchanged"}')
     return 0
 

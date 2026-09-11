@@ -115,3 +115,31 @@ def test_registry_records_when_it_was_checked():
     checked = RAW.get('checked')
     assert isinstance(checked, str) and checked, f'{REGISTRY.name} must record when the plugin list was read'
     assert RAW.get('source_url'), f'{REGISTRY.name} must record where the plugin list came from'
+
+
+def test_status_labels_inline_cleanly():
+    """A status label is folded into a comma-joined summary, so it must not contain a comma.
+
+    The failure is silent and structural: a label with a comma in it splits into two apparent
+    entries on the page, the second with no count in front of it, and the numbers stop adding
+    up to the total the same sentence just quoted. Nothing raises, the page still builds, and
+    the docs still parse. `non_usd_currency` shipped with a comma and read as
+    "1 publishes rates, but not in usd" before this test existed.
+    """
+    for status, label in STATUS_LABEL.items():
+        assert ',' not in label, (
+            f'STATUS_LABEL[{status!r}] contains a comma, which splits the summary line into '
+            f'two apparent entries: {label!r}'
+        )
+        assert label and label[0].isupper(), (
+            f'STATUS_LABEL[{status!r}] should read as a sentence-case label for the table cell; '
+            f'`_inline` lowers the first character for the summary line: {label!r}'
+        )
+
+
+def test_inline_preserves_acronyms():
+    """`_inline` lowers only the leading character, so a currency code in a label survives."""
+    from prices.livekit_coverage import _inline
+
+    assert _inline('Publishes rates in a non-USD currency') == 'publishes rates in a non-USD currency'
+    assert _inline('Not investigated yet') == 'not investigated yet'
