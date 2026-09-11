@@ -476,8 +476,8 @@
         "tts",
         "llm"
       ],
-      "status": "not_investigated",
-      "note": "No dollar amounts in the rendered pricing page; Sarvam may quote in INR, which would need an FX basis this catalog does not have."
+      "status": "non_usd_currency",
+      "note": "Checked 2026-09-11. Sarvam publishes a full public rate card, entirely in INR: https://www.sarvam.ai/api-pricing and https://docs.sarvam.ai/api/getting-started/pricing, the latter stating \"All prices are in Indian Rupees\". TTS Bulbul v3 Rs 3.00/1,000 chars, STT Rs 30/hour (Rs 45 with diarization), LLM Sarvam 105B Rs 29.28/10.98/73.20 per 1M tokens. No USD page, no currency toggle, and no USD anywhere in either page source. This catalog is USD-only and does not convert, so the rates are unusable here, not unpublished."
     },
     {
       "package": "livekit-plugins-silero",

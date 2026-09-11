@@ -56,7 +56,7 @@ _None._
 
 ## Not priced
 
-26 plugins with no rate here for anything they do: 7 no public per-unit rate, 15 not investigated yet, 4 bills in a unit this schema has no field for. "Not investigated yet" means exactly that: nobody has checked whether the vendor publishes a rate. Those are the tractable ones, and a [pull request](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md) closing any of them is welcome.
+26 plugins with no rate here for anything they do: 7 no public per-unit rate, 1 publishes rates, but not in usd, 14 not investigated yet, 4 bills in a unit this schema has no field for. "Not investigated yet" means exactly that: nobody has checked whether the vendor publishes a rate. Those are the tractable ones, and a [pull request](https://github.com/mahimailabs/voice-prices/blob/main/CONTRIBUTING.md) closing any of them is welcome.
 
 | Plugin | Vendor | Plugin does | Why not |
 | --- | --- | --- | --- |
@@ -67,6 +67,7 @@ _None._
 | `livekit-plugins-phonic` | Phonic | Realtime | No public per-unit rate. The pricing page renders empty. |
 | `livekit-plugins-resemble` | Resemble AI | TTS | No public per-unit rate. Publishes rates for Detect, Intelligence and Identity, but never for speech synthesis. |
 | `livekit-plugins-smallestai` | Smallest AI | STT, TTS | No public per-unit rate. Publishes only approximate per-minute figures for a whole voice-agent stack (~$0.009/min STT, ~$0.09/min TTS), tildes included, with no per-character or per-second rate for the TTS and STT APIs the plugin actually calls. |
+| `livekit-plugins-sarvam` | Sarvam AI | STT, TTS, LLM | Publishes rates, but not in USD. Checked 2026-09-11. Sarvam publishes a full public rate card, entirely in INR: https://www.sarvam.ai/api-pricing and https://docs.sarvam.ai/api/getting-started/pricing, the latter stating "All prices are in Indian Rupees". TTS Bulbul v3 Rs 3.00/1,000 chars, STT Rs 30/hour (Rs 45 with diarization), LLM Sarvam 105B Rs 29.28/10.98/73.20 per 1M tokens. No USD page, no currency toggle, and no USD anywhere in either page source. This catalog is USD-only and does not convert, so the rates are unusable here, not unpublished. |
 | `livekit-plugins-asyncai` | Async AI | TTS | Not investigated yet. |
 | `livekit-plugins-bland` | Bland | TTS | Not investigated yet. |
 | `livekit-plugins-fishaudio` | Fish Audio | TTS | Not investigated yet. fish.audio/pricing renders no rates, only a funding announcement. |
@@ -77,7 +78,6 @@ _None._
 | `livekit-plugins-murf` | Murf | TTS | Not investigated yet. murf.ai/api/pricing renders empty headless (66 chars); the main pricing page shows only studio subscription plans. Needs a real browser. |
 | `livekit-plugins-respeecher` | Respeecher | TTS | Not investigated yet. |
 | `livekit-plugins-rtzr` | RTZR | STT | Not investigated yet. |
-| `livekit-plugins-sarvam` | Sarvam AI | STT, TTS, LLM | Not investigated yet. No dollar amounts in the rendered pricing page; Sarvam may quote in INR, which would need an FX basis this catalog does not have. |
 | `livekit-plugins-slng` | SLNG | STT, TTS | Not investigated yet. |
 | `livekit-plugins-speechify` | Speechify | TTS | Not investigated yet. speechify.com/api/pricing renders empty headless (46 chars). Needs a real browser. |
 | `livekit-plugins-spitch` | Spitch | STT, TTS | Not investigated yet. |

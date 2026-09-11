@@ -50,10 +50,15 @@ Kind = Literal['inference', 'avatar', 'local', 'tooling', 'unknown']
 #: Why a plugin that is not covered is not covered. ``not_investigated`` is deliberately its own
 #: status: "nobody has looked yet" is a different claim from "we looked and there is no rate", and
 #: collapsing the two would make the page overstate what has been checked.
+#: ``non_usd_currency`` is likewise its own status rather than a flavour of ``no_public_rate``.
+#: A vendor that publishes a clear per-unit rate in INR or CNY has not failed to publish
+#: anything; this catalog is USD-only and does not convert (see docs/contribute.mdx), so the
+#: gap is ours, not theirs. Saying "no public rate" about Sarvam would simply be false.
 STATUS_LABEL: dict[str, str] = {
     'not_investigated': 'Not investigated yet',
     'no_public_rate': 'No public per-unit rate',
     'unpriceable_unit': 'Bills in a unit this schema has no field for',
+    'non_usd_currency': 'Publishes rates, but not in USD',
 }
 
 #: Kinds that are outside what a *voice price* catalog can express, with the reason shown on the
