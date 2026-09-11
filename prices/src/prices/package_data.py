@@ -1,8 +1,57 @@
+import ast
 import re
 import subprocess
 from pathlib import Path
 
 from .utils import package_dir as this_package_dir, root_dir
+
+
+def _format_recall_long_fields(data_content: str) -> str:
+    """Keep the reviewed Recall model fields readable in generated Python data."""
+
+    marker = "id='recall-transcription'"
+    start = data_content.find(marker)
+    if start < 0:
+        return data_content
+
+    end = data_content.find('\n            )', start)
+    if end < 0:
+        return data_content
+
+    block = data_content[start:end]
+    field_pattern = re.compile(r"(?m)^(?P<indent> +)(?P<field>description|price_comments)=(?P<literal>['\"].*['\"]),$")
+    matches = list(field_pattern.finditer(block))
+    for match in reversed(matches):
+        if len(match.group(0)) <= 120:
+            continue
+
+        indent = match.group('indent')
+        field = match.group('field')
+        value = ast.literal_eval(match.group('literal'))
+        words = value.split(' ')
+        chunks: list[str] = []
+        current = ''
+        for word in words:
+            candidate = word if not current else f'{current} {word}'
+            if current and len(repr(candidate)) > 96:
+                chunks.append(f'{current} ')
+                current = word
+            else:
+                current = candidate
+        if current:
+            chunks.append(current)
+        assert ''.join(chunks) == value
+
+        replacement = '\n'.join(
+            [
+                f'{indent}{field}=(',
+                *[f'{indent}    {chunk!r}' for chunk in chunks],
+                f'{indent}),',
+            ]
+        )
+        block = block[: match.start()] + replacement + block[match.end() :]
+
+    return data_content[:start] + block + data_content[end:]
 
 
 def package_data():
@@ -55,5 +104,8 @@ providers: list[Provider] = {providers}
         check=True,
         stdout=subprocess.PIPE,
     )
+
+    data_content = _format_recall_long_fields(data_py.read_text())
+    data_py.write_text(data_content)
 
     print(f'Data successfully written to {data_py.relative_to(root_dir)}')
