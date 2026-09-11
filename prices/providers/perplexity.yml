@@ -10,9 +10,6 @@ price_comments: >-
 models:
   - id: llama-3.1-sonar-large-128k-online
     name: Llama 3.1 Sonar 70B Online
-    description: >-
-      Llama 3.1 Sonar is Perplexity's latest model family. It surpasses their earlier Sonar models in cost-efficiency, speed,
-      and performance.
     match:
       equals: llama-3.1-sonar-large-128k-online
     prices:
@@ -21,9 +18,6 @@ models:
 
   - id: llama-3.1-sonar-small-128k-online
     name: Llama 3.1 Sonar 8B Online
-    description: >-
-      Llama 3.1 Sonar is Perplexity's latest model family. It surpasses their earlier Sonar models in cost-efficiency, speed,
-      and performance.
     match:
       equals: llama-3.1-sonar-small-128k-online
     prices:
@@ -32,11 +26,6 @@ models:
 
   - id: r1-1776
     name: R1 1776
-    description: >-
-      R1 1776 is a version of DeepSeek-R1 that has been post-trained to remove censorship constraints related to topics restricted
-      by the Chinese government. The model retains its original reasoning capabilities
-      while providing direct responses to a wider range of queries. R1 1776 is an offline chat model that does not use the
-      perplexity search subsystem.
     match:
       equals: r1-1776
     prices_checked: 2025-07-03
@@ -46,10 +35,6 @@ models:
 
   - id: sonar
     name: Sonar
-    description: >-
-      Sonar is lightweight, affordable, fast, and simple to use — now featuring citations and the ability to customize sources.
-      It is designed for companies seeking to integrate lightweight question-and-answer
-      features optimized for speed.
     match:
       equals: sonar
     prices_checked: 2025-07-03
@@ -60,11 +45,6 @@ models:
 
   - id: sonar-deep-research
     name: Sonar Deep Research
-    description: >-
-      Sonar Deep Research is a research-focused model designed for multi-step retrieval, synthesis, and reasoning across complex
-      topics. It autonomously searches, reads, and evaluates sources, refining
-      its approach as it gathers information. This enables comprehensive report generation across domains like finance, technology,
-      health, and current events.
     match:
       equals: sonar-deep-research
     prices:
@@ -73,8 +53,6 @@ models:
 
   - id: sonar-pro
     name: Sonar Pro
-    description: >-
-      Note: Sonar Pro pricing includes Perplexity search pricing. See details here
     match:
       equals: sonar-pro
     prices_checked: 2025-07-03
@@ -85,8 +63,6 @@ models:
 
   - id: sonar-reasoning
     name: Sonar Reasoning
-    description: >-
-      Sonar Reasoning is a reasoning model provided by Perplexity based on DeepSeek R1.
     match:
       equals: sonar-reasoning
     prices_checked: 2025-07-03
@@ -97,7 +73,6 @@ models:
 
   - id: sonar-reasoning-pro
     name: Sonar Reasoning Pro
-    description: Sonar Pro pricing includes Perplexity search pricing.
     match:
       equals: sonar-reasoning-pro
     prices_checked: 2025-07-03

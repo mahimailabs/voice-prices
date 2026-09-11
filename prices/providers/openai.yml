@@ -72,10 +72,6 @@ models:
 
   - id: chatgpt-4o-latest
     name: ChatGPT-4o
-    description: >-
-      OpenAI ChatGPT 4o is continually updated by OpenAI to point to the current version of GPT-4o used by ChatGPT. It therefore
-      differs slightly from the API version of GPT-4o in that it has additional
-      RLHF. It is intended for research and evaluation.
     match:
       equals: chatgpt-4o-latest
     prices:
@@ -84,9 +80,6 @@ models:
 
   - id: codex-mini
     name: Codex Mini
-    description: >-
-      codex-mini-latest is a fine-tuned version of o4-mini specifically for use in Codex CLI. For direct use in the API, we
-      recommend starting with gpt-4.1.
     match:
       or:
         - equals: codex-mini
@@ -123,7 +116,6 @@ models:
       output_mtok: 20
 
   - id: "ft:gpt-3.5-turbo-"
-    description: GPT-3.5 Turbo fine tuned.
     match:
       starts_with: "ft:gpt-3.5-turbo"
     prices:
@@ -131,7 +123,6 @@ models:
       output_mtok: 6
 
   - id: "ft:gpt-4o"
-    description: GPT-4o fine tuned.
     match:
       starts_with: "ft:gpt-4o-2024-"
     prices:
@@ -139,7 +130,6 @@ models:
       output_mtok: 15
 
   - id: "ft:gpt-4o-mini"
-    description: GPT-4o Mini fine tuned.
     match:
       starts_with: "ft:gpt-4o-mini-2024-"
     prices:
@@ -157,7 +147,6 @@ models:
 
   - id: gpt-3.5-turbo
     name: gpt 3.5 turbo
-    description: GPT-3.5 Turbo offers a balance between cost and performance.
     match:
       or:
         - equals: gpt-3.5-turbo
@@ -189,9 +178,6 @@ models:
 
   - id: gpt-3.5-turbo-16k
     name: GPT-3.5 Turbo 16k
-    description: >-
-      This model offers four times the context length of gpt-3.5-turbo, allowing it to support approximately 20 pages of text
-      in a single request at a higher cost. Training data: up to Sep 2021.
     match:
       or:
         - equals: gpt-3.5-turbo-16k
@@ -206,7 +192,6 @@ models:
 
   - id: gpt-3.5-turbo-instruct
     name: gpt 3.5 turbo instruct
-    description: GPT-3.5 Turbo offers a balance between cost and performance.
     match:
       # these are tautologous but still helpful to document known names
       or:
@@ -220,10 +205,6 @@ models:
 
   - id: gpt-4
     name: gpt 4
-    description: >-
-      GPT-4 is the latest and most advanced model in the GPT series,
-      demonstrating sophisticated capabilities in complex reasoning, theory of
-      mind, and narrative understanding.
     match:
       or:
         - equals: gpt-4
@@ -238,10 +219,6 @@ models:
 
   - id: gpt-4-32k
     name: gpt 4
-    description: >-
-      GPT-4 is the latest and most advanced model in the GPT series,
-      demonstrating sophisticated capabilities in complex reasoning, theory of
-      mind, and narrative understanding.
     match:
       or:
         - equals: gpt-4-32k
@@ -256,7 +233,6 @@ models:
 
   - id: gpt-4-turbo
     name: gpt 4 turbo
-    description: GPT-4 Turbo offers a balance between cost and performance.
     match:
       or:
         - equals: gpt-4-turbo
@@ -273,7 +249,6 @@ models:
 
   - id: gpt-4-vision-preview
     name: gpt 4 vision
-    description: GPT-4 Vision is a model that offers a balance between cost and performance.
     match:
       or:
         - equals: gpt-4-vision-preview
@@ -285,10 +260,6 @@ models:
 
   - id: gpt-4.1
     name: gpt 4.1
-    description: >-
-      GPT-4.1 is OpenAI's latest flagship model, offering major improvements in
-      coding, instruction following, and long context understanding with up to 1
-      million tokens of context.
     match:
       or:
         - equals: gpt-4.1
@@ -302,10 +273,6 @@ models:
 
   - id: gpt-4.1-mini
     name: gpt 4.1 mini
-    description: >-
-      GPT-4.1 Mini is a significant leap in small model performance, matching or
-      exceeding GPT-4o in many benchmarks while reducing latency by nearly half
-      and cost by 83%.
     match:
       or:
         - equals: gpt-4.1-mini
@@ -319,10 +286,6 @@ models:
 
   - id: gpt-4.1-nano
     name: gpt 4.1 nano
-    description: >-
-      GPT-4.1 Nano is OpenAI's fastest and cheapest model, delivering
-      exceptional performance for its size with a 1 million token context
-      window, ideal for classification and autocompletion tasks.
     match:
       or:
         - equals: gpt-4.1-nano
@@ -336,10 +299,6 @@ models:
 
   - id: gpt-4.5-preview
     name: GPT-4.5 (Preview)
-    description: >-
-      GPT-4.5 (Preview) is a research preview of OpenAI's latest language model, designed to advance capabilities in reasoning,
-      creativity, and multi-turn conversation. It builds on previous iterations
-      with improvements in world knowledge, contextual coherence, and the ability to follow user intent more effectively.
     match:
       starts_with: gpt-4.5-preview
     prices_checked: 2025-07-04
@@ -350,10 +309,6 @@ models:
 
   - id: gpt-4o
     name: gpt 4o
-    description: >-
-      GPT-4 Optimized (GPT-4o) is designed for high performance in reasoning,
-      creativity, and technical tasks while maintaining consistent output
-      quality.
     match:
       or:
         - equals: gpt-4o
@@ -369,7 +324,6 @@ models:
 
   - id: gpt-4o-audio-preview
     name: gpt 4o audio preview
-    description: Audio model for gpt-4o
     match:
       starts_with: gpt-4o-audio-preview
     context_window: 128000
@@ -383,11 +337,6 @@ models:
 
   - id: gpt-4o-mini
     name: gpt 4o mini
-    description: >-
-      GPT-4o Mini is a cost-optimized variant of GPT-4o, designed for
-      high-efficiency processing while maintaining strong performance. It excels
-      in rapid inference and resource-efficient operations, making it ideal for
-      production deployments requiring a balance of cost and capability.
     match:
       or:
         - equals: gpt-4o-mini
@@ -402,7 +351,6 @@ models:
       output_mtok: 0.6
 
   - id: gpt-4o-mini-2024-07-18.ft-
-    description: GPT-4o Mini fine tuned.
     match:
       starts_with: gpt-4o-mini-2024-07-18.ft-
     prices:
@@ -411,7 +359,6 @@ models:
 
   - id: gpt-4o-mini-audio-preview
     name: gpt 4o mini audio preview
-    description: Audio model for gpt-4o mini
     match:
       starts_with: gpt-4o-mini-audio
     prices_checked: 2025-07-22
@@ -487,9 +434,6 @@ models:
 
   - id: gpt-4o-search-preview
     name: GPT-4o Search Preview
-    description: >-
-      GPT-4o Search Previewis a specialized model for web search in Chat Completions.
-      It is trained to understand and execute web search queries.
     match:
       or:
         - equals: gpt-4o-search-preview
@@ -530,10 +474,6 @@ models:
 
   - id: gpt-4o:extended
     name: GPT-4o (extended)
-    description: >-
-      GPT-4o ("o" for "omni") is OpenAI's latest AI model, supporting both text and image inputs with text outputs.
-      It maintains the intelligence level of GPT-4 Turbo while being twice as fast and 50% more cost-effective.
-      GPT-4o also offers improved performance in processing non-English languages and enhanced visual capabilities.
     match:
       equals: gpt-4o:extended
     prices:
@@ -542,7 +482,6 @@ models:
 
   - id: gpt-5
     name: GPT-5
-    description: GPT-5 is OpenAI's flagship model for coding, reasoning, and agentic tasks across domains.
     match:
       or:
         - equals: gpt-5
@@ -577,8 +516,6 @@ models:
 
   - id: gpt-5-mini
     name: GPT-5 mini
-    description: GPT-5 mini is a faster, more cost-efficient version of GPT-5. It's great for well-defined tasks and
-      precise prompts.
     match:
       or:
         - equals: gpt-5-mini
@@ -592,9 +529,6 @@ models:
 
   - id: gpt-5-nano
     name: GPT-5 nano
-    description: >-
-      GPT-5 Nano is OpenAI's fastest, cheapest version of GPT-5. It's great for summarization and classification
-      tasks.
     match:
       or:
         - equals: gpt-5-nano
@@ -619,7 +553,6 @@ models:
 
   - id: gpt-5.1
     name: GPT-5.1
-    description: The best model for coding and agentic tasks across industries
     collapse: false
     match:
       # see https://github.com/openai/openai-python/blob/9b8c7e3e84e3e7bb8b0d88bb7d0538c39bb47a40/src/openai/types/shared/chat_model.py#L8-L12
@@ -662,7 +595,6 @@ models:
 
   - id: gpt-5.2
     name: GPT-5.2
-    description: The best model for coding and agentic tasks across industries
     collapse: false
     match:
       or:
@@ -684,7 +616,6 @@ models:
       output_mtok: 14
 
   - id: gpt-5.2-pro
-    description: Version of GPT-5.2 that produces smarter and more precise responses.
     match:
       or:
         - equals: gpt-5.2-pro
@@ -698,7 +629,6 @@ models:
 
   - id: gpt-5.3
     name: GPT-5.3 Chat
-    description: GPT-5.3 Instant model used in ChatGPT
     collapse: false
     match:
       or:
@@ -717,7 +647,6 @@ models:
 
   - id: gpt-5.3-codex
     name: GPT-5.3-Codex
-    description: The most capable agentic coding model
     collapse: false
     match:
       or:
@@ -732,7 +661,6 @@ models:
 
   - id: gpt-5.4
     name: GPT-5.4
-    description: OpenAI's most capable model with a 1.05M token context window.
     collapse: false
     match:
       or:
@@ -761,7 +689,6 @@ models:
 
   - id: gpt-5.4-mini
     name: GPT-5.4 mini
-    description: Our strongest mini model yet for coding, computer use, and subagents.
     collapse: false
     match:
       or:
@@ -778,7 +705,6 @@ models:
 
   - id: gpt-5.4-nano
     name: GPT-5.4 nano
-    description: Our cheapest GPT-5.4-class model for simple high-volume tasks.
     collapse: false
     match:
       or:
@@ -795,7 +721,6 @@ models:
 
   - id: gpt-5.4-pro
     name: GPT-5.4 Pro
-    description: Version of GPT-5.4 that produces smarter and more precise responses.
     match:
       or:
         - equals: gpt-5.4-pro
@@ -818,7 +743,6 @@ models:
 
   - id: gpt-5.5
     name: GPT-5.5
-    description: The best model for coding and agentic tasks across industries
     collapse: false
     match:
       or:
@@ -843,7 +767,6 @@ models:
 
   - id: gpt-5.5-pro
     name: GPT-5.5 Pro
-    description: Version of GPT-5.5 that produces smarter and more precise responses.
     match:
       or:
         - equals: gpt-5.5-pro
@@ -979,7 +902,6 @@ models:
 
   - id: o1
     name: o1
-    description: O1 is a model that offers a balance between cost and performance.
     match:
       or:
         - equals: o1
@@ -995,7 +917,6 @@ models:
 
   - id: o1-mini
     name: o1 mini
-    description: O1 Mini is a model that offers a balance between cost and performance.
     match:
       or:
         - equals: o1-mini
@@ -1009,9 +930,6 @@ models:
 
   - id: o1-pro
     name: o1-pro
-    description: >-
-      The o1 series of models are trained with reinforcement learning to think before they answer and perform complex reasoning.
-      The o1-pro model uses more compute to think harder and provide consistently better answers.
     match:
       or:
         - equals: o1-pro
@@ -1023,11 +941,6 @@ models:
 
   - id: o3
     name: o3
-    description: >-
-      o3 is a well-rounded and powerful model across domains. It sets a new standard for math, science, coding, and visual
-      reasoning tasks. It also excels at technical writing and instruction-following.
-      Use it to think through multi-step problems that involve analysis across text, code, and images. Note that BYOK is required
-      for this model. Set up here: https://openrouter.ai/settings/integrations
     match:
       or:
         - equals: o3
@@ -1058,9 +971,6 @@ models:
 
   - id: o3-mini
     name: o3 Mini
-    description: >-
-      OpenAI o3-mini is a cost-efficient language model optimized for STEM reasoning tasks, particularly excelling in science,
-      mathematics, and coding.
     match:
       or:
         - equals: o3-mini
@@ -1074,9 +984,6 @@ models:
 
   - id: o3-pro
     name: o3 Pro
-    description: >-
-      The o-series of models are trained with reinforcement learning to think before they answer and perform complex reasoning.
-      The o3-pro model uses more compute to think harder and provide consistently better answers.
     match:
       or:
         - equals: o3-pro
@@ -1087,8 +994,6 @@ models:
 
   - id: o4-mini
     name: o4 Mini High
-    description: >-
-      OpenAI o4-mini-high is the same model as o4-mini with reasoning_effort set to high.
     match:
       or:
         - equals: o4-mini-2025-04-16
@@ -1126,7 +1031,6 @@ models:
 
   - id: text-embedding-3-large
     name: text embedding 3
-    description: Text Embedding 3 is a model that offers a balance between cost and performance.
     match:
       equals: text-embedding-3-large
     context_window: 8192
@@ -1136,7 +1040,6 @@ models:
 
   - id: text-embedding-3-small
     name: text embedding 3
-    description: Text Embedding 3 is a model that offers a balance between cost and performance.
     match:
       equals: text-embedding-3-small
     context_window: 8192
@@ -1146,7 +1049,6 @@ models:
 
   - id: text-embedding-ada-002
     name: text embedding ada
-    description: Text Embedding Ada is a model that offers a balance between cost and performance.
     match:
       or:
         - equals: text-embedding-ada

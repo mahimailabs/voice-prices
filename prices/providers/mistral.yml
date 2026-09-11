@@ -21,9 +21,6 @@ extractors:
 models:
   - id: codestral
     name: Codestral
-    description: >-
-      Mistral's cutting-edge language model for coding. Codestral specializes in low-latency, high-frequency tasks such as
-      fill-in-the-middle (FIM), code correction and test generation.
     match:
       or:
         - equals: codestral-latest
@@ -35,11 +32,6 @@ models:
 
   - id: devstral-small
     name: Devstral Small
-    description: >-
-      Devstral-Small-2505 is a 24B parameter agentic LLM fine-tuned from Mistral-Small-3.1, jointly developed by Mistral AI
-      and All Hands AI for advanced software engineering tasks. It is optimized for
-      codebase exploration, multi-file editing, and integration into coding agents, achieving state-of-the-art results on
-      SWE-Bench Verified (46.8%).
     match:
       equals: devstral-small
     prices:
@@ -49,22 +41,12 @@ models:
   - id: devstral-small:free
     free: true
     name: Devstral Small (free)
-    description: >-
-      Devstral-Small-2505 is a 24B parameter agentic LLM fine-tuned from Mistral-Small-3.1, jointly developed by Mistral AI
-      and All Hands AI for advanced software engineering tasks. It is optimized for
-      codebase exploration, multi-file editing, and integration into coding agents, achieving state-of-the-art results on
-      SWE-Bench Verified (46.8%).
     match:
       equals: devstral-small:free
     prices: {}
 
   - id: magistral-medium
     name: Magistral Medium
-    description: >-
-      Magistral is Mistral's first reasoning model. It is ideal for general purpose use requiring longer thought processing
-      and better accuracy than with non-reasoning LLMs. From legal research and financial
-      forecasting to software development and creative storytelling — this model solves multi-step challenges where transparency
-      and precision are critical.
     match:
       or:
         - starts_with: magistral-medium
@@ -75,10 +57,6 @@ models:
 
   - id: magistral-small
     name: Magistral Small
-    description: >-
-      Magistral Small is a 24B parameter instruction-tuned model based on Mistral-Small-3.1 (2503), enhanced through supervised
-      fine-tuning on traces from Magistral Medium and further refined via reinforcement
-      learning. It is optimized for reasoning and supports a wide multilingual range, including over 20 languages.
     match:
       starts_with: magistral-small-
     prices_checked: 2025-08-12
@@ -88,11 +66,6 @@ models:
 
   - id: ministral-3b
     name: Ministral 3B
-    description: >-
-      Ministral 3B is a 3B parameter model optimized for on-device and edge computing. It excels in knowledge, commonsense
-      reasoning, and function-calling, outperforming larger models like Mistral 7B on
-      most benchmarks. Supporting up to 128k context length, it's ideal for orchestrating agentic workflows and specialist
-      tasks with efficient inference.
     match:
       equals: ministral-3b
     prices:
@@ -101,11 +74,6 @@ models:
 
   - id: ministral-8b
     name: Ministral 8B 24.10
-    description: >-
-      Ministral 8B is an 8B parameter model featuring a unique interleaved sliding-window attention pattern for faster, memory-efficient
-      inference. Designed for edge use cases, it supports up to 128k context
-      length and excels in knowledge and reasoning tasks. It outperforms peers in the sub-10B category, making it perfect
-      for low-latency, privacy-first applications.
     match:
       starts_with: ministral-8b
     prices_checked: 2025-08-12
@@ -133,10 +101,6 @@ models:
 
   - id: mistral-large
     name: Mistral Large
-    description: >-
-      This is Mistral AI's flagship model, Mistral Large 2 (version `mistral-large-2407`). It's a proprietary weights-available
-      model and excels at reasoning, code, JSON, chat, and more. Read the launch
-      announcement here.
     match:
       or:
         - equals: mistral-large
@@ -150,11 +114,6 @@ models:
 
   - id: mistral-medium-3
     name: Mistral Medium 3
-    description: >-
-      Mistral Medium 3 is a high-performance enterprise-grade language model designed to deliver frontier-level capabilities
-      at significantly reduced operational cost. It balances state-of-the-art reasoning
-      and multimodal performance with 8× lower cost compared to traditional large models, making it suitable for scalable
-      deployments across professional and industrial use cases.
     match:
       starts_with: mistral-medium
     prices_checked: 2025-08-12
@@ -164,8 +123,6 @@ models:
 
   - id: mistral-nemo
     name: Mistral NeMo
-    description: >-
-      A 12B parameter model with a 128k token context length built by Mistral in collaboration with NVIDIA.
     match:
       or:
         - equals: mistral-nemo
@@ -178,20 +135,12 @@ models:
   - id: mistral-nemo:free
     free: true
     name: Mistral Nemo (free)
-    description: >-
-      A 12B parameter model with a 128k token context length built by Mistral in collaboration with NVIDIA.
     match:
       equals: mistral-nemo:free
     prices: {}
 
   - id: mistral-saba
     name: Mistral Saba
-    description: >-
-      Mistral Saba is a 24B-parameter language model specifically designed for the Middle East and South Asia, delivering
-      accurate and contextually relevant responses while maintaining efficient performance.
-      Trained on curated regional datasets, it supports multiple Indian-origin languages—including Tamil and Malayalam—alongside
-      Arabic. This makes it a versatile option for a range of regional and multilingual
-      applications. Read more at the blog post here
     match:
       or:
         - equals: mistral-saba
@@ -203,10 +152,6 @@ models:
 
   - id: mistral-small-24b-instruct-2501
     name: Mistral Small 3
-    description: >-
-      Mistral Small 3 is a 24B-parameter language model optimized for low-latency performance across common AI tasks. Released
-      under the Apache 2.0 license, it features both pre-trained and instruction-tuned
-      versions designed for efficient local deployment.
     match:
       equals: mistral-small-24b-instruct-2501
     prices_checked: 2025-07-05
@@ -218,16 +163,11 @@ models:
   - id: mistral-small-24b-instruct-2501:free
     free: true
     name: Mistral Small 3 (free)
-    description: >-
-      Mistral Small 3 is a 24B-parameter language model optimized for low-latency performance across common AI tasks. Released
-      under the Apache 2.0 license, it features both pre-trained and instruction-tuned
-      versions designed for efficient local deployment.
     match:
       equals: mistral-small-24b-instruct-2501:free
     prices: {}
 
   - id: mistral-small-latest
-    description: SOTA. Multimodal. Multilingual. Apache 2.0.
     name: Mistral Small 3.2
     match:
       equals: mistral-small-latest
@@ -238,8 +178,6 @@ models:
 
   - id: mistral-tiny
     name: Mistral Tiny
-    description: >-
-      Note: This model is being deprecated. Recommended replacement is the newer Ministral 8B
     match:
       equals: mistral-tiny
     deprecated: true
@@ -249,15 +187,6 @@ models:
 
   - id: mixtral-8x22b-instruct
     name: Mixtral 8x22B Instruct
-    description: >-
-      Mistral's official instruct fine-tuned version of Mixtral 8x22B. It uses 39B active parameters out of 141B, offering
-      unparalleled cost efficiency for its size. Its strengths include:
-
-      - strong math, coding, and reasoning
-
-      - large context length (64k)
-
-      - fluency in English, French, Italian, German, and Spanish
     match:
       equals: mixtral-8x22b-instruct
     prices:
@@ -277,8 +206,6 @@ models:
 
   - id: pixtral-12b
     name: Pixtral 12B
-    description: >-
-      The first multi-modal, text+image-to-text model from Mistral AI. Its weights were launched via torrent: https://x.com/mistralai/status/1833758285167722836.
     match:
       or:
         - equals: pixtral-12b
@@ -290,9 +217,6 @@ models:
 
   - id: pixtral-large
     name: Pixtral Large 2411
-    description: >-
-      Pixtral Large is a 124B parameter, open-weight, multimodal model built on top of Mistral Large 2. The model is able
-      to understand documents, charts and natural images.
     match:
       or:
         - equals: pixtral-large-latest

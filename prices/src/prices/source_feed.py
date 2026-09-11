@@ -25,7 +25,7 @@ import httpx2
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 
 from .build_docs import base_prices, detect_modality
-from .utils import package_dir
+from .utils import USER_AGENT, package_dir
 
 DATA_JSON = package_dir / 'data.json'
 
@@ -181,7 +181,7 @@ def load_feed(source: str) -> tuple[Feed, list[str]]:
     published LLM feed (OpenRouter, LiteLLM) quotes amounts as strings.
     """
     if source.startswith(('http://', 'https://')):
-        response = httpx2.get(source, timeout=30, follow_redirects=True)
+        response = httpx2.get(source, timeout=30, follow_redirects=True, headers={'User-Agent': USER_AGENT})
         response.raise_for_status()
         raw_text = response.text
     else:

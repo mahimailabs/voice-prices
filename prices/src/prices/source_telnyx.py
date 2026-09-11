@@ -42,7 +42,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .prices_types import ClauseEquals, ModelInfo, ModelPrice, Provenance
 from .update import ProviderYaml
-from .utils import package_dir
+from .utils import USER_AGENT, package_dir
 
 PRICING_API = 'https://api.telnyx.com/v2/pricing'
 INFERENCE_SLUG = 'inference'
@@ -374,6 +374,7 @@ def fetch_product(slug: str, row_type: type[Any]) -> list[Any]:  # pragma: no co
             f'{PRICING_API}/products/{slug}',
             params={'page[number]': page, 'page[size]': 100},
             timeout=30,
+            headers={'User-Agent': USER_AGENT},
         )
         response.raise_for_status()
         payload = cast('dict[str, Any]', response.json())

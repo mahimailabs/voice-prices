@@ -22,6 +22,8 @@
 >
 > Confirm a rate against the vendor's own pricing page before you bill, quote or budget against it.
 > Provided as-is with no warranty, under the [LICENSE](https://github.com/mahimailabs/voice-prices/blob/main/LICENSE).
+>
+> Work at a vendor listed here? A wrong or unwelcome row is [corrected or removed](https://forms.gle/REPLACE-WITH-YOUR-FORM-ID) within 24 hours.
 
 ## Installation
 

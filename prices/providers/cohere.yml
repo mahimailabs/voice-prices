@@ -29,9 +29,6 @@ extractors:
 models:
   - id: command
     name: Command
-    description: >-
-      Command is an instruction-following conversational model that performs language tasks with high quality, more reliably
-      and with a longer context than our base generative models.
     match:
       equals: command
     prices:
@@ -40,12 +37,6 @@ models:
 
   - id: command-a
     name: Command A
-    description: >-
-      Command A is an open-weights 111B parameter model with a 256k context window focused on delivering great performance
-      across agentic, multilingual, and coding use cases.
-
-      Compared to other leading proprietary and open-weights models Command A delivers maximum performance with minimum hardware
-      costs, excelling on business-critical agentic and multilingual tasks.
     match:
       starts_with: command-a
     prices_checked: 2025-07-04
@@ -55,10 +46,6 @@ models:
 
   - id: command-r
     name: Command R
-    description: >-
-      Command-R is a 35B parameter model that performs conversational language tasks at a higher quality, more reliably, and
-      with a longer context than previous models. It can be used for complex workflows
-      like code generation, retrieval augmented generation (RAG), tool use, and agents.
     match:
       or:
         - equals: command-r
@@ -70,9 +57,6 @@ models:
 
   - id: command-r-plus
     name: Command R+
-    description: >-
-      Command R+ is a new, 104B-parameter LLM from Cohere. It's useful for roleplay, general consumer usecases, and Retrieval
-      Augmented Generation (RAG).
     match:
       or:
         - equals: command-r-plus
@@ -84,9 +68,6 @@ models:
 
   - id: command-r7b
     name: Command R7B
-    description: >-
-      Command R7B (12-2024) is a small, fast update of the Command R+ model, delivered in December 2024. It excels at RAG,
-      tool use, agents, and similar tasks requiring complex reasoning and multiple steps.
     match:
       or:
         - equals: command-r7b
@@ -98,8 +79,6 @@ models:
 
   - id: embed-v4.0
     name: Embed v4.0
-    description: >-
-      Embed v4.0 is a state-of-the-art embedding model designed for precise retrieval across noisy, multilingual, and multimodal data.
     match:
       equals: embed-v4.0
     context_window: 128000

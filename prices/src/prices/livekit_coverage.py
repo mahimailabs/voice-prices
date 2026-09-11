@@ -35,7 +35,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Literal, NamedTuple, cast
 
-from .utils import package_dir, root_dir
+from .utils import USER_AGENT, package_dir, root_dir
 
 REGISTRY = package_dir / 'sources' / 'livekit_plugins.json'
 DATA_JSON = package_dir / 'data.json'
@@ -186,7 +186,9 @@ def build_coverage(plugins: list[Plugin], data: list[dict[str, Any]]) -> list[Co
 
 
 def _fetch_packages() -> list[str]:
-    request = urllib.request.Request(CONTENTS_API, headers={'Accept': 'application/vnd.github+json'})
+    request = urllib.request.Request(
+        CONTENTS_API, headers={'Accept': 'application/vnd.github+json', 'User-Agent': USER_AGENT}
+    )
     with urllib.request.urlopen(request, timeout=30) as response:
         entries = cast('list[dict[str, Any]]', json.loads(response.read()))
     return sorted(str(entry['name']) for entry in entries if entry.get('type') == 'dir')

@@ -30,10 +30,6 @@ extractors:
 models:
   - id: deepseek-chat
     name: DeepSeek Chat
-    description: >-
-      DeepSeek-V3 is the latest model from the DeepSeek team, building upon the instruction following and coding abilities
-      of the previous versions. Pre-trained on nearly 15 trillion tokens, the reported
-      evaluations reveal that the model outperforms other open-source models and rivals leading closed-source models.
     match:
       or:
         - starts_with: deepseek-chat
@@ -55,9 +51,6 @@ models:
 
   - id: deepseek-reasoner
     name: Deepseek R1
-    description: >-
-      DeepSeek R1 is here: Performance on par with OpenAI o1, but open-sourced and with fully open reasoning tokens. It's
-      671B parameters in size, with 37B active in an inference pass.
     match:
       or:
         - equals: deepseek-reasoner
@@ -80,9 +73,6 @@ models:
 
   - id: deepseek-v4-flash
     name: DeepSeek V4 Flash
-    description: >-
-      DeepSeek-V4-Flash. Supports both non-thinking and thinking (default) modes, JSON output, tool calls,
-      chat prefix completion, and FIM completion (non-thinking only).
     match:
       or:
         - starts_with: deepseek-v4-flash
@@ -95,9 +85,6 @@ models:
 
   - id: deepseek-v4-pro
     name: DeepSeek V4 Pro
-    description: >-
-      DeepSeek-V4-Pro. Supports both non-thinking and thinking (default) modes, JSON output, tool calls,
-      chat prefix completion, and FIM completion (non-thinking only).
     match:
       or:
         - starts_with: deepseek-v4-pro

@@ -26,6 +26,11 @@ DATA_JSON = package_dir / 'data.json'
 DOCS_DIR = root_dir / 'docs'
 
 REPO_URL = 'https://github.com/mahimailabs/voice-prices'
+
+#: Where a vendor asks for a row to be corrected or taken down. Also pasted verbatim into the
+#: hand-written README, PyPI README, docs/index.mdx and docs/how-fresh.mdx;
+#: tests/test_removal_contact.py fails if any copy drifts from this one.
+REMOVAL_FORM_URL = 'https://forms.gle/REPLACE-WITH-YOUR-FORM-ID'
 ADD_PROVIDER_URL = f'{REPO_URL}/issues/new?template=add-provider.yml'
 PROVIDER_YAML_URL = f'{REPO_URL}/blob/main/prices/providers'
 
@@ -213,7 +218,10 @@ PRICE_DISCLAIMER = (
     "Confirm a rate against the vendor's own pricing page before you bill, quote or budget "
     'against it. Provided as-is with no warranty, under the '
     '[LICENSE](https://github.com/mahimailabs/voice-prices/blob/main/LICENSE). '
-    'Found something wrong? [Contribute a fix](/contribute).\n'
+    'Found something wrong? [Contribute a fix](/contribute).\n\n'
+    '**Work at a vendor listed here?** If a row about your product is wrong, or you want it '
+    f'removed, [tell us]({REMOVAL_FORM_URL}) and we will correct or remove it within 24 hours. '
+    'No lawyer required.\n'
     '</Warning>'
 )
 

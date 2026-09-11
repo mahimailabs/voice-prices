@@ -48,6 +48,7 @@ class RenderResult:
     text: str  # rendered page text ('' if not ok)
     screenshot_path: str | None
     blocked: bool = False  # bot-wall / login-wall / non-200 detected
+    skipped_reason: str | None = None  # we chose not to load it (robots.txt); nothing is wrong with the URL
 
 
 @dataclass(frozen=True)
