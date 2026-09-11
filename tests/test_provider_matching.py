@@ -152,6 +152,31 @@ def test_audio_model_auto_routes_to_correct_provider(
     assert result.provider.id == expected_provider_id
 
 
+@pytest.mark.parametrize(
+    'provider_api_url',
+    [
+        'https://api.recall.ai/api/v1',
+        'https://us-west-2.recall.ai/api/v1',
+        'https://us-east-1.recall.ai/api/v1',
+        'https://eu-central-1.recall.ai/api/v1',
+        'https://ap-northeast-1.recall.ai/api/v1',
+    ],
+)
+def test_recall_routes_and_prices_from_every_supported_region(provider_api_url: str):
+    result = calc_price(
+        Usage(audio_input_seconds=Decimal('1000')),
+        model_ref='recall-transcription',
+        provider_api_url=provider_api_url,
+    )
+
+    assert result.provider.id == 'recall'
+    assert result.model.id == 'recall-transcription'
+    assert result.input_price == Decimal('0.041667')
+    assert result.output_price == Decimal('0')
+    assert result.total_price == Decimal('0.041667')
+    assert result.unpriced_usage == ()
+
+
 def test_nova_3_bare_ref_resolves_to_streaming_not_batch():
     """Bare `nova-3` must resolve to the monolingual streaming entry; batch and
     multilingual require explicit IDs (`nova-3-batch`, `nova-3-multilingual`).

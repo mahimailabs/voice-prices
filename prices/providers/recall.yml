@@ -4,7 +4,7 @@ id: recall
 pricing_urls:
   - https://www.recall.ai/pricing
 
-api_pattern: 'https://api\.recall\.ai'
+api_pattern: 'https://(?:api|us-west-2|us-east-1|eu-central-1|ap-northeast-1)\.recall\.ai'
 
 model_match:
   starts_with: recall-
@@ -22,7 +22,7 @@ models:
       The separate recording charge is deliberately not included in this STT rate.
     match:
       equals: recall-transcription
-    prices_checked: 2026-08-23
+    prices_checked: 2026-09-10
     pricing_source_url: https://www.recall.ai/pricing
     price_comments: >-
       Source rate $0.15/hour of built-in transcription. Converted to $/k seconds:

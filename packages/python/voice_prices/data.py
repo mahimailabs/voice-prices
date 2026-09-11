@@ -13463,7 +13463,7 @@ providers: list[Provider] = [
     Provider(
         id='recall',
         name='Recall.ai',
-        api_pattern='https://api\\.recall\\.ai',
+        api_pattern='https://(?:api|us-west-2|us-east-1|eu-central-1|ap-northeast-1)\\.recall\\.ai',
         pricing_urls=['https://www.recall.ai/pricing'],
         model_match=ClauseStartsWith(starts_with='recall-'),
         provider_match=ClauseContains(contains='recall'),
@@ -13474,11 +13474,21 @@ providers: list[Provider] = [
                 id='recall-transcription',
                 match=ClauseEquals(equals='recall-transcription'),
                 name='Built-in transcription',
-                description="Recall.ai's built-in transcription for Meeting Bot API and Desktop Recording SDK. The separate recording charge is deliberately not included in this STT rate.",
-                price_comments='Source rate $0.15/hour of built-in transcription. Converted to $/k seconds: 0.15 / 3600 * 1000 = 0.0416666 recurring, stored as 0.041667. Recall.ai separately charges $0.50/hour for recording; that charge is not part of the transcription meter and is intentionally excluded from this STT row.',
+                description=(
+                    'Recall.ai'
+                    "'"
+                    's built-in transcription for Meeting Bot API and Desktop Recording SDK. '
+                    'The separate recording charge is deliberately not included in this STT rate.'
+                ),
+                price_comments=(
+                    'Source rate $0.15/hour of built-in transcription. Converted to $/k seconds: '
+                    '0.15 / 3600 * 1000 = 0.0416666 recurring, stored as 0.041667. '
+                    'Recall.ai separately charges $0.50/hour for recording; that charge is not part of '
+                    'the transcription meter and is intentionally excluded from this STT row.'
+                ),
                 pricing_source_url='https://www.recall.ai/pricing',
                 free=False,
-                provenance=Provenance(last_verified=datetime.date(2026, 8, 23)),
+                provenance=Provenance(last_verified=datetime.date(2026, 9, 10)),
                 prices=ModelPrice(input_audio_kseconds=Decimal('0.041667')),
             )
         ],
