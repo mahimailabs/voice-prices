@@ -13474,16 +13474,8 @@ providers: list[Provider] = [
                 id='recall-transcription',
                 match=ClauseEquals(equals='recall-transcription'),
                 name='Built-in transcription',
-                description=(
-                    "Recall.ai's built-in transcription for Meeting Bot API and Desktop Recording SDK. The separate "
-                    'recording charge is deliberately not included in this STT rate.'
-                ),
-                price_comments=(
-                    'Source rate $0.15/hour of built-in transcription. Converted to $/k seconds: 0.15 / 3600 * 1000 '
-                    '= 0.0416666 recurring, stored as 0.041667. Recall.ai separately charges $0.50/hour for '
-                    'recording; that charge is not part of the transcription meter and is intentionally excluded '
-                    'from this STT row.'
-                ),
+                description="Recall.ai's built-in transcription for Meeting Bot API and Desktop Recording SDK. The separate recording charge is deliberately not included in this STT rate.",
+                price_comments='Source rate $0.15/hour of built-in transcription. Converted to $/k seconds: 0.15 / 3600 * 1000 = 0.0416666 recurring, stored as 0.041667. Recall.ai separately charges $0.50/hour for recording; that charge is not part of the transcription meter and is intentionally excluded from this STT row.',
                 pricing_source_url='https://www.recall.ai/pricing',
                 free=False,
                 provenance=Provenance(last_verified=datetime.date(2026, 9, 10)),
