@@ -166,6 +166,10 @@ def classify(
 
     # Page-level problems first.
     if not render.ok:
+        # A page we declined to load is not a page that failed. Reporting it as URL_STALE would
+        # send a human to "fix" a URL that is fine, and as a bot-wall would be simply false.
+        if render.skipped_reason:
+            return finding(Category.UNVERIFIED, f'not fetched: {render.skipped_reason}')
         if render.blocked or (render.http_status is not None and render.http_status != 200):
             return finding(
                 Category.URL_STALE, f'page not usable (status={render.http_status}, blocked={render.blocked})'

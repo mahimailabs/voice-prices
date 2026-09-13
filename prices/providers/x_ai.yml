@@ -43,9 +43,6 @@ extractors:
 models:
   - id: grok-2-1212
     name: Grok 2 1212
-    description: >-
-      (deprecated) Grok 2 1212 introduces significant enhancements to accuracy, instruction adherence, and multilingual support, making
-      it a powerful and flexible choice for developers seeking a highly steerable, intelligent model.
     match:
       or:
         - equals: grok-2-1212
@@ -60,7 +57,6 @@ models:
 
   - id: grok-2-vision-1212
     name: Grok 2 Vision 1212
-    description: Our multimodal model that processes documents, diagrams, charts, screenshots, and photographs.
     match:
       or:
         - equals: grok-2-vision-1212
@@ -74,9 +70,6 @@ models:
 
   - id: grok-3
     name: Grok 3
-    description: >-
-      Flagship model that excels at enterprise use cases like data extraction,
-      coding, and text summarization. Possesses deep domain knowledge in finance, healthcare, law, and science.
     match:
       or:
         - equals: grok-3
@@ -91,8 +84,6 @@ models:
 
   - id: grok-3-fast
     name: Grok 3 Fast
-    description: >-
-      Excels at enterprise use cases like data extraction, coding, and text summarization. Possesses deep domain knowledge in finance, healthcare, law, and science.
     match:
       or:
         - equals: grok-3-fast
@@ -107,9 +98,6 @@ models:
 
   - id: grok-3-mini
     name: Grok 3 Mini
-    description: >-
-      A lightweight model that thinks before responding. Fast, smart, and great for logic-based tasks that do not require
-      deep domain knowledge. The raw thinking traces are accessible.
     match:
       or:
         - equals: grok-3-mini
@@ -124,8 +112,6 @@ models:
 
   - id: grok-3-mini-fast
     name: Grok 3 Mini Fast
-    description: >-
-      A lightweight model that thinks before responding. Fast, smart, and great for logic-based tasks that do not require deep domain knowledge. The raw thinking traces are accessible.
     match:
       or:
         - equals: grok-3-mini-fast
@@ -140,8 +126,6 @@ models:
 
   - id: grok-4-0709
     name: Grok 4
-    description: >-
-      A flagship model, offering unparalleled performance in natural language, math and reasoning - the perfect jack of all trades.
     match:
       or:
         - equals: grok-4-0709
@@ -156,8 +140,6 @@ models:
 
   - id: grok-4-1-fast-non-reasoning
     name: Grok 4.1 Fast Non-Reasoning
-    description: >-
-      A frontier multimodal model optimized specifically for high-performance agentic tool calling.
     match:
       or:
         - equals: grok-4-1-fast-non-reasoning
@@ -171,8 +153,6 @@ models:
 
   - id: grok-4-1-fast-reasoning
     name: Grok 4.1 Fast Reasoning
-    description: >-
-      A frontier multimodal model optimized specifically for high-performance agentic tool calling.
     match:
       or:
         - equals: grok-4-1-fast
@@ -187,8 +167,6 @@ models:
 
   - id: grok-4-fast-non-reasoning
     name: Grok 4 Fast Non-Reasoning
-    description: >-
-      A frontier multimodal model optimized specifically for high-performance agentic tool calling.
     match:
       or:
         - equals: grok-4-fast-non-reasoning
@@ -202,8 +180,6 @@ models:
 
   - id: grok-4-fast-reasoning
     name: Grok 4 Fast Reasoning
-    description: >-
-      A frontier multimodal model optimized specifically for high-performance agentic tool calling.
     match:
       or:
         - equals: grok-4-fast
@@ -218,10 +194,6 @@ models:
 
   - id: grok-4.3
     name: Grok 4.3
-    description: >-
-      Most advanced flagship model, leading the industry in non-hallucination rate, agentic tool calling,
-      and instruction following capabilities. Supports text and image inputs with text outputs, function
-      calling, structured outputs, and reasoning.
     match:
       or:
         - equals: grok-4.3
@@ -236,8 +208,6 @@ models:
 
   - id: grok-code-fast-1
     name: Grok Code Fast 1
-    description: >-
-      A speedy and economical reasoning model that excels at agentic coding.
     match:
       or:
         - equals: grok-code-fast

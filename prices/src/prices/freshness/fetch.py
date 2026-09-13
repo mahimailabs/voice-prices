@@ -15,27 +15,93 @@ from __future__ import annotations
 
 import json
 import os
+import urllib.error
+import urllib.request
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any, cast
+from urllib.parse import urlsplit, urlunsplit
+from urllib.robotparser import RobotFileParser
 
+from ..utils import USER_AGENT
 from .models import Extraction, RenderResult, WorkItem
 
 RenderFn = Callable[[str], RenderResult]
 ExtractFn = Callable[[str, Sequence[WorkItem]], dict[str, Extraction]]
 
 _LOGIN_MARKERS = ('log in', 'sign in', 'create account', 'access denied', 'just a moment')
+
+RobotsFetchFn = Callable[[str], str | None]
+
+
+def _fetch_robots_txt(robots_url: str) -> str | None:
+    """Return the body of robots.txt, or None when there is not one to honour.
+
+    None covers 404, 5xx, timeouts and refused connections alike. The convention (and the
+    behaviour of every mainstream crawler) is that an absent or unreachable robots.txt permits
+    fetching; only a present one can forbid it. Sent with our own User-Agent, same as the page.
+    """
+    request = urllib.request.Request(robots_url, headers={'User-Agent': USER_AGENT})
+    try:
+        with urllib.request.urlopen(request, timeout=10) as response:
+            if response.status != 200:
+                return None
+            return response.read().decode('utf-8', errors='replace')
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError):
+        return None
+
+
+def robots_allows(url: str, *, fetch: RobotsFetchFn = _fetch_robots_txt) -> bool:
+    """Whether the site's robots.txt permits us to load ``url``.
+
+    The fetcher is injectable so this is testable without a network, matching how ``render`` and
+    ``extract`` are injected elsewhere in this module. We check under our own agent string, so a
+    site that singles us out is honoured, and under ``*`` implicitly via the parser's fallback.
+    """
+    parts = urlsplit(url)
+    if parts.scheme not in ('http', 'https') or not parts.netloc:
+        return True
+    body = fetch(urlunsplit((parts.scheme, parts.netloc, '/robots.txt', '', '')))
+    if body is None:
+        return True
+    parser = RobotFileParser()
+    parser.parse(body.splitlines())
+    return parser.can_fetch(USER_AGENT, url)
+
+
+def _skipped(url: str, reason: str) -> RenderResult:
+    return RenderResult(
+        ok=False,
+        http_status=None,
+        final_url=url,
+        text='',
+        screenshot_path=None,
+        blocked=False,
+        skipped_reason=reason,
+    )
+
+
 _DEFAULT_OPENAI_MODEL = 'gpt-4o-mini'
 
 
 def default_render(url: str, *, screenshot_dir: Path | None = None) -> RenderResult:
-    """Render `url` in a headless US-locale Chromium and capture text + screenshot."""
+    """Render `url` in a headless US-locale Chromium and capture text + screenshot.
+
+    Two courtesies before the page loads. We ask the site's robots.txt and do not load a URL it
+    disallows (the row comes back as a deliberate skip, not a failure, so nobody goes looking
+    for a broken link). And the browser announces itself with the project's User-Agent, so an
+    operator reading their access log sees who we are and where to reach us.
+    """
+    if not robots_allows(url):
+        return _skipped(url, 'robots.txt disallows fetching this URL')
+
     from playwright.sync_api import sync_playwright
 
     screenshot_path: str | None = None
     with sync_playwright() as p:
         browser = p.chromium.launch()
         context = browser.new_context(
+            user_agent=USER_AGENT,
             locale='en-US',
             timezone_id='America/New_York',
             extra_http_headers={'Accept-Language': 'en-US,en;q=0.9'},

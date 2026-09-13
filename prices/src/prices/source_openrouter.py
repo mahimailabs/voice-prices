@@ -159,7 +159,12 @@ def main(mode: Literal['metadata', 'prices']):  # noqa: C901
                 provider_prices[id] = prices
 
         for or_model in or_models:
-            model_info = or_model.model_info()
+            # Prices and ids only. OpenRouter's `description` is its paraphrase of the vendor's
+            # marketing copy, sometimes verbatim ("Our most capable model..."), and it used to be
+            # written into every vendor's YAML from here. A pricing catalog does not need a blurb,
+            # and third-party prose is the one thing in this repository that is expression rather
+            # than fact. The openrouter provider itself already passes inc_description=False above.
+            model_info = or_model.model_info(inc_description=False)
             assert isinstance(model_info.prices, ModelPrice)
             if matching_model := pyd_provider.find_model(model_info.id):
                 add_prices(matching_model.id, model_info.prices)

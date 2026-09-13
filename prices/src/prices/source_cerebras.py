@@ -28,7 +28,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .prices_types import ClauseEquals, ClauseOr, ClauseStartsWith, ModelInfo, ModelPrice, Provenance
 from .update import ProviderYaml
-from .utils import package_dir
+from .utils import USER_AGENT, package_dir
 
 MODELS_API = 'https://api.cerebras.ai/public/v1/models'
 
@@ -197,7 +197,7 @@ def render_report(plan: Plan, total: int) -> str:
 
 def fetch_models() -> list[CerebrasModel]:  # pragma: no cover - network I/O
     """Read the keyless public models endpoint. No API key, no pagination."""
-    response = httpx2.get(MODELS_API, timeout=30)
+    response = httpx2.get(MODELS_API, timeout=30, headers={'User-Agent': USER_AGENT})
     response.raise_for_status()
     payload = cast('dict[str, Any]', response.json())
     return [CerebrasModel.model_validate(row) for row in cast('list[Any]', payload.get('data') or [])]

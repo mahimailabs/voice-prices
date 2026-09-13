@@ -30,7 +30,9 @@ The table shows the dominant unit per modality. Other priced fields exist (for e
 
 Open an issue using the [Add a provider form](https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml), describing the provider you want to add: name, link to their pricing page, which models, and which modality (LLM, TTS, or STT). This is the same form the documentation site's "Add a provider" button links to. It lets us catch duplicates, naming conflicts, or scope concerns before you spend time on the YAML.
 
-**Attach the pricing-page screenshot when you open the PR, not after.** CI requires one on any PR
+**Crop the pricing-page screenshot to the rate row or table you read, not the whole page**, and
+**attach it when you open the PR, not after.** The evidence is the number and its label; the rest
+of the page is the vendor's copyrighted layout and we do not need to republish it. CI requires one on any PR
 adding a hand-read rate, and it reads the PR body from the event payload that triggered the run.
 `pull_request` does not fire on a body edit, so editing a failed PR to add the screenshot does not
 re-run anything, and re-running the job replays the same stale payload. Push a commit to

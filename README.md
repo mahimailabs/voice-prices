@@ -17,6 +17,13 @@
 </div>
 <br/>
 
+> [!IMPORTANT]
+> ### Work at a provider listed here? You can have a row corrected or removed.
+> Fill in [this short form](https://forms.gle/f2QwXAFkwdzmSgy7A) (which provider, your LinkedIn, how you are connected to
+> them) and we will correct or remove the row **within 24 hours**. No lawyer, no takedown notice,
+> no argument. We would rather have accurate data and a good relationship with the people whose
+> prices these are than a row that is wrong or unwelcome.
+
 > [!WARNING]
 > **Reference only, and unofficial.** Voice Prices is a community-maintained catalog. It is not
 > published by, affiliated with, or endorsed by any vendor listed here. Rates are read off public
@@ -177,6 +184,8 @@ without notice, and your own rate may differ with your plan, region, commitment 
 against the vendor's own pricing page before you bill, quote or budget against it.
 
 If you get a bill you weren't expecting, don't blame us!
+
+Work at a vendor and want a row corrected or removed? [Tell us](https://forms.gle/f2QwXAFkwdzmSgy7A) and it is done within 24 hours.
 
 If you're a lawyer, please read the [LICENSE](https://github.com/mahimailabs/voice-prices/blob/main/LICENSE) under which this project is developed, hosted and distributed.
 

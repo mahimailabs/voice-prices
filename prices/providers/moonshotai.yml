@@ -25,9 +25,6 @@ extractors:
 models:
   - id: kimi-k2-0711-preview
     name: Kimi K2 0711 Preview
-    description: >-
-      MoE foundation model with exceptional coding and agent capabilities, featuring 1 trillion total parameters
-      and 32 billion activated parameters.
     match:
       equals: kimi-k2-0711-preview
     context_window: 131072
@@ -39,10 +36,6 @@ models:
 
   - id: kimi-k2-0905-preview
     name: Kimi K2 0905 Preview
-    description: >-
-      Based on kimi-k2-0711-preview, with enhanced agentic coding abilities, improved frontend code quality
-      and practicality, and better context understanding. MoE foundation model with 1 trillion total parameters
-      and 32 billion activated parameters.
     match:
       equals: kimi-k2-0905-preview
     context_window: 262144
@@ -54,8 +47,6 @@ models:
 
   - id: kimi-k2-thinking
     name: Kimi K2 Thinking
-    description: >-
-      A thinking model with general agentic and reasoning capabilities, specializing in deep reasoning tasks.
     match:
       equals: kimi-k2-thinking
     context_window: 262144
@@ -67,9 +58,6 @@ models:
 
   - id: kimi-k2-thinking-turbo
     name: Kimi K2 Thinking Turbo
-    description: >-
-      High-speed version of kimi-k2-thinking, suitable for scenarios requiring both deep reasoning
-      and extremely fast responses.
     match:
       equals: kimi-k2-thinking-turbo
     context_window: 262144
@@ -81,9 +69,6 @@ models:
 
   - id: kimi-k2-turbo-preview
     name: Kimi K2 Turbo Preview
-    description: >-
-      High-speed version of kimi-k2, always aligned with the latest kimi-k2. Same model parameters as kimi-k2,
-      output speed up to 60 tokens/sec (max 100 tokens/sec).
     match:
       starts_with: kimi-k2-turbo
     context_window: 262144
@@ -95,10 +80,6 @@ models:
 
   - id: kimi-k2.5
     name: Kimi K2.5
-    description: >-
-      Kimi's most versatile model featuring a native multimodal architecture that supports both visual and text input,
-      thinking and non-thinking modes, and dialogue and agent tasks. Supports automatic context caching, ToolCalls,
-      JSON Mode, Partial Mode, and internet search.
     match:
       starts_with: kimi-k2.5
     context_window: 262144

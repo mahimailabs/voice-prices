@@ -7,6 +7,14 @@ from typing import Any, Literal, TypeVar
 package_dir = Path(__file__).parent.parent.parent
 root_dir = package_dir.parent
 
+REPO_URL = 'https://github.com/mahimailabs/voice-prices'
+
+#: Sent on every request this project makes to a vendor: the freshness browser, the feed poller
+#: and the API importers. A pricing page's operator should be able to tell from one log line who
+#: fetched it, why, and where to say stop. A default Chromium or httpx string tells them none of
+#: that, and reads as a scraper hiding, which this is not.
+USER_AGENT = f'voice-prices-freshness/1.0 (+{REPO_URL}; contact via {REPO_URL}/issues)'
+
 
 def pretty_size(size: int) -> str:
     if size < 1024:

@@ -197,6 +197,55 @@ def test_classify_url_stale_and_gone():
     assert classify(item(), OK_RENDER, Extraction(False, None, None, None, 'low', '', '')).category is Category.GONE
 
 
+# ---- robots.txt ---------------------------------------------------------------------------
+
+
+def test_classify_robots_skip_is_unverified_not_url_stale():
+    """A page we declined to load is not a broken page.
+
+    URL_STALE sends a human to fix a URL that is fine; a bot-wall report would be false. The
+    honest category is UNVERIFIED ("we could not check"), carrying the reason.
+    """
+    skipped = RenderResult(
+        ok=False,
+        http_status=None,
+        final_url='https://vendor.example/pricing',
+        text='',
+        screenshot_path=None,
+        blocked=False,
+        skipped_reason='robots.txt disallows fetching this URL',
+    )
+    f = classify(item(), skipped, None)
+    assert f.category is Category.UNVERIFIED
+    assert f.reason == 'not fetched: robots.txt disallows fetching this URL'
+
+
+def test_robots_allows_honours_disallow_for_our_agent_and_wildcard():
+    from prices.freshness.fetch import robots_allows
+
+    def fake(robots_url: str) -> str:
+        assert robots_url == 'https://vendor.example/robots.txt'
+        return 'User-agent: *\nDisallow: /pricing\nAllow: /\n'
+
+    assert robots_allows('https://vendor.example/pricing', fetch=fake) is False
+    assert robots_allows('https://vendor.example/docs', fetch=fake) is True
+
+
+def test_robots_allows_when_no_robots_txt_is_reachable():
+    """An absent or unreachable robots.txt permits fetching; only a present one can forbid it."""
+    from prices.freshness.fetch import robots_allows
+
+    assert robots_allows('https://vendor.example/pricing', fetch=lambda _u: None) is True
+
+
+def test_robots_allows_checks_under_our_named_agent():
+    """A site that singles us out by name is honoured even if it allows everyone else."""
+    from prices.freshness.fetch import robots_allows
+
+    body = 'User-agent: voice-prices-freshness\nDisallow: /\n\nUser-agent: *\nAllow: /\n'
+    assert robots_allows('https://vendor.example/pricing', fetch=lambda _u: body) is False
+
+
 # ---- report -----------------------------------------------------------------
 
 

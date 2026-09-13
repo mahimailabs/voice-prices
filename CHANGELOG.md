@@ -13,6 +13,26 @@ but it is one for anything that budgeted against the old number.
 The auto-generated release notes on each GitHub release list every merged pull request. This
 file only carries what a consumer needs to act on.
 
+## Unreleased
+
+### Behaviour changes
+
+- **`ModelInfo.description` is now `None` on every LLM row.** 164 descriptions across 14 providers
+  were OpenRouter's paraphrase of the vendor's marketing copy, sometimes verbatim, written into
+  each vendor's YAML by the OpenRouter importer. A pricing catalog does not need a blurb, and
+  third-party prose was the one thing in this repository that was expression rather than fact.
+  The importer no longer writes descriptions. Voice rows keep theirs; those are written here and
+  say things like which id to use for batch. If you displayed `description`, expect `None` for
+  LLMs.
+
+### Added
+
+- A correction and removal path for vendors: every page that shows a rate, both READMEs and the
+  docs landing page link to a form, with a commitment to correct or remove a row within 24 hours.
+- The freshness browser and every API importer now identify themselves with one `User-Agent`
+  naming this repository and where to reach it, and the browser honours `robots.txt` before
+  loading a vendor page. A disallowed URL is reported as a deliberate skip, not a broken link.
+
 ## 0.8.0
 
 ### Added

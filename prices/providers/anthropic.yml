@@ -46,9 +46,6 @@ extractors:
 models:
   - id: claude-2
     name: Claude 2.0 / 2.1
-    description: >
-      Claude 2 is Anthropic's previous generation model, offering reliable performance
-      for various tasks. This includes Claude 2.0 and Claude 2.1.
     match:
       or:
         - starts_with: claude-2
@@ -61,7 +58,6 @@ models:
 
   - id: claude-3-5-haiku-latest
     name: Claude Haiku 3.5
-    description: Fastest, most cost-effective model
     match:
       or:
         - starts_with: claude-3-5-haiku
@@ -76,9 +72,6 @@ models:
 
   - id: claude-3-5-sonnet
     name: Claude Sonnet 3.5
-    description: >-
-      Claude 3.5 Sonnet is an ideal balance of intelligence and speed for enterprise workloads.
-      Maximum utility at a lower price, dependable, balanced for scaled deployments.
     match:
       or:
         - starts_with: claude-3-5-sonnet
@@ -92,8 +85,6 @@ models:
 
   - id: claude-3-7-sonnet-latest
     name: Claude Sonnet 3.7
-    description: >-
-      Claude 3.7 Sonnet is an advanced large language model with improved reasoning, coding, and problem-solving capabilities.
     match:
       or:
         - starts_with: claude-3-7-sonnet
@@ -110,7 +101,6 @@ models:
 
   - id: claude-3-haiku
     name: Claude Haiku 3
-    description: Fastest, most cost-effective model
     match:
       starts_with: claude-3-haiku
     context_window: 200000
@@ -123,9 +113,6 @@ models:
 
   - id: claude-3-opus-latest
     name: Claude Opus 3
-    description: >-
-      Claude 3 Opus was Anthropic's most powerful model for highly complex tasks.
-      It boasts top-level performance, intelligence, fluency, and understanding.
     match:
       starts_with: claude-3-opus
     context_window: 200000
@@ -137,9 +124,6 @@ models:
 
   - id: claude-3-sonnet
     name: Claude 3 Sonnet
-    description: >-
-      Claude 3 Sonnet is an ideal balance of intelligence and speed for enterprise workloads.
-      Maximum utility at a lower price, dependable, balanced for scaled deployments.
     match:
       starts_with: claude-3-sonnet
     context_window: 200000
@@ -151,7 +135,6 @@ models:
 
   - id: claude-haiku-4-5
     name: Claude Haiku 4.5
-    description: Fastest and most intelligent Haiku model
     match:
       or:
         - starts_with: claude-haiku-4-5
@@ -167,7 +150,6 @@ models:
       output_mtok: 5
 
   - id: claude-instant-1
-    description: Retired, here to match price sources
     match:
       equals: claude-instant-1
     prices:
@@ -176,7 +158,6 @@ models:
     removed: true
 
   - id: claude-instant-1.2
-    description: Retired, here to match price sources
     match:
       equals: claude-instant-1.2
     prices:
@@ -186,7 +167,6 @@ models:
 
   - id: claude-opus-4-0
     name: Claude Opus 4
-    description: Most intelligent model for complex tasks
     match:
       or:
         - starts_with: claude-opus-4-0
@@ -203,7 +183,6 @@ models:
 
   - id: claude-opus-4-1
     name: Claude Opus 4.1
-    description: Most intelligent model for complex tasks
     match:
       or:
         - starts_with: claude-opus-4-1
@@ -219,7 +198,6 @@ models:
 
   - id: claude-opus-4-5
     name: Claude Opus 4.5
-    description: Premium model combining maximum intelligence with practical performance
     match:
       or:
         - starts_with: claude-opus-4-5
@@ -236,7 +214,6 @@ models:
 
   - id: claude-opus-4-6
     name: Claude Opus 4.6
-    description: Our most intelligent model for building agents and coding
     match:
       or:
         - starts_with: claude-opus-4-6
@@ -278,7 +255,6 @@ models:
 
   - id: claude-opus-4-7
     name: Claude Opus 4.7
-    description: Our most capable model for complex reasoning and agentic coding
     match:
       or:
         - starts_with: claude-opus-4-7
@@ -298,7 +274,6 @@ models:
 
   - id: claude-opus-4-8
     name: Claude Opus 4.8
-    description: Our most capable model for complex reasoning and agentic coding
     match:
       or:
         - starts_with: claude-opus-4-8
@@ -318,7 +293,6 @@ models:
 
   - id: claude-sonnet-4-0
     name: Claude Sonnet 4
-    description: Optimal balance of intelligence, cost, and speed
     match:
       or:
         - starts_with: claude-sonnet-4-2025
@@ -336,7 +310,6 @@ models:
 
   - id: claude-sonnet-4-5
     name: Claude Sonnet 4.5
-    description: Our best combination of speed and intelligence
     match:
       or:
         - starts_with: claude-sonnet-4-5
@@ -367,7 +340,6 @@ models:
 
   - id: claude-sonnet-4-6
     name: Claude Sonnet 4.6
-    description: Our best combination of speed and intelligence
     match:
       or:
         - starts_with: claude-sonnet-4-6
@@ -406,7 +378,6 @@ models:
           output_mtok: 15
 
   - id: claude-v1
-    description: Retired, here to match price sources
     match:
       equals: claude-v1
     prices:

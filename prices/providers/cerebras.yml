@@ -40,9 +40,6 @@ extractors:
 models:
   - id: gemma-4-31b
     name: Gemma 4 31B
-    description: >-
-      Google DeepMind's Gemma 4 31B, served on Cerebras hardware at roughly 1,800 tokens/second.
-      Cerebras' first model with image input.
     match:
       or:
         - equals: gemma-4-31b
@@ -61,10 +58,6 @@ models:
 
   - id: gpt-oss-120b
     name: GPT-OSS 120B
-    description: >-
-      OpenAI's flagship open source model, built on a Mixture-of-Experts (MoE) architecture with
-      120 billion parameters and 128 experts. Delivers frontier reasoning capabilities with
-      record-breaking inference speeds on Cerebras hardware (~3,000 tokens/second).
     match:
       or:
         - equals: gpt-oss-120b
@@ -85,9 +78,6 @@ models:
 
   - id: llama-3.3-70b
     name: Llama 3.3 70B
-    description: >-
-      Retired. Meta's enhanced 70B model, previously served on Cerebras hardware at
-      ~2,100 tokens/second. Kept to price historical usage.
     match:
       or:
         - equals: llama-3.3-70b
@@ -110,9 +100,6 @@ models:
 
   - id: llama3.1-8b
     name: Llama 3.1 8B
-    description: >-
-      Retired. Meta's Llama 3.1 8B, previously served on Cerebras hardware at ~2,200 tokens/second.
-      Kept to price historical usage.
     match:
       or:
         - equals: llama3.1-8b
@@ -131,9 +118,6 @@ models:
 
   - id: qwen-3-32b
     name: Qwen 3 32B
-    description: >-
-      Retired. Qwen's 32B model, previously served on Cerebras hardware at ~2,600 tokens/second.
-      Kept to price historical usage.
     match:
       or:
         - equals: qwen-3-32b
@@ -162,9 +146,6 @@ models:
 
   - id: zai-glm-4.7
     name: Z.ai GLM 4.7
-    description: >-
-      Z.ai's GLM 4.7, a 355B parameter model served on Cerebras hardware at roughly
-      1,000 tokens/second. Cerebras lists it as a preview model.
     match:
       or:
         - equals: zai-glm-4.7
