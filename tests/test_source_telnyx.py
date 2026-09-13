@@ -88,6 +88,33 @@ def test_per_1k_tokens_converts_to_per_million():
     assert prices.cache_read_mtok == Decimal('1.25')
 
 
+def test_current_nested_rates_payload_is_normalized():
+    row = InferenceRow.model_validate(
+        {
+            'model': 'acme-1',
+            'service_tier': 'standard',
+            'rates': {
+                'currency': 'USD',
+                'unit': 'per_1k_tokens',
+                'values': {
+                    'input': [{'min': 0, 'max': None, 'rate': '0.0025'}],
+                    'cached_input': [{'min': 0, 'max': None, 'rate': '0.00125'}],
+                    'output': [{'min': 0, 'max': None, 'rate': '0.01'}],
+                },
+            },
+        }
+    )
+
+    model, reason = convert_row(row)
+    assert reason is None
+    assert model is not None
+    prices = model.prices
+    assert isinstance(prices, ModelPrice)
+    assert prices.input_mtok == Decimal('2.5')
+    assert prices.cache_read_mtok == Decimal('1.25')
+    assert prices.output_mtok == Decimal('10')
+
+
 def test_imported_models_are_marked_api_backed():
     # Pulled straight from a vendor endpoint, so a reprice can be caught without a human reading a
     # pricing page. This is what the `api` marker in the docs is driven by.

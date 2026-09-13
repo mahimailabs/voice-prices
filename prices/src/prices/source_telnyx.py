@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import Any, NamedTuple, cast
 
 import httpx2
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .prices_types import ClauseEquals, ModelInfo, ModelPrice, Provenance
 from .update import ProviderYaml
@@ -87,6 +87,44 @@ class InferenceRow(BaseModel):
     cached_input_tiers: list[Tier] = Field(default_factory=list)
     unit: str
     currency: str
+
+    @model_validator(mode='before')
+    @classmethod
+    def normalize_rates_payload(cls, value: Any) -> Any:
+        """Accept the current nested ``rates.values`` API shape as well as the legacy one."""
+        if not isinstance(value, dict):
+            return value
+        raw = cast('dict[str, Any]', value)
+        if 'rates' not in raw:
+            return raw
+        rates = raw.get('rates')
+        if not isinstance(rates, dict):
+            return raw
+        rates = cast('dict[str, Any]', rates)
+        values = rates.get('values')
+        if not isinstance(values, dict):
+            return raw
+        values = cast('dict[str, Any]', values)
+
+        normalized = dict(raw)
+        normalized['unit'] = rates.get('unit')
+        normalized['currency'] = rates.get('currency')
+        field_map = {
+            'input': ('input_rate', 'input_tiers'),
+            'output': ('output_rate', 'output_tiers'),
+            'cached_input': ('cached_input_rate', 'cached_input_tiers'),
+        }
+        for source, (headline_field, tiers_field) in field_map.items():
+            tiers = values.get(source)
+            if not isinstance(tiers, list):
+                continue
+            tiers = cast('list[dict[str, Any]]', tiers)
+            normalized[tiers_field] = tiers
+            if tiers:
+                first = tiers[0]
+                if 'rate' in first:
+                    normalized[headline_field] = first['rate']
+        return normalized
 
 
 VOICE_SLUG = 'voice-api'
