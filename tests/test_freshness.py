@@ -53,7 +53,7 @@ def test_select_real_catalog_staleness_boundary():
     # Far in the future, every voice entry is stale; all=True ignores staleness.
     future = select_stale(date(2030, 1, 1))
     every = select_stale(date(2020, 1, 1), all=True)
-    assert len(future) == len(every) == 82
+    assert len(future) == len(every) == 83
     providers = {w.provider_id for w in every}
     assert providers == {
         'ai_coustics',
@@ -72,6 +72,7 @@ def test_select_real_catalog_staleness_boundary():
         'novita',
         'openai',
         'rime',
+        'recall',
         'speechmatics',
         'telnyx',
         'x-ai',
