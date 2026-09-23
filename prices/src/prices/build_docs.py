@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal, NamedTuple, TypedDict, cast
 
@@ -331,6 +332,15 @@ def base_prices(prices: Any) -> tuple[dict[str, float], bool, bool]:
         if base is None and blocks:
             first = blocks[0]
             base = cast('dict[str, Any]', first).get('prices') if isinstance(first, dict) else None
+        # Timestamp schedules describe current promotional rates, including their expiry.
+        for b in blocks:
+            if isinstance(b, dict):
+                item = cast('dict[str, Any]', b)
+                constraint = cast('dict[str, Any]', item.get('constraint') or {})
+                if 'start_timestamp' in constraint and datetime.fromisoformat(
+                    constraint['start_timestamp'].replace('Z', '+00:00')
+                ) <= datetime.now(timezone.utc):
+                    base = item.get('prices')
         block = base
 
     flat: dict[str, float] = {}
@@ -407,7 +417,10 @@ def _model_row(model: dict[str, Any], flat: dict[str, float], tiered: bool, dail
     if tiered:
         markers.append('tiered')
     if daily:
-        markers.append('daily')
+        timestamp_schedule = isinstance(prices, list) and any(
+            'start_timestamp' in (b.get('constraint') or {}) for b in cast('list[dict[str, Any]]', prices)
+        )
+        markers.append('scheduled' if timestamp_schedule else 'daily')
     if has_voices:
         markers.append('voices')
 
@@ -474,7 +487,7 @@ def provenance_source(provenance: Any) -> tuple[str, str | None]:
 def build_catalog(data: list[dict[str, Any]]) -> Catalog:
     """Build the per-category catalog from the raw data.json providers list.
 
-    Excludes unpriced (``prices == {}``) and deprecated models. A provider appears under each
+    Excludes unpriced (``prices == {}``) and deprecated models, except still-callable LiveKit rows. A provider appears under each
     category it has at least one model in (e.g. OpenAI under stt + llm + tts + s2s). Providers are
     sorted by id; models are sorted by id within a provider, matching the YAML house rule.
 
@@ -496,7 +509,7 @@ def build_catalog(data: list[dict[str, Any]]) -> Catalog:
             if not isinstance(raw_model, dict):
                 continue
             model = cast('dict[str, Any]', raw_model)
-            if model.get('deprecated') is True:
+            if model.get('deprecated') is True and provider_id not in ('livekit', 'livekit-scale'):
                 continue
             flat, tiered, daily = base_prices(model.get('prices'))
             if not flat:
@@ -526,6 +539,7 @@ def build_catalog(data: list[dict[str, Any]]) -> Catalog:
 
 def _resolve_direct(slug_: str) -> tuple[str, str] | None:
     """Map a LiveKit slug to its direct-catalog ``(provider_id, model_id)``, if any."""
+    slug_ = slug_.split('@', 1)[0]
     if slug_ in LIVEKIT_DIRECT_ALIASES:
         return LIVEKIT_DIRECT_ALIASES[slug_]
     prefix, sep, rest = slug_.partition('/')
@@ -707,13 +721,16 @@ def _markers_footnote(rows: list[ModelRow]) -> str:
         're-read and compared automatically rather than by a human reading a pricing page.',
         'tiered': '`tiered` the rate changes above a token threshold. The base rate is shown.',
         'daily': '`daily` the rate changes with the time of day. The standard rate is shown.',
+        'scheduled': '`scheduled` this price has dated changes. The rate active when this page was generated is shown; see the promotion dates below.',
         'voices': '`voices` some voice classes cost a multiple of the base rate.',
         'estimated': '`estimated` this rate is not the meter the vendor bills on, so it will not '
         'reconcile against an invoice. Either the model is billed in another unit and this figure '
         'is the vendor restating it, or the vendor publishes only a floor ("starting at") or a '
         'range. Useful for comparison and capacity planning, not for billing.',
     }
-    lines = [notes[marker] for marker in ('api', 'tiered', 'daily', 'voices', 'estimated') if marker in seen]
+    lines = [
+        notes[marker] for marker in ('api', 'tiered', 'daily', 'scheduled', 'voices', 'estimated') if marker in seen
+    ]
     return '\n'.join(f'- {line}' for line in lines)
 
 

@@ -33,6 +33,7 @@ __all__ = (
     'Tier',
     'ConditionalPrice',
     'StartDateConstraint',
+    'StartTimestampConstraint',
     'TimeOfDateConstraint',
     'ClauseStartsWith',
     'ClauseEndsWith',
@@ -1311,13 +1312,23 @@ class ConditionalPrice:
     The last price active price (price where the constraints are met) is used.
     """
 
-    constraint: StartDateConstraint | TimeOfDateConstraint | None = None
+    constraint: StartDateConstraint | StartTimestampConstraint | TimeOfDateConstraint | None = None
     """Timestamp when this price starts, None means this price is always valid."""
 
     _: dataclasses.KW_ONLY
 
     prices: ModelPrice
     """Prices for this condition."""
+
+
+@dataclass
+class StartTimestampConstraint:
+    """An exact, timezone-aware instant when a price takes effect."""
+
+    start_timestamp: pydantic.AwareDatetime
+
+    def active(self, request_timestamp: datetime) -> bool:
+        return request_timestamp >= self.start_timestamp
 
 
 @dataclass

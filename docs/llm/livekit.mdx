@@ -1,7 +1,7 @@
 ---
 title: "LiveKit Inference LLM pricing"
 sidebarTitle: "LiveKit Inference"
-description: "33 LLM model(s) from LiveKit Inference, with input and output token rates."
+description: "58 LLM model(s) from LiveKit Inference, with input and output token rates."
 mode: "wide"
 ---
 
@@ -13,39 +13,66 @@ Priced from `input_mtok` and `output_mtok`, US dollars per 1,000,000 tokens. Sou
 
 | Model | Name | Input $ / Mtok | Output $ / Mtok | Cached input $ / Mtok |
 | --- | --- | ---: | ---: | ---: |
-| `deepseek-ai/deepseek-v3.1` | DeepSeek-V3.1 | $0.5 | $1.5 | $0.25 |
-| `google/gemini-2.5-flash` | Gemini 2.5 Flash | $0.3 | $2.5 | $0.03 |
-| `google/gemini-2.5-flash-lite` | Gemini 2.5 Flash-Lite | $0.1 | $0.4 | $0.01 |
-| `google/gemini-2.5-pro` | Gemini 2.5 Pro | $2.5 | $15 | $0.25 |
-| `google/gemini-3-flash-preview` | Gemini 3 Flash | $0.5 | $3 | $0.05 |
-| `google/gemini-3.1-flash-lite` | Gemini 3.1 Flash Lite | $0.25 | $1.5 | $0.025 |
-| `google/gemini-3.1-pro-preview` | Gemini 3.1 Pro | $4 | $18 | $0.4 |
-| `google/gemini-3.5-flash` | Gemini 3.5 Flash | $1.5 | $9 | $0.15 |
-| `moonshotai/kimi-k2.5` | Kimi K2.5 | $0.6 | $3 | $0.12 |
-| `openai/chat-latest` | ChatGPT Latest | $5 | $30 | $0.5 |
-| `openai/gpt-4.1` | GPT-4.1 | $2 | $8 | $0.5 |
-| `openai/gpt-4.1-mini` | GPT-4.1 mini | $0.4 | $1.6 | $0.1 |
-| `openai/gpt-4.1-nano` | GPT-4.1 nano | $0.1 | $0.4 | $0.03 |
-| `openai/gpt-4o` | GPT-4o | $2.5 | $10 | $1.25 |
-| `openai/gpt-4o-mini` | GPT-4o mini | $0.15 | $0.6 | $0.075 |
-| `openai/gpt-5` | GPT-5 | $1.25 | $10 | $0.13 |
-| `openai/gpt-5-mini` | GPT-5 mini | $0.25 | $2 | $0.03 |
-| `openai/gpt-5-nano` | GPT-5 nano | $0.05 | $0.4 | $0.01 |
-| `openai/gpt-5.1` | GPT-5.1 | $1.25 | $10 | $0.13 |
-| `openai/gpt-5.1-chat-latest` | GPT-5.1 Chat | $1.25 | $10 | $0.13 |
-| `openai/gpt-5.2` | GPT-5.2 | $1.75 | $14 | $0.18 |
-| `openai/gpt-5.2-chat-latest` | GPT-5.2 Chat | $1.75 | $14 | $0.18 |
-| `openai/gpt-5.3-chat-latest` | GPT-5.3 Chat | $1.75 | $14 | $0.175 |
-| `openai/gpt-5.4` | GPT-5.4 | $5 | $22.5 | $0.5 |
-| `openai/gpt-5.4-mini` | GPT-5.4 mini | $0.75 | $4.5 | $0.075 |
-| `openai/gpt-5.4-nano` | GPT-5.4 nano | $0.2 | $1.25 | $0.02 |
-| `openai/gpt-5.5` | GPT-5.5 | $10 | $45 | $1 |
-| `openai/gpt-oss-120b` | GPT OSS 120B | $0.1 | $0.5 | - |
-| `xai/grok-4-1-fast-non-reasoning` | Grok 4.1 Fast | $0.2 | $0.5 | - |
-| `xai/grok-4-1-fast-reasoning` | Grok 4.1 Fast Reasoning | $0.2 | $0.5 | - |
-| `xai/grok-4.20-0309-non-reasoning` | Grok 4.20 | $2 | $6 | - |
-| `xai/grok-4.20-0309-reasoning` | Grok 4.20 Reasoning | $2 | $6 | - |
-| `xai/grok-4.20-multi-agent-0309` | Grok 4.20 Multi-Agent | $2 | $6 | - |
+| `deepseek-ai/deepseek-v4-pro` <sup>api</sup> | DeepSeek-V4 Pro (Baseten) | $1.74 | $3.48 | $0.15 |
+| `deepseek-ai/deepseek-v4.1-flash` <sup>api</sup> | DeepSeek-V4.1 Flash (Baseten) | $0.3 | $1.2 | $0.03 |
+| `google/gemini-2.5-flash` <sup>api</sup> | Gemini 2.5 Flash (Google) | $0.3 | $2.5 | $0.03 |
+| `google/gemini-2.5-flash-lite` <sup>api</sup> | Gemini 2.5 Flash-Lite (Google) | $0.1 | $0.4 | $0.01 |
+| `google/gemini-2.5-pro` <sup>api</sup> | Gemini 2.5 Pro (Google) | $2.5 | $15 | $0.25 |
+| `google/gemini-3-flash-preview` <sup>api</sup> | Gemini 3 Flash (Google) | $0.5 | $3 | $0.05 |
+| `google/gemini-3.1-flash-lite` <sup>api</sup> | Gemini 3.1 Flash Lite (Google) | $0.25 | $1.5 | $0.025 |
+| `google/gemini-3.1-pro-preview` <sup>api</sup> | Gemini 3.1 Pro (Google) | $4 | $18 | $0.4 |
+| `google/gemini-3.5-flash` <sup>api</sup> | Gemini 3.5 Flash (Google) | $1.5 | $9 | $0.15 |
+| `google/gemini-3.5-flash-lite` <sup>api</sup> | Gemini 3.5 Flash Lite (Google) | $0.3 | $2.5 | $0.03 |
+| `google/gemini-3.6-flash` <sup>api</sup> | Gemini 3.6 Flash (Google) | $1.5 | $7.5 | $0.15 |
+| `google/gemini-3.7-flash` <sup>api</sup> | Gemini 3.7 Flash (Google) | $0.75 | $3.75 | $0.075 |
+| `google/gemini-3.8-flash` <sup>api</sup> | Gemini 3.8 Flash (Google) | $0.75 | $3.75 | $0.075 |
+| `google/gemma-4-31b-it` <sup>api</sup> | Gemma 4 31B (LiveKit) | $0.4 | $1.2 | $0.2 |
+| `moonshotai/kimi-k2.6` <sup>api</sup> | Kimi K2.6 (Baseten) | $0.95 | $4 | - |
+| `openai/chat-latest` <sup>api</sup> | ChatGPT Latest (Azure) | $5 | $30 | $0.5 |
+| `openai/chat-latest@openai` <sup>api</sup> | ChatGPT Latest (OpenAI) | $5 | $30 | $0.5 |
+| `openai/gpt-4.1` <sup>api</sup> | GPT-4.1 (Azure) | $2 | $8 | $0.5 |
+| `openai/gpt-4.1-mini` <sup>api</sup> | GPT-4.1 mini (Azure) | $0.4 | $1.6 | $0.1 |
+| `openai/gpt-4.1-mini@openai` <sup>api</sup> | GPT-4.1 mini (OpenAI) | $0.4 | $1.6 | $0.1 |
+| `openai/gpt-4.1-nano` <sup>api</sup> | GPT-4.1 nano (Azure) | $0.1 | $0.4 | $0.03 |
+| `openai/gpt-4.1-nano@openai` <sup>api</sup> | GPT-4.1 nano (OpenAI) | $0.1 | $0.4 | $0.025 |
+| `openai/gpt-4.1@openai` <sup>api</sup> | GPT-4.1 (OpenAI) | $2 | $8 | $0.5 |
+| `openai/gpt-4o` <sup>api</sup> | GPT-4o (Azure) | $2.5 | $10 | $1.25 |
+| `openai/gpt-4o-mini` <sup>api</sup> | GPT-4o mini (Azure) | $0.15 | $0.6 | $0.075 |
+| `openai/gpt-4o-mini@openai` <sup>api</sup> | GPT-4o mini (OpenAI) | $0.15 | $0.6 | $0.075 |
+| `openai/gpt-4o@openai` <sup>api</sup> | GPT-4o (OpenAI) | $2.5 | $10 | $1.25 |
+| `openai/gpt-5` <sup>api</sup> | GPT-5 (Azure) | $1.25 | $10 | $0.13 |
+| `openai/gpt-5-mini` <sup>api</sup> | GPT-5 mini (Azure) | $0.25 | $2 | $0.03 |
+| `openai/gpt-5-mini@openai` <sup>api</sup> | GPT-5 mini (OpenAI) | $0.25 | $2 | $0.025 |
+| `openai/gpt-5-nano` <sup>api</sup> | GPT-5 nano (Azure) | $0.05 | $0.4 | $0.01 |
+| `openai/gpt-5-nano@openai` <sup>api</sup> | GPT-5 nano (OpenAI) | $0.05 | $0.4 | $0.005 |
+| `openai/gpt-5.1` <sup>api</sup> | GPT-5.1 (Azure) | $1.25 | $10 | $0.13 |
+| `openai/gpt-5.1@openai` <sup>api</sup> | GPT-5.1 (OpenAI) | $1.25 | $10 | $0.125 |
+| `openai/gpt-5.2` <sup>api</sup> | GPT-5.2 (Azure) | $1.75 | $14 | $0.18 |
+| `openai/gpt-5.2@openai` <sup>api</sup> | GPT-5.2 (OpenAI) | $1.75 | $14 | $0.175 |
+| `openai/gpt-5.4` <sup>api</sup> | GPT-5.4 (Azure) | $5 | $22.5 | $0.5 |
+| `openai/gpt-5.4-mini` <sup>api</sup> | GPT-5.4 mini (OpenAI) | $0.75 | $4.5 | $0.075 |
+| `openai/gpt-5.4-nano` <sup>api</sup> | GPT-5.4 nano (OpenAI) | $0.2 | $1.25 | $0.02 |
+| `openai/gpt-5.4@openai` <sup>api</sup> | GPT-5.4 (OpenAI) | $5 | $22.5 | $0.5 |
+| `openai/gpt-5.5` <sup>api</sup> | GPT-5.5 (Azure) | $10 | $45 | $1 |
+| `openai/gpt-5.5@openai` <sup>api</sup> | GPT-5.5 (OpenAI) | $10 | $45 | $1 |
+| `openai/gpt-5.6-luna` <sup>api</sup> | GPT-5.6 Luna (Azure) | $0.2 | $1.2 | $0.02 |
+| `openai/gpt-5.6-luna@openai` <sup>api</sup> | GPT-5.6 Luna (OpenAI) | $0.2 | $1.2 | $0.02 |
+| `openai/gpt-5.6-sol` <sup>api</sup> | GPT-5.6 Sol (Azure) | $4 | $20 | $0.4 |
+| `openai/gpt-5.6-sol@openai` <sup>api</sup> | GPT-5.6 Sol (OpenAI) | $4 | $20 | $0.4 |
+| `openai/gpt-5.6-terra` <sup>api</sup> | GPT-5.6 Terra (Azure) | $2 | $12 | $0.2 |
+| `openai/gpt-5.6-terra@openai` <sup>api</sup> | GPT-5.6 Terra (OpenAI) | $2 | $12 | $0.2 |
+| `openai/gpt-5@openai` <sup>api</sup> | GPT-5 (OpenAI) | $1.25 | $10 | $0.125 |
+| `openai/gpt-oss-120b` <sup>api</sup> | GPT OSS 120B (Baseten) | $0.1 | $0.5 | - |
+| `openai/gpt-oss-120b@groq` <sup>api</sup> | GPT OSS 120B (Groq) | $0.15 | $0.6 | $0.075 |
+| `xai/grok-4.20-0309-non-reasoning` <sup>api</sup> | Grok 4.20 (xAI) | $2 | $6 | - |
+| `xai/grok-4.20-0309-reasoning` <sup>api</sup> | Grok 4.20 Reasoning (xAI) | $2 | $6 | - |
+| `xai/grok-4.20-multi-agent-0309` <sup>api</sup> | Grok 4.20 Multi-Agent (xAI) | $2 | $6 | - |
+| `xai/grok-4.3` <sup>api</sup> | Grok 4.3 (xAI) | $1.25 | $2.5 | $0.2 |
+| `xai/grok-4.5` <sup>api</sup> | Grok 4.5 (xAI) | $2 | $6 | $0.5 |
+| `xai/grok-4.6` <sup>api</sup> | Grok 4.6 (xAI) | $2 | $6 | $0.5 |
+| `xai/grok-4.7` <sup>api</sup> | Grok 4.7 (xAI) | $2 | $6 | $0.5 |
+
+- `api` the vendor publishes this rate at a machine-readable endpoint, so it is re-read and compared automatically rather than by a human reading a pricing page.
 
 <Warning>
 **Reference only, and unofficial.** Voice Prices is a community-maintained catalog. It is not published by, affiliated with, or endorsed by any vendor listed here, and the rates below are read off public pricing pages by hand, so they can be out of date or simply wrong. Vendors change prices without notice, and your own rate may differ with your plan, region, commitment or negotiated terms.

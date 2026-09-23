@@ -21,6 +21,7 @@ from prices.livekit_gen import (
     LLM_METRIC_FIELD,
     build_provider,
     generate,
+    render_yaml,
     scale_differs,
     stt_rate,
     tts_rate,
@@ -225,6 +226,128 @@ def test_generate_writes_strict_valid_yaml(tmp_path: Path):
 # ---- calc_price against the generated catalog (data.py) ---------------------
 
 
+@pytest.mark.parametrize('provider_id', ['livekit', 'livekit-scale'])
+def test_kimi_k26_livekit_price(provider_id: str):
+    result = calc_price(
+        Usage(input_tokens=1_000_000, output_tokens=1_000_000),
+        model_ref='moonshotai/kimi-k2.6',
+        provider_id=provider_id,
+    )
+    assert result.input_price == Decimal('0.95')
+    assert result.output_price == Decimal('4')
+    assert result.total_price == Decimal('4.95')
+    assert result.model_price.cache_read_mtok is None
+    assert result.model.deprecated is True
+
+
+@pytest.mark.parametrize('provider_id', ['livekit', 'livekit-scale'])
+@pytest.mark.parametrize('qualified', [False, True])
+@pytest.mark.parametrize(
+    ('prefix', 'model', 'usage', 'base_cost', 'scale_cost'),
+    [
+        ('moonshotai', 'kimi-k2.6', Usage(input_tokens=1_000_000), '0.95', '0.95'),
+        ('google', 'gemini-3-flash', Usage(input_tokens=1_000_000, output_tokens=1_000_000), '3.5', '3.5'),
+        ('google', 'gemini-3.1-pro', Usage(input_tokens=1_000_000, output_tokens=1_000_000), '22', '22'),
+        ('assemblyai', 'universal-3-5-pro', Usage(audio_input_seconds=Decimal(60)), '0.0075', '0.0075'),
+        ('deepgram', 'flux-general', Usage(audio_input_seconds=Decimal(1000)), '0.108333', '0.095'),
+        ('deepgram', 'flux-general:multi', Usage(audio_input_seconds=Decimal(1000)), '0.13', '0.113333'),
+        ('fishaudio', 's2-pro', Usage(characters=1_000_000), '15', '15'),
+        ('fishaudio', 's2.1-pro', Usage(characters=1_000_000), '15', '15'),
+        ('fishaudio', 's2.1-pro-free', Usage(characters=1_000_000), '0', '0'),
+    ],
+)
+def test_requested_livekit_names_and_rates(
+    provider_id: str, qualified: bool, prefix: str, model: str, usage: Usage, base_cost: str, scale_cost: str
+):
+    ref = f'{prefix}/{model}' if qualified else model
+    result = calc_price(usage, model_ref=ref, provider_id=provider_id)
+    assert result.total_price == Decimal(scale_cost if provider_id == 'livekit-scale' else base_cost)
+    assert result.unpriced_usage == ()
+    assert result.model.free is (model == 's2.1-pro-free')
+
+
+@pytest.mark.parametrize('model, cache_rate', [('gemini-3-flash', '0.05'), ('gemini-3.1-pro', '0.4')])
+def test_gemini_alias_preserves_cached_input_rate(model: str, cache_rate: str):
+    result = calc_price(
+        Usage(input_tokens=1_000_000, cache_read_tokens=1_000_000), model_ref=model, provider_id='livekit'
+    )
+    assert result.total_price == Decimal(cache_rate)
+
+
+@pytest.mark.parametrize('provider_id', ['livekit', 'livekit-scale'])
+@pytest.mark.parametrize(
+    'model',
+    [
+        'deepseek-ai/deepseek-v3',
+        'deepseek-ai/deepseek-v3.2',
+        'zai/glm-5.1',
+        'deepgram/aura',
+        'cartesia/sonic',
+        'inworld/inworld-stt-1',
+        'inworld/inworld-tts-1',
+        'inworld/inworld-tts-1-max',
+        'inworld/inworld-tts-1.5',
+        'fishaudio/s2.1-pro-unknown',
+        'google/gemini-3.1-pro-unknown',
+    ],
+)
+def test_no_guessed_rate_for_retired_unknown_or_unpublished_models(provider_id: str, model: str):
+    with pytest.raises(LookupError):
+        calc_price(Usage(characters=1000), model_ref=model, provider_id=provider_id)
+
+
+def test_reviewed_source_rows_regenerate_aliases_and_free_status():
+    from voice_prices.data_snapshot import get_snapshot
+
+    source = Path(__file__).resolve().parents[1] / 'prices/sources/livekit_pricing.json'
+    inference = json.loads(source.read_text())['inference']
+    # A later regeneration must preserve reviewed aliases and lifecycle flags.
+    selected = {kind: [row for row in rows if row.get('aliases')] for kind, rows in inference.items()}
+    snapshot = get_snapshot()
+    for scale, provider_id in [(False, 'livekit'), (True, 'livekit-scale')]:
+        generated = build_provider(selected, scale=scale, checked_date=date(2026, 9, 23))
+        yaml = YAML(typ='safe')
+        loaded = cast(Any, yaml.load(render_yaml(generated)))  # pyright: ignore[reportUnknownMemberType]
+        provider = Provider.model_validate(loaded)
+        for model in provider.models:
+            _, bundled = snapshot.find_provider_model(model.id, None, provider_id, None)
+            assert model.free == bundled.free
+            assert model.deprecated == bundled.deprecated
+            for entry in selected['stt'] + selected['tts'] + selected['llm']:
+                if entry['model_id'] == model.id:
+                    for alias in entry['aliases']:
+                        assert model.is_match(alias)
+                        assert bundled.is_match(alias)
+
+
+def test_fish_free_is_explicit_and_excluded_only_from_slim():
+    root = Path(__file__).resolve().parents[1] / 'prices'
+    for filename, present in [('data.json', True), ('data_slim.json', False)]:
+        provider = next(p for p in json.loads((root / filename).read_text()) if p['id'] == 'livekit')
+        models = {m['id']: m for m in provider['models']}
+        assert ('fishaudio/s2.1-pro-free' in models) is present
+        assert 'fishaudio/s2.1-pro' in models
+        if present:
+            assert models['fishaudio/s2.1-pro-free']['free'] is True
+
+
+@pytest.mark.parametrize('checked_day, included', [(25, True), (26, False), (27, False)])
+def test_deprecated_model_remains_until_verified_retirement(checked_day: int, included: bool):
+    entry = {
+        **INFERENCE['llm'][0],
+        'is_deprecated': True,
+        'retirement_date': '2026-09-26',
+    }
+    provider = build_provider({'llm': [entry]}, scale=False, checked_date=date(2026, 9, checked_day))
+    assert bool(provider['models']) is included
+    if included:
+        yaml = YAML(typ='safe')
+        loaded = cast(Any, yaml.load(render_yaml(provider)))  # pyright: ignore[reportUnknownMemberType]
+        model = Provider.model_validate(loaded).models[0]
+        assert model.deprecated is True
+        assert model.price_comments is not None and '2026-09-26' in model.price_comments
+
+
 def test_calc_price_livekit_stt():
     # input_audio_kseconds is $ per 1000 audio seconds, so 1000 seconds == the raw rate.
     price = calc_price(Usage(audio_input_seconds=Decimal(1000)), model_ref='deepgram/nova-2', provider_id='livekit')
@@ -277,3 +400,118 @@ def test_livekit_excluded_from_freshness_scrape():
 
     items = select_stale(date(2020, 1, 1), all=True)
     assert not any(it.provider_id in {'livekit', 'livekit-scale'} for it in items)
+
+
+def test_full_page_coverage_and_each_published_rate():
+    """Every visible row and billing metric must resolve under both plan selectors."""
+    from datetime import datetime, timezone
+
+    source = Path(__file__).resolve().parents[1] / 'prices/sources/livekit_pricing.json'
+    inference = json.loads(source.read_text())['inference']
+    assert {kind: len(rows) for kind, rows in inference.items()} == {'llm': 58, 'stt': 22, 'tts': 27}
+    assert len({row['source_model_id'] for rows in inference.values() for row in rows}) == 90
+    for kind, rows in inference.items():
+        for row in rows:
+            for tier, provider_id in [('build', 'livekit'), ('scale', 'livekit-scale')]:
+                ref = row['model_id']
+                if kind == 'llm':
+                    ref = row['source_model_id'] + '@' + row['serving_provider']
+                result = calc_price(
+                    Usage(),
+                    model_ref=ref,
+                    provider_id=provider_id,
+                    genai_request_timestamp=datetime(2026, 9, 23, tzinfo=timezone.utc),
+                )
+                assert result.model.id == row['model_id']
+                for rate in row['rates']:
+                    expected = Decimal(rate[tier])
+                    if kind == 'llm':
+                        field = LLM_METRIC_FIELD[rate['metric']]
+                    elif kind == 'stt':
+                        field, expected = 'input_audio_kseconds', stt_rate(expected)
+                    else:
+                        field, expected = 'input_kchars', tts_rate(expected)
+                    assert getattr(result.model_price, field) == expected, (ref, tier, field)
+
+
+@pytest.mark.parametrize('provider_id,regular', [('livekit', '48'), ('livekit-scale', '36')])
+@pytest.mark.parametrize(
+    'moment,free',
+    [
+        ('2026-09-09T06:59:59+00:00', False),
+        ('2026-09-09T07:00:00+00:00', True),
+        ('2026-10-08T06:59:59+00:00', True),
+        ('2026-10-08T07:00:00+00:00', False),
+        ('2026-10-08T03:00:00-04:00', False),
+    ],
+)
+def test_promotion_exact_boundaries(provider_id: str, regular: str, moment: str, free: bool):
+    from datetime import datetime
+
+    result = calc_price(
+        Usage(characters=1_000_000),
+        model_ref='gradium/default',
+        provider_id=provider_id,
+        genai_request_timestamp=datetime.fromisoformat(moment),
+    )
+    assert result.total_price == (Decimal(0) if free else Decimal(regular))
+    assert result.unpriced_usage == ()
+    assert result.model.free is False  # A temporary promotion must remain in the slim catalog.
+
+
+def test_source_parser_and_normalizer_keep_routes_and_filter_retired():
+    from prices.livekit_source import normalize, page_data
+
+    entry = {
+        'model_id': 'openai/example',
+        'model_label': 'Example',
+        'model_creator_label': 'OpenAI',
+        'provider_id': 'azure',
+        'provider_label': 'Azure',
+        'pricing_current': {
+            'rates': [
+                {
+                    'metric': 'input_tokens',
+                    'unit': {'currency': 'usd', 'measure': 'tokens', 'per': 1_000_000},
+                    'unit_price': {tier: {'amount': '1.25'} for tier in ('build', 'ship', 'scale')},
+                }
+            ]
+        },
+    }
+    data = {
+        'llmModels': [
+            entry,
+            {**entry, 'provider_id': 'openai'},
+            {**entry, 'is_sunset': True},
+            {**entry, 'is_unlisted': True},
+        ],
+        'sttModels': [entry],
+        'ttsModels': [entry],
+    }
+    html = '<script>self.__next_f.push(' + json.dumps([1, json.dumps(data)]) + ')</script>'
+    rows = normalize(page_data(html), {}, CHECKED)['inference']['llm']
+    assert [r['model_id'] for r in rows] == ['openai/example', 'openai/example@openai']
+    assert rows[0]['aliases'] == ['openai/example@azure']
+    assert rows[1]['rates'][0]['build'] == '1.25'
+    with pytest.raises(ValueError):
+        page_data('<html>Pricing unavailable</html>')
+
+
+def test_generator_preserves_manual_telephony_and_is_idempotent(tmp_path: Path):
+    root = Path(__file__).resolve().parents[1] / 'prices'
+    source = root / 'sources/livekit_pricing.json'
+    for name in ('livekit.yml', 'livekit_scale.yml'):
+        (tmp_path / name).write_text((root / 'providers' / name).read_text())
+    before = {p.name: p.read_text() for p in tmp_path.iterdir()}
+    generate(source, tmp_path, checked_date=date(2026, 9, 23))
+    assert {p.name: p.read_text() for p in tmp_path.iterdir()} == before
+
+
+@pytest.mark.parametrize('route,expected', [('azure', '0.13'), ('openai', '0.125')])
+def test_gpt5_route_specific_cached_cost(route: str, expected: str):
+    result = calc_price(
+        Usage(input_tokens=1_000_000, cache_read_tokens=1_000_000),
+        model_ref=f'openai/gpt-5@{route}',
+        provider_id='livekit-scale',
+    )
+    assert result.total_price == Decimal(expected)

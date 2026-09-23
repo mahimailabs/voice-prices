@@ -1,8 +1,10 @@
 # yaml-language-server: $schema=.schema.json
 name: LiveKit Inference (Scale)
 id: livekit-scale
+pricing_tier: Scale
 pricing_urls:
   - https://livekit.io/pricing
+  - https://livekit.com/pricing/inference
 api_pattern: 'https://[^/]*\.livekit\.cloud'
 fallback_model_providers:
   - livekit
@@ -11,369 +13,542 @@ price_comments: >-
   are listed here; LLM models (identical across all tiers) and flat-priced voice models fall back
   to the livekit provider via fallback_model_providers. Same conversions and source as the
   livekit provider.
-pricing_tier: Scale
-
 models:
   - id: cartesia/ink-2
     name: Ink 2
     match:
       equals: cartesia/ink-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.009/minute and Scale $0.0068/minute. Multiply by 1000/60 and round to
+      six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.113333
-
-  - id: cartesia/ink-2-2026-04-15
-    name: Ink 2 (2026-04-15)
-    match:
-      equals: cartesia/ink-2-2026-04-15
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_audio_kseconds: 0.113333
-
-  - id: cartesia/ink-2-latest
-    name: Ink 2 Latest
-    match:
-      equals: cartesia/ink-2-latest
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_audio_kseconds: 0.113333
-
   - id: cartesia/ink-whisper
     name: Ink Whisper
     match:
       equals: cartesia/ink-whisper
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.003/minute and Scale $0.0023/minute. Multiply by 1000/60 and round to
+      six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.038333
-
   - id: cartesia/sonic-2
     name: Sonic 2
     match:
       equals: cartesia/sonic-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters. LiveKit schedules retirement for 2026-10-20. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_kchars: 0.0375
-
   - id: cartesia/sonic-3
     name: Sonic 3
     match:
       equals: cartesia/sonic-3
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.0375
-
   - id: cartesia/sonic-3-2025-10-27
     name: Sonic 3 (2025-10-27)
     match:
       equals: cartesia/sonic-3-2025-10-27
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters. LiveKit schedules retirement for 2026-10-20. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_kchars: 0.0375
-
   - id: cartesia/sonic-3-2026-01-12
     name: Sonic 3 (2026-01-12)
     match:
       equals: cartesia/sonic-3-2026-01-12
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.0375
-
   - id: cartesia/sonic-3-latest
     name: Sonic 3 Latest
     match:
       equals: cartesia/sonic-3-latest
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.0375
-
   - id: cartesia/sonic-3.5
     name: Sonic 3.5
     match:
       equals: cartesia/sonic-3.5
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.0375
-
   - id: cartesia/sonic-3.5-2026-05-04
     name: Sonic 3.5 (2026-05-04)
     match:
       equals: cartesia/sonic-3.5-2026-05-04
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.0375
-
+  - id: cartesia/sonic-3.6
+    name: Sonic 3.6
+    match:
+      equals: cartesia/sonic-3.6
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
+    prices:
+      input_kchars: 0.0375
+  - id: cartesia/sonic-3.6-2026-08-27
+    name: Sonic 3.6 (2026-08-27)
+    match:
+      equals: cartesia/sonic-3.6-2026-08-27
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
+    prices:
+      input_kchars: 0.0375
   - id: cartesia/sonic-latest
     name: Sonic Latest
     match:
       equals: cartesia/sonic-latest
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.0375
-
+  - id: cartesia/sonic-preview
+    name: Sonic Preview
+    match:
+      equals: cartesia/sonic-preview
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
+    prices:
+      input_kchars: 0.0375
   - id: cartesia/sonic-turbo
     name: Sonic Turbo
     match:
       equals: cartesia/sonic-turbo
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters. LiveKit schedules retirement for 2026-10-20. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_kchars: 0.0375
-
   - id: deepgram/aura-2
     name: Aura-2
     match:
       equals: deepgram/aura-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $30 and Scale $27 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.027
-
   - id: deepgram/flux-general-en
     name: Flux
     match:
-      equals: deepgram/flux-general-en
+      or:
+        - equals: deepgram/flux-general-en
+        - equals: deepgram/flux-general
+        - equals: flux-general
+        - equals: flux-general-en
+        - equals: deepgram/flux-general:en
+        - equals: flux-general:en
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0065/minute and Scale $0.0057/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.095
-
   - id: deepgram/flux-general-multi
     name: Flux (Multilingual)
     match:
-      equals: deepgram/flux-general-multi
+      or:
+        - equals: deepgram/flux-general-multi
+        - equals: deepgram/flux-general:multi
+        - equals: flux-general:multi
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0078/minute and Scale $0.0068/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.113333
-
+  - id: deepgram/flux-tts
+    name: Flux TTS
+    match:
+      equals: deepgram/flux-tts
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $45 and Scale $40.50 per million characters. Divide by 1000 for USD/1000
+      characters.
+    prices:
+      input_kchars: 0.0405
   - id: deepgram/nova-2
     name: Nova-2
     match:
       equals: deepgram/nova-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.078333
-
   - id: deepgram/nova-2-conversationalai
     name: Nova-2 Conversational AI
     match:
       equals: deepgram/nova-2-conversationalai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.078333
-
   - id: deepgram/nova-2-medical
     name: Nova-2 Medical
     match:
       equals: deepgram/nova-2-medical
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.078333
-
   - id: deepgram/nova-2-phonecall
     name: Nova-2 Phone Call
     match:
       equals: deepgram/nova-2-phonecall
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.078333
-
   - id: deepgram/nova-3
     name: Nova-3 (Monolingual)
     match:
       equals: deepgram/nova-3
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0048/minute and Scale $0.0042/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.07
-
   - id: deepgram/nova-3-medical
     name: Nova-3 Medical
     match:
       equals: deepgram/nova-3-medical
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0077/minute and Scale $0.0065/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.108333
-
   - id: deepgram/nova-3-multi
     name: Nova-3 (Multilingual)
     match:
       equals: deepgram/nova-3-multi
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.005/minute. Multiply by 1000/60 and round to
+      six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.083333
-
-  - id: elevenlabs/eleven_flash_v2
-    name: Eleven Flash v2
+  - id: deepgram/nova-3-pharma
+    name: Nova-3 Pharma
     match:
-      equals: elevenlabs/eleven_flash_v2
+      equals: deepgram/nova-3-pharma
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0048/minute and Scale $0.0042/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
-      input_kchars: 0.06
-
-  - id: elevenlabs/eleven_flash_v2_5
-    name: Eleven Flash v2.5
+      input_audio_kseconds: 0.07
+  - id: gradium/default
+    name: Gradium TTS
     match:
-      equals: elevenlabs/eleven_flash_v2_5
+      equals: gradium/default
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-09T07:00:00Z until 2026-10-08T07:00:00Z, then
+      regular rates resume.
     prices:
-      input_kchars: 0.06
-
-  - id: elevenlabs/eleven_multilingual_v2
-    name: Eleven Multilingual v2
-    match:
-      equals: elevenlabs/eleven_multilingual_v2
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_kchars: 0.12
-
-  - id: elevenlabs/eleven_turbo_v2
-    name: Eleven Turbo v2
-    match:
-      equals: elevenlabs/eleven_turbo_v2
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_kchars: 0.06
-
-  - id: elevenlabs/eleven_turbo_v2_5
-    name: Eleven Turbo v2.5
-    match:
-      equals: elevenlabs/eleven_turbo_v2_5
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_kchars: 0.06
-
-  - id: elevenlabs/eleven_v3
-    name: Eleven v3
-    match:
-      equals: elevenlabs/eleven_v3
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_kchars: 0.12
-
+      - prices:
+          input_kchars: 0.036
+      - constraint:
+          start_timestamp: '2026-09-09T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-08T07:00:00+00:00'
+        prices:
+          input_kchars: 0.036
   - id: inworld/inworld-tts-1.5-max
     name: Realtime TTS 1.5 Max
     match:
       equals: inworld/inworld-tts-1.5-max
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $35 and Scale $20 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_kchars: 0.03
-
+      input_kchars: 0.02
   - id: inworld/inworld-tts-1.5-mini
     name: Realtime TTS 1.5 Mini
     match:
       equals: inworld/inworld-tts-1.5-mini
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $15 and Scale $8 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_kchars: 0.02
-
+      input_kchars: 0.008
   - id: inworld/inworld-tts-2
     name: Realtime TTS 2.0
     match:
       equals: inworld/inworld-tts-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $25 and Scale $15 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_kchars: 0.03
-
-  - id: rime/arcana
-    name: Arcana
+      input_kchars: 0.015
+  - id: inworld/inworld-tts-2-flash
+    name: Realtime TTS 2.0 Flash
     match:
-      equals: rime/arcana
+      equals: inworld/inworld-tts-2-flash
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $15 and Scale $9 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_kchars: 0.03
-
+      input_kchars: 0.009
   - id: rime/mist
     name: Mist
     match:
       equals: rime/mist
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then
+      regular rates resume. LiveKit schedules retirement for 2026-10-01. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
-      input_kchars: 0.02
-
+      - prices:
+          input_kchars: 0.02
+      - constraint:
+          start_timestamp: '2026-09-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0.02
   - id: rime/mistv2
     name: Mist v2
     match:
       equals: rime/mistv2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then
+      regular rates resume. LiveKit schedules retirement for 2026-10-01. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
-      input_kchars: 0.02
-
+      - prices:
+          input_kchars: 0.02
+      - constraint:
+          start_timestamp: '2026-09-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0.02
   - id: rime/mistv3
     name: Mist v3
     match:
       equals: rime/mistv3
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then
+      regular rates resume.
     prices:
-      input_kchars: 0.02
-
+      - prices:
+          input_kchars: 0.02
+      - constraint:
+          start_timestamp: '2026-09-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0.02
   - id: sip-thirdparty
     name: Third-party SIP minutes
     description: >-

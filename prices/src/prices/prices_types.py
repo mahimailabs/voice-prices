@@ -5,9 +5,10 @@ from datetime import date, time
 from decimal import Decimal
 from typing import Annotated, Any, Literal
 
-from annotated_types import Gt, MaxLen
+from annotated_types import Ge, Gt, MaxLen
 from pydantic import (
     AfterValidator,
+    AwareDatetime,
     BaseModel,
     Discriminator,
     Field,
@@ -491,7 +492,15 @@ class ModelPrice(_Model):
     requests_kcount: DollarPrice | None = None
     """price in USD per thousand requests"""
 
-    input_kchars: DollarPrice | None = None
+    input_kchars: (
+        Annotated[
+            Decimal,
+            Ge(0),
+            WithJsonSchema({'type': 'number'}),
+            PlainSerializer(serialize_decimal, return_type=float | int, when_used='json'),
+        ]
+        | None
+    ) = None
     """price in USD per 1,000 input characters (TTS text input)"""
 
     output_audio_kseconds: DollarPrice | None = None
@@ -610,10 +619,16 @@ class ConditionalPrice(_Model):
     The last price active price (price where the constraints are met) is used.
     """
 
-    constraint: StartDateConstraint | TimeOfDateConstraint | None = None
+    constraint: StartDateConstraint | StartTimestampConstraint | TimeOfDateConstraint | None = None
     """Timestamp when this price starts, None means this price is always valid."""
     prices: ModelPrice
     """Prices for this condition."""
+
+
+class StartTimestampConstraint(_Model):
+    """An exact, timezone-aware instant when a price takes effect."""
+
+    start_timestamp: AwareDatetime
 
 
 class StartDateConstraint(_Model):

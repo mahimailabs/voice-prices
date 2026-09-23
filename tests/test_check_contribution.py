@@ -211,6 +211,13 @@ def repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     repository. Using this checkout instead would couple the result to whatever happens to
     be on the current branch, and to whether CI cloned deeply enough to have `origin/main`.
     """
+
+    class FixedDate(date):
+        @classmethod
+        def today(cls) -> date:
+            return TODAY
+
+    monkeypatch.setattr('prices.check_contribution.date', FixedDate)
     _run('init', '-q', '-b', 'main', cwd=tmp_path)
     _run('config', 'user.email', 't@example.com', cwd=tmp_path)
     _run('config', 'user.name', 'Test', cwd=tmp_path)

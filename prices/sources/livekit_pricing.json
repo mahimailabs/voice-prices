@@ -1,1725 +1,3919 @@
 {
+  "source_url": "https://livekit.com/pricing/inference",
+  "checked_date": "2026-09-23",
+  "source_format": "Structured pricing data embedded in the official page; excludes sunset and unlisted rows.",
   "inference": {
     "stt": [
-      {
-        "model_id": "assemblyai/u3-rt-pro",
-        "model_label": "Universal-3 Pro Streaming",
-        "creator": "AssemblyAI",
-        "provider": "AssemblyAI",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0075",
-            "ship": "0.0075",
-            "scale": "0.0075"
-          }
-        ]
-      },
-      {
-        "model_id": "assemblyai/universal-streaming",
-        "model_label": "Universal-Streaming",
-        "creator": "AssemblyAI",
-        "provider": "AssemblyAI",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0025",
-            "ship": "0.0025",
-            "scale": "0.0025"
-          }
-        ]
-      },
-      {
-        "model_id": "assemblyai/universal-streaming-multilingual",
-        "model_label": "Universal-Streaming-Multilingual",
-        "creator": "AssemblyAI",
-        "provider": "AssemblyAI",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0025",
-            "ship": "0.0025",
-            "scale": "0.0025"
-          }
-        ]
-      },
-      {
-        "model_id": "cartesia/ink-whisper",
-        "model_label": "Ink Whisper",
-        "creator": "Cartesia",
-        "provider": "Cartesia",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.003",
-            "ship": "0.003",
-            "scale": "0.0023"
-          }
-        ]
-      },
-      {
-        "model_id": "cartesia/ink-2",
-        "model_label": "Ink 2",
-        "creator": "Cartesia",
-        "provider": "Cartesia",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.009",
-            "ship": "0.009",
-            "scale": "0.0068"
-          }
-        ]
-      },
-      {
-        "model_id": "cartesia/ink-2-latest",
-        "model_label": "Ink 2 Latest",
-        "creator": "Cartesia",
-        "provider": "Cartesia",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.009",
-            "ship": "0.009",
-            "scale": "0.0068"
-          }
-        ]
-      },
-      {
-        "model_id": "cartesia/ink-2-2026-04-15",
-        "model_label": "Ink 2 (2026-04-15)",
-        "creator": "Cartesia",
-        "provider": "Cartesia",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.009",
-            "ship": "0.009",
-            "scale": "0.0068"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/flux-general-en",
-        "model_label": "Flux",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0065",
-            "ship": "0.0065",
-            "scale": "0.0057"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/flux-general-multi",
-        "model_label": "Flux (Multilingual)",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0078",
-            "ship": "0.0078",
-            "scale": "0.0068"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/nova-2",
-        "model_label": "Nova-2",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0058",
-            "ship": "0.0058",
-            "scale": "0.0047"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/nova-2-conversationalai",
-        "model_label": "Nova-2 Conversational AI",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0058",
-            "ship": "0.0058",
-            "scale": "0.0047"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/nova-2-medical",
-        "model_label": "Nova-2 Medical",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0058",
-            "ship": "0.0058",
-            "scale": "0.0047"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/nova-2-phonecall",
-        "model_label": "Nova-2 Phone Call",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0058",
-            "ship": "0.0058",
-            "scale": "0.0047"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/nova-3",
-        "model_label": "Nova-3 (Monolingual)",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0048",
-            "ship": "0.0048",
-            "scale": "0.0042"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/nova-3-medical",
-        "model_label": "Nova-3 Medical",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0077",
-            "ship": "0.0077",
-            "scale": "0.0065"
-          }
-        ]
-      },
-      {
-        "model_id": "deepgram/nova-3-multi",
-        "model_label": "Nova-3 (Multilingual)",
-        "creator": "Deepgram",
-        "provider": "Deepgram",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0058",
-            "ship": "0.0058",
-            "scale": "0.005"
-          }
-        ]
-      },
-      {
-        "model_id": "elevenlabs/scribe_v2_realtime",
-        "model_label": "Scribe v2 Realtime",
-        "creator": "ElevenLabs",
-        "provider": "ElevenLabs",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "minute_usage",
-            "unit": "usd per minute",
-            "build": "0.0105",
-            "ship": "0.0105",
-            "scale": "0.0105"
-          }
-        ]
-      },
       {
         "model_id": "speechmatics/enhanced",
         "model_label": "Speechmatics Enhanced",
         "creator": "Speechmatics",
         "provider": "Speechmatics",
-        "is_deprecated": false,
+        "source_model_id": "speechmatics/enhanced",
+        "serving_provider": "speechmatics",
         "rates": [
           {
             "metric": "minute_usage",
-            "unit": "usd per minute",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
             "build": "0.0117",
             "ship": "0.0117",
             "scale": "0.0117"
           }
-        ]
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-05",
+        "price_comments": "Published Build/Ship $0.0117/minute and Scale $0.0117/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
       },
       {
         "model_id": "speechmatics/standard",
         "model_label": "Speechmatics Standard",
         "creator": "Speechmatics",
         "provider": "Speechmatics",
-        "is_deprecated": false,
+        "source_model_id": "speechmatics/standard",
+        "serving_provider": "speechmatics",
         "rates": [
           {
             "metric": "minute_usage",
-            "unit": "usd per minute",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
             "build": "0.005",
             "ship": "0.005",
             "scale": "0.005"
           }
-        ]
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-05",
+        "price_comments": "Published Build/Ship $0.005/minute and Scale $0.005/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "speechmatics/linden-1",
+        "model_label": "Speechmatics Linden-1",
+        "creator": "Speechmatics",
+        "provider": "Speechmatics",
+        "source_model_id": "speechmatics/linden-1",
+        "serving_provider": "speechmatics",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.005",
+            "ship": "0.005",
+            "scale": "0.005"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.005/minute and Scale $0.005/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "assemblyai/universal-3-5-pro",
+        "model_label": "Universal-3.5 Pro Streaming",
+        "creator": "AssemblyAI",
+        "provider": "AssemblyAI",
+        "source_model_id": "assemblyai/universal-3-5-pro",
+        "serving_provider": "assemblyai",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0075",
+            "ship": "0.0075",
+            "scale": "0.0075"
+          }
+        ],
+        "aliases": [
+          "universal-3-5-pro"
+        ],
+        "price_comments": "Published Build/Ship $0.0075/minute and Scale $0.0075/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "assemblyai/universal-3-6-pro",
+        "model_label": "Universal-3.6 Pro Streaming",
+        "creator": "AssemblyAI",
+        "provider": "AssemblyAI",
+        "source_model_id": "assemblyai/universal-3-6-pro",
+        "serving_provider": "assemblyai",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0075",
+            "ship": "0.0075",
+            "scale": "0.0075"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0075/minute and Scale $0.0075/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "assemblyai/universal-streaming",
+        "model_label": "Universal-Streaming",
+        "creator": "AssemblyAI",
+        "provider": "AssemblyAI",
+        "source_model_id": "assemblyai/universal-streaming",
+        "serving_provider": "assemblyai",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0025",
+            "ship": "0.0025",
+            "scale": "0.0025"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0025/minute and Scale $0.0025/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "assemblyai/universal-streaming-multilingual",
+        "model_label": "Universal-Streaming-Multilingual",
+        "creator": "AssemblyAI",
+        "provider": "AssemblyAI",
+        "source_model_id": "assemblyai/universal-streaming-multilingual",
+        "serving_provider": "assemblyai",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0025",
+            "ship": "0.0025",
+            "scale": "0.0025"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0025/minute and Scale $0.0025/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "cartesia/ink-whisper",
+        "model_label": "Ink Whisper",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "source_model_id": "cartesia/ink-whisper",
+        "serving_provider": "cartesia",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.003",
+            "ship": "0.003",
+            "scale": "0.0023"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.003/minute and Scale $0.0023/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "cartesia/ink-2",
+        "model_label": "Ink 2",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "source_model_id": "cartesia/ink-2",
+        "serving_provider": "cartesia",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.009",
+            "ship": "0.009",
+            "scale": "0.0068"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.009/minute and Scale $0.0068/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/flux-general-en",
+        "model_label": "Flux",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/flux-general-en",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0065",
+            "ship": "0.0065",
+            "scale": "0.0057"
+          }
+        ],
+        "aliases": [
+          "deepgram/flux-general",
+          "flux-general",
+          "flux-general-en",
+          "deepgram/flux-general:en",
+          "flux-general:en"
+        ],
+        "price_comments": "Published Build/Ship $0.0065/minute and Scale $0.0057/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/flux-general-multi",
+        "model_label": "Flux (Multilingual)",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/flux-general-multi",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0078",
+            "ship": "0.0078",
+            "scale": "0.0068"
+          }
+        ],
+        "aliases": [
+          "deepgram/flux-general:multi",
+          "flux-general:multi"
+        ],
+        "price_comments": "Published Build/Ship $0.0078/minute and Scale $0.0068/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/nova-2",
+        "model_label": "Nova-2",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/nova-2",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.0047"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/nova-2-conversationalai",
+        "model_label": "Nova-2 Conversational AI",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/nova-2-conversationalai",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.0047"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/nova-2-medical",
+        "model_label": "Nova-2 Medical",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/nova-2-medical",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.0047"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/nova-2-phonecall",
+        "model_label": "Nova-2 Phone Call",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/nova-2-phonecall",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.0047"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/nova-3",
+        "model_label": "Nova-3 (Monolingual)",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/nova-3",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0048",
+            "ship": "0.0048",
+            "scale": "0.0042"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0048/minute and Scale $0.0042/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/nova-3-medical",
+        "model_label": "Nova-3 Medical",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/nova-3-medical",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0077",
+            "ship": "0.0077",
+            "scale": "0.0065"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0077/minute and Scale $0.0065/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/nova-3-pharma",
+        "model_label": "Nova-3 Pharma",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/nova-3-pharma",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0048",
+            "ship": "0.0048",
+            "scale": "0.0042"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0048/minute and Scale $0.0042/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "deepgram/nova-3-multi",
+        "model_label": "Nova-3 (Multilingual)",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/nova-3-multi",
+        "serving_provider": "deepgram",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0058",
+            "ship": "0.0058",
+            "scale": "0.005"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0058/minute and Scale $0.005/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "google/gemini-3.5-transcribe-live",
+        "model_label": "Gemini 3.5 Transcribe Live",
+        "creator": "Google",
+        "provider": "Google",
+        "source_model_id": "google/gemini-3.5-transcribe-live",
+        "serving_provider": "google",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.0095",
+            "ship": "0.0095",
+            "scale": "0.0095"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.0095/minute and Scale $0.0095/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
       },
       {
         "model_id": "xai/stt-1",
         "model_label": "Speech to Text",
         "creator": "xAI",
         "provider": "xAI",
-        "is_deprecated": false,
+        "source_model_id": "xai/stt-1",
+        "serving_provider": "xai",
         "rates": [
           {
             "metric": "minute_usage",
-            "unit": "usd per minute",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
             "build": "0.003333",
             "ship": "0.003333",
             "scale": "0.003333"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $0.003333/minute and Scale $0.003333/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
+      },
+      {
+        "model_id": "xai/stt-2",
+        "model_label": "Speech to Text 2",
+        "creator": "xAI",
+        "provider": "xAI",
+        "source_model_id": "xai/stt-2",
+        "serving_provider": "xai",
+        "rates": [
+          {
+            "metric": "minute_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "minute",
+              "per": 1
+            },
+            "build": "0.003333",
+            "ship": "0.003333",
+            "scale": "0.003333"
+          }
+        ],
+        "price_comments": "Published Build/Ship $0.003333/minute and Scale $0.003333/minute. Multiply by 1000/60 and round to six decimals for USD/1000 seconds."
       }
     ],
     "tts": [
-      {
-        "model_id": "cartesia/sonic",
-        "model_label": "Sonic",
-        "creator": "Cartesia",
-        "provider": "Cartesia",
-        "is_deprecated": true,
-        "rates": [
-          {
-            "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "50",
-            "ship": "50",
-            "scale": "37.50"
-          }
-        ]
-      },
       {
         "model_id": "cartesia/sonic-2",
         "model_label": "Sonic 2",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-2",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-20",
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "cartesia/sonic-3",
         "model_label": "Sonic 3",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-3",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "cartesia/sonic-3-latest",
         "model_label": "Sonic 3 Latest",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-3-latest",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "cartesia/sonic-latest",
         "model_label": "Sonic Latest",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-latest",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "cartesia/sonic-3.5",
         "model_label": "Sonic 3.5",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-3.5",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "cartesia/sonic-3.5-2026-05-04",
         "model_label": "Sonic 3.5 (2026-05-04)",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-3.5-2026-05-04",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
+      },
+      {
+        "model_id": "cartesia/sonic-preview",
+        "model_label": "Sonic Preview",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "source_model_id": "cartesia/sonic-preview",
+        "serving_provider": "cartesia",
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
+      },
+      {
+        "model_id": "cartesia/sonic-3.6",
+        "model_label": "Sonic 3.6",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "source_model_id": "cartesia/sonic-3.6",
+        "serving_provider": "cartesia",
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
+      },
+      {
+        "model_id": "cartesia/sonic-3.6-2026-08-27",
+        "model_label": "Sonic 3.6 (2026-08-27)",
+        "creator": "Cartesia",
+        "provider": "Cartesia",
+        "source_model_id": "cartesia/sonic-3.6-2026-08-27",
+        "serving_provider": "cartesia",
+        "rates": [
+          {
+            "metric": "character_usage",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "50",
+            "ship": "50",
+            "scale": "37.50"
+          }
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "cartesia/sonic-3-2025-10-27",
         "model_label": "Sonic 3 (2025-10-27)",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-3-2025-10-27",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-20",
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "cartesia/sonic-3-2026-01-12",
         "model_label": "Sonic 3 (2026-01-12)",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-3-2026-01-12",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "cartesia/sonic-turbo",
         "model_label": "Sonic Turbo",
         "creator": "Cartesia",
         "provider": "Cartesia",
-        "is_deprecated": false,
+        "source_model_id": "cartesia/sonic-turbo",
+        "serving_provider": "cartesia",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "50",
             "ship": "50",
             "scale": "37.50"
           }
-        ]
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-20",
+        "price_comments": "Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "deepgram/aura-2",
         "model_label": "Aura-2",
         "creator": "Deepgram",
         "provider": "Deepgram",
-        "is_deprecated": false,
+        "source_model_id": "deepgram/aura-2",
+        "serving_provider": "deepgram",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "30",
             "ship": "30",
             "scale": "27"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $30 and Scale $27 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
-        "model_id": "elevenlabs/eleven_flash_v2",
-        "model_label": "Eleven Flash v2",
-        "creator": "ElevenLabs",
-        "provider": "ElevenLabs",
-        "is_deprecated": false,
+        "model_id": "deepgram/flux-tts",
+        "model_label": "Flux TTS",
+        "creator": "Deepgram",
+        "provider": "Deepgram",
+        "source_model_id": "deepgram/flux-tts",
+        "serving_provider": "deepgram",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "150",
-            "ship": "150",
-            "scale": "60"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "45",
+            "ship": "45",
+            "scale": "40.50"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $45 and Scale $40.50 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
-        "model_id": "elevenlabs/eleven_flash_v2_5",
-        "model_label": "Eleven Flash v2.5",
-        "creator": "ElevenLabs",
-        "provider": "ElevenLabs",
-        "is_deprecated": false,
+        "model_id": "fishaudio/s2.1-pro",
+        "model_label": "S2.1 Pro",
+        "creator": "Fish Audio",
+        "provider": "Fish Audio",
+        "source_model_id": "fishaudio/s2.1-pro",
+        "serving_provider": "fishaudio",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "150",
-            "ship": "150",
-            "scale": "60"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "15",
+            "ship": "15",
+            "scale": "15"
           }
-        ]
+        ],
+        "aliases": [
+          "s2.1-pro"
+        ],
+        "price_comments": "Published Build/Ship $15 and Scale $15 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
-        "model_id": "elevenlabs/eleven_multilingual_v2",
-        "model_label": "Eleven Multilingual v2",
-        "creator": "ElevenLabs",
-        "provider": "ElevenLabs",
-        "is_deprecated": false,
+        "model_id": "fishaudio/s2.1-pro-free",
+        "model_label": "S2.1 Pro Free",
+        "creator": "Fish Audio",
+        "provider": "Fish Audio",
+        "source_model_id": "fishaudio/s2.1-pro-free",
+        "serving_provider": "fishaudio",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "300",
-            "ship": "300",
-            "scale": "120"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "0",
+            "ship": "0",
+            "scale": "0"
           }
-        ]
+        ],
+        "aliases": [
+          "s2.1-pro-free"
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-09-25",
+        "price_comments": "Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
-        "model_id": "elevenlabs/eleven_turbo_v2",
-        "model_label": "Eleven Turbo v2",
-        "creator": "ElevenLabs",
-        "provider": "ElevenLabs",
-        "is_deprecated": false,
+        "model_id": "fishaudio/s2-pro",
+        "model_label": "S2 Pro",
+        "creator": "Fish Audio",
+        "provider": "Fish Audio",
+        "source_model_id": "fishaudio/s2-pro",
+        "serving_provider": "fishaudio",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "150",
-            "ship": "150",
-            "scale": "60"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "15",
+            "ship": "15",
+            "scale": "15"
           }
-        ]
+        ],
+        "aliases": [
+          "s2-pro"
+        ],
+        "price_comments": "Published Build/Ship $15 and Scale $15 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
-        "model_id": "elevenlabs/eleven_turbo_v2_5",
-        "model_label": "Eleven Turbo v2.5",
-        "creator": "ElevenLabs",
-        "provider": "ElevenLabs",
-        "is_deprecated": false,
+        "model_id": "gradium/default",
+        "model_label": "Gradium TTS",
+        "creator": "Gradium",
+        "provider": "Gradium",
+        "source_model_id": "gradium/default",
+        "serving_provider": "gradium",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "150",
-            "ship": "150",
-            "scale": "60"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "0",
+            "ship": "0",
+            "scale": "0"
           }
-        ]
-      },
-      {
-        "model_id": "elevenlabs/eleven_v3",
-        "model_label": "Eleven v3",
-        "creator": "ElevenLabs",
-        "provider": "ElevenLabs",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "300",
-            "ship": "300",
-            "scale": "120"
-          }
-        ]
+        ],
+        "promotion": {
+          "starts_at": "2026-09-09T07:00:00Z",
+          "ends_at": "2026-10-08T07:00:00Z",
+          "regular_rates": [
+            {
+              "metric": "character_usage",
+              "unit": {
+                "currency": "usd",
+                "measure": "characters",
+                "per": 1000000
+              },
+              "build": "48",
+              "ship": "48",
+              "scale": "36"
+            }
+          ]
+        },
+        "price_comments": "Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000 characters. Zero-price promotion from 2026-09-09T07:00:00Z until 2026-10-08T07:00:00Z, then regular rates resume."
       },
       {
         "model_id": "inworld/inworld-tts-2",
         "model_label": "Realtime TTS 2.0",
         "creator": "Inworld",
         "provider": "Inworld",
-        "is_deprecated": false,
+        "source_model_id": "inworld/inworld-tts-2",
+        "serving_provider": "inworld",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "35",
-            "ship": "35",
-            "scale": "30"
-          }
-        ]
-      },
-      {
-        "model_id": "inworld/inworld-tts-1",
-        "model_label": "Realtime TTS",
-        "creator": "Inworld",
-        "provider": "Inworld",
-        "is_deprecated": true,
-        "rates": [
-          {
-            "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "25",
             "ship": "25",
-            "scale": "20"
+            "scale": "15"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $25 and Scale $15 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
-        "model_id": "inworld/inworld-tts-1-max",
-        "model_label": "Realtime TTS Max",
+        "model_id": "inworld/inworld-tts-2-flash",
+        "model_label": "Realtime TTS 2.0 Flash",
         "creator": "Inworld",
         "provider": "Inworld",
-        "is_deprecated": true,
+        "source_model_id": "inworld/inworld-tts-2-flash",
+        "serving_provider": "inworld",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "50",
-            "ship": "50",
-            "scale": "40"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "15",
+            "ship": "15",
+            "scale": "9"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $15 and Scale $9 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "inworld/inworld-tts-1.5-max",
         "model_label": "Realtime TTS 1.5 Max",
         "creator": "Inworld",
         "provider": "Inworld",
-        "is_deprecated": false,
+        "source_model_id": "inworld/inworld-tts-1.5-max",
+        "serving_provider": "inworld",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "35",
             "ship": "35",
-            "scale": "30"
+            "scale": "20"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $35 and Scale $20 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "inworld/inworld-tts-1.5-mini",
         "model_label": "Realtime TTS 1.5 Mini",
         "creator": "Inworld",
         "provider": "Inworld",
-        "is_deprecated": false,
+        "source_model_id": "inworld/inworld-tts-1.5-mini",
+        "serving_provider": "inworld",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "25",
-            "ship": "25",
-            "scale": "20"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "15",
+            "ship": "15",
+            "scale": "8"
           }
-        ]
-      },
-      {
-        "model_id": "rime/arcana",
-        "model_label": "Arcana",
-        "creator": "Rime",
-        "provider": "Rime",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "40",
-            "ship": "40",
-            "scale": "30"
-          }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $15 and Scale $8 per million characters. Divide by 1000 for USD/1000 characters."
       },
       {
         "model_id": "rime/coda",
         "model_label": "Coda",
         "creator": "Rime",
         "provider": "Rime",
-        "is_deprecated": false,
+        "source_model_id": "rime/coda",
+        "serving_provider": "rime",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "50",
-            "ship": "50",
-            "scale": "50"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "0",
+            "ship": "0",
+            "scale": "0"
           }
-        ]
+        ],
+        "promotion": {
+          "starts_at": "2026-09-01T07:00:00Z",
+          "ends_at": "2026-10-01T07:00:00Z",
+          "regular_rates": [
+            {
+              "metric": "character_usage",
+              "unit": {
+                "currency": "usd",
+                "measure": "characters",
+                "per": 1000000
+              },
+              "build": "50",
+              "ship": "50",
+              "scale": "50"
+            }
+          ]
+        },
+        "price_comments": "Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000 characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then regular rates resume."
       },
       {
         "model_id": "rime/mist",
         "model_label": "Mist",
         "creator": "Rime",
         "provider": "Rime",
-        "is_deprecated": false,
+        "source_model_id": "rime/mist",
+        "serving_provider": "rime",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "30",
-            "ship": "30",
-            "scale": "20"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "0",
+            "ship": "0",
+            "scale": "0"
           }
-        ]
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-01",
+        "promotion": {
+          "starts_at": "2026-09-01T07:00:00Z",
+          "ends_at": "2026-10-01T07:00:00Z",
+          "regular_rates": [
+            {
+              "metric": "character_usage",
+              "unit": {
+                "currency": "usd",
+                "measure": "characters",
+                "per": 1000000
+              },
+              "build": "30",
+              "ship": "30",
+              "scale": "20"
+            }
+          ]
+        },
+        "price_comments": "Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000 characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then regular rates resume."
       },
       {
         "model_id": "rime/mistv2",
         "model_label": "Mist v2",
         "creator": "Rime",
         "provider": "Rime",
-        "is_deprecated": false,
+        "source_model_id": "rime/mistv2",
+        "serving_provider": "rime",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "30",
-            "ship": "30",
-            "scale": "20"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "0",
+            "ship": "0",
+            "scale": "0"
           }
-        ]
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-01",
+        "promotion": {
+          "starts_at": "2026-09-01T07:00:00Z",
+          "ends_at": "2026-10-01T07:00:00Z",
+          "regular_rates": [
+            {
+              "metric": "character_usage",
+              "unit": {
+                "currency": "usd",
+                "measure": "characters",
+                "per": 1000000
+              },
+              "build": "30",
+              "ship": "30",
+              "scale": "20"
+            }
+          ]
+        },
+        "price_comments": "Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000 characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then regular rates resume."
       },
       {
         "model_id": "rime/mistv3",
         "model_label": "Mist v3",
         "creator": "Rime",
         "provider": "Rime",
-        "is_deprecated": false,
+        "source_model_id": "rime/mistv3",
+        "serving_provider": "rime",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
-            "build": "30",
-            "ship": "30",
-            "scale": "20"
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
+            "build": "0",
+            "ship": "0",
+            "scale": "0"
           }
-        ]
+        ],
+        "promotion": {
+          "starts_at": "2026-09-01T07:00:00Z",
+          "ends_at": "2026-10-01T07:00:00Z",
+          "regular_rates": [
+            {
+              "metric": "character_usage",
+              "unit": {
+                "currency": "usd",
+                "measure": "characters",
+                "per": 1000000
+              },
+              "build": "30",
+              "ship": "30",
+              "scale": "20"
+            }
+          ]
+        },
+        "price_comments": "Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000 characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then regular rates resume."
       },
       {
         "model_id": "xai/tts-1",
         "model_label": "Text to Speech",
         "creator": "xAI",
         "provider": "xAI",
-        "is_deprecated": false,
+        "source_model_id": "xai/tts-1",
+        "serving_provider": "xai",
         "rates": [
           {
             "metric": "character_usage",
-            "unit": "usd per 1,000,000 characters",
+            "unit": {
+              "currency": "usd",
+              "measure": "characters",
+              "per": 1000000
+            },
             "build": "15",
             "ship": "15",
             "scale": "15"
           }
-        ]
+        ],
+        "price_comments": "Published Build/Ship $15 and Scale $15 per million characters. Divide by 1000 for USD/1000 characters."
       }
     ],
     "llm": [
       {
-        "model_id": "openai/chat-latest",
-        "model_label": "ChatGPT Latest",
-        "creator": "Azure",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.50",
-            "ship": "0.50",
-            "scale": "0.50"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "5.00",
-            "ship": "5.00",
-            "scale": "5.00"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "30.00",
-            "ship": "30.00",
-            "scale": "30.00"
-          }
-        ]
-      },
-      {
-        "model_id": "deepseek-ai/deepseek-v3.1",
-        "model_label": "DeepSeek-V3.1",
+        "model_id": "deepseek-ai/deepseek-v4-pro",
+        "model_label": "DeepSeek-V4 Pro (Baseten)",
         "creator": "DeepSeek",
         "provider": "Baseten",
-        "is_deprecated": false,
+        "source_model_id": "deepseek-ai/deepseek-v4-pro",
+        "serving_provider": "baseten",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.25",
-            "ship": "0.25",
-            "scale": "0.25"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.15",
+            "ship": "0.15",
+            "scale": "0.15"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.50",
-            "ship": "0.50",
-            "scale": "0.50"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.74",
+            "ship": "1.74",
+            "scale": "1.74"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.50",
-            "ship": "1.50",
-            "scale": "1.50"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "3.48",
+            "ship": "3.48",
+            "scale": "3.48"
           }
-        ]
+        ],
+        "aliases": [
+          "deepseek-ai/deepseek-v4-pro@baseten"
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-09-26",
+        "price_comments": "LiveKit serving provider: baseten. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
-        "model_id": "google/gemini-2.5-flash",
-        "model_label": "Gemini 2.5 Flash",
-        "creator": "Google",
-        "provider": "Google",
-        "is_deprecated": false,
+        "model_id": "deepseek-ai/deepseek-v4.1-flash",
+        "model_label": "DeepSeek-V4.1 Flash (Baseten)",
+        "creator": "DeepSeek",
+        "provider": "Baseten",
+        "source_model_id": "deepseek-ai/deepseek-v4.1-flash",
+        "serving_provider": "baseten",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.03",
             "ship": "0.03",
             "scale": "0.03"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.30",
             "ship": "0.30",
             "scale": "0.30"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.20",
+            "ship": "1.20",
+            "scale": "1.20"
+          }
+        ],
+        "aliases": [
+          "deepseek-ai/deepseek-v4.1-flash@baseten"
+        ],
+        "price_comments": "LiveKit serving provider: baseten. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "google/gemini-2.5-flash",
+        "model_label": "Gemini 2.5 Flash (Google)",
+        "creator": "Google",
+        "provider": "Google",
+        "source_model_id": "google/gemini-2.5-flash",
+        "serving_provider": "google",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.03",
+            "ship": "0.03",
+            "scale": "0.03"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.30",
+            "ship": "0.30",
+            "scale": "0.30"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "2.50",
             "ship": "2.50",
             "scale": "2.50"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-2.5-flash@google"
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-20",
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
         "model_id": "google/gemini-2.5-flash-lite",
-        "model_label": "Gemini 2.5 Flash-Lite",
+        "model_label": "Gemini 2.5 Flash-Lite (Google)",
         "creator": "Google",
         "provider": "Google",
-        "is_deprecated": false,
+        "source_model_id": "google/gemini-2.5-flash-lite",
+        "serving_provider": "google",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.01",
             "ship": "0.01",
             "scale": "0.01"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.10",
             "ship": "0.10",
             "scale": "0.10"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.40",
             "ship": "0.40",
             "scale": "0.40"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-2.5-flash-lite@google"
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-20",
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
         "model_id": "google/gemini-2.5-pro",
-        "model_label": "Gemini 2.5 Pro",
+        "model_label": "Gemini 2.5 Pro (Google)",
         "creator": "Google",
         "provider": "Google",
-        "is_deprecated": false,
+        "source_model_id": "google/gemini-2.5-pro",
+        "serving_provider": "google",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.25",
             "ship": "0.25",
             "scale": "0.25"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "2.50",
             "ship": "2.50",
             "scale": "2.50"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "15.00",
             "ship": "15.00",
             "scale": "15.00"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-2.5-pro@google"
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-10",
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
         "model_id": "google/gemini-3-flash-preview",
-        "model_label": "Gemini 3 Flash",
+        "model_label": "Gemini 3 Flash (Google)",
         "creator": "Google",
         "provider": "Google",
-        "is_deprecated": false,
+        "source_model_id": "google/gemini-3-flash-preview",
+        "serving_provider": "google",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.05",
             "ship": "0.05",
             "scale": "0.05"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.50",
             "ship": "0.50",
             "scale": "0.50"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "3.00",
             "ship": "3.00",
             "scale": "3.00"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-3-flash",
+          "gemini-3-flash",
+          "gemini-3-flash-preview",
+          "google/gemini-3-flash-preview@google"
+        ],
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
         "model_id": "google/gemini-3.1-flash-lite",
-        "model_label": "Gemini 3.1 Flash Lite",
+        "model_label": "Gemini 3.1 Flash Lite (Google)",
         "creator": "Google",
         "provider": "Google",
-        "is_deprecated": false,
+        "source_model_id": "google/gemini-3.1-flash-lite",
+        "serving_provider": "google",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.025",
             "ship": "0.025",
             "scale": "0.025"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.25",
             "ship": "0.25",
             "scale": "0.25"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "1.50",
             "ship": "1.50",
             "scale": "1.50"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-3.1-flash-lite@google"
+        ],
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
-        "model_id": "google/gemini-3.5-flash",
-        "model_label": "Gemini 3.5 Flash",
+        "model_id": "google/gemini-3.5-flash-lite",
+        "model_label": "Gemini 3.5 Flash Lite (Google)",
         "creator": "Google",
         "provider": "Google",
-        "is_deprecated": false,
+        "source_model_id": "google/gemini-3.5-flash-lite",
+        "serving_provider": "google",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.03",
+            "ship": "0.03",
+            "scale": "0.03"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.30",
+            "ship": "0.30",
+            "scale": "0.30"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          }
+        ],
+        "aliases": [
+          "google/gemini-3.5-flash-lite@google"
+        ],
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "google/gemini-3.5-flash",
+        "model_label": "Gemini 3.5 Flash (Google)",
+        "creator": "Google",
+        "provider": "Google",
+        "source_model_id": "google/gemini-3.5-flash",
+        "serving_provider": "google",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.15",
             "ship": "0.15",
             "scale": "0.15"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "1.5",
             "ship": "1.5",
             "scale": "1.5"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "9.00",
             "ship": "9.00",
             "scale": "9.00"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-3.5-flash@google"
+        ],
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
-        "model_id": "google/gemini-3.1-pro-preview",
-        "model_label": "Gemini 3.1 Pro",
+        "model_id": "google/gemini-3.6-flash",
+        "model_label": "Gemini 3.6 Flash (Google)",
         "creator": "Google",
         "provider": "Google",
-        "is_deprecated": false,
+        "source_model_id": "google/gemini-3.6-flash",
+        "serving_provider": "google",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.40",
-            "ship": "0.40",
-            "scale": "0.40"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "4.00",
-            "ship": "4.00",
-            "scale": "4.00"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "18.00",
-            "ship": "18.00",
-            "scale": "18.00"
-          }
-        ]
-      },
-      {
-        "model_id": "moonshotai/kimi-k2.5",
-        "model_label": "Kimi K2.5",
-        "creator": "Moonshot AI",
-        "provider": "Baseten",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.12",
-            "ship": "0.12",
-            "scale": "0.12"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.60",
-            "ship": "0.60",
-            "scale": "0.60"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "3.00",
-            "ship": "3.00",
-            "scale": "3.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-4.1",
-        "model_label": "GPT-4.1",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.50",
-            "ship": "0.50",
-            "scale": "0.50"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "2.00",
-            "ship": "2.00",
-            "scale": "2.00"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "8.00",
-            "ship": "8.00",
-            "scale": "8.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-4.1-mini",
-        "model_label": "GPT-4.1 mini",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.10",
-            "ship": "0.10",
-            "scale": "0.10"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.40",
-            "ship": "0.40",
-            "scale": "0.40"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.60",
-            "ship": "1.60",
-            "scale": "1.60"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-4.1-nano",
-        "model_label": "GPT-4.1 nano",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.03",
-            "ship": "0.03",
-            "scale": "0.03"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.10",
-            "ship": "0.10",
-            "scale": "0.10"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.40",
-            "ship": "0.40",
-            "scale": "0.40"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-4o",
-        "model_label": "GPT-4o",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.25",
-            "ship": "1.25",
-            "scale": "1.25"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "2.50",
-            "ship": "2.50",
-            "scale": "2.50"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "10.00",
-            "ship": "10.00",
-            "scale": "10.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-4o-mini",
-        "model_label": "GPT-4o mini",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.075",
-            "ship": "0.075",
-            "scale": "0.075"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.15",
             "ship": "0.15",
             "scale": "0.15"
           },
           {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.60",
-            "ship": "0.60",
-            "scale": "0.60"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5",
-        "model_label": "GPT-5",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.13",
-            "ship": "0.13",
-            "scale": "0.13"
-          },
-          {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.25",
-            "ship": "1.25",
-            "scale": "1.25"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.50",
+            "ship": "1.50",
+            "scale": "1.50"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "10.00",
-            "ship": "10.00",
-            "scale": "10.00"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "7.50",
+            "ship": "7.50",
+            "scale": "7.50"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-3.6-flash@google"
+        ],
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
-        "model_id": "openai/gpt-5-mini",
-        "model_label": "GPT-5 mini",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
+        "model_id": "google/gemini-3.7-flash",
+        "model_label": "Gemini 3.7 Flash (Google)",
+        "creator": "Google",
+        "provider": "Google",
+        "source_model_id": "google/gemini-3.7-flash",
+        "serving_provider": "google",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.03",
-            "ship": "0.03",
-            "scale": "0.03"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.25",
-            "ship": "0.25",
-            "scale": "0.25"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "2.00",
-            "ship": "2.00",
-            "scale": "2.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5-nano",
-        "model_label": "GPT-5 nano",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.01",
-            "ship": "0.01",
-            "scale": "0.01"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.05",
-            "ship": "0.05",
-            "scale": "0.05"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.40",
-            "ship": "0.40",
-            "scale": "0.40"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5.1",
-        "model_label": "GPT-5.1",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.13",
-            "ship": "0.13",
-            "scale": "0.13"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.25",
-            "ship": "1.25",
-            "scale": "1.25"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "10.00",
-            "ship": "10.00",
-            "scale": "10.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5.1-chat-latest",
-        "model_label": "GPT-5.1 Chat",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.13",
-            "ship": "0.13",
-            "scale": "0.13"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.25",
-            "ship": "1.25",
-            "scale": "1.25"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "10.00",
-            "ship": "10.00",
-            "scale": "10.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5.2",
-        "model_label": "GPT-5.2",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.18",
-            "ship": "0.18",
-            "scale": "0.18"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.75",
-            "ship": "1.75",
-            "scale": "1.75"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "14.00",
-            "ship": "14.00",
-            "scale": "14.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5.2-chat-latest",
-        "model_label": "GPT-5.2 Chat",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.18",
-            "ship": "0.18",
-            "scale": "0.18"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.75",
-            "ship": "1.75",
-            "scale": "1.75"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "14.00",
-            "ship": "14.00",
-            "scale": "14.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5.3-chat-latest",
-        "model_label": "GPT-5.3 Chat",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.175",
-            "ship": "0.175",
-            "scale": "0.175"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.75",
-            "ship": "1.75",
-            "scale": "1.75"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "14.00",
-            "ship": "14.00",
-            "scale": "14.00"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5.4",
-        "model_label": "GPT-5.4",
-        "creator": "OpenAI",
-        "provider": "Azure",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.50",
-            "ship": "0.50",
-            "scale": "0.50"
-          },
-          {
-            "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "5.00",
-            "ship": "5.00",
-            "scale": "5.00"
-          },
-          {
-            "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "22.50",
-            "ship": "22.50",
-            "scale": "22.50"
-          }
-        ]
-      },
-      {
-        "model_id": "openai/gpt-5.4-mini",
-        "model_label": "GPT-5.4 mini",
-        "creator": "OpenAI",
-        "provider": "OpenAI",
-        "is_deprecated": false,
-        "rates": [
-          {
-            "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.075",
             "ship": "0.075",
             "scale": "0.075"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.75",
             "ship": "0.75",
             "scale": "0.75"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "4.50",
-            "ship": "4.50",
-            "scale": "4.50"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "3.75",
+            "ship": "3.75",
+            "scale": "3.75"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-3.7-flash@google"
+        ],
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
-        "model_id": "openai/gpt-5.4-nano",
-        "model_label": "GPT-5.4 nano",
-        "creator": "OpenAI",
-        "provider": "OpenAI",
-        "is_deprecated": false,
+        "model_id": "google/gemini-3.8-flash",
+        "model_label": "Gemini 3.8 Flash (Google)",
+        "creator": "Google",
+        "provider": "Google",
+        "source_model_id": "google/gemini-3.8-flash",
+        "serving_provider": "google",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.02",
-            "ship": "0.02",
-            "scale": "0.02"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.075",
+            "ship": "0.075",
+            "scale": "0.075"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.20",
-            "ship": "0.20",
-            "scale": "0.20"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.75",
+            "ship": "0.75",
+            "scale": "0.75"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.25",
-            "ship": "1.25",
-            "scale": "1.25"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "3.75",
+            "ship": "3.75",
+            "scale": "3.75"
           }
-        ]
+        ],
+        "aliases": [
+          "google/gemini-3.8-flash@google"
+        ],
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
-        "model_id": "openai/gpt-5.5",
-        "model_label": "GPT-5.5",
+        "model_id": "google/gemini-3.1-pro-preview",
+        "model_label": "Gemini 3.1 Pro (Google)",
+        "creator": "Google",
+        "provider": "Google",
+        "source_model_id": "google/gemini-3.1-pro-preview",
+        "serving_provider": "google",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "4.00",
+            "ship": "4.00",
+            "scale": "4.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "18.00",
+            "ship": "18.00",
+            "scale": "18.00"
+          }
+        ],
+        "aliases": [
+          "google/gemini-3.1-pro",
+          "gemini-3.1-pro",
+          "gemini-3.1-pro-preview",
+          "google/gemini-3.1-pro-preview@google"
+        ],
+        "price_comments": "LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "moonshotai/kimi-k2.6",
+        "model_label": "Kimi K2.6 (Baseten)",
+        "creator": "Moonshot AI",
+        "provider": "Baseten",
+        "source_model_id": "moonshotai/kimi-k2.6",
+        "serving_provider": "baseten",
+        "rates": [
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.95",
+            "ship": "0.95",
+            "scale": "0.95"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "4.00",
+            "ship": "4.00",
+            "scale": "4.00"
+          }
+        ],
+        "aliases": [
+          "kimi-k2.6",
+          "moonshotai/kimi-k2.6@baseten"
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-09-26",
+        "price_comments": "LiveKit serving provider: baseten. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4.1",
+        "model_label": "GPT-4.1 (Azure)",
         "creator": "OpenAI",
         "provider": "Azure",
-        "is_deprecated": false,
+        "source_model_id": "openai/gpt-4.1",
+        "serving_provider": "azure",
         "rates": [
           {
             "metric": "cached_input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "1.00",
-            "ship": "1.00",
-            "scale": "1.00"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
           },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "10.00",
-            "ship": "10.00",
-            "scale": "10.00"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "45.00",
-            "ship": "45.00",
-            "scale": "45.00"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "8.00",
+            "ship": "8.00",
+            "scale": "8.00"
           }
-        ]
+        ],
+        "aliases": [
+          "openai/gpt-4.1@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
-        "model_id": "openai/gpt-oss-120b",
-        "model_label": "GPT OSS 120B",
+        "model_id": "openai/gpt-4.1@openai",
+        "model_label": "GPT-4.1 (OpenAI)",
         "creator": "OpenAI",
-        "provider": "Baseten",
-        "is_deprecated": false,
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-4.1",
+        "serving_provider": "openai",
         "rates": [
           {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "8.00",
+            "ship": "8.00",
+            "scale": "8.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4.1-mini",
+        "model_label": "GPT-4.1 mini (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-4.1-mini",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.10",
+            "ship": "0.10",
+            "scale": "0.10"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.60",
+            "ship": "1.60",
+            "scale": "1.60"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-4.1-mini@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4.1-mini@openai",
+        "model_label": "GPT-4.1 mini (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-4.1-mini",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.10",
+            "ship": "0.10",
+            "scale": "0.10"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.60",
+            "ship": "1.60",
+            "scale": "1.60"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4.1-nano",
+        "model_label": "GPT-4.1 nano (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-4.1-nano",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.03",
+            "ship": "0.03",
+            "scale": "0.03"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.10",
             "ship": "0.10",
             "scale": "0.10"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-4.1-nano@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4.1-nano@openai",
+        "model_label": "GPT-4.1 nano (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-4.1-nano",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.025",
+            "ship": "0.025",
+            "scale": "0.025"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.10",
+            "ship": "0.10",
+            "scale": "0.10"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          }
+        ],
+        "is_deprecated": true,
+        "retirement_date": "2026-10-23",
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4o",
+        "model_label": "GPT-4o (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-4o",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-4o@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4o@openai",
+        "model_label": "GPT-4o (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-4o",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4o-mini",
+        "model_label": "GPT-4o mini (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-4o-mini",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.075",
+            "ship": "0.075",
+            "scale": "0.075"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.15",
+            "ship": "0.15",
+            "scale": "0.15"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.60",
+            "ship": "0.60",
+            "scale": "0.60"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-4o-mini@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-4o-mini@openai",
+        "model_label": "GPT-4o mini (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-4o-mini",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.075",
+            "ship": "0.075",
+            "scale": "0.075"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.15",
+            "ship": "0.15",
+            "scale": "0.15"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.60",
+            "ship": "0.60",
+            "scale": "0.60"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5",
+        "model_label": "GPT-5 (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.13",
+            "ship": "0.13",
+            "scale": "0.13"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5@openai",
+        "model_label": "GPT-5 (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.125",
+            "ship": "0.125",
+            "scale": "0.125"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5-mini",
+        "model_label": "GPT-5 mini (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5-mini",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.03",
+            "ship": "0.03",
+            "scale": "0.03"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.25",
+            "ship": "0.25",
+            "scale": "0.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5-mini@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5-mini@openai",
+        "model_label": "GPT-5 mini (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5-mini",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.025",
+            "ship": "0.025",
+            "scale": "0.025"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.25",
+            "ship": "0.25",
+            "scale": "0.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5-nano",
+        "model_label": "GPT-5 nano (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5-nano",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.01",
+            "ship": "0.01",
+            "scale": "0.01"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.05",
+            "ship": "0.05",
+            "scale": "0.05"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5-nano@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5-nano@openai",
+        "model_label": "GPT-5 nano (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5-nano",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.005",
+            "ship": "0.005",
+            "scale": "0.005"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.05",
+            "ship": "0.05",
+            "scale": "0.05"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.1",
+        "model_label": "GPT-5.1 (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5.1",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.13",
+            "ship": "0.13",
+            "scale": "0.13"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5.1@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.1@openai",
+        "model_label": "GPT-5.1 (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.1",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.125",
+            "ship": "0.125",
+            "scale": "0.125"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.2",
+        "model_label": "GPT-5.2 (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5.2",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.18",
+            "ship": "0.18",
+            "scale": "0.18"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.75",
+            "ship": "1.75",
+            "scale": "1.75"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "14.00",
+            "ship": "14.00",
+            "scale": "14.00"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5.2@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.2@openai",
+        "model_label": "GPT-5.2 (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.2",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.175",
+            "ship": "0.175",
+            "scale": "0.175"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.75",
+            "ship": "1.75",
+            "scale": "1.75"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "14.00",
+            "ship": "14.00",
+            "scale": "14.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.4",
+        "model_label": "GPT-5.4 (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5.4",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.50",
             "ship": "0.50",
             "scale": "0.50"
-          }
-        ]
-      },
-      {
-        "model_id": "xai/grok-4-1-fast-non-reasoning",
-        "model_label": "Grok 4.1 Fast",
-        "creator": "xAI",
-        "provider": "xAI",
-        "is_deprecated": false,
-        "rates": [
+          },
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "5.00",
+            "ship": "5.00",
+            "scale": "5.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "22.50",
+            "ship": "22.50",
+            "scale": "22.50"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5.4@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.4@openai",
+        "model_label": "GPT-5.4 (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.4",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "5.00",
+            "ship": "5.00",
+            "scale": "5.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "22.50",
+            "ship": "22.50",
+            "scale": "22.50"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.4-mini",
+        "model_label": "GPT-5.4 mini (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.4-mini",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.075",
+            "ship": "0.075",
+            "scale": "0.075"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.75",
+            "ship": "0.75",
+            "scale": "0.75"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "4.50",
+            "ship": "4.50",
+            "scale": "4.50"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5.4-mini@openai"
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.4-nano",
+        "model_label": "GPT-5.4 nano (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.4-nano",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.02",
+            "ship": "0.02",
+            "scale": "0.02"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.20",
             "ship": "0.20",
             "scale": "0.20"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
-            "build": "0.50",
-            "ship": "0.50",
-            "scale": "0.50"
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
           }
-        ]
+        ],
+        "aliases": [
+          "openai/gpt-5.4-nano@openai"
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
-        "model_id": "xai/grok-4-1-fast-reasoning",
-        "model_label": "Grok 4.1 Fast Reasoning",
-        "creator": "xAI",
-        "provider": "xAI",
-        "is_deprecated": false,
+        "model_id": "openai/gpt-5.5",
+        "model_label": "GPT-5.5 (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5.5",
+        "serving_provider": "azure",
         "rates": [
           {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.00",
+            "ship": "1.00",
+            "scale": "1.00"
+          },
+          {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "45.00",
+            "ship": "45.00",
+            "scale": "45.00"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5.5@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.5@openai",
+        "model_label": "GPT-5.5 (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.5",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.00",
+            "ship": "1.00",
+            "scale": "1.00"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "10.00",
+            "ship": "10.00",
+            "scale": "10.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "45.00",
+            "ship": "45.00",
+            "scale": "45.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.6-sol",
+        "model_label": "GPT-5.6 Sol (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5.6-sol",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cache_write_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "5.00",
+            "ship": "5.00",
+            "scale": "5.00"
+          },
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "4.00",
+            "ship": "4.00",
+            "scale": "4.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "20.00",
+            "ship": "20.00",
+            "scale": "20.00"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5.6-sol@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.6-sol@openai",
+        "model_label": "GPT-5.6 Sol (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.6-sol",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cache_write_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "5.00",
+            "ship": "5.00",
+            "scale": "5.00"
+          },
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "4.00",
+            "ship": "4.00",
+            "scale": "4.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "20.00",
+            "ship": "20.00",
+            "scale": "20.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.6-terra",
+        "model_label": "GPT-5.6 Terra (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5.6-terra",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cache_write_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          },
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.20",
+            "ship": "0.20",
+            "scale": "0.20"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "12.00",
+            "ship": "12.00",
+            "scale": "12.00"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5.6-terra@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.6-terra@openai",
+        "model_label": "GPT-5.6 Terra (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.6-terra",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cache_write_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          },
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.20",
+            "ship": "0.20",
+            "scale": "0.20"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "12.00",
+            "ship": "12.00",
+            "scale": "12.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.6-luna",
+        "model_label": "GPT-5.6 Luna (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/gpt-5.6-luna",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cache_write_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.25",
+            "ship": "0.25",
+            "scale": "0.25"
+          },
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.02",
+            "ship": "0.02",
+            "scale": "0.02"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.20",
             "ship": "0.20",
             "scale": "0.20"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.20",
+            "ship": "1.20",
+            "scale": "1.20"
+          }
+        ],
+        "aliases": [
+          "openai/gpt-5.6-luna@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-5.6-luna@openai",
+        "model_label": "GPT-5.6 Luna (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/gpt-5.6-luna",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cache_write_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.25",
+            "ship": "0.25",
+            "scale": "0.25"
+          },
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.02",
+            "ship": "0.02",
+            "scale": "0.02"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.20",
+            "ship": "0.20",
+            "scale": "0.20"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.20",
+            "ship": "1.20",
+            "scale": "1.20"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/chat-latest",
+        "model_label": "ChatGPT Latest (Azure)",
+        "creator": "OpenAI",
+        "provider": "Azure",
+        "source_model_id": "openai/chat-latest",
+        "serving_provider": "azure",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "5.00",
+            "ship": "5.00",
+            "scale": "5.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "30.00",
+            "ship": "30.00",
+            "scale": "30.00"
+          }
+        ],
+        "aliases": [
+          "openai/chat-latest@azure"
+        ],
+        "price_comments": "LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/chat-latest@openai",
+        "model_label": "ChatGPT Latest (OpenAI)",
+        "creator": "OpenAI",
+        "provider": "OpenAI",
+        "source_model_id": "openai/chat-latest",
+        "serving_provider": "openai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "5.00",
+            "ship": "5.00",
+            "scale": "5.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "30.00",
+            "ship": "30.00",
+            "scale": "30.00"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-oss-120b",
+        "model_label": "GPT OSS 120B (Baseten)",
+        "creator": "OpenAI",
+        "provider": "Baseten",
+        "source_model_id": "openai/gpt-oss-120b",
+        "serving_provider": "baseten",
+        "rates": [
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.10",
+            "ship": "0.10",
+            "scale": "0.10"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "0.50",
             "ship": "0.50",
             "scale": "0.50"
           }
-        ]
+        ],
+        "aliases": [
+          "openai/gpt-oss-120b@baseten"
+        ],
+        "price_comments": "LiveKit serving provider: baseten. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "openai/gpt-oss-120b@groq",
+        "model_label": "GPT OSS 120B (Groq)",
+        "creator": "OpenAI",
+        "provider": "Groq",
+        "source_model_id": "openai/gpt-oss-120b",
+        "serving_provider": "groq",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.075",
+            "ship": "0.075",
+            "scale": "0.075"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.15",
+            "ship": "0.15",
+            "scale": "0.15"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.60",
+            "ship": "0.60",
+            "scale": "0.60"
+          }
+        ],
+        "price_comments": "LiveKit serving provider: groq. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
         "model_id": "xai/grok-4.20-0309-non-reasoning",
-        "model_label": "Grok 4.20",
+        "model_label": "Grok 4.20 (xAI)",
         "creator": "xAI",
         "provider": "xAI",
-        "is_deprecated": false,
+        "source_model_id": "xai/grok-4.20-0309-non-reasoning",
+        "serving_provider": "xai",
         "rates": [
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "2.00",
             "ship": "2.00",
             "scale": "2.00"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "6.00",
             "ship": "6.00",
             "scale": "6.00"
           }
-        ]
+        ],
+        "aliases": [
+          "xai/grok-4.20-0309-non-reasoning@xai"
+        ],
+        "price_comments": "LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
         "model_id": "xai/grok-4.20-0309-reasoning",
-        "model_label": "Grok 4.20 Reasoning",
+        "model_label": "Grok 4.20 Reasoning (xAI)",
         "creator": "xAI",
         "provider": "xAI",
-        "is_deprecated": false,
+        "source_model_id": "xai/grok-4.20-0309-reasoning",
+        "serving_provider": "xai",
         "rates": [
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "2.00",
             "ship": "2.00",
             "scale": "2.00"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "6.00",
             "ship": "6.00",
             "scale": "6.00"
           }
-        ]
+        ],
+        "aliases": [
+          "xai/grok-4.20-0309-reasoning@xai"
+        ],
+        "price_comments": "LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       },
       {
         "model_id": "xai/grok-4.20-multi-agent-0309",
-        "model_label": "Grok 4.20 Multi-Agent",
+        "model_label": "Grok 4.20 Multi-Agent (xAI)",
         "creator": "xAI",
         "provider": "xAI",
-        "is_deprecated": false,
+        "source_model_id": "xai/grok-4.20-multi-agent-0309",
+        "serving_provider": "xai",
         "rates": [
           {
             "metric": "input_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "2.00",
             "ship": "2.00",
             "scale": "2.00"
           },
           {
             "metric": "output_tokens",
-            "unit": "usd per 1,000,000 tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
             "build": "6.00",
             "ship": "6.00",
             "scale": "6.00"
           }
-        ]
+        ],
+        "aliases": [
+          "xai/grok-4.20-multi-agent-0309@xai"
+        ],
+        "price_comments": "LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "xai/grok-4.3",
+        "model_label": "Grok 4.3 (xAI)",
+        "creator": "xAI",
+        "provider": "xAI",
+        "source_model_id": "xai/grok-4.3",
+        "serving_provider": "xai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.20",
+            "ship": "0.20",
+            "scale": "0.20"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.25",
+            "ship": "1.25",
+            "scale": "1.25"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.50",
+            "ship": "2.50",
+            "scale": "2.50"
+          }
+        ],
+        "aliases": [
+          "xai/grok-4.3@xai"
+        ],
+        "price_comments": "LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "xai/grok-4.5",
+        "model_label": "Grok 4.5 (xAI)",
+        "creator": "xAI",
+        "provider": "xAI",
+        "source_model_id": "xai/grok-4.5",
+        "serving_provider": "xai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "6.00",
+            "ship": "6.00",
+            "scale": "6.00"
+          }
+        ],
+        "aliases": [
+          "xai/grok-4.5@xai"
+        ],
+        "price_comments": "LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "xai/grok-4.6",
+        "model_label": "Grok 4.6 (xAI)",
+        "creator": "xAI",
+        "provider": "xAI",
+        "source_model_id": "xai/grok-4.6",
+        "serving_provider": "xai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "6.00",
+            "ship": "6.00",
+            "scale": "6.00"
+          }
+        ],
+        "aliases": [
+          "xai/grok-4.6@xai"
+        ],
+        "price_comments": "LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "xai/grok-4.7",
+        "model_label": "Grok 4.7 (xAI)",
+        "creator": "xAI",
+        "provider": "xAI",
+        "source_model_id": "xai/grok-4.7",
+        "serving_provider": "xai",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.50",
+            "ship": "0.50",
+            "scale": "0.50"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "2.00",
+            "ship": "2.00",
+            "scale": "2.00"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "6.00",
+            "ship": "6.00",
+            "scale": "6.00"
+          }
+        ],
+        "aliases": [
+          "xai/grok-4.7@xai"
+        ],
+        "price_comments": "LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
+      },
+      {
+        "model_id": "google/gemma-4-31b-it",
+        "model_label": "Gemma 4 31B (LiveKit)",
+        "creator": "Gemma",
+        "provider": "LiveKit",
+        "source_model_id": "google/gemma-4-31b-it",
+        "serving_provider": "livekit",
+        "rates": [
+          {
+            "metric": "cached_input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.20",
+            "ship": "0.20",
+            "scale": "0.20"
+          },
+          {
+            "metric": "input_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "0.40",
+            "ship": "0.40",
+            "scale": "0.40"
+          },
+          {
+            "metric": "output_tokens",
+            "unit": {
+              "currency": "usd",
+              "measure": "tokens",
+              "per": 1000000
+            },
+            "build": "1.20",
+            "ship": "1.20",
+            "scale": "1.20"
+          }
+        ],
+        "aliases": [
+          "google/gemma-4-31b-it@livekit"
+        ],
+        "price_comments": "LiveKit serving provider: livekit. @provider suffixes are catalog lookup selectors, not LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified selector for provider-specific billing."
       }
     ]
   }

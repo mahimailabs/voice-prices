@@ -15,6 +15,21 @@ file only carries what a consumer needs to act on.
 
 ## Unreleased
 
+### LiveKit Inference coverage
+
+- Refreshed all 107 visible LiveKit pricing-page rows (90 models): 58 LLM serving-provider
+  rows, 22 STT, and 27 TTS, with Build/Ship and Scale rates. Includes Kimi K2.6, current
+  Gemini/GPT/Grok models, AssemblyAI, Fish Audio, Inworld, Rime, and Gradium.
+- Added `@provider` price-lookup selectors for LLM serving-provider variants, including their
+  distinct cache-read and cache-write rates. These selectors are not LiveKit SDK model IDs.
+- Added exact timestamp pricing constraints so Gradium/Rime promotions expire automatically;
+  explicit zero character rates remain priced usage. Corrected Inworld and Flux TTS rates.
+- Removed sunset Inference models; retained still-callable deprecated rows with retirement
+  notices. Added reviewed SDK aliases, including Gemini names and Flux English/multilingual.
+- Added a repeatable official-page importer and preserved manual telephony rows on regeneration.
+  See [the coverage review](prices/sources/livekit-model-review.md) for source evidence,
+  provider selection, promotions, and requested SDK IDs without a published gateway rate.
+
 ### Behaviour changes
 
 - **`ModelInfo.description` is now `None` on every LLM row.** 175 descriptions across 14 providers
