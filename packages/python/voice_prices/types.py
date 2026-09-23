@@ -1328,6 +1328,9 @@ class StartTimestampConstraint:
     start_timestamp: pydantic.AwareDatetime
 
     def active(self, request_timestamp: datetime) -> bool:
+        # Caller-supplied naive timestamps follow the calculator's UTC default.
+        if request_timestamp.utcoffset() is None:
+            request_timestamp = request_timestamp.replace(tzinfo=timezone.utc)
         return request_timestamp >= self.start_timestamp
 
 

@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal, NamedTuple, TypedDict, cast
 
@@ -332,15 +331,8 @@ def base_prices(prices: Any) -> tuple[dict[str, float], bool, bool]:
         if base is None and blocks:
             first = blocks[0]
             base = cast('dict[str, Any]', first).get('prices') if isinstance(first, dict) else None
-        # Timestamp schedules describe current promotional rates, including their expiry.
-        for b in blocks:
-            if isinstance(b, dict):
-                item = cast('dict[str, Any]', b)
-                constraint = cast('dict[str, Any]', item.get('constraint') or {})
-                if 'start_timestamp' in constraint and datetime.fromisoformat(
-                    constraint['start_timestamp'].replace('Z', '+00:00')
-                ) <= datetime.now(timezone.utc):
-                    base = item.get('prices')
+        # Show the unconstrained regular rate: generated docs and comparisons must not
+        # change with the build clock or present temporary promotions as permanent prices.
         block = base
 
     flat: dict[str, float] = {}
@@ -721,7 +713,8 @@ def _markers_footnote(rows: list[ModelRow]) -> str:
         're-read and compared automatically rather than by a human reading a pricing page.',
         'tiered': '`tiered` the rate changes above a token threshold. The base rate is shown.',
         'daily': '`daily` the rate changes with the time of day. The standard rate is shown.',
-        'scheduled': '`scheduled` this price has dated changes. The rate active when this page was generated is shown; see the promotion dates below.',
+        'scheduled': '`scheduled` this price has dated changes. The regular rate is shown. '
+        f'Promotion dates are recorded in `price_comments` in the [provider YAML files]({PROVIDER_YAML_URL}).',
         'voices': '`voices` some voice classes cost a multiple of the base rate.',
         'estimated': '`estimated` this rate is not the meter the vendor bills on, so it will not '
         'reconcile against an invoice. Either the model is billed in another unit and this figure '

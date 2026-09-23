@@ -443,6 +443,10 @@ def test_full_page_coverage_and_each_published_rate():
         ('2026-10-08T06:59:59+00:00', True),
         ('2026-10-08T07:00:00+00:00', False),
         ('2026-10-08T03:00:00-04:00', False),
+        ('2026-09-09T06:59:59', False),
+        ('2026-09-09T07:00:00', True),
+        ('2026-10-08T06:59:59', True),
+        ('2026-10-08T07:00:00', False),
     ],
 )
 def test_promotion_exact_boundaries(provider_id: str, regular: str, moment: str, free: bool):

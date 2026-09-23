@@ -924,3 +924,29 @@ def test_comparison_has_no_s2s_or_vad_rows():
     comp: Comparison = build_comparison(_real_data())
     assert comp['s2s'] == []
     assert comp['vad'] == []
+
+
+@pytest.mark.parametrize(
+    'start,end', [('2000-01-01', '2100-01-01'), ('2000-01-01', '2001-01-01'), ('2100-01-01', '2101-01-01')]
+)
+def test_scheduled_docs_use_regular_rate_regardless_of_promotion_dates(start: str, end: str):
+    prices = [
+        {'prices': {'input_kchars': 0.048}},
+        {'constraint': {'start_timestamp': start + 'T07:00:00Z'}, 'prices': {'input_kchars': 0}},
+        {'constraint': {'start_timestamp': end + 'T07:00:00Z'}, 'prices': {'input_kchars': 0.048}},
+    ]
+    assert base_prices(prices) == ({'input_kchars': 0.048}, False, True)
+
+
+def test_promotion_docs_explain_regular_rates_and_link_to_dates():
+    data = _real_data()
+    catalog = build_catalog(data)
+    entry = next(p for p in catalog['tts'] if p['id'] == 'livekit')
+    page = render_provider_page('tts', entry)
+    assert 'The regular rate is shown' in page
+    assert 'see the promotion dates below' not in page
+    assert '[provider YAML files](https://github.com/mahimailabs/voice-prices/blob/main/prices/providers)' in page
+    comparison = build_comparison(data)
+    coda = next(row for row in comparison['tts'] if row['id'] == 'rime/coda')
+    assert coda['livekit'] == 50
+    assert coda['delta'] != -100

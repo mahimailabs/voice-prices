@@ -87,6 +87,10 @@ Both regeneration paths preserve manually maintained telephony entries. Build an
 have equal prices; otherwise generation fails for review. Scale entries are emitted whenever
 current or post-promotion rates differ, with fallback to the base provider for other models.
 
-Deprecated but callable rows appear in the LiveKit docs with retirement notices. Regeneration
+Generated docs and comparisons show regular rates for scheduled prices, with a marker linking
+to the source comments for promotion dates. Runtime calculations still apply promotions at the
+request timestamp; naive request timestamps are interpreted as UTC.
+
+Deprecated but callable rows appear in the LiveKit docs; source comments record retirement notices. Regeneration
 excludes them at their retirement date; an already installed catalog keeps its snapshot until
 updated. Promotion expiry, in contrast, is evaluated automatically at request time.
