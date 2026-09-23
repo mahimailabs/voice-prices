@@ -305,11 +305,11 @@ def test_real_catalog_has_at_least_one_api_backed_model():
         if 'api' in row['markers']
     ]
     assert backed
-    assert {provider for provider, _ in backed} == {'telnyx', 'cerebras'}
+    assert {provider for provider, _ in backed} == {'telnyx', 'cerebras', 'livekit', 'livekit-scale'}
     # The count is pinned too, not just the provider set: without it this passes even if every
     # marker but one per provider disappeared, and the coverage line on the overview would quietly
     # collapse from 15 to 2 with nothing failing.
-    assert len(backed) == 17, f'expected 17 api-backed models, found {len(backed)}: {sorted(backed)}'
+    assert len(backed) == 158, f'expected 158 api-backed models, found {len(backed)}: {sorted(backed)}'
 
 
 def test_markers_flag_tiered_daily_and_voices():
@@ -399,7 +399,7 @@ def test_no_deprecated_model_leaks_into_the_catalog():
     for provider in data:
         models: list[dict[str, Any]] = provider.get('models') or []
         for model_data in models:
-            if model_data.get('deprecated') is True:
+            if model_data.get('deprecated') is True and provider['id'] not in ('livekit', 'livekit-scale'):
                 deprecated.add((str(provider['id']), str(model_data['id'])))
     assert deprecated  # data.json has at least one deprecated model today
     catalog = build_catalog(data)
@@ -882,7 +882,15 @@ def test_elevenlabs_flash_v2_markup_is_a_true_same_model_comparison():
     # above), not a cross-version proxy. Flash v2 and v2.5 bill the same direct rate, so both rows show
     # the same real markup. Value-independent on purpose: the exact percentage is not pinned, because it
     # tracks whatever direct-rate basis the catalog uses and would churn on any legitimate reprice.
-    comp = build_comparison(_real_data())
+    data = _real_data()
+    livekit = next(p for p in data if p['id'] == 'livekit')
+    livekit['models'].extend(
+        [
+            {'id': 'elevenlabs/' + model, 'prices': {'input_kchars': 0.08}}
+            for model in ('eleven_flash_v2', 'eleven_flash_v2_5')
+        ]
+    )
+    comp = build_comparison(data)
     v2 = next(r for r in comp['tts'] if r['id'] == 'elevenlabs/eleven_flash_v2')
     v2_5 = next(r for r in comp['tts'] if r['id'] == 'elevenlabs/eleven_flash_v2_5')
     assert v2['direct'] is not None and v2_5['direct'] is not None
@@ -894,7 +902,15 @@ def test_elevenlabs_flash_v2_markup_is_a_true_same_model_comparison():
 def test_livekit_xai_grok_resolves_to_a_direct_baseline():
     # Regression: xai/grok-4-1-fast was wrongly LiveKit-only because the prefix mapped to 'x_ai'
     # rather than the real provider id 'x-ai'. It has an exact direct match (pass-through).
-    comp = build_comparison(_real_data())
+    data = _real_data()
+    livekit = next(p for p in data if p['id'] == 'livekit')
+    livekit['models'].extend(
+        [
+            {'id': 'xai/grok-4-1-fast-non-reasoning', 'prices': {'input_mtok': 0.2}},
+            {'id': 'openai/gpt-5.3-chat-latest', 'prices': {'input_mtok': 1.75}},
+        ]
+    )
+    comp = build_comparison(data)
     grok = next(r for r in comp['llm'] if r['id'] == 'xai/grok-4-1-fast-non-reasoning')
     assert grok['direct'] is not None  # the regression: was wrongly None
     assert grok['direct'] == grok['livekit']  # resolved to the same-priced direct model (pass-through)
@@ -908,3 +924,29 @@ def test_comparison_has_no_s2s_or_vad_rows():
     comp: Comparison = build_comparison(_real_data())
     assert comp['s2s'] == []
     assert comp['vad'] == []
+
+
+@pytest.mark.parametrize(
+    'start,end', [('2000-01-01', '2100-01-01'), ('2000-01-01', '2001-01-01'), ('2100-01-01', '2101-01-01')]
+)
+def test_scheduled_docs_use_regular_rate_regardless_of_promotion_dates(start: str, end: str):
+    prices = [
+        {'prices': {'input_kchars': 0.048}},
+        {'constraint': {'start_timestamp': start + 'T07:00:00Z'}, 'prices': {'input_kchars': 0}},
+        {'constraint': {'start_timestamp': end + 'T07:00:00Z'}, 'prices': {'input_kchars': 0.048}},
+    ]
+    assert base_prices(prices) == ({'input_kchars': 0.048}, False, True)
+
+
+def test_promotion_docs_explain_regular_rates_and_link_to_dates():
+    data = _real_data()
+    catalog = build_catalog(data)
+    entry = next(p for p in catalog['tts'] if p['id'] == 'livekit')
+    page = render_provider_page('tts', entry)
+    assert 'The regular rate is shown' in page
+    assert 'see the promotion dates below' not in page
+    assert '[provider YAML files](https://github.com/mahimailabs/voice-prices/blob/main/prices/providers)' in page
+    comparison = build_comparison(data)
+    coda = next(row for row in comparison['tts'] if row['id'] == 'rime/coda')
+    assert coda['livekit'] == 50
+    assert coda['delta'] != -100

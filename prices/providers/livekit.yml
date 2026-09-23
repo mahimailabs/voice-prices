@@ -1,8 +1,10 @@
 # yaml-language-server: $schema=.schema.json
 name: LiveKit Inference
 id: livekit
+pricing_tier: Build/Ship
 pricing_urls:
   - https://livekit.io/pricing
+  - https://livekit.com/pricing/inference
 api_pattern: 'https://[^/]*\.livekit\.cloud'
 provider_match:
   contains: livekit
@@ -14,756 +16,1649 @@ price_comments: >-
   (VoiceGateway passes provider_id=livekit); model_match is intentionally omitted so a bare model
   ref still resolves to the direct vendor. Conversions: STT $/min to input_audio_kseconds
   (x1000/60); TTS $/1M chars to input_kchars (/1000); LLM $/1M tokens map 1:1. Realtime bundled
-  models and LiveKit Cloud platform per-minute rates are out of scope. Source: LiveKit
-  get_pricing_info; regenerate with make livekit-get.
-pricing_tier: Build/Ship
-
+  models and LiveKit Cloud platform per-minute rates are out of scope. Source: LiveKit pricing
+  page structured data; regenerate with make livekit-get.
 models:
-  - id: assemblyai/u3-rt-pro
-    name: Universal-3 Pro Streaming
+  - id: assemblyai/universal-3-5-pro
+    name: Universal-3.5 Pro Streaming
     match:
-      equals: assemblyai/u3-rt-pro
+      or:
+        - equals: assemblyai/universal-3-5-pro
+        - equals: universal-3-5-pro
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0075/minute and Scale $0.0075/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.125
-
+  - id: assemblyai/universal-3-6-pro
+    name: Universal-3.6 Pro Streaming
+    match:
+      equals: assemblyai/universal-3-6-pro
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0075/minute and Scale $0.0075/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
+    prices:
+      input_audio_kseconds: 0.125
   - id: assemblyai/universal-streaming
     name: Universal-Streaming
     match:
       equals: assemblyai/universal-streaming
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0025/minute and Scale $0.0025/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.041667
-
   - id: assemblyai/universal-streaming-multilingual
     name: Universal-Streaming-Multilingual
     match:
       equals: assemblyai/universal-streaming-multilingual
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0025/minute and Scale $0.0025/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.041667
-
   - id: cartesia/ink-2
     name: Ink 2
     match:
       equals: cartesia/ink-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.009/minute and Scale $0.0068/minute. Multiply by 1000/60 and round to
+      six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.15
-
-  - id: cartesia/ink-2-2026-04-15
-    name: Ink 2 (2026-04-15)
-    match:
-      equals: cartesia/ink-2-2026-04-15
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_audio_kseconds: 0.15
-
-  - id: cartesia/ink-2-latest
-    name: Ink 2 Latest
-    match:
-      equals: cartesia/ink-2-latest
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_audio_kseconds: 0.15
-
   - id: cartesia/ink-whisper
     name: Ink Whisper
     match:
       equals: cartesia/ink-whisper
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.003/minute and Scale $0.0023/minute. Multiply by 1000/60 and round to
+      six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.05
-
   - id: cartesia/sonic-2
     name: Sonic 2
     match:
       equals: cartesia/sonic-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters. LiveKit schedules retirement for 2026-10-20. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_kchars: 0.05
-
   - id: cartesia/sonic-3
     name: Sonic 3
     match:
       equals: cartesia/sonic-3
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.05
-
   - id: cartesia/sonic-3-2025-10-27
     name: Sonic 3 (2025-10-27)
     match:
       equals: cartesia/sonic-3-2025-10-27
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters. LiveKit schedules retirement for 2026-10-20. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_kchars: 0.05
-
   - id: cartesia/sonic-3-2026-01-12
     name: Sonic 3 (2026-01-12)
     match:
       equals: cartesia/sonic-3-2026-01-12
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.05
-
   - id: cartesia/sonic-3-latest
     name: Sonic 3 Latest
     match:
       equals: cartesia/sonic-3-latest
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.05
-
   - id: cartesia/sonic-3.5
     name: Sonic 3.5
     match:
       equals: cartesia/sonic-3.5
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.05
-
   - id: cartesia/sonic-3.5-2026-05-04
     name: Sonic 3.5 (2026-05-04)
     match:
       equals: cartesia/sonic-3.5-2026-05-04
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.05
-
+  - id: cartesia/sonic-3.6
+    name: Sonic 3.6
+    match:
+      equals: cartesia/sonic-3.6
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
+    prices:
+      input_kchars: 0.05
+  - id: cartesia/sonic-3.6-2026-08-27
+    name: Sonic 3.6 (2026-08-27)
+    match:
+      equals: cartesia/sonic-3.6-2026-08-27
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
+    prices:
+      input_kchars: 0.05
   - id: cartesia/sonic-latest
     name: Sonic Latest
     match:
       equals: cartesia/sonic-latest
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.05
-
+  - id: cartesia/sonic-preview
+    name: Sonic Preview
+    match:
+      equals: cartesia/sonic-preview
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters.
+    prices:
+      input_kchars: 0.05
   - id: cartesia/sonic-turbo
     name: Sonic Turbo
     match:
       equals: cartesia/sonic-turbo
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $50 and Scale $37.50 per million characters. Divide by 1000 for USD/1000
+      characters. LiveKit schedules retirement for 2026-10-20. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_kchars: 0.05
-
   - id: deepgram/aura-2
     name: Aura-2
     match:
       equals: deepgram/aura-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $30 and Scale $27 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.03
-
   - id: deepgram/flux-general-en
     name: Flux
     match:
-      equals: deepgram/flux-general-en
+      or:
+        - equals: deepgram/flux-general-en
+        - equals: deepgram/flux-general
+        - equals: flux-general
+        - equals: flux-general-en
+        - equals: deepgram/flux-general:en
+        - equals: flux-general:en
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0065/minute and Scale $0.0057/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.108333
-
   - id: deepgram/flux-general-multi
     name: Flux (Multilingual)
     match:
-      equals: deepgram/flux-general-multi
+      or:
+        - equals: deepgram/flux-general-multi
+        - equals: deepgram/flux-general:multi
+        - equals: flux-general:multi
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0078/minute and Scale $0.0068/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.13
-
+  - id: deepgram/flux-tts
+    name: Flux TTS
+    match:
+      equals: deepgram/flux-tts
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $45 and Scale $40.50 per million characters. Divide by 1000 for USD/1000
+      characters.
+    prices:
+      input_kchars: 0.045
   - id: deepgram/nova-2
     name: Nova-2
     match:
       equals: deepgram/nova-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.096667
-
   - id: deepgram/nova-2-conversationalai
     name: Nova-2 Conversational AI
     match:
       equals: deepgram/nova-2-conversationalai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.096667
-
   - id: deepgram/nova-2-medical
     name: Nova-2 Medical
     match:
       equals: deepgram/nova-2-medical
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.096667
-
   - id: deepgram/nova-2-phonecall
     name: Nova-2 Phone Call
     match:
       equals: deepgram/nova-2-phonecall
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.0047/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.096667
-
   - id: deepgram/nova-3
     name: Nova-3 (Monolingual)
     match:
       equals: deepgram/nova-3
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0048/minute and Scale $0.0042/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.08
-
   - id: deepgram/nova-3-medical
     name: Nova-3 Medical
     match:
       equals: deepgram/nova-3-medical
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0077/minute and Scale $0.0065/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.128333
-
   - id: deepgram/nova-3-multi
     name: Nova-3 (Multilingual)
     match:
       equals: deepgram/nova-3-multi
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0058/minute and Scale $0.005/minute. Multiply by 1000/60 and round to
+      six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.096667
-
-  - id: deepseek-ai/deepseek-v3.1
-    name: DeepSeek-V3.1
+  - id: deepgram/nova-3-pharma
+    name: Nova-3 Pharma
     match:
-      equals: deepseek-ai/deepseek-v3.1
+      equals: deepgram/nova-3-pharma
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0048/minute and Scale $0.0042/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
     prices:
-      input_mtok: 0.5
-      output_mtok: 1.5
-      cache_read_mtok: 0.25
-
-  - id: elevenlabs/eleven_flash_v2
-    name: Eleven Flash v2
+      input_audio_kseconds: 0.08
+  - id: deepseek-ai/deepseek-v4-pro
+    name: DeepSeek-V4 Pro (Baseten)
     match:
-      equals: elevenlabs/eleven_flash_v2
+      or:
+        - equals: deepseek-ai/deepseek-v4-pro
+        - equals: deepseek-ai/deepseek-v4-pro@baseten
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      LiveKit serving provider: baseten. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing. LiveKit schedules retirement for
+      2026-09-26. Source: https://docs.livekit.io/agents/models/inference/#models
     prices:
-      input_kchars: 0.15
-
-  - id: elevenlabs/eleven_flash_v2_5
-    name: Eleven Flash v2.5
+      input_mtok: 1.74
+      output_mtok: 3.48
+      cache_read_mtok: 0.15
+  - id: deepseek-ai/deepseek-v4.1-flash
+    name: DeepSeek-V4.1 Flash (Baseten)
     match:
-      equals: elevenlabs/eleven_flash_v2_5
+      or:
+        - equals: deepseek-ai/deepseek-v4.1-flash
+        - equals: deepseek-ai/deepseek-v4.1-flash@baseten
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: baseten. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
-      input_kchars: 0.15
-
-  - id: elevenlabs/eleven_multilingual_v2
-    name: Eleven Multilingual v2
+      input_mtok: 0.3
+      output_mtok: 1.2
+      cache_read_mtok: 0.03
+  - id: fishaudio/s2-pro
+    name: S2 Pro
     match:
-      equals: elevenlabs/eleven_multilingual_v2
+      or:
+        - equals: fishaudio/s2-pro
+        - equals: s2-pro
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $15 and Scale $15 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_kchars: 0.3
-
-  - id: elevenlabs/eleven_turbo_v2
-    name: Eleven Turbo v2
+      input_kchars: 0.015
+  - id: fishaudio/s2.1-pro
+    name: S2.1 Pro
     match:
-      equals: elevenlabs/eleven_turbo_v2
+      or:
+        - equals: fishaudio/s2.1-pro
+        - equals: s2.1-pro
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $15 and Scale $15 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_kchars: 0.15
-
-  - id: elevenlabs/eleven_turbo_v2_5
-    name: Eleven Turbo v2.5
+      input_kchars: 0.015
+  - id: fishaudio/s2.1-pro-free
+    name: S2.1 Pro Free
     match:
-      equals: elevenlabs/eleven_turbo_v2_5
+      or:
+        - equals: fishaudio/s2.1-pro-free
+        - equals: s2.1-pro-free
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    free: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. LiveKit schedules retirement for 2026-09-25. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
-      input_kchars: 0.15
-
-  - id: elevenlabs/eleven_v3
-    name: Eleven v3
-    match:
-      equals: elevenlabs/eleven_v3
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_kchars: 0.3
-
-  - id: elevenlabs/scribe_v2_realtime
-    name: Scribe v2 Realtime
-    match:
-      equals: elevenlabs/scribe_v2_realtime
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_audio_kseconds: 0.175
-
+      input_kchars: 0
   - id: google/gemini-2.5-flash
-    name: Gemini 2.5 Flash
+    name: Gemini 2.5 Flash (Google)
     match:
-      equals: google/gemini-2.5-flash
+      or:
+        - equals: google/gemini-2.5-flash
+        - equals: google/gemini-2.5-flash@google
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing. LiveKit schedules retirement for
+      2026-10-20. Source: https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_mtok: 0.3
       output_mtok: 2.5
       cache_read_mtok: 0.03
-
   - id: google/gemini-2.5-flash-lite
-    name: Gemini 2.5 Flash-Lite
+    name: Gemini 2.5 Flash-Lite (Google)
     match:
-      equals: google/gemini-2.5-flash-lite
+      or:
+        - equals: google/gemini-2.5-flash-lite
+        - equals: google/gemini-2.5-flash-lite@google
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing. LiveKit schedules retirement for
+      2026-10-20. Source: https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_mtok: 0.1
       output_mtok: 0.4
       cache_read_mtok: 0.01
-
   - id: google/gemini-2.5-pro
-    name: Gemini 2.5 Pro
+    name: Gemini 2.5 Pro (Google)
     match:
-      equals: google/gemini-2.5-pro
+      or:
+        - equals: google/gemini-2.5-pro
+        - equals: google/gemini-2.5-pro@google
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing. LiveKit schedules retirement for
+      2026-10-10. Source: https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_mtok: 2.5
       output_mtok: 15
       cache_read_mtok: 0.25
-
   - id: google/gemini-3-flash-preview
-    name: Gemini 3 Flash
+    name: Gemini 3 Flash (Google)
     match:
-      equals: google/gemini-3-flash-preview
+      or:
+        - equals: google/gemini-3-flash-preview
+        - equals: google/gemini-3-flash
+        - equals: gemini-3-flash
+        - equals: gemini-3-flash-preview
+        - equals: google/gemini-3-flash-preview@google
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 0.5
       output_mtok: 3
       cache_read_mtok: 0.05
-
   - id: google/gemini-3.1-flash-lite
-    name: Gemini 3.1 Flash Lite
+    name: Gemini 3.1 Flash Lite (Google)
     match:
-      equals: google/gemini-3.1-flash-lite
+      or:
+        - equals: google/gemini-3.1-flash-lite
+        - equals: google/gemini-3.1-flash-lite@google
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 0.25
       output_mtok: 1.5
       cache_read_mtok: 0.025
-
   - id: google/gemini-3.1-pro-preview
-    name: Gemini 3.1 Pro
+    name: Gemini 3.1 Pro (Google)
     match:
-      equals: google/gemini-3.1-pro-preview
+      or:
+        - equals: google/gemini-3.1-pro-preview
+        - equals: google/gemini-3.1-pro
+        - equals: gemini-3.1-pro
+        - equals: gemini-3.1-pro-preview
+        - equals: google/gemini-3.1-pro-preview@google
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 4
       output_mtok: 18
       cache_read_mtok: 0.4
-
   - id: google/gemini-3.5-flash
-    name: Gemini 3.5 Flash
+    name: Gemini 3.5 Flash (Google)
     match:
-      equals: google/gemini-3.5-flash
+      or:
+        - equals: google/gemini-3.5-flash
+        - equals: google/gemini-3.5-flash@google
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 1.5
       output_mtok: 9
       cache_read_mtok: 0.15
-
+  - id: google/gemini-3.5-flash-lite
+    name: Gemini 3.5 Flash Lite (Google)
+    match:
+      or:
+        - equals: google/gemini-3.5-flash-lite
+        - equals: google/gemini-3.5-flash-lite@google
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.3
+      output_mtok: 2.5
+      cache_read_mtok: 0.03
+  - id: google/gemini-3.5-transcribe-live
+    name: Gemini 3.5 Transcribe Live
+    match:
+      equals: google/gemini-3.5-transcribe-live
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.0095/minute and Scale $0.0095/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds.
+    prices:
+      input_audio_kseconds: 0.158333
+  - id: google/gemini-3.6-flash
+    name: Gemini 3.6 Flash (Google)
+    match:
+      or:
+        - equals: google/gemini-3.6-flash
+        - equals: google/gemini-3.6-flash@google
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 1.5
+      output_mtok: 7.5
+      cache_read_mtok: 0.15
+  - id: google/gemini-3.7-flash
+    name: Gemini 3.7 Flash (Google)
+    match:
+      or:
+        - equals: google/gemini-3.7-flash
+        - equals: google/gemini-3.7-flash@google
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.75
+      output_mtok: 3.75
+      cache_read_mtok: 0.075
+  - id: google/gemini-3.8-flash
+    name: Gemini 3.8 Flash (Google)
+    match:
+      or:
+        - equals: google/gemini-3.8-flash
+        - equals: google/gemini-3.8-flash@google
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: google. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.75
+      output_mtok: 3.75
+      cache_read_mtok: 0.075
+  - id: google/gemma-4-31b-it
+    name: Gemma 4 31B (LiveKit)
+    match:
+      or:
+        - equals: google/gemma-4-31b-it
+        - equals: google/gemma-4-31b-it@livekit
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: livekit. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.4
+      output_mtok: 1.2
+      cache_read_mtok: 0.2
+  - id: gradium/default
+    name: Gradium TTS
+    match:
+      equals: gradium/default
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-09T07:00:00Z until 2026-10-08T07:00:00Z, then
+      regular rates resume.
+    prices:
+      - prices:
+          input_kchars: 0.048
+      - constraint:
+          start_timestamp: '2026-09-09T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-08T07:00:00+00:00'
+        prices:
+          input_kchars: 0.048
   - id: inworld/inworld-tts-1.5-max
     name: Realtime TTS 1.5 Max
     match:
       equals: inworld/inworld-tts-1.5-max
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $35 and Scale $20 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.035
-
   - id: inworld/inworld-tts-1.5-mini
     name: Realtime TTS 1.5 Mini
     match:
       equals: inworld/inworld-tts-1.5-mini
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $15 and Scale $8 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_kchars: 0.025
-
+      input_kchars: 0.015
   - id: inworld/inworld-tts-2
     name: Realtime TTS 2.0
     match:
       equals: inworld/inworld-tts-2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $25 and Scale $15 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_kchars: 0.035
-
-  - id: moonshotai/kimi-k2.5
-    name: Kimi K2.5
+      input_kchars: 0.025
+  - id: inworld/inworld-tts-2-flash
+    name: Realtime TTS 2.0 Flash
     match:
-      equals: moonshotai/kimi-k2.5
+      equals: inworld/inworld-tts-2-flash
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $15 and Scale $9 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
-      input_mtok: 0.6
-      output_mtok: 3
-      cache_read_mtok: 0.12
-
+      input_kchars: 0.015
+  - id: moonshotai/kimi-k2.6
+    name: Kimi K2.6 (Baseten)
+    match:
+      or:
+        - equals: moonshotai/kimi-k2.6
+        - equals: kimi-k2.6
+        - equals: moonshotai/kimi-k2.6@baseten
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      LiveKit serving provider: baseten. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing. LiveKit schedules retirement for
+      2026-09-26. Source: https://docs.livekit.io/agents/models/inference/#models
+    prices:
+      input_mtok: 0.95
+      output_mtok: 4
   - id: openai/chat-latest
-    name: ChatGPT Latest
+    name: ChatGPT Latest (Azure)
     match:
-      equals: openai/chat-latest
+      or:
+        - equals: openai/chat-latest
+        - equals: openai/chat-latest@azure
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 5
       output_mtok: 30
       cache_read_mtok: 0.5
-
-  - id: openai/gpt-4.1
-    name: GPT-4.1
+  - id: openai/chat-latest@openai
+    name: ChatGPT Latest (OpenAI)
     match:
-      equals: openai/gpt-4.1
+      equals: openai/chat-latest@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 5
+      output_mtok: 30
+      cache_read_mtok: 0.5
+  - id: openai/gpt-4.1
+    name: GPT-4.1 (Azure)
+    match:
+      or:
+        - equals: openai/gpt-4.1
+        - equals: openai/gpt-4.1@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 2
       output_mtok: 8
       cache_read_mtok: 0.5
-
   - id: openai/gpt-4.1-mini
-    name: GPT-4.1 mini
+    name: GPT-4.1 mini (Azure)
     match:
-      equals: openai/gpt-4.1-mini
+      or:
+        - equals: openai/gpt-4.1-mini
+        - equals: openai/gpt-4.1-mini@azure
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 0.4
       output_mtok: 1.6
       cache_read_mtok: 0.1
-
-  - id: openai/gpt-4.1-nano
-    name: GPT-4.1 nano
+  - id: openai/gpt-4.1-mini@openai
+    name: GPT-4.1 mini (OpenAI)
     match:
-      equals: openai/gpt-4.1-nano
+      equals: openai/gpt-4.1-mini@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.4
+      output_mtok: 1.6
+      cache_read_mtok: 0.1
+  - id: openai/gpt-4.1-nano
+    name: GPT-4.1 nano (Azure)
+    match:
+      or:
+        - equals: openai/gpt-4.1-nano
+        - equals: openai/gpt-4.1-nano@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 0.1
       output_mtok: 0.4
       cache_read_mtok: 0.03
-
-  - id: openai/gpt-4o
-    name: GPT-4o
+  - id: openai/gpt-4.1-nano@openai
+    name: GPT-4.1 nano (OpenAI)
     match:
-      equals: openai/gpt-4o
+      equals: openai/gpt-4.1-nano@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing. LiveKit schedules retirement for
+      2026-10-23. Source: https://docs.livekit.io/agents/models/inference/#models
+    prices:
+      input_mtok: 0.1
+      output_mtok: 0.4
+      cache_read_mtok: 0.025
+  - id: openai/gpt-4.1@openai
+    name: GPT-4.1 (OpenAI)
+    match:
+      equals: openai/gpt-4.1@openai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 2
+      output_mtok: 8
+      cache_read_mtok: 0.5
+  - id: openai/gpt-4o
+    name: GPT-4o (Azure)
+    match:
+      or:
+        - equals: openai/gpt-4o
+        - equals: openai/gpt-4o@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 2.5
       output_mtok: 10
       cache_read_mtok: 1.25
-
   - id: openai/gpt-4o-mini
-    name: GPT-4o mini
+    name: GPT-4o mini (Azure)
     match:
-      equals: openai/gpt-4o-mini
+      or:
+        - equals: openai/gpt-4o-mini
+        - equals: openai/gpt-4o-mini@azure
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 0.15
       output_mtok: 0.6
       cache_read_mtok: 0.075
-
-  - id: openai/gpt-5
-    name: GPT-5
+  - id: openai/gpt-4o-mini@openai
+    name: GPT-4o mini (OpenAI)
     match:
-      equals: openai/gpt-5
+      equals: openai/gpt-4o-mini@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.15
+      output_mtok: 0.6
+      cache_read_mtok: 0.075
+  - id: openai/gpt-4o@openai
+    name: GPT-4o (OpenAI)
+    match:
+      equals: openai/gpt-4o@openai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 2.5
+      output_mtok: 10
+      cache_read_mtok: 1.25
+  - id: openai/gpt-5
+    name: GPT-5 (Azure)
+    match:
+      or:
+        - equals: openai/gpt-5
+        - equals: openai/gpt-5@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 1.25
       output_mtok: 10
       cache_read_mtok: 0.13
-
   - id: openai/gpt-5-mini
-    name: GPT-5 mini
+    name: GPT-5 mini (Azure)
     match:
-      equals: openai/gpt-5-mini
+      or:
+        - equals: openai/gpt-5-mini
+        - equals: openai/gpt-5-mini@azure
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 0.25
       output_mtok: 2
       cache_read_mtok: 0.03
-
-  - id: openai/gpt-5-nano
-    name: GPT-5 nano
+  - id: openai/gpt-5-mini@openai
+    name: GPT-5 mini (OpenAI)
     match:
-      equals: openai/gpt-5-nano
+      equals: openai/gpt-5-mini@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.25
+      output_mtok: 2
+      cache_read_mtok: 0.025
+  - id: openai/gpt-5-nano
+    name: GPT-5 nano (Azure)
+    match:
+      or:
+        - equals: openai/gpt-5-nano
+        - equals: openai/gpt-5-nano@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 0.05
       output_mtok: 0.4
       cache_read_mtok: 0.01
-
+  - id: openai/gpt-5-nano@openai
+    name: GPT-5 nano (OpenAI)
+    match:
+      equals: openai/gpt-5-nano@openai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.05
+      output_mtok: 0.4
+      cache_read_mtok: 0.005
   - id: openai/gpt-5.1
-    name: GPT-5.1
+    name: GPT-5.1 (Azure)
     match:
-      equals: openai/gpt-5.1
+      or:
+        - equals: openai/gpt-5.1
+        - equals: openai/gpt-5.1@azure
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 1.25
       output_mtok: 10
       cache_read_mtok: 0.13
-
-  - id: openai/gpt-5.1-chat-latest
-    name: GPT-5.1 Chat
+  - id: openai/gpt-5.1@openai
+    name: GPT-5.1 (OpenAI)
     match:
-      equals: openai/gpt-5.1-chat-latest
+      equals: openai/gpt-5.1@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 1.25
       output_mtok: 10
-      cache_read_mtok: 0.13
-
+      cache_read_mtok: 0.125
   - id: openai/gpt-5.2
-    name: GPT-5.2
+    name: GPT-5.2 (Azure)
     match:
-      equals: openai/gpt-5.2
+      or:
+        - equals: openai/gpt-5.2
+        - equals: openai/gpt-5.2@azure
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 1.75
       output_mtok: 14
       cache_read_mtok: 0.18
-
-  - id: openai/gpt-5.2-chat-latest
-    name: GPT-5.2 Chat
+  - id: openai/gpt-5.2@openai
+    name: GPT-5.2 (OpenAI)
     match:
-      equals: openai/gpt-5.2-chat-latest
+      equals: openai/gpt-5.2@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_mtok: 1.75
-      output_mtok: 14
-      cache_read_mtok: 0.18
-
-  - id: openai/gpt-5.3-chat-latest
-    name: GPT-5.3 Chat
-    match:
-      equals: openai/gpt-5.3-chat-latest
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 1.75
       output_mtok: 14
       cache_read_mtok: 0.175
-
   - id: openai/gpt-5.4
-    name: GPT-5.4
+    name: GPT-5.4 (Azure)
     match:
-      equals: openai/gpt-5.4
+      or:
+        - equals: openai/gpt-5.4
+        - equals: openai/gpt-5.4@azure
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 5
       output_mtok: 22.5
       cache_read_mtok: 0.5
-
   - id: openai/gpt-5.4-mini
-    name: GPT-5.4 mini
+    name: GPT-5.4 mini (OpenAI)
     match:
-      equals: openai/gpt-5.4-mini
+      or:
+        - equals: openai/gpt-5.4-mini
+        - equals: openai/gpt-5.4-mini@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 0.75
       output_mtok: 4.5
       cache_read_mtok: 0.075
-
   - id: openai/gpt-5.4-nano
-    name: GPT-5.4 nano
+    name: GPT-5.4 nano (OpenAI)
     match:
-      equals: openai/gpt-5.4-nano
+      or:
+        - equals: openai/gpt-5.4-nano
+        - equals: openai/gpt-5.4-nano@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 0.2
       output_mtok: 1.25
       cache_read_mtok: 0.02
-
-  - id: openai/gpt-5.5
-    name: GPT-5.5
+  - id: openai/gpt-5.4@openai
+    name: GPT-5.4 (OpenAI)
     match:
-      equals: openai/gpt-5.5
+      equals: openai/gpt-5.4@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 5
+      output_mtok: 22.5
+      cache_read_mtok: 0.5
+  - id: openai/gpt-5.5
+    name: GPT-5.5 (Azure)
+    match:
+      or:
+        - equals: openai/gpt-5.5
+        - equals: openai/gpt-5.5@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 10
       output_mtok: 45
       cache_read_mtok: 1
-
-  - id: openai/gpt-oss-120b
-    name: GPT OSS 120B
+  - id: openai/gpt-5.5@openai
+    name: GPT-5.5 (OpenAI)
     match:
-      equals: openai/gpt-oss-120b
+      equals: openai/gpt-5.5@openai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 10
+      output_mtok: 45
+      cache_read_mtok: 1
+  - id: openai/gpt-5.6-luna
+    name: GPT-5.6 Luna (Azure)
+    match:
+      or:
+        - equals: openai/gpt-5.6-luna
+        - equals: openai/gpt-5.6-luna@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
+    prices:
+      input_mtok: 0.2
+      output_mtok: 1.2
+      cache_read_mtok: 0.02
+      cache_write_mtok: 0.25
+  - id: openai/gpt-5.6-luna@openai
+    name: GPT-5.6 Luna (OpenAI)
+    match:
+      equals: openai/gpt-5.6-luna@openai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 0.2
+      output_mtok: 1.2
+      cache_read_mtok: 0.02
+      cache_write_mtok: 0.25
+  - id: openai/gpt-5.6-sol
+    name: GPT-5.6 Sol (Azure)
+    match:
+      or:
+        - equals: openai/gpt-5.6-sol
+        - equals: openai/gpt-5.6-sol@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
+    prices:
+      input_mtok: 4
+      output_mtok: 20
+      cache_read_mtok: 0.4
+      cache_write_mtok: 5
+  - id: openai/gpt-5.6-sol@openai
+    name: GPT-5.6 Sol (OpenAI)
+    match:
+      equals: openai/gpt-5.6-sol@openai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 4
+      output_mtok: 20
+      cache_read_mtok: 0.4
+      cache_write_mtok: 5
+  - id: openai/gpt-5.6-terra
+    name: GPT-5.6 Terra (Azure)
+    match:
+      or:
+        - equals: openai/gpt-5.6-terra
+        - equals: openai/gpt-5.6-terra@azure
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: azure. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
+    prices:
+      input_mtok: 2
+      output_mtok: 12
+      cache_read_mtok: 0.2
+      cache_write_mtok: 2.5
+  - id: openai/gpt-5.6-terra@openai
+    name: GPT-5.6 Terra (OpenAI)
+    match:
+      equals: openai/gpt-5.6-terra@openai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 2
+      output_mtok: 12
+      cache_read_mtok: 0.2
+      cache_write_mtok: 2.5
+  - id: openai/gpt-5@openai
+    name: GPT-5 (OpenAI)
+    match:
+      equals: openai/gpt-5@openai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: openai. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
+    prices:
+      input_mtok: 1.25
+      output_mtok: 10
+      cache_read_mtok: 0.125
+  - id: openai/gpt-oss-120b
+    name: GPT OSS 120B (Baseten)
+    match:
+      or:
+        - equals: openai/gpt-oss-120b
+        - equals: openai/gpt-oss-120b@baseten
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: baseten. @provider suffixes are catalog lookup selectors, not
+      LiveKit SDK model IDs. The unqualified ID uses the first listed serving provider; pass a
+      qualified selector for provider-specific billing.
     prices:
       input_mtok: 0.1
       output_mtok: 0.5
-
-  - id: rime/arcana
-    name: Arcana
+  - id: openai/gpt-oss-120b@groq
+    name: GPT OSS 120B (Groq)
     match:
-      equals: rime/arcana
+      equals: openai/gpt-oss-120b@groq
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: groq. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
-      input_kchars: 0.04
-
+      input_mtok: 0.15
+      output_mtok: 0.6
+      cache_read_mtok: 0.075
   - id: rime/coda
     name: Coda
     match:
       equals: rime/coda
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then
+      regular rates resume.
     prices:
-      input_kchars: 0.05
-
+      - prices:
+          input_kchars: 0.05
+      - constraint:
+          start_timestamp: '2026-09-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0.05
   - id: rime/mist
     name: Mist
     match:
       equals: rime/mist
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then
+      regular rates resume. LiveKit schedules retirement for 2026-10-01. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
-      input_kchars: 0.03
-
+      - prices:
+          input_kchars: 0.03
+      - constraint:
+          start_timestamp: '2026-09-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0.03
   - id: rime/mistv2
     name: Mist v2
     match:
       equals: rime/mistv2
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then
+      regular rates resume. LiveKit schedules retirement for 2026-10-01. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
-      input_kchars: 0.03
-
+      - prices:
+          input_kchars: 0.03
+      - constraint:
+          start_timestamp: '2026-09-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0.03
   - id: rime/mistv3
     name: Mist v3
     match:
       equals: rime/mistv3
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0 and Scale $0 per million characters. Divide by 1000 for USD/1000
+      characters. Zero-price promotion from 2026-09-01T07:00:00Z until 2026-10-01T07:00:00Z, then
+      regular rates resume.
     prices:
-      input_kchars: 0.03
-
+      - prices:
+          input_kchars: 0.03
+      - constraint:
+          start_timestamp: '2026-09-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0
+      - constraint:
+          start_timestamp: '2026-10-01T07:00:00+00:00'
+        prices:
+          input_kchars: 0.03
   - id: sip-thirdparty
     name: Third-party SIP minutes
     description: >-
@@ -788,21 +1683,47 @@ models:
     match:
       equals: speechmatics/enhanced
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $0.0117/minute and Scale $0.0117/minute. Multiply by 1000/60 and round
+      to six decimals for USD/1000 seconds. LiveKit schedules retirement for 2026-10-05. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_audio_kseconds: 0.195
-
+  - id: speechmatics/linden-1
+    name: Speechmatics Linden-1
+    match:
+      equals: speechmatics/linden-1
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.005/minute and Scale $0.005/minute. Multiply by 1000/60 and round to
+      six decimals for USD/1000 seconds.
+    prices:
+      input_audio_kseconds: 0.083333
   - id: speechmatics/standard
     name: Speechmatics Standard
     match:
       equals: speechmatics/standard
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    deprecated: true
+    price_comments: >-
+      Published Build/Ship $0.005/minute and Scale $0.005/minute. Multiply by 1000/60 and round to
+      six decimals for USD/1000 seconds. LiveKit schedules retirement for 2026-10-05. Source:
+      https://docs.livekit.io/agents/models/inference/#models
     prices:
       input_audio_kseconds: 0.083333
-
   - id: us-local-inbound
     name: US local (inbound)
     description: >-
@@ -838,77 +1759,175 @@ models:
     prices:
       telephony_kminutes: 20
 
-  - id: xai/grok-4-1-fast-non-reasoning
-    name: Grok 4.1 Fast
-    match:
-      equals: xai/grok-4-1-fast-non-reasoning
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_mtok: 0.2
-      output_mtok: 0.5
-
-  - id: xai/grok-4-1-fast-reasoning
-    name: Grok 4.1 Fast Reasoning
-    match:
-      equals: xai/grok-4-1-fast-reasoning
-    collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
-    prices:
-      input_mtok: 0.2
-      output_mtok: 0.5
-
   - id: xai/grok-4.20-0309-non-reasoning
-    name: Grok 4.20
+    name: Grok 4.20 (xAI)
     match:
-      equals: xai/grok-4.20-0309-non-reasoning
+      or:
+        - equals: xai/grok-4.20-0309-non-reasoning
+        - equals: xai/grok-4.20-0309-non-reasoning@xai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 2
       output_mtok: 6
-
   - id: xai/grok-4.20-0309-reasoning
-    name: Grok 4.20 Reasoning
+    name: Grok 4.20 Reasoning (xAI)
     match:
-      equals: xai/grok-4.20-0309-reasoning
+      or:
+        - equals: xai/grok-4.20-0309-reasoning
+        - equals: xai/grok-4.20-0309-reasoning@xai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 2
       output_mtok: 6
-
   - id: xai/grok-4.20-multi-agent-0309
-    name: Grok 4.20 Multi-Agent
+    name: Grok 4.20 Multi-Agent (xAI)
     match:
-      equals: xai/grok-4.20-multi-agent-0309
+      or:
+        - equals: xai/grok-4.20-multi-agent-0309
+        - equals: xai/grok-4.20-multi-agent-0309@xai
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
     prices:
       input_mtok: 2
       output_mtok: 6
-
+  - id: xai/grok-4.3
+    name: Grok 4.3 (xAI)
+    match:
+      or:
+        - equals: xai/grok-4.3
+        - equals: xai/grok-4.3@xai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
+    prices:
+      input_mtok: 1.25
+      output_mtok: 2.5
+      cache_read_mtok: 0.2
+  - id: xai/grok-4.5
+    name: Grok 4.5 (xAI)
+    match:
+      or:
+        - equals: xai/grok-4.5
+        - equals: xai/grok-4.5@xai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
+    prices:
+      input_mtok: 2
+      output_mtok: 6
+      cache_read_mtok: 0.5
+  - id: xai/grok-4.6
+    name: Grok 4.6 (xAI)
+    match:
+      or:
+        - equals: xai/grok-4.6
+        - equals: xai/grok-4.6@xai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
+    prices:
+      input_mtok: 2
+      output_mtok: 6
+      cache_read_mtok: 0.5
+  - id: xai/grok-4.7
+    name: Grok 4.7 (xAI)
+    match:
+      or:
+        - equals: xai/grok-4.7
+        - equals: xai/grok-4.7@xai
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      LiveKit serving provider: xai. @provider suffixes are catalog lookup selectors, not LiveKit
+      SDK model IDs. The unqualified ID uses the first listed serving provider; pass a qualified
+      selector for provider-specific billing.
+    prices:
+      input_mtok: 2
+      output_mtok: 6
+      cache_read_mtok: 0.5
   - id: xai/stt-1
     name: Speech to Text
     match:
       equals: xai/stt-1
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.003333/minute and Scale $0.003333/minute. Multiply by 1000/60 and
+      round to six decimals for USD/1000 seconds.
     prices:
       input_audio_kseconds: 0.05555
-
+  - id: xai/stt-2
+    name: Speech to Text 2
+    match:
+      equals: xai/stt-2
+    collapse: false
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $0.003333/minute and Scale $0.003333/minute. Multiply by 1000/60 and
+      round to six decimals for USD/1000 seconds.
+    prices:
+      input_audio_kseconds: 0.05555
   - id: xai/tts-1
     name: Text to Speech
     match:
       equals: xai/tts-1
     collapse: false
-    prices_checked: 2026-06-04
-    pricing_source_url: https://livekit.io/pricing
+    prices_checked: 2026-09-23
+    pricing_source_url: https://livekit.com/pricing/inference
+    provenance:
+      api_backed: true
+    price_comments: >-
+      Published Build/Ship $15 and Scale $15 per million characters. Divide by 1000 for USD/1000
+      characters.
     prices:
       input_kchars: 0.015

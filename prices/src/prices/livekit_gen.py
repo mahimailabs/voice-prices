@@ -10,7 +10,7 @@ publishes Build and Ship tiers identically for every model, and only Scale ever 
   ``fallback_model_providers: [livekit]`` so LLM and flat-priced voice models reuse the
   ``livekit`` price instead of being duplicated.
 
-Source: LiveKit Docs ``get_pricing_info`` JSON (``.inference.{stt,tts,llm}``). Numbers are
+Source: structured pricing data embedded in LiveKit's pricing page, normalized to JSON (``.inference.{stt,tts,llm}``). Numbers are
 exact decimal strings; conversions to our fields are deterministic:
 
 - STT ``$/min`` -> ``input_audio_kseconds`` (``* 1000 / 60``)
@@ -26,14 +26,14 @@ from __future__ import annotations
 import json
 import os
 import textwrap
-from datetime import date
+from datetime import date, datetime
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any, cast
 
 from .utils import package_dir, root_dir
 
-PRICING_URL = 'https://livekit.io/pricing'
+PRICING_URL = 'https://livekit.com/pricing/inference'
 API_PATTERN = r'https://[^/]*\.livekit\.cloud'
 _DEFAULT_JSON = package_dir / 'sources' / 'livekit_pricing.json'
 _SIX_DP = Decimal('0.000001')
@@ -42,10 +42,18 @@ LLM_METRIC_FIELD = {
     'input_tokens': 'input_mtok',
     'output_tokens': 'output_mtok',
     'cached_input_tokens': 'cache_read_mtok',
+    'cache_write_tokens': 'cache_write_mtok',
 }
 
 # Render order for the priced fields; only the ones a model actually sets are emitted.
-_PRICE_FIELD_ORDER = ('input_mtok', 'output_mtok', 'cache_read_mtok', 'input_kchars', 'input_audio_kseconds')
+_PRICE_FIELD_ORDER = (
+    'input_mtok',
+    'output_mtok',
+    'cache_read_mtok',
+    'cache_write_mtok',
+    'input_kchars',
+    'input_audio_kseconds',
+)
 
 _BASE_COMMENT = (
     'LiveKit Inference is a gateway that resells STT, TTS, and LLM models under a single API key, '
@@ -56,7 +64,7 @@ _BASE_COMMENT = (
     'model ref still resolves to the direct vendor. Conversions: STT $/min to input_audio_kseconds '
     '(x1000/60); TTS $/1M chars to input_kchars (/1000); LLM $/1M tokens map 1:1. Realtime bundled '
     'models and LiveKit Cloud platform per-minute rates are out of scope. Source: LiveKit '
-    'get_pricing_info; regenerate with make livekit-get.'
+    'pricing page structured data; regenerate with make livekit-get.'
 )
 _SCALE_COMMENT = (
     'Scale-tier prices for LiveKit Inference. Only models whose Scale rate differs from Build/Ship '
@@ -79,6 +87,8 @@ def tts_rate(per_mchar: str | Decimal) -> Decimal:
 def scale_differs(entry: dict[str, Any]) -> bool:
     """Whether any of a model's rates is cheaper on Scale than on Build/Ship."""
     rates = cast('list[dict[str, Any]]', entry['rates'])
+    if entry.get('promotion'):
+        rates = [*rates, *entry['promotion']['regular_rates']]
     return any(Decimal(str(r['build'])) != Decimal(str(r['scale'])) for r in rates)
 
 
@@ -117,15 +127,25 @@ def _build_models(
     models: list[dict[str, Any]] = []
     for modality in ('stt', 'tts', 'llm'):
         for entry in cast('list[dict[str, Any]]', inference.get(modality, [])):
-            if entry.get('is_deprecated'):
+            # The pricing feed also flags models that are still callable until a future
+            # retirement. Annotate retirement_date from LiveKit's model availability docs.
+            retirement_date = entry.get('retirement_date')
+            if entry.get('is_deprecated') and (
+                retirement_date is None or date.fromisoformat(retirement_date) <= checked_date
+            ):
                 continue
             if only_scale_differs and not scale_differs(entry):
                 continue
+            prices = _model_prices(entry, modality, tier)
             models.append(
                 {
                     'id': entry['model_id'],
                     'name': entry['model_label'],
-                    'match': {'equals': entry['model_id']},
+                    'match': (
+                        {'or': [{'equals': ref} for ref in [entry['model_id'], *entry['aliases']]]}
+                        if entry.get('aliases')
+                        else {'equals': entry['model_id']}
+                    ),
                     # Opt out of the collapse-models pipeline step: LiveKit has many same-price
                     # variants (nova-2 family, sonic-3 family, gpt-5.x) whose ids start with a
                     # shorter model's id, which collapse would merge into one or-matched row. Keeping
@@ -134,9 +154,39 @@ def _build_models(
                     'collapse': False,
                     'prices_checked': checked_date,
                     'pricing_source_url': PRICING_URL,
-                    'prices': _model_prices(entry, modality, tier),
+                    'provenance': {'api_backed': True},
+                    'prices': prices,
                 }
             )
+            if entry.get('price_comments'):
+                models[-1]['price_comments'] = entry['price_comments']
+            if entry.get('promotion'):
+                promotion = entry['promotion']
+                regular = _model_prices({**entry, 'rates': promotion['regular_rates']}, modality, tier)
+                models[-1]['prices'] = [
+                    {'prices': regular},
+                    {
+                        'constraint': {
+                            'start_timestamp': datetime.fromisoformat(promotion['starts_at'].replace('Z', '+00:00'))
+                        },
+                        'prices': prices,
+                    },
+                    {
+                        'constraint': {
+                            'start_timestamp': datetime.fromisoformat(promotion['ends_at'].replace('Z', '+00:00'))
+                        },
+                        'prices': regular,
+                    },
+                ]
+            elif prices and all(rate == 0 for rate in prices.values()):
+                models[-1]['free'] = True
+            if entry.get('is_deprecated'):
+                models[-1]['deprecated'] = True
+                models[-1]['price_comments'] = (
+                    (entry.get('price_comments', '') + ' ' if entry.get('price_comments') else '')
+                    + f'LiveKit schedules retirement for {retirement_date}. '
+                    'Source: https://docs.livekit.io/agents/models/inference/#models'
+                )
     models.sort(key=lambda m: cast('str', m['id']))
     return models
 
@@ -147,8 +197,9 @@ def build_provider(inference: dict[str, Any], *, scale: bool, checked_date: date
     provider: dict[str, Any] = {
         'name': 'LiveKit Inference (Scale)' if scale else 'LiveKit Inference',
         'id': 'livekit-scale' if scale else 'livekit',
-        'pricing_urls': [PRICING_URL],
+        'pricing_urls': ['https://livekit.io/pricing', PRICING_URL],
         'api_pattern': API_PATTERN,
+        'pricing_tier': 'Scale' if scale else 'Build/Ship',
     }
     if scale:
         provider['fallback_model_providers'] = ['livekit']
@@ -173,6 +224,7 @@ def render_yaml(provider: dict[str, Any]) -> str:
     lines: list[str] = ['# yaml-language-server: $schema=.schema.json']
     lines.append(f'name: {provider["name"]}')
     lines.append(f'id: {provider["id"]}')
+    lines.append(f'pricing_tier: {provider["pricing_tier"]}')
     lines.append('pricing_urls:')
     for url in cast('list[str]', provider['pricing_urls']):
         lines.append(f'  - {url}')
@@ -193,15 +245,41 @@ def render_yaml(provider: dict[str, Any]) -> str:
         lines.append(f'  - id: {model_id}')
         lines.append(f'    name: {model["name"]}')
         lines.append('    match:')
-        lines.append(f'      equals: {model_id}')
+        match = model['match']
+        if 'or' in match:
+            lines.append('      or:')
+            lines.extend(f'        - equals: {clause["equals"]}' for clause in match['or'])
+        else:
+            lines.append(f'      equals: {model_id}')
         lines.append('    collapse: false')
         lines.append(f'    prices_checked: {cast("date", model["prices_checked"]).isoformat()}')
         lines.append(f'    pricing_source_url: {model["pricing_source_url"]}')
-        lines.append('    prices:')
-        prices = cast('dict[str, Decimal]', model['prices'])
-        for field in _PRICE_FIELD_ORDER:
-            if field in prices:
-                lines.append(f'      {field}: {_fmt(prices[field])}')
+        lines.extend(['    provenance:', '      api_backed: true'])
+        if model.get('deprecated'):
+            lines.append('    deprecated: true')
+        if model.get('free'):
+            lines.append('    free: true')
+        if model.get('price_comments'):
+            lines.append('    price_comments: >-')
+            lines.extend(f'      {line}' for line in textwrap.wrap(model['price_comments'], width=93))
+        prices = model['prices']
+        if isinstance(prices, list):
+            lines.append('    prices:')
+            for block in cast('list[dict[str, Any]]', prices):
+                if block.get('constraint'):
+                    lines.append('      - constraint:')
+                    lines.append(f"          start_timestamp: '{block['constraint']['start_timestamp'].isoformat()}'")
+                    lines.append('        prices:')
+                else:
+                    lines.append('      - prices:')
+                for field in _PRICE_FIELD_ORDER:
+                    if field in block['prices']:
+                        lines.append(f'          {field}: {_fmt(block["prices"][field])}')
+        else:
+            lines.append('    prices:' if prices else '    prices: {}')
+            for field in _PRICE_FIELD_ORDER:
+                if field in prices:
+                    lines.append(f'      {field}: {_fmt(prices[field])}')
     return '\n'.join(lines) + '\n'
 
 
@@ -211,13 +289,24 @@ def generate(json_path: Path, out_dir: Path, *, checked_date: date) -> tuple[Pat
     inference = cast('dict[str, Any]', payload['inference'])
     base_path = out_dir / 'livekit.yml'
     scale_path = out_dir / 'livekit_scale.yml'
-    base_path.write_text(render_yaml(build_provider(inference, scale=False, checked_date=checked_date)))
-    scale_path.write_text(render_yaml(build_provider(inference, scale=True, checked_date=checked_date)))
+    for path, scale in ((base_path, False), (scale_path, True)):
+        # Telephony is maintained separately from the inference pricing feed.
+        existing = path.read_text() if path.exists() else ''
+        manual = [block for block in existing.split('  - id: ')[1:] if 'telephony_kminutes:' in block]
+        rendered = render_yaml(build_provider(inference, scale=scale, checked_date=checked_date))
+        header, *blocks = rendered.split('  - id: ')
+        blocks = sorted([*blocks, *manual], key=lambda block: block.splitlines()[0])
+        path.write_text(header + ''.join('  - id: ' + block for block in blocks))
     return base_path, scale_path
 
 
 def livekit_gen() -> None:
     """Generate the livekit and livekit-scale provider YAMLs from LiveKit's pricing JSON."""
     json_path = Path(os.environ.get('LIVEKIT_PRICING_JSON', str(_DEFAULT_JSON)))
+    if os.environ.get('REFRESH') == '1':
+        from .livekit_source import refresh
+
+        payload = refresh(json.loads(json_path.read_text()), date.today())
+        json_path.write_text(json.dumps(payload, indent=2) + '\n')
     base_path, scale_path = generate(json_path, package_dir / 'providers', checked_date=date.today())
     print(f'wrote {base_path.relative_to(root_dir)} and {scale_path.relative_to(root_dir)}')

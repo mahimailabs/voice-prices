@@ -91,7 +91,7 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**50 providers, 1,298 priced models.** 78 STT, 1,104 LLM, 88 TTS, 8 S2S, 2 VAD, 3 Agents, 15 Telephony.
+**50 providers, 1,325 priced models.** 79 STT, 1,129 LLM, 89 TTS, 8 S2S, 2 VAD, 3 Agents, 15 Telephony.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
@@ -125,8 +125,8 @@ Every provider in the catalog, and which categories it prices:
 | [HuggingFace (together)](prices/providers/huggingface_together.yml) | 23 | LLM |
 | [Hume](prices/providers/hume.yml) | 1 | TTS |
 | [Inworld](prices/providers/inworld.yml) | 4 | STT, TTS |
-| [LiveKit Inference](prices/providers/livekit.yml) | 81 | STT, LLM, TTS, Telephony |
-| [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 37 | STT, TTS, Telephony |
+| [LiveKit Inference](prices/providers/livekit.yml) | 110 | STT, LLM, TTS, Telephony |
+| [LiveKit Inference (Scale)](prices/providers/livekit_scale.yml) | 35 | STT, TTS, Telephony |
 | [LMNT](prices/providers/lmnt.yml) | 1 | TTS |
 | [Mistral](prices/providers/mistral.yml) | 18 | LLM |
 | [MoonshotAi](prices/providers/moonshotai.yml) | 9 | LLM |

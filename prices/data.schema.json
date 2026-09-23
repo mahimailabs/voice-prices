@@ -228,6 +228,9 @@
               "$ref": "#/$defs/StartDateConstraint"
             },
             {
+              "$ref": "#/$defs/StartTimestampConstraint"
+            },
+            {
               "$ref": "#/$defs/TimeOfDateConstraint"
             }
           ],
@@ -718,6 +721,22 @@
         "start_date"
       ],
       "title": "StartDateConstraint",
+      "type": "object"
+    },
+    "StartTimestampConstraint": {
+      "additionalProperties": false,
+      "description": "An exact, timezone-aware instant when a price takes effect.",
+      "properties": {
+        "start_timestamp": {
+          "format": "date-time",
+          "title": "Start Timestamp",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start_timestamp"
+      ],
+      "title": "StartTimestampConstraint",
       "type": "object"
     },
     "Tier": {
