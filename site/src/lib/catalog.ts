@@ -42,6 +42,7 @@ export type ComparisonRow = {
 
 type Data = {
   repo: string;
+  gatewaySummary: { compared: number; atOrBelow: number; scaleBelow: number; llmCompared: number; llmIdentical: number };
   removalForm: string;
   addProvider: string;
   categories: Record<Category, { columns: Column[]; tokenColumns: Column[]; providers: Provider[]; comparison: ComparisonRow[] }>;
@@ -49,6 +50,8 @@ type Data = {
 
 export const data = raw as unknown as Data;
 export const REPO = data.repo;
+/** The same direct-vs-LiveKit counts the README prints, computed once in Python. */
+export const GATEWAY = data.gatewaySummary;
 export const REMOVAL_FORM = data.removalForm;
 export const ADD_PROVIDER = data.addProvider;
 export const PYPI = 'https://pypi.org/project/voice-prices/';

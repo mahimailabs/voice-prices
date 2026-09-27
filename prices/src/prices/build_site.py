@@ -31,6 +31,8 @@ from .build_docs import (
     _resolve_direct,  # pyright: ignore[reportPrivateUsage]
     build_catalog,
     build_comparison,
+    distinct_rows,
+    gateway_summary,
     slug,
 )
 from .utils import package_dir, root_dir
@@ -60,6 +62,7 @@ def _provider_files() -> dict[str, str]:
 
 
 def _direct_ref(livekit_id: str, direct_rate: float | None) -> str | None:
+    """The `provider/model` a LiveKit row is compared against, or None when it has no direct rate."""
     if direct_rate is None:
         return None
     ref = _resolve_direct(livekit_id)
@@ -140,13 +143,24 @@ def build_site_data(data: list[dict[str, Any]]) -> dict[str, Any]:
             'providers': entries,
             # Each LiveKit row also names the direct model it is compared against, so the site can
             # price one pick both ways without re-deriving the alias table in JavaScript.
+            # Provider-pinned duplicates (`...@openai`) are left out, so the site counts each model once,
+            # the same way the README's generated numbers do.
             'comparison': [
-                {**row, 'direct_ref': _direct_ref(row['id'], row['direct'])} for row in comparison[category]
+                {**row, 'direct_ref': _direct_ref(row['id'], row['direct'])}
+                for row in distinct_rows(comparison[category])
             ],
         }
 
+    summary = gateway_summary(comparison)
     return {
         'repo': REPO_URL,
+        'gatewaySummary': {
+            'compared': summary['compared'],
+            'atOrBelow': summary['at_or_below'],
+            'scaleBelow': summary['scale_below'],
+            'llmCompared': summary['llm_compared'],
+            'llmIdentical': summary['llm_identical'],
+        },
         'removalForm': REMOVAL_FORM_URL,
         'addProvider': ADD_PROVIDER_URL,
         'categories': categories,
