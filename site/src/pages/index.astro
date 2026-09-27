@@ -8,6 +8,7 @@ import GatewayCompare from '../components/GatewayCompare';
 import Layout from '../components/Layout.astro';
 import {
   ADD_PROVIDER,
+  GATEWAY,
   CATEGORIES,
   META,
   PYPI,
@@ -29,8 +30,6 @@ const sets = [
   { key: 'stt', label: 'STT', unit: '$ per minute', rows: catalogOf('stt').comparison },
   { key: 'llm', label: 'LLM', unit: '$ per 1M input tokens', rows: catalogOf('llm').comparison },
 ];
-const both = sets.flatMap((s) => s.rows).filter((r) => r.delta !== null);
-const atOrBelow = both.filter((r) => r.delta! < 0.05).length;
 const fmt = (n: number) => n.toLocaleString('en-US');
 ---
 
@@ -100,9 +99,10 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       <div class="head">
         <h2 id="gw-title">Direct vs LiveKit Inference</h2>
         <p>
-          Of the {both.length} models with both a direct and a LiveKit rate, {atOrBelow} are priced at or below going direct.
-          Markups land mostly on speech; most LLM rates pass straight through. The point is to make the number visible,
-          whichever way it falls.
+          Of the {GATEWAY.compared} models with both a direct and a LiveKit rate, {GATEWAY.atOrBelow} are priced at or below
+          going direct, and on the Scale tier {GATEWAY.scaleBelow} come in under the vendor's own price. {GATEWAY.llmIdentical}
+          of {GATEWAY.llmCompared} LLM rates pass straight through; the markups sit on a few frontier models. The point is to
+          make the number visible, whichever way it falls.
         </p>
       </div>
       <GatewayCompare client:visible sets={sets} />

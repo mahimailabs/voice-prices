@@ -38,17 +38,21 @@
 
 A voice agent runs several meters at once (STT, an LLM, and TTS, or a single speech-to-speech model), each billed in a different unit. Route them through a gateway like [LiveKit Inference](https://livekit.io/pricing) and a fourth layer sits on top, quoted in its own units again. voice-prices is an open, dated source that puts **direct and gateway cost side by side, per model**.
 
-It is not an argument against gateways. Of the 54 models where both a direct and a gateway rate exist, **33 are priced at or below going direct**, and on the discounted Scale tier 17 come in below the vendor's own price. The point is to make the number visible, whichever way it falls.
+[comment]: <> (gateway-start)
+
+It is not an argument against gateways. Of the 52 models where both a direct and a gateway rate exist, **44 are priced at or below going direct**, and on the discounted Scale tier 22 come in below the vendor's own price. The point is to make the number visible, whichever way it falls.
 
 | Model | Direct | LiveKit (Build/Ship) | LiveKit Scale | vs direct |
 |---|---|---|---|---|
-| ElevenLabs Flash v2.5 (TTS, per 1M chars) | $50 | $150 | $60 | **+200%** |
-| Cartesia Sonic 3 (TTS, per 1M chars) | $40 | $50 | $37.50 | **+25%**, but Scale is under direct |
-| Deepgram Nova-2 (STT, per min) | $0.0059 | $0.0058 | $0.0047 | **-2%**, at cost |
-| GPT-5 (LLM, per 1M input tokens) | $1.25 | $1.25 | n/a | **identical**, pass-through |
-| GPT-5.4 (LLM, per 1M input tokens) | $2.50 | $5.00 | n/a | **+100%** |
+| `cartesia/sonic-3` (TTS, per 1M chars) | $50 | $50 | $37.5 | **same**, and Scale is under direct |
+| `deepgram/nova-3` (STT, per min) | $0.0048 | $0.0048 | $0.0042 | **same**, and Scale is under direct |
+| `openai/gpt-5` (LLM, per 1M input tokens) | $1.25 | $1.25 | n/a | **same**, pass-through |
+| `openai/gpt-5.4` (LLM, per 1M input tokens) | $2.5 | $5 | n/a | **+100.0%** |
+| `deepseek-ai/deepseek-v4-pro` (LLM, per 1M input tokens) | $0.435 | $1.74 | n/a | **+300.0%** |
 
-Most LLM rates pass straight through (23 of the 27 comparable models are identical to the penny), so gateway markups mostly land on TTS and STT. The exception is worth knowing: the frontier models are not passed through. GPT-5.4, GPT-5.5, Gemini 2.5 Pro and Gemini 3.1 Pro are each +100%.
+Most LLM rates pass straight through (18 of the 23 comparable models are identical to the penny). The exception is worth knowing: the frontier models are not passed through. DeepSeek-V4 Pro (Baseten), Gemini 2.5 Pro (Google), Gemini 3.1 Pro (Google), GPT-5.4 (Azure) and GPT-5.5 (Azure) are each priced at double the direct rate or more.
+
+[comment]: <> (gateway-end)
 
 Every rate is dated, links to the vendor pricing page it came from, and is re-checked by an LLM-assisted freshness job that a human confirms. [Browse the full catalog ->](https://prices.mahimai.ca)
 

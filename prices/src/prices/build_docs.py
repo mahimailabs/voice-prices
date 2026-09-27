@@ -245,6 +245,10 @@ LIVEKIT_DIRECT_ALIASES: dict[str, tuple[str, str]] = {
     'assemblyai/u3-rt-pro': ('assemblyai', 'universal-2'),
     'assemblyai/universal-streaming': ('assemblyai', 'universal-2'),
     'assemblyai/universal-streaming-multilingual': ('assemblyai', 'universal-2'),
+    # LiveKit sells the realtime tier ("Universal-3.5 Pro Streaming"). AssemblyAI ships one id for
+    # both tiers, and the bare catalog id is the async rate, less than half the price, so without
+    # this the comparison reported a +114% markup that does not exist.
+    'assemblyai/universal-3-5-pro': ('assemblyai', 'universal-3-5-pro-streaming'),
     # Cartesia: the direct catalog carries only sonic-3.
     'cartesia/sonic-2': ('cartesia', 'sonic-3'),
     'cartesia/sonic-3-2025-10-27': ('cartesia', 'sonic-3'),
@@ -261,7 +265,9 @@ LIVEKIT_DIRECT_ALIASES: dict[str, tuple[str, str]] = {
     'deepgram/nova-3-medical': ('deepgram', 'nova-3'),
     'deepgram/nova-3-multi': ('deepgram', 'nova-3-multilingual'),
     'deepgram/flux-general-en': ('deepgram', 'flux-general'),
-    'deepgram/flux-general-multi': ('deepgram', 'flux-general'),
+    # Not 'deepgram/flux-general-multi': multilingual Flux is its own, higher rate ($0.0078/min)
+    # that the direct catalog does not price yet. Proxying it with English Flux showed a +20%
+    # markup that was really the multilingual premium, so it stays LiveKit-only until priced.
     # ElevenLabs Flash/Turbo v2 are NOT aliased to v2.5: they have their own direct entries at the
     # same 0.5 credits/char rate, so each version compares against itself (no cross-version proxy).
     # OpenAI chat-latest aliases map to their numbered direct model.
@@ -609,6 +615,65 @@ def build_comparison(data: list[dict[str, Any]]) -> Comparison:
             }
         )
     return comparison
+
+
+class GatewaySummary(TypedDict):
+    """The headline direct-vs-LiveKit numbers, shared by the README and the site."""
+
+    compared: int
+    at_or_below: int
+    scale_below: int
+    llm_compared: int
+    llm_identical: int
+    llm_doubled: list[str]
+    examples: list[tuple[Modality, ComparisonRow]]
+
+
+# README examples, one per story the comparison tells. Chosen by slug so the table stays stable;
+# a slug that stops resolving to a direct rate simply drops out of the table.
+GATEWAY_EXAMPLES: tuple[str, ...] = (
+    'cartesia/sonic-3',
+    'deepgram/nova-3',
+    'openai/gpt-5',
+    'openai/gpt-5.4',
+    'deepseek-ai/deepseek-v4-pro',
+)
+
+
+def distinct_rows(rows: list[ComparisonRow]) -> list[ComparisonRow]:
+    """Drop provider-pinned duplicates (``openai/gpt-5.4@openai``) whose base slug is also listed."""
+    ids = {row['id'] for row in rows}
+    return [row for row in rows if '@' not in row['id'] or row['id'].split('@', 1)[0] not in ids]
+
+
+def gateway_summary(comparison: Comparison) -> GatewaySummary:
+    """Count what the comparison says: how many models are priced both ways, and how they fall.
+
+    A model counts once however many provider-pinned variants LiveKit lists, and "at or below"
+    uses the same one-decimal rounding as the tables, so a rate the pages print as "same" is
+    counted as the same.
+    """
+    rows: list[tuple[Modality, ComparisonRow]] = [
+        (category, row) for category in CATEGORIES for row in distinct_rows(comparison[category])
+    ]
+    both: list[tuple[Modality, ComparisonRow]] = [(category, row) for category, row in rows if row['delta'] is not None]
+
+    def delta(row: ComparisonRow) -> float:
+        return round(cast('float', row['delta']), 1)
+
+    llm = [row for category, row in both if category == 'llm']
+    by_id: dict[str, tuple[Modality, ComparisonRow]] = {row['id']: (category, row) for category, row in both}
+    return {
+        'compared': len(both),
+        'at_or_below': sum(1 for _, row in both if delta(row) <= 0),
+        'scale_below': sum(
+            1 for _, row in both if row['scale'] is not None and row['scale'] < cast('float', row['direct'])
+        ),
+        'llm_compared': len(llm),
+        'llm_identical': sum(1 for row in llm if delta(row) == 0),
+        'llm_doubled': [row['name'] for row in llm if delta(row) >= 100],
+        'examples': [by_id[slug_] for slug_ in GATEWAY_EXAMPLES if slug_ in by_id],
+    }
 
 
 def missing_alias_targets(data: list[dict[str, Any]]) -> list[str]:

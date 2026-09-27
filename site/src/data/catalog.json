@@ -1,5 +1,12 @@
 {
  "repo": "https://github.com/mahimailabs/voice-prices",
+ "gatewaySummary": {
+  "compared": 52,
+  "atOrBelow": 44,
+  "scaleBelow": 22,
+  "llmCompared": 23,
+  "llmIdentical": 18
+ },
  "removalForm": "https://forms.gle/f2QwXAFkwdzmSgy7A",
  "addProvider": "https://github.com/mahimailabs/voice-prices/issues/new?template=add-provider.yml",
  "categories": {
@@ -1293,11 +1300,11 @@
     {
      "id": "assemblyai/universal-3-5-pro",
      "name": "Universal-3.5 Pro Streaming",
-     "direct": 0.0035,
+     "direct": 0.0075,
      "livekit": 0.0075,
      "scale": null,
-     "delta": 114.3,
-     "direct_ref": "assemblyai/universal-3-5-pro"
+     "delta": 0.0,
+     "direct_ref": "assemblyai/universal-3-5-pro-streaming"
     },
     {
      "id": "assemblyai/universal-3-6-pro",
@@ -1356,11 +1363,11 @@
     {
      "id": "deepgram/flux-general-multi",
      "name": "Flux (Multilingual)",
-     "direct": 0.0065,
+     "direct": null,
      "livekit": 0.0078,
      "scale": 0.0068,
-     "delta": 20.0,
-     "direct_ref": "deepgram/flux-general"
+     "delta": null,
+     "direct_ref": null
     },
     {
      "id": "deepgram/nova-2",
@@ -12184,15 +12191,6 @@
      "direct_ref": null
     },
     {
-     "id": "openai/chat-latest@openai",
-     "name": "ChatGPT Latest (OpenAI)",
-     "direct": null,
-     "livekit": 5.0,
-     "scale": null,
-     "delta": null,
-     "direct_ref": null
-    },
-    {
      "id": "openai/gpt-4.1",
      "name": "GPT-4.1 (Azure)",
      "direct": 2.0,
@@ -12211,15 +12209,6 @@
      "direct_ref": "openai/gpt-4.1-mini"
     },
     {
-     "id": "openai/gpt-4.1-mini@openai",
-     "name": "GPT-4.1 mini (OpenAI)",
-     "direct": 0.4,
-     "livekit": 0.4,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-4.1-mini"
-    },
-    {
      "id": "openai/gpt-4.1-nano",
      "name": "GPT-4.1 nano (Azure)",
      "direct": 0.1,
@@ -12227,24 +12216,6 @@
      "scale": null,
      "delta": 0.0,
      "direct_ref": "openai/gpt-4.1-nano"
-    },
-    {
-     "id": "openai/gpt-4.1-nano@openai",
-     "name": "GPT-4.1 nano (OpenAI)",
-     "direct": 0.1,
-     "livekit": 0.1,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-4.1-nano"
-    },
-    {
-     "id": "openai/gpt-4.1@openai",
-     "name": "GPT-4.1 (OpenAI)",
-     "direct": 2.0,
-     "livekit": 2.0,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-4.1"
     },
     {
      "id": "openai/gpt-4o",
@@ -12265,24 +12236,6 @@
      "direct_ref": "openai/gpt-4o-mini"
     },
     {
-     "id": "openai/gpt-4o-mini@openai",
-     "name": "GPT-4o mini (OpenAI)",
-     "direct": 0.15,
-     "livekit": 0.15,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-4o-mini"
-    },
-    {
-     "id": "openai/gpt-4o@openai",
-     "name": "GPT-4o (OpenAI)",
-     "direct": 2.5,
-     "livekit": 2.5,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-4o"
-    },
-    {
      "id": "openai/gpt-5",
      "name": "GPT-5 (Azure)",
      "direct": 1.25,
@@ -12301,26 +12254,8 @@
      "direct_ref": "openai/gpt-5-mini"
     },
     {
-     "id": "openai/gpt-5-mini@openai",
-     "name": "GPT-5 mini (OpenAI)",
-     "direct": 0.25,
-     "livekit": 0.25,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-5-mini"
-    },
-    {
      "id": "openai/gpt-5-nano",
      "name": "GPT-5 nano (Azure)",
-     "direct": 0.05,
-     "livekit": 0.05,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-5-nano"
-    },
-    {
-     "id": "openai/gpt-5-nano@openai",
-     "name": "GPT-5 nano (OpenAI)",
      "direct": 0.05,
      "livekit": 0.05,
      "scale": null,
@@ -12337,26 +12272,8 @@
      "direct_ref": "openai/gpt-5.1"
     },
     {
-     "id": "openai/gpt-5.1@openai",
-     "name": "GPT-5.1 (OpenAI)",
-     "direct": 1.25,
-     "livekit": 1.25,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-5.1"
-    },
-    {
      "id": "openai/gpt-5.2",
      "name": "GPT-5.2 (Azure)",
-     "direct": 1.75,
-     "livekit": 1.75,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-5.2"
-    },
-    {
-     "id": "openai/gpt-5.2@openai",
-     "name": "GPT-5.2 (OpenAI)",
      "direct": 1.75,
      "livekit": 1.75,
      "scale": null,
@@ -12391,26 +12308,8 @@
      "direct_ref": "openai/gpt-5.4-nano"
     },
     {
-     "id": "openai/gpt-5.4@openai",
-     "name": "GPT-5.4 (OpenAI)",
-     "direct": 2.5,
-     "livekit": 5.0,
-     "scale": null,
-     "delta": 100.0,
-     "direct_ref": "openai/gpt-5.4"
-    },
-    {
      "id": "openai/gpt-5.5",
      "name": "GPT-5.5 (Azure)",
-     "direct": 5.0,
-     "livekit": 10.0,
-     "scale": null,
-     "delta": 100.0,
-     "direct_ref": "openai/gpt-5.5"
-    },
-    {
-     "id": "openai/gpt-5.5@openai",
-     "name": "GPT-5.5 (OpenAI)",
      "direct": 5.0,
      "livekit": 10.0,
      "scale": null,
@@ -12427,26 +12326,8 @@
      "direct_ref": null
     },
     {
-     "id": "openai/gpt-5.6-luna@openai",
-     "name": "GPT-5.6 Luna (OpenAI)",
-     "direct": null,
-     "livekit": 0.2,
-     "scale": null,
-     "delta": null,
-     "direct_ref": null
-    },
-    {
      "id": "openai/gpt-5.6-sol",
      "name": "GPT-5.6 Sol (Azure)",
-     "direct": null,
-     "livekit": 4.0,
-     "scale": null,
-     "delta": null,
-     "direct_ref": null
-    },
-    {
-     "id": "openai/gpt-5.6-sol@openai",
-     "name": "GPT-5.6 Sol (OpenAI)",
      "direct": null,
      "livekit": 4.0,
      "scale": null,
@@ -12463,37 +12344,10 @@
      "direct_ref": null
     },
     {
-     "id": "openai/gpt-5.6-terra@openai",
-     "name": "GPT-5.6 Terra (OpenAI)",
-     "direct": null,
-     "livekit": 2.0,
-     "scale": null,
-     "delta": null,
-     "direct_ref": null
-    },
-    {
-     "id": "openai/gpt-5@openai",
-     "name": "GPT-5 (OpenAI)",
-     "direct": 1.25,
-     "livekit": 1.25,
-     "scale": null,
-     "delta": 0.0,
-     "direct_ref": "openai/gpt-5"
-    },
-    {
      "id": "openai/gpt-oss-120b",
      "name": "GPT OSS 120B (Baseten)",
      "direct": null,
      "livekit": 0.1,
-     "scale": null,
-     "delta": null,
-     "direct_ref": null
-    },
-    {
-     "id": "openai/gpt-oss-120b@groq",
-     "name": "GPT OSS 120B (Groq)",
-     "direct": null,
-     "livekit": 0.15,
      "scale": null,
      "delta": null,
      "direct_ref": null
