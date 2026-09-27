@@ -1,0 +1,13 @@
+---
+// One provider within one category, with its source links and per-row notes.
+import ProviderPage from '../../components/ProviderPage.astro';
+import { CATEGORIES, providersOf } from '../../lib/catalog';
+
+export const getStaticPaths = () =>
+  CATEGORIES.flatMap((category) =>
+    providersOf(category).map((provider) => ({ params: { category, provider: provider.slug }, props: { category, provider } })),
+  );
+const { category, provider } = Astro.props;
+---
+
+<ProviderPage category={category} provider={provider} />

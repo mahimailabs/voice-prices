@@ -1,0 +1,3 @@
+# The Mintlify docs put each category's table at /<category>/all-models; here it is /<category>/.
+/:category/all-models /:category/ 301
+/:category/all-models/ /:category/ 301

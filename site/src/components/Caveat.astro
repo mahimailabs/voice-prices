@@ -1,0 +1,47 @@
+---
+// The warning every page that shows a number carries. `full` is the whole statement (the same
+// claims as the README's Warning and the Mintlify pages); `short` is one line for places where a
+// rate appears next to other content. Both link to the vendor correction form and /disclaimer/.
+// tests/test_site_data.py checks this file still makes every claim.
+import { TriangleAlert } from 'lucide-react';
+import { REMOVAL_FORM, REPO } from '../lib/catalog';
+
+interface Props {
+  variant?: 'full' | 'short';
+  class?: string;
+}
+const { variant = 'short', class: cls } = Astro.props;
+---
+
+{
+  variant === 'full' ? (
+    <aside class:list={['caveat caveat--full', cls]} role="note" aria-label="Warning">
+      <TriangleAlert size={18} strokeWidth={1.75} aria-hidden="true" class="caveat__icon" />
+      <div class="caveat__body">
+        <p>
+          <strong>Reference only, and unofficial. These numbers may be inaccurate.</strong> Voice Prices is a
+          community-maintained catalog. It is not published by, affiliated with, or endorsed by any vendor listed
+          here. Rates are read off public pricing pages by hand, so they can be out of date or simply wrong. Vendors
+          change prices without notice, and your own rate may differ with your plan, region, commitment or
+          negotiated terms.
+        </p>
+        <p>
+          Confirm a rate against the vendor's own pricing page before you bill, quote or budget against it. Provided
+          as-is with no warranty, under the <a class="link" href={`${REPO}/blob/main/LICENSE`} rel="noopener">LICENSE</a>.
+        </p>
+        <p>
+          <strong>Work at a vendor listed here?</strong> If a row about your product is wrong, or you want it removed,
+          <a class="link" href={REMOVAL_FORM} rel="noopener">tell us</a> and we will correct or remove it within 24 hours.
+        </p>
+      </div>
+    </aside>
+  ) : (
+    <p class:list={['caveat caveat--short', cls]} role="note">
+      <TriangleAlert size={14} strokeWidth={1.75} aria-hidden="true" class="caveat__icon" />
+      <span>
+        Reference only. Rates may be out of date or wrong; confirm with the vendor before you rely on one.{' '}
+        <a class="link" href="/disclaimer/">Read the disclaimer</a>
+      </span>
+    </p>
+  )
+}

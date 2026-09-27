@@ -1,0 +1,27 @@
+---
+// A hand-written page: breadcrumb, title, lede, then prose.
+import Caveat from './Caveat.astro';
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  lede: string;
+  path: string;
+  caveat?: boolean;
+}
+const { title, lede, path, caveat = true } = Astro.props;
+---
+
+<Layout title={`${title} · Voice Prices`} description={lede} path={path}>
+  <article class="shell page doc">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Voice Prices</a></nav>
+    <header class="page__head">
+      <h1>{title}</h1>
+      <p class="page__lede">{lede}</p>
+    </header>
+    {caveat && <Caveat />}
+    <div class="doc__body prose">
+      <slot />
+    </div>
+  </article>
+</Layout>
