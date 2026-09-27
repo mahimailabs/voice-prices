@@ -1,0 +1,40 @@
+---
+// A page rendered from one of the Mintlify MDX files in docs/, so the text has one source.
+// The Mintlify components those files use are implemented in ./mdx.
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import type { MDXInstance } from 'astro';
+import Caveat from './Caveat.astro';
+import Layout from './Layout.astro';
+import { mdxComponents } from './mdx';
+import { REPO } from '../lib/catalog';
+
+interface Props {
+  doc: MDXInstance<{ title: string; description?: string }>;
+  /** The docs/ file, for the edit link. */
+  file: string;
+  path: string;
+}
+const { doc, file, path } = Astro.props;
+const { title, description = '' } = doc.frontmatter;
+// The generated pages carry the disclaimer inside the MDX; the rest get the short one up top.
+const source = readFileSync(resolve(process.cwd(), '..', 'docs', file), 'utf8');
+const hasWarning = /Reference only, and unofficial/.test(source);
+---
+
+<Layout title={`${title} · Voice Prices`} description={description} path={path}>
+  <article class="shell page doc">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Voice Prices</a></nav>
+    <header class="page__head">
+      <h1>{title}</h1>
+      {description && <p class="page__lede">{description}</p>}
+    </header>
+    {!hasWarning && <Caveat />}
+    <div class="doc__body prose mdx">
+      <doc.Content components={mdxComponents} />
+    </div>
+    <p class="doc__edit">
+      <a class="link" href={`${REPO}/blob/main/docs/${file}`} rel="noopener">Edit this page on GitHub</a>
+    </p>
+  </article>
+</Layout>

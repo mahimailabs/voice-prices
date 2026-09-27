@@ -102,7 +102,7 @@ file only carries what a consumer needs to act on.
   - **Azure**: Speech ($1/hour real-time, $0.18/hour batch) and Text to Speech ($15 per 1M
     characters).
 - Cartesia `ink-2` speech-to-text, and Speechmatics `tts`.
-- A generated [LiveKit plugin coverage page](https://prices.voicegateway.dev/livekit-coverage)
+- A generated [LiveKit plugin coverage page](https://prices.mahimai.ca/livekit-coverage)
   reporting which plugins have a rate here and why the rest do not, counted per
   (plugin, modality) pair rather than per vendor.
 - A reference-only disclaimer on every page that shows a rate. It was previously only on the

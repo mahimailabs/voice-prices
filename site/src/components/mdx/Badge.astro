@@ -1,0 +1,10 @@
+---
+// Mintlify's <Badge color="green|yellow|gray">, mapped onto the site's status dots.
+interface Props {
+  color?: string;
+}
+const { color = 'gray' } = Astro.props;
+const tone = color === 'green' ? 'ok' : color === 'yellow' || color === 'orange' ? 'warn' : 'muted';
+---
+
+<span class="status" data-tone={tone}><slot /></span>

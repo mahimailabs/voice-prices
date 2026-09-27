@@ -1,37 +1,6 @@
 ---
-import DocPage from '../components/DocPage.astro';
-import { ADD_PROVIDER, REMOVAL_FORM, REPO } from '../lib/catalog';
+import MdxPage from '../components/MdxPage.astro';
+import * as doc from '../../../docs/contribute.mdx';
 ---
 
-<DocPage
-  title="Fix a price, or add a provider"
-  lede="Every rate on this site comes from one YAML file per provider. Change the file, and the site, the package and the docs all follow."
-  path="/contribute/"
->
-  <h2>A number is wrong</h2>
-  <p>
-    Edit <code>prices/providers/&lt;provider&gt;.yml</code> in the <a href={REPO} rel="noopener">repository</a>. Set
-    <code>prices_checked</code> on the model to today's date, explain the change in <code>price_comments</code> with the
-    source URL, then run <code>make build</code> to regenerate the data. Attach a cropped screenshot of the rate row to the
-    pull request; CI asks for one on any hand-read rate.
-  </p>
-  <h2>A provider is missing</h2>
-  <p>
-    Open an <a href={ADD_PROVIDER} rel="noopener">Add a provider</a> issue first, with the pricing page and the models you
-    want to add. Then follow <a href={`${REPO}/blob/main/CONTRIBUTING.md`} rel="noopener">CONTRIBUTING.md</a>, which walks
-    through the YAML for LLM, TTS and STT providers.
-  </p>
-  <h2>The rules that keep the data honest</h2>
-  <ul>
-    <li>Never invent a rate. Every number must appear on the pricing page it cites.</li>
-    <li>Never take a rate from an aggregator (OpenRouter, LiteLLM, Helicone) or a reseller. They are cross-checks, not sources.</li>
-    <li>US dollars only. A vendor that publishes only in another currency is out of scope, because a converted price has no honest date.</li>
-    <li>Never edit a generated JSON file by hand.</li>
-  </ul>
-  <h2>You work at a vendor</h2>
-  <p>
-    The best fix is a pricing endpoint: one HTTPS GET that returns your rates as JSON, polled daily, so drift surfaces the
-    next day. The <a href={`${REPO}#contributing`} rel="noopener">README</a> explains what it needs. To correct or remove a
-    row now, <a href={REMOVAL_FORM} rel="noopener">use this form</a>; it is done within 24 hours.
-  </p>
-</DocPage>
+<MdxPage doc={doc as any} file="contribute.mdx" path="/contribute/" />

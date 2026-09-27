@@ -1,0 +1,36 @@
+---
+// Mintlify's <Prompt>: a block of text meant to be pasted into a coding agent, with a copy button.
+import { Copy } from 'lucide-react';
+
+interface Props {
+  description?: string;
+}
+const { description } = Astro.props;
+---
+
+<figure class="prompt">
+  <figcaption class="prompt__head">
+    <span class="prompt__desc" set:html={description?.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')} />
+    <button type="button" class="prompt__copy" data-copy-prompt>
+      <Copy size={14} strokeWidth={1.75} aria-hidden="true" /> <span>Copy prompt</span>
+    </button>
+  </figcaption>
+  <div class="prompt__body" data-prompt-body><slot /></div>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-prompt]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const body = button.closest('.prompt')?.querySelector<HTMLElement>('[data-prompt-body]');
+      if (!body) return;
+      const label = button.querySelector('span');
+      try {
+        await navigator.clipboard.writeText(body.innerText.trim());
+        if (label) label.textContent = 'Copied';
+      } catch {
+        if (label) label.textContent = 'Select and copy';
+      }
+      setTimeout(() => label && (label.textContent = 'Copy prompt'), 2000);
+    });
+  });
+</script>

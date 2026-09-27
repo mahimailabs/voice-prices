@@ -1,0 +1,15 @@
+---
+// Mintlify's <Note>, <Tip>, <Info> and <Warning>, drawn in the site's style.
+import { Info, Lightbulb, TriangleAlert } from 'lucide-react';
+
+interface Props {
+  kind: 'note' | 'tip' | 'info' | 'warning';
+}
+const { kind } = Astro.props;
+const Icon = kind === 'warning' ? TriangleAlert : kind === 'tip' ? Lightbulb : Info;
+---
+
+<aside class="callout" data-kind={kind} role="note">
+  <Icon size={16} strokeWidth={1.75} aria-hidden="true" class="callout__icon" />
+  <div class="callout__body"><slot /></div>
+</aside>
