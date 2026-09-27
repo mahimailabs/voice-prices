@@ -13,7 +13,7 @@
   Open pricing data and cost calculation for every API a voice agent bills against: speech-to-text, LLM, text-to-speech, speech-to-speech, and voice activity detection.
 </div>
 <div align="center">
-  <a href="https://prices.voicegateway.dev">Browse providers and prices</a>
+  <a href="https://prices.mahimai.ca">Browse providers and prices</a>
 </div>
 <br/>
 
@@ -50,7 +50,7 @@ It is not an argument against gateways. Of the 54 models where both a direct and
 
 Most LLM rates pass straight through (23 of the 27 comparable models are identical to the penny), so gateway markups mostly land on TTS and STT. The exception is worth knowing: the frontier models are not passed through. GPT-5.4, GPT-5.5, Gemini 2.5 Pro and Gemini 3.1 Pro are each +100%.
 
-Every rate is dated, links to the vendor pricing page it came from, and is re-checked by an LLM-assisted freshness job that a human confirms. [Browse the full catalog ->](https://prices.voicegateway.dev)
+Every rate is dated, links to the vendor pricing page it came from, and is re-checked by an LLM-assisted freshness job that a human confirms. [Browse the full catalog ->](https://prices.mahimai.ca)
 
 ## Quick start
 
@@ -82,7 +82,7 @@ voice-prices is a fork of [pydantic/genai-prices](https://github.com/pydantic/ge
 - first-class voice billing units: TTS per character, STT and VAD per audio second, speech-to-speech per audio token
 - direct vs gateway comparison per model, in the unit each category is actually quoted in
 - automated [voice price freshness checks](#keeping-voice-prices-fresh): a manually-triggered GitHub Action re-verifies voice rates against each provider's pricing page and opens a PR when a rate has drifted
-- Python package, CLI, and a [browsable catalog](https://prices.voicegateway.dev)
+- Python package, CLI, and a [browsable catalog](https://prices.mahimai.ca)
 - TODO: hosted API
 
 ### Providers
