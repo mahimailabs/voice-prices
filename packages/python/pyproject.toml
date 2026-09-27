@@ -47,7 +47,7 @@ cli = [
 voice-prices = "voice_prices._cli:cli"
 
 [project.urls]
-Homepage = "https://prices.voicegateway.dev"
+Homepage = "https://prices.mahimai.ca"
 Documentation = "https://prices.voicegateway.dev"
 Source = "https://github.com/mahimailabs/voice-prices"
 Changelog = "https://github.com/mahimailabs/voice-prices/releases"
