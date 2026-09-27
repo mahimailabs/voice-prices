@@ -6,6 +6,10 @@ Every number comes from `src/data/catalog.json`, which `make build` (or `make bu
 from `prices/data.json` through the same catalog builder the Mintlify pages use. Never edit it by
 hand; change the provider YAML and rebuild.
 
+The long-form pages (`/how-fresh/`, `/contribute/`, `/pricing-feed/`, `/livekit-coverage/`) render
+the MDX files in `../docs` directly, with the Mintlify components they use implemented in
+`src/components/mdx/`. Edit the MDX, not the site, to change their text.
+
 ```bash
 npm ci
 npm run dev      # http://localhost:4321

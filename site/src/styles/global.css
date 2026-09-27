@@ -341,13 +341,14 @@ a.link:hover {
   gap: 0.6rem;
   color: var(--muted);
 }
-.caveat__icon {
+.caveat > svg {
+  /* Astro drops `class` on a React icon, so these match the icon by position. */
   flex: none;
   width: 14px;
   height: 14px;
   color: var(--warn);
 }
-.caveat--full .caveat__icon {
+.caveat--full > svg {
   width: 18px;
   height: 18px;
 }
@@ -357,7 +358,7 @@ a.link:hover {
   font-size: 0.8125rem;
   line-height: 1.5;
 }
-.caveat--short .caveat__icon {
+.caveat--short > svg {
   margin-top: 0.15rem;
 }
 .caveat--full {
@@ -369,7 +370,7 @@ a.link:hover {
   font-size: 0.875rem;
   line-height: 1.6;
 }
-.caveat--full .caveat__icon {
+.caveat--full > svg {
   margin-top: 0.1rem;
 }
 .caveat__body {
@@ -1330,4 +1331,213 @@ a.link:hover {
 }
 .doc__body .caveat--full {
   margin: 0;
+}
+
+/* Pages rendered from docs/*.mdx */
+.mdx {
+  max-width: 50rem;
+}
+.mdx h2 {
+  scroll-margin-top: 5rem;
+}
+.mdx h3 {
+  margin-top: 0.75rem;
+  color: var(--ink);
+  font-size: 1.125rem;
+  scroll-margin-top: 5rem;
+}
+.mdx ol {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.mdx table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.mdx th {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--muted);
+  font: 500 0.75rem/1.3 var(--mono);
+  text-align: left;
+  white-space: nowrap;
+}
+.mdx td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.mdx pre {
+  margin: 0;
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface) !important;
+  font: 0.8125rem/1.7 var(--mono);
+}
+.mdx pre code {
+  padding: 0;
+  background: none;
+  font: inherit;
+}
+.mdx pre[data-title]::before {
+  content: attr(data-title);
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--muted);
+  font: 500 0.6875rem/1 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* Shiki writes both themes as variables; pick the one that matches the page. */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-dark);
+}
+:root[data-theme='light'] .astro-code,
+:root[data-theme='light'] .astro-code span {
+  color: var(--shiki-light);
+}
+.callout {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+.callout > svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 0.25rem;
+  color: var(--accent);
+}
+.callout[data-kind='warning'] {
+  border-color: color-mix(in srgb, var(--warn) 35%, var(--line));
+  background: color-mix(in srgb, var(--warn) 6%, var(--surface));
+}
+.callout[data-kind='warning'] > svg {
+  color: var(--warn);
+}
+.callout__body {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.steps__item {
+  position: relative;
+  padding: 0 0 1.75rem 2.75rem;
+  counter-increment: step;
+}
+.steps__item::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+  color: var(--accent);
+  font: 500 0.8125rem/1 var(--mono);
+}
+.steps__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(0.95rem - 0.5px);
+  top: 2.2rem;
+  bottom: 0.3rem;
+  width: 1px;
+  background: var(--line);
+}
+.mdx .steps__title {
+  margin: 0.2rem 0 0.6rem;
+}
+.steps__body {
+  display: grid;
+  gap: 0.75rem;
+}
+.codegroup {
+  display: grid;
+  gap: 0.6rem;
+}
+.accordions {
+  border-top: 1px solid var(--line);
+}
+.accordion {
+  border-bottom: 1px solid var(--line);
+}
+.accordion summary {
+  padding: 0.85rem 0;
+  color: var(--ink);
+  font-weight: 500;
+  cursor: pointer;
+}
+.accordion__body {
+  display: grid;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+}
+.prompt {
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  border-radius: 0.875rem;
+  background: var(--surface);
+  overflow: hidden;
+}
+.prompt__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.8rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+.prompt__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.45rem;
+  background: var(--bg);
+  color: var(--ink);
+  font: 500 0.8125rem/1 var(--font);
+  cursor: pointer;
+}
+.prompt__body {
+  display: grid;
+  gap: 0.7rem;
+  max-height: 26rem;
+  padding: 1rem 1.2rem;
+  overflow-y: auto;
+  font-size: 0.875rem;
+}
+.doc__edit {
+  margin-top: 3rem;
+  font-size: 0.875rem;
 }

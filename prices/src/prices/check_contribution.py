@@ -400,6 +400,6 @@ def check_contribution() -> int:
         print(f'  {finding}')
     print(
         '\nThese are structural checks, not a claim that the rates are wrong. '
-        'See https://prices.voicegateway.dev/contribute for what each field is for.'
+        'See https://prices.mahimai.ca/contribute for what each field is for.'
     )
     return 1
