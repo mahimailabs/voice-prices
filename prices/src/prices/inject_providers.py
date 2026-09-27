@@ -86,6 +86,7 @@ _UNIT = {'stt': 'per min', 'tts': 'per 1M chars', 'llm': 'per 1M input tokens'}
 
 
 def _example_row(category: Modality, row: ComparisonRow) -> str:
+    """One README example: the four rates and a verdict worded from the numbers, not by hand."""
     delta = round(row['delta'] or 0.0, 1)
     scale_below = row['scale'] is not None and row['direct'] is not None and row['scale'] < row['direct']
     verdict = f'**{fmt_pct(row["delta"])}**'

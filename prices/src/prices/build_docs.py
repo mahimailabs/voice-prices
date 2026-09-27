@@ -659,6 +659,7 @@ def gateway_summary(comparison: Comparison) -> GatewaySummary:
     both: list[tuple[Modality, ComparisonRow]] = [(category, row) for category, row in rows if row['delta'] is not None]
 
     def delta(row: ComparisonRow) -> float:
+        """The delta at the one-decimal precision the pages print it with."""
         return round(cast('float', row['delta']), 1)
 
     llm = [row for category, row in both if category == 'llm']

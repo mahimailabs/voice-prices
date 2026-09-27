@@ -19,14 +19,17 @@ SITE = root_dir / 'site' / 'src'
 
 
 def _data() -> list[dict[str, Any]]:
+    """The committed prices/data.json, which every generated file is built from."""
     return cast('list[dict[str, Any]]', json.loads(DATA_JSON.read_text()))
 
 
 def test_committed_site_data_is_in_sync():
+    """The drift gate for the site: its data file must match what `make build` would write."""
     assert SITE_DATA.read_text() == render_site_data(_data()), 'site/src/data/catalog.json is stale: run `make build`'
 
 
 def test_build_site_writes_and_is_idempotent(tmp_path: Path):
+    """A second build over an unchanged catalog writes the same bytes."""
     path = tmp_path / 'catalog.json'
     build_site(path)
     first = path.read_text()
@@ -56,6 +59,7 @@ def test_site_data_has_no_clock():
 
 
 def test_every_provider_links_to_its_yaml():
+    """Each provider page's YAML link points at a file that exists."""
     site = json.loads(SITE_DATA.read_text())
     for category in site['categories'].values():
         for provider in category['providers']:
@@ -64,6 +68,7 @@ def test_every_provider_links_to_its_yaml():
 
 
 def test_site_warning_makes_every_claim():
+    """The site's warning keeps every claim the README and docs disclaimer make."""
     caveat = (SITE / 'components' / 'Caveat.astro').read_text()
     for claim in (
         'may be inaccurate',
@@ -100,6 +105,7 @@ def test_readme_gateway_numbers_are_generated_and_in_sync():
 
 
 def test_gateway_summary_counts_each_model_once():
+    """Pinned variants count once, and the site reads the same numbers the README prints."""
     from prices.build_docs import build_comparison, distinct_rows, gateway_summary
 
     comparison = build_comparison(_data())

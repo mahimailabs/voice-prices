@@ -62,6 +62,7 @@ def _provider_files() -> dict[str, str]:
 
 
 def _direct_ref(livekit_id: str, direct_rate: float | None) -> str | None:
+    """The `provider/model` a LiveKit row is compared against, or None when it has no direct rate."""
     if direct_rate is None:
         return None
     ref = _resolve_direct(livekit_id)
