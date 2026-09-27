@@ -1,0 +1,86 @@
+---
+// One provider in one category: its rates, where each was read, and what each covers.
+import { ArrowUpRight } from 'lucide-react';
+import Caveat from './Caveat.astro';
+import Layout from './Layout.astro';
+import ModelTable from './ModelTable';
+import {
+  CATEGORIES,
+  META,
+  REMOVAL_FORM,
+  REPO,
+  categoryHref,
+  columnsFor,
+  domainOf,
+  primaryKey,
+  providerHref,
+  providersOf,
+  rowsFor,
+  type Category,
+  type Provider,
+} from '../lib/catalog';
+
+interface Props {
+  category: Category;
+  provider: Provider;
+}
+const { category, provider } = Astro.props;
+const meta = META[category];
+const rows = rowsFor(category, provider);
+const columns = columnsFor(category, rows);
+const elsewhere = CATEGORIES.filter((c) => c !== category && providersOf(c).some((p) => p.id === provider.id));
+const dates = rows.map((r) => r.verified).filter((d): d is string => Boolean(d)).sort();
+const yamlFile = provider.yaml;
+---
+
+<Layout
+  title={`${provider.name} ${meta.title.toLowerCase()} pricing · Voice Prices`}
+  description={`${provider.name} ${meta.title.toLowerCase()} rates, ${meta.unit}, as listed on ${provider.pricingUrls[0] ? domainOf(provider.pricingUrls[0]) : 'the vendor pricing page'}. Unofficial reference, confirm with ${provider.name}.`}
+  path={providerHref(category, provider)}
+>
+  <article class="shell page">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Voice Prices</a><span aria-hidden="true">/</span><a href={categoryHref(category)}>{meta.title}</a>
+    </nav>
+    <header class="page__head">
+      <p class="page__kicker mono">{meta.tab} · {rows.length} {rows.length === 1 ? 'model' : 'models'} · {meta.unit}</p>
+      <h1>{provider.name}</h1>
+      <p class="page__lede">
+        {meta.title} rates for {provider.name}{provider.pricingTier && <> on the <strong>{provider.pricingTier}</strong> tier</>}, as read
+        from the vendor's public pricing page.
+        {dates.length > 0 && <> Last confirmed by a human on <span class="mono">{dates.at(-1)}</span>.</>}
+      </p>
+      <div class="page__links">
+        {provider.pricingUrls.map((u) => (
+          <a class="btn" href={u} rel="noopener" data-source={provider.id}>
+            {domainOf(u)} <ArrowUpRight size={15} strokeWidth={1.75} aria-hidden="true" />
+          </a>
+        ))}
+        {yamlFile && (
+          <a class="btn" href={`${REPO}/blob/main/prices/providers/${yamlFile}`} rel="noopener">
+            {yamlFile} <ArrowUpRight size={15} strokeWidth={1.75} aria-hidden="true" />
+          </a>
+        )}
+      </div>
+      {elsewhere.length > 0 && (
+        <p class="page__note">
+          Also priced under{' '}
+          {elsewhere.map((c, i) => {
+            const p = providersOf(c).find((x) => x.id === provider.id)!;
+            return <>{i > 0 && ', '}<a class="link" href={providerHref(c, p)}>{META[c].title}</a>{i === elsewhere.length - 1 && '.'}</>;
+          })}
+        </p>
+      )}
+    </header>
+    <Caveat variant="full" />
+
+    <section class="block" aria-label={`${provider.name} models`}>
+      <ModelTable client:load rows={rows} columns={columns} showProvider={false} showStatus={category !== 'llm'} showComments defaultSort={primaryKey[category]} />
+    </section>
+
+    <p class="page__note">
+      Something wrong or missing? <a class="link" href="/contribute/">Send a fix</a>. Work at {provider.name}?{' '}
+      <a class="link" href={REMOVAL_FORM} rel="noopener">Ask for a correction or removal</a>, done within 24 hours.
+    </p>
+  </article>
+</Layout>

@@ -1,0 +1,186 @@
+---
+// The home page: the estimate up top, then the catalog by category, direct against LiveKit
+// Inference, how fresh the rates are, and the package the same data ships in.
+import { ArrowRight, ArrowUpRight, GitPullRequest } from 'lucide-react';
+import Caveat from '../components/Caveat.astro';
+import Estimator from '../components/Estimator';
+import GatewayCompare from '../components/GatewayCompare';
+import Layout from '../components/Layout.astro';
+import {
+  ADD_PROVIDER,
+  CATEGORIES,
+  META,
+  PYPI,
+  REMOVAL_FORM,
+  REPO,
+  catalogOf,
+  categoryHref,
+  fmtUsd,
+  modelCount,
+  providersOf,
+  range,
+  totals,
+} from '../lib/catalog';
+import { optionsFor } from '../lib/estimate';
+
+const options = { stt: optionsFor('stt'), llm: optionsFor('llm'), tts: optionsFor('tts'), phone: optionsFor('telephony') };
+const sets = [
+  { key: 'tts', label: 'TTS', unit: '$ per 1M characters', rows: catalogOf('tts').comparison },
+  { key: 'stt', label: 'STT', unit: '$ per minute', rows: catalogOf('stt').comparison },
+  { key: 'llm', label: 'LLM', unit: '$ per 1M input tokens', rows: catalogOf('llm').comparison },
+];
+const both = sets.flatMap((s) => s.rows).filter((r) => r.delta !== null);
+const atOrBelow = both.filter((r) => r.delta! < 0.05).length;
+const fmt = (n: number) => n.toLocaleString('en-US');
+---
+
+<Layout
+  title="Voice Prices: what a voice agent minute costs"
+  description={`Open, dated pricing for ${fmt(totals.models)} models across speech-to-text, LLM, text-to-speech, speech-to-speech and telephony, direct and through LiveKit Inference. Unofficial reference; confirm with each vendor.`}
+  path="/"
+>
+  <section class="hero shell">
+    <div class="hero__copy">
+      <p class="hero__name"><span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Voice Prices</p>
+      <h1>What a voice agent minute costs.</h1>
+      <p class="hero__lede">
+        Open, dated pricing for every API a voice agent bills against: speech-to-text, the LLM, text-to-speech,
+        speech-to-speech and the phone line. Each rate links to the page it was read from, and direct and LiveKit Inference
+        prices sit side by side.
+      </p>
+      <dl class="hero__stats">
+        <div><dt class="sr-only">Models</dt><dd><strong class="mono">{fmt(totals.models)}</strong> models</dd></div>
+        <div><dt class="sr-only">Providers</dt><dd><strong class="mono">{totals.providers}</strong> providers</dd></div>
+        <div><dt class="sr-only">Voice rates checked by a human</dt><dd><strong class="mono">{totals.verified}</strong> voice rates checked by hand</dd></div>
+      </dl>
+      <div class="hero__ctas">
+        <a class="btn btn--primary" href="#catalog">Browse the catalog <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" /></a>
+        <a class="btn" href={PYPI} rel="noopener"><span class="mono">pip install voice-prices</span></a>
+      </div>
+      <Caveat class="hero__caveat" />
+    </div>
+    <Estimator client:load options={options} />
+  </section>
+
+  <section class="chapter" id="catalog" aria-labelledby="catalog-title">
+    <div class="shell">
+      <div class="head">
+        <h2 id="catalog-title">The catalog</h2>
+        <p>Seven meters, each billed in its own unit. Every table converts to one unit per category so rows compare.</p>
+      </div>
+      <ul class="cards">
+        {
+          CATEGORIES.map((c) => {
+            const r = range(c);
+            return (
+              <li data-card>
+                <a class="card" href={categoryHref(c)}>
+                  <span class="card__top">
+                    <span class="card__tab mono">{META[c].tab}</span>
+                    <span class="mono">{fmt(modelCount(c))} models · {providersOf(c).length} {providersOf(c).length === 1 ? 'provider' : 'providers'}</span>
+                  </span>
+                  <span class="card__title">{META[c].title}</span>
+                  <span class="card__intro">{META[c].blurb}</span>
+                  {r && (
+                    <span class="card__range mono">
+                      {r.min === r.max ? fmtUsd(r.min) : <>{fmtUsd(r.min)} to {fmtUsd(r.max)}</>} <span>{META[c].unit}</span>
+                    </span>
+                  )}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="chapter" id="gateway" aria-labelledby="gw-title">
+    <div class="shell">
+      <div class="head">
+        <h2 id="gw-title">Direct vs LiveKit Inference</h2>
+        <p>
+          Of the {both.length} models with both a direct and a LiveKit rate, {atOrBelow} are priced at or below going direct.
+          Markups land mostly on speech; most LLM rates pass straight through. The point is to make the number visible,
+          whichever way it falls.
+        </p>
+      </div>
+      <GatewayCompare client:visible sets={sets} />
+      <Caveat />
+    </div>
+  </section>
+
+  <section class="chapter" id="fresh" aria-labelledby="fresh-title">
+    <div class="shell split">
+      <div class="head">
+        <h2 id="fresh-title">Every rate has a date</h2>
+        <p>
+          A person confirms a voice rate against the vendor's own page and records the day. A freshness job re-reads those
+          pages and proposes changes, and a person reviews each one. Nothing here is guaranteed current.
+        </p>
+        <a class="link" href="/how-fresh/">How fresh are these prices?</a>
+      </div>
+      <dl class="legend">
+        <div><dt><span class="status" data-tone="ok">verified</span></dt><dd>Confirmed by a person within the provider's threshold, usually 60 days.</dd></div>
+        <div><dt><span class="status" data-tone="warn">stale</span></dt><dd>Confirmed once, but longer ago than the threshold. Worked out in your browser against today's date.</dd></div>
+        <div><dt><span class="status" data-tone="muted">imported</span></dt><dd>Never confirmed by a person. Taken from another catalog.</dd></div>
+        <div><dt><span class="status" data-tone="muted">seed</span></dt><dd>Never confirmed by a person. Bootstrap data.</dd></div>
+        <div><dt><span class="tag" data-marker="estimated">estimated</span></dt><dd>The vendor's own estimate of a bill charged in another unit, or a floor. Not a billed meter.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="chapter" id="code" aria-labelledby="code-title">
+    <div class="shell split">
+      <div class="head">
+        <h2 id="code-title">The same numbers, in Python</h2>
+        <p>
+          Every rate on this site ships in the <a class="link" href={PYPI} rel="noopener">voice-prices</a> package. Price a
+          call in code, direct or through a gateway.
+        </p>
+      </div>
+      <pre class="code"><code><span class="c"># pip install voice-prices</span>
+<span class="k">from</span> voice_prices <span class="k">import</span> Usage, calc_price
+
+<span class="c"># a minute of streaming STT, direct and through LiveKit</span>
+calc_price(Usage(audio_input_seconds=<span class="n">60</span>), model_ref=<span class="s">'nova-3'</span>, provider_id=<span class="s">'deepgram'</span>)
+calc_price(Usage(audio_input_seconds=<span class="n">60</span>), model_ref=<span class="s">'deepgram/nova-3'</span>, provider_id=<span class="s">'livekit'</span>)
+
+<span class="c"># 450 characters of TTS</span>
+calc_price(Usage(characters=<span class="n">450</span>), model_ref=<span class="s">'sonic-3'</span>, provider_id=<span class="s">'cartesia'</span>)</code></pre>
+    </div>
+  </section>
+
+  <section class="chapter" aria-labelledby="contrib-title">
+    <div class="shell contrib">
+      <div>
+        <h2 id="contrib-title">Wrong, missing, or yours?</h2>
+        <p>
+          Rates change without notice. If one here is wrong, <a class="link" href="/contribute/">send a fix</a> or
+          <a class="link" href={ADD_PROVIDER} rel="noopener">ask for a provider</a>. If you work at a vendor listed here,
+          <a class="link" href={REMOVAL_FORM} rel="noopener">tell us</a> and the row is corrected or removed within 24 hours.
+        </p>
+      </div>
+      <a class="btn" href={REPO} rel="noopener"><GitPullRequest size={16} strokeWidth={1.75} aria-hidden="true" /> Open the repository <ArrowUpRight size={15} strokeWidth={1.75} aria-hidden="true" /></a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { animate, stagger } from 'animejs';
+  // The catalog cards rise in once, on scroll.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-card]')];
+    cards.forEach((el) => (el.style.opacity = '0'));
+    const io = new IntersectionObserver(
+      (entries) => {
+        const shown = entries.filter((e) => e.isIntersecting).map((e) => e.target as HTMLElement);
+        if (!shown.length) return;
+        shown.forEach((el) => io.unobserve(el));
+        animate(shown, { opacity: [0, 1], translateY: [14, 0], duration: 600, ease: 'outExpo', delay: stagger(45) });
+      },
+      { threshold: 0.15 },
+    );
+    cards.forEach((el) => io.observe(el));
+  }
+</script>

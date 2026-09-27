@@ -1,0 +1,46 @@
+---
+import Caveat from '../components/Caveat.astro';
+import DocPage from '../components/DocPage.astro';
+import { REMOVAL_FORM, REPO } from '../lib/catalog';
+---
+
+<DocPage
+  title="These prices will not be 100% accurate"
+  lede="Voice Prices is an unofficial, best-effort reference. Treat every number on this site as an estimate, not as a bill."
+  path="/disclaimer/"
+  caveat={false}
+>
+  <Caveat variant="full" />
+  <p>
+    This project is a best effort by its maintainers and community to give an indicative estimate of what you might pay to
+    call a voice or LLM API. Providers do not publish their prices in a form that can be read reliably by a machine, so the
+    rates here are read off public pricing pages by hand, and some are converted from the vendor's unit into the one this
+    catalog uses. A conversion is not a quote.
+  </p>
+  <p>
+    Voice Prices is <strong>unofficial</strong>. It is not published by, affiliated with, or endorsed by any vendor listed
+    here, and vendor names are used only to identify whose rates a row describes. All trademarks belong to their owners.
+  </p>
+  <h2>Before you rely on a number</h2>
+  <ul>
+    <li>Open the source link on the row and confirm the rate on the vendor's own page.</li>
+    <li>Check the date it was last confirmed, and whether it is marked stale or estimated.</li>
+    <li>Remember your own rate may differ with your plan, region, commitment, voice, or negotiated terms.</li>
+    <li>The cost-per-minute calculator multiplies these rates by assumptions about a typical call. A real call can cost more or less.</li>
+  </ul>
+  <p>
+    Nothing on this site is financial, legal or purchasing advice. Everything is provided as-is, with no warranty of any
+    kind, under the <a href={`${REPO}/blob/main/LICENSE`} rel="noopener">LICENSE</a>. If you get a bill you did not expect,
+    the vendor's invoice is the source of truth, not this site.
+  </p>
+  <h2>For vendors</h2>
+  <p>
+    If a row about your product is wrong, or you want it removed, <a href={REMOVAL_FORM} rel="noopener">fill in this short
+    form</a> and we will correct or remove it within 24 hours. No lawyer, no takedown notice, no argument.
+  </p>
+  <h2>Disclosure</h2>
+  <p>
+    Voice Prices is maintained alongside a voice infrastructure product (VoiceGateway). The dataset is open, the sources are
+    cited, and it publishes its maintainer's own markups on the same terms as everyone else's.
+  </p>
+</DocPage>

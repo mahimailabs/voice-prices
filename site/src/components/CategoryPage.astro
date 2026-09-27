@@ -1,0 +1,96 @@
+---
+// A category: its unit, every model across every provider, and the LiveKit comparison.
+import { ArrowRight } from 'lucide-react';
+import Caveat from './Caveat.astro';
+import GatewayCompare from './GatewayCompare';
+import Layout from './Layout.astro';
+import ModelTable from './ModelTable';
+import {
+  CATEGORIES,
+  GROUP_LABEL,
+  META,
+  catalogOf,
+  categoryHref,
+  columnsFor,
+  primaryKey,
+  providerHref,
+  providersOf,
+  rowsFor,
+  type Category,
+} from '../lib/catalog';
+
+interface Props {
+  category: Category;
+}
+const { category } = Astro.props;
+const meta = META[category];
+const rows = rowsFor(category);
+const columns = columnsFor(category, rows);
+const comparison = catalogOf(category).comparison;
+const groups = (['direct', 'gateway', 'huggingface'] as const)
+  .map((g) => ({ g, providers: providersOf(category).filter((p) => p.group === g) }))
+  .filter((x) => x.providers.length);
+const compareUnit = category === 'llm' ? '$ per 1M input tokens' : category === 'tts' ? '$ per 1M characters' : '$ per minute';
+---
+
+<Layout
+  title={`${meta.title} pricing · Voice Prices`}
+  description={`${rows.length} ${meta.title.toLowerCase()} rates from ${providersOf(category).length} providers, ${meta.unit}, with source links and the date each was checked. Reference only.`}
+  path={categoryHref(category)}
+>
+  <article class="shell page">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Voice Prices</a><span aria-hidden="true">/</span><a href="/#catalog">Catalog</a>
+    </nav>
+    <nav class="cats" aria-label="Categories">
+      {CATEGORIES.map((c) => <a class="chip" href={categoryHref(c)} data-state={c === category ? 'on' : 'off'} aria-current={c === category ? 'page' : undefined}>{META[c].tab}</a>)}
+    </nav>
+    <header class="page__head">
+      <p class="page__kicker mono">{rows.length.toLocaleString('en-US')} models · {providersOf(category).length} providers · {meta.unit}</p>
+      <h1>{meta.title} pricing</h1>
+      <p class="page__lede">{meta.unitNote}</p>
+      {meta.note && <p class="page__note">{meta.note}</p>}
+    </header>
+    <Caveat />
+
+    <section class="block" aria-label="All models">
+      <ModelTable client:load rows={rows} columns={columns} showStatus={category !== 'llm'} defaultSort={category === 'llm' ? 'model' : primaryKey[category]} />
+    </section>
+
+    {
+      comparison.length > 0 && (
+        <section class="block" id="gateway" aria-labelledby="gw-title">
+          <h2 id="gw-title">Direct vs LiveKit Inference</h2>
+          <p class="block__lede">
+            Every model LiveKit Inference sells in this category, beside the vendor's own rate for the same model. Plan fees and
+            included credits are not counted.
+          </p>
+          <GatewayCompare client:visible sets={[{ key: category, label: meta.tab, unit: compareUnit, rows: comparison }]} withOnlyLiveKit />
+          <Caveat />
+        </section>
+      )
+    }
+
+    <section class="block" aria-labelledby="prov-title">
+      <h2 id="prov-title">Providers</h2>
+      {
+        groups.map(({ g, providers }) => (
+          <div class="provs">
+            {groups.length > 1 && <h3>{GROUP_LABEL[g]}</h3>}
+            <ul>
+              {providers.map((p) => (
+                <li>
+                  <a href={providerHref(category, p)}>
+                    <span>{p.name}</span>
+                    <span class="mono">{p.models.length}</span>
+                    <ArrowRight size={14} strokeWidth={1.75} aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </section>
+  </article>
+</Layout>

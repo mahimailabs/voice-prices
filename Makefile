@@ -41,11 +41,15 @@ package-data: ## Prepare data for packages
 	uv run -m prices package_data
 
 .PHONY: build
-build: build-prices package-data inject-providers build-docs ## Build prices, package data, and docs pages
+build: build-prices package-data inject-providers build-docs build-site ## Build prices, package data, docs pages and site data
 
 .PHONY: build-docs
 build-docs: ## Regenerate the docs/ provider pages and navigation from prices/data.json
 	uv run -m prices build_docs
+
+.PHONY: build-site
+build-site: ## Regenerate site/src/data/catalog.json (the prices.mahimai.ca data) from prices/data.json
+	uv run -m prices build_site
 
 .PHONY: collapse-models
 collapse-models: ## Collapse duplicate similar models

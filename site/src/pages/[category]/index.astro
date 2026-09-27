@@ -1,0 +1,10 @@
+---
+// One category: every model in it across every provider, then the LiveKit comparison.
+import CategoryPage from '../../components/CategoryPage.astro';
+import { CATEGORIES } from '../../lib/catalog';
+
+export const getStaticPaths = () => CATEGORIES.map((category) => ({ params: { category } }));
+const { category } = Astro.params;
+---
+
+<CategoryPage category={category as (typeof CATEGORIES)[number]} />

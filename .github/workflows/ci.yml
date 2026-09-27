@@ -81,6 +81,20 @@ jobs:
       - run: npm ci --prefix scripts
       - run: node scripts/mdx_check.mjs
 
+  # prices.mahimai.ca builds from the committed site/src/data/catalog.json. A page that fails to
+  # render would otherwise only surface as a failed Cloudflare deploy after merge.
+  site-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0 # zizmor: ignore[cache-poisoning] -- Job does not produce release artifacts and does not have sensitive permissions
+        with:
+          node-version: "22"
+      - run: npm ci --prefix site
+      - run: npm run build --prefix site
+
   # Structural guard on what a PR claims about prices. Deliberately needs no secrets, so it
   # runs on fork PRs, which is where an unverified rate actually arrives. It cannot tell
   # whether a rate is true (only the freshness verifier can, and that needs an API key); it
@@ -138,7 +152,7 @@ jobs:
   # https://github.com/marketplace/actions/alls-green#why used for branch protection checks
   check:
     if: always()
-    needs: [pre-commit, test-python, coverage, contribution, docs-parse]
+    needs: [pre-commit, test-python, coverage, contribution, docs-parse, site-build]
     runs-on: ubuntu-latest
     steps:
       - name: Decide whether the needed jobs succeeded or failed

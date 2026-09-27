@@ -3,6 +3,7 @@ from inspect import getdoc
 
 from .build import build
 from .build_docs import build_docs
+from .build_site import build_site
 from .check_contribution import check_contribution
 from .collapse import collapse
 from .detect_deprecated import detect_deprecated
@@ -45,6 +46,7 @@ def main():
         package_data,
         inject_providers,
         build_docs,
+        build_site,
         freshness_check,
         livekit_gen,
         livekit_coverage,
