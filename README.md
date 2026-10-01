@@ -95,10 +95,11 @@ Every provider in the catalog, and which categories it prices:
 
 [comment]: <> (providers-start)
 
-**50 providers, 1,325 priced models.** 79 STT, 1,129 LLM, 89 TTS, 8 S2S, 2 VAD, 3 Agents, 15 Telephony.
+**51 providers, 1,331 priced models.** 80 STT, 1,132 LLM, 91 TTS, 8 S2S, 2 VAD, 3 Agents, 15 Telephony.
 
 | Provider | Models | Categories |
 | --- | ---: | --- |
+| [60db](prices/providers/60db.yml) | 6 | STT, LLM, TTS |
 | [ai-coustics](prices/providers/ai_coustics.yml) | 2 | VAD |
 | [Anthropic](prices/providers/anthropic.yml) | 18 | LLM |
 | [AssemblyAI](prices/providers/assemblyai.yml) | 5 | STT |
