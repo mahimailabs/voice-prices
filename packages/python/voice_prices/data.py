@@ -9,6 +9,104 @@ __all__ = ('providers',)
 
 providers: list[Provider] = [
     Provider(
+        id='60db',
+        name='60db',
+        api_pattern='https://api\\.60db\\.ai',
+        pricing_urls=['https://60db.ai/pricing'],
+        price_comments='Published USD top-up rates, not effective subscription-credit rates. Free monthly credits and paid-plan allowances are excluded. Rates were checked against the public pricing page on 2026-10-01. API model IDs come from docs.60db.ai; Kaak, Garuda, Vyas and Judge are the corresponding product names on the pricing page.',
+        model_match=ClauseStartsWith(starts_with='60db-'),
+        provider_match=ClauseContains(contains='60db'),
+        extractors=[
+            UsageExtractor(
+                root='usage',
+                mappings=[
+                    UsageExtractorMapping(path='prompt_tokens', dest='input_tokens', required=True),
+                    UsageExtractorMapping(path='completion_tokens', dest='output_tokens', required=True),
+                ],
+                api_flavor='chat',
+                model_path='model',
+            )
+        ],
+        staleness_threshold_days=60,
+        pricing_tier='Pay-as-you-go',
+        models=[
+            ModelInfo(
+                id='60db-decision-model-v1',
+                match=ClauseEquals(equals='60db-decision-model-v1'),
+                name='60dB Judge Decision',
+                price_comments='Judge bills $0.010 per 1M input tokens; output tokens are free. Use the service-reported input token count: shared state is counted again per question. Model ID: https://docs.60db.ai/api-reference/judge/models',
+                pricing_source_url='https://60db.ai/pricing',
+                free=False,
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 10, 1),
+                    evidence='Decisions (Judge): $0.010 per 1M input tokens; output tokens $0.',
+                ),
+                prices=ModelPrice(input_mtok=Decimal('0.01')),
+            ),
+            ModelInfo(
+                id='60db-fast-v01',
+                match=ClauseEquals(equals='60db-fast-v01'),
+                name='60dB Kaak Fast',
+                price_comments='Published TTS rate $0.02 per 1K characters, stored directly as input_kchars. The pricing page publishes one TTS rate with no model-tier surcharge. Model ID: https://docs.60db.ai/api-reference/models/get-models',
+                pricing_source_url='https://60db.ai/pricing',
+                free=False,
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 10, 1), evidence='Text to speech (Kaak): $0.02 per 1K characters.'
+                ),
+                prices=ModelPrice(input_kchars=Decimal('0.02')),
+            ),
+            ModelInfo(
+                id='60db-judge-model-v1',
+                match=ClauseEquals(equals='60db-judge-model-v1'),
+                name='60dB Judge Rubric',
+                price_comments='Judge bills $0.010 per 1M input tokens; output tokens are free. Use the service-reported input token count: shared state is counted again per question. Model ID: https://docs.60db.ai/api-reference/judge/models',
+                pricing_source_url='https://60db.ai/pricing',
+                free=False,
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 10, 1),
+                    evidence='Decisions (Judge): $0.010 per 1M input tokens; output tokens $0.',
+                ),
+                prices=ModelPrice(input_mtok=Decimal('0.01')),
+            ),
+            ModelInfo(
+                id='60db-quality-v01',
+                match=ClauseEquals(equals='60db-quality-v01'),
+                name='60dB Kaak Quality',
+                price_comments='Published TTS rate $0.02 per 1K characters, stored directly as input_kchars. The pricing page publishes one TTS rate with no model-tier surcharge. Model ID: https://docs.60db.ai/api-reference/models/get-models',
+                pricing_source_url='https://60db.ai/pricing',
+                free=False,
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 10, 1), evidence='Text to speech (Kaak): $0.02 per 1K characters.'
+                ),
+                prices=ModelPrice(input_kchars=Decimal('0.02')),
+            ),
+            ModelInfo(
+                id='60db-stt-v01',
+                match=ClauseEquals(equals='60db-stt-v01'),
+                name='60dB Garuda',
+                price_comments='Published $0.0005 per minute. Converted to $/1K seconds: 0.0005 * 1000 / 60 = 0.008333333333333333. The service rounds duration up to the nearest second; callers should pass that billed duration. No separate streaming/batch rate is published. Model ID: https://docs.60db.ai/api-reference/models/get-stt-models',
+                pricing_source_url='https://60db.ai/pricing',
+                free=False,
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 10, 1), evidence='Speech to text (Garuda): $0.0005 per minute.'
+                ),
+                prices=ModelPrice(input_audio_kseconds=Decimal('0.008333333333333333')),
+            ),
+            ModelInfo(
+                id='60db-tiny',
+                match=ClauseEquals(equals='60db-tiny'),
+                name='60dB Vyas',
+                price_comments='Chat costs $0.02 per 1K tokens = $20 per 1M tokens, with no separate input/output rate published. Both token directions use that rate. Model ID and usage fields: https://docs.60db.ai/api-reference/llm/chat-completion',
+                pricing_source_url='https://60db.ai/pricing',
+                free=False,
+                provenance=Provenance(
+                    last_verified=datetime.date(2026, 10, 1), evidence='Chat (Vyas): $0.02 per 1K tokens.'
+                ),
+                prices=ModelPrice(input_mtok=Decimal('20'), output_mtok=Decimal('20')),
+            ),
+        ],
+    ),
+    Provider(
         id='ai_coustics',
         name='ai-coustics',
         api_pattern='https://api\\.ai-coustics\\.io',

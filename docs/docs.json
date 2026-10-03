@@ -48,6 +48,7 @@
           {
             "group": "Direct vendors",
             "pages": [
+              "stt/60db",
               "stt/assemblyai",
               "stt/aws",
               "stt/azure",
@@ -83,6 +84,7 @@
           {
             "group": "Direct vendors",
             "pages": [
+              "llm/60db",
               "llm/anthropic",
               "llm/avian",
               "llm/aws",
@@ -137,6 +139,7 @@
           {
             "group": "Direct vendors",
             "pages": [
+              "tts/60db",
               "tts/aws",
               "tts/azure",
               "tts/cartesia",
